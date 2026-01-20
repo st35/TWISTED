@@ -61,7 +61,6 @@ class ModelSetup: # Class to hold model setup parameters
 		if self.finite_size_effect_flag == 1:
 			if 'finite_size_effect_length' not in kwargs:
 				self.finite_size_effect_length = 1000.0*0.34 # Default: 1000 bp = 340 nm
-				print('** For finite_size_effect_flag 1 (i.e., enabled), "finite_size_effect_length" argument has not been provided. Using default value of 1000 bp (i.e., 340 nm). **')
 			else:
 				self.finite_size_effect_length = float(kwargs['finite_size_effect_length'])
 		

@@ -3,26 +3,28 @@ from model_setup import *
 from math import tanh, sqrt
 
 def get_RNAP_velocity(model: Model, gene_index: int, left_segment_length: float, right_segment_length: float, left_torque: float, right_torque: float) -> float: # Get the velocity of an RNAP based on the torques on the DNA segments ahead and behind it
-	v0 = model.model_setup.v0
-	tau_c = model.model_setup.tau_c
+    v0 = model.model_setup.v0
+    tau_c = model.model_setup.tau_c
 
-	tau_f = 0.0
-	tau_b = 0.0
-	segment_ahead_length = 0.0
+    tau_f = 0.0
+    tau_b = 0.0
+    segment_ahead_length = 0.0
 
-	if model.genomic_setup.gene_directions[gene_index] == 1:
-		segment_ahead_length = right_segment_length
-		tau_f = right_torque
-		tau_b = left_torque
-	else:
-		segment_ahead_length = left_segment_length
-		tau_f = left_torque
-		tau_b = right_torque
+    if model.genomic_setup.gene_directions[gene_index] == 1:
+        segment_ahead_length = right_segment_length
+        tau_f = right_torque
+        tau_b = left_torque
+    else:
+        segment_ahead_length = left_segment_length
+        tau_f = left_torque
+        tau_b = right_torque
 	
-	if segment_ahead_length < model.model_setup.between_RNAPs_steric_effect_cutoff:
-		return 0.0
-	
-	return (v0 / 2.0)*(1.0 - tanh((tau_f - tau_b) / tau_c))
+    if segment_ahead_length < model.model_setup.between_RNAPs_steric_effect_cutoff:
+        return 0.0
+    
+    if model.genomic_setup.gene_directions[gene_index] == 1:
+        return (v0 / 2.0)*(1.0 - tanh((tau_f - tau_b) / tau_c))
+    return (-v0 / 2.0)*(1.0 - tanh((tau_f - tau_b) / tau_c))
 
 def get_RNAP_angular_velocity(model: Model, gene_index: int, x: float, dx_dt: float, left_torque: float, right_torque: float) -> float: # Get the angular velocity of an RNAP based on its position, linear velocity, and the torques on the DNA segments ahead and behind it
     w0 = model.model_setup.w0
@@ -31,14 +33,8 @@ def get_RNAP_angular_velocity(model: Model, gene_index: int, x: float, dx_dt: fl
     alpha = model.model_setup.alpha
 
     x = abs(x - model.genomic_setup.TSSes[gene_index])
-    tau_f = 0.0
-    tau_b = 0.0
-    if model.genomic_setup.gene_directions[gene_index] == 1:
-        tau_f = right_torque
-        tau_b = left_torque
-    else:
-        tau_f = left_torque
-        tau_b = right_torque
+    tau_f = right_torque
+    tau_b = left_torque
     
     denom = (chi + eta*(x**alpha))
     return ((w0*dx_dt)*(chi / denom)) + ((tau_f - tau_b) / denom)

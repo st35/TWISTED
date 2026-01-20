@@ -2,11 +2,15 @@ from model_setup import *
 from model_dynamics import *
 from utilities import *
 
+from typing import Callable
 from random import random
 from math import log
 
-def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupAndState) -> None: # Main function to simulate the dynamics of the model until the end condition is met
+def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupAndState, print_at_each_simulation_step: Union[Callable, None] = None, print_at_end_of_simulation: Union[Callable, None] = None) -> None: # Main function to simulate the dynamics of the model until the end condition is met
 	while True:
+		if print_at_each_simulation_step is not None:
+			print_at_each_simulation_step(model, simulation_setup_and_state) # Print current state if a print function is provided
+
 		RNAP_gene_index, state_vector = get_state_vectors_from_dicts(model) # Get current state vectors from model dictionaries
 
 		p0 = random() # Generate a random number for event time calculation
@@ -39,9 +43,9 @@ def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupA
 			event = event_index - events_indices[2]
 			segments_Lk0 = [segments_length / model.model_setup.h_dna for segments_length in segments_lengths]
 			if event == 0: # Relax positive supercoiling only
-				model.Lk = [model.Lk0[i] if segments_sigmas[i] > 0.0 else model.Lk[i] for i in range(len(segments_lengths))]
+				model.Lk = [segments_Lk0[i] if segments_sigmas[i] > 0.0 else model.Lk[i] for i in range(len(segments_lengths))]
 			elif event == 1: # Relax negative supercoiling only
-				model.Lk = [model.Lk0[i] if segments_sigmas[i] < 0.0 else model.Lk[i] for i in range(len(segments_lengths))]
+				model.Lk = [segments_Lk0[i] if segments_sigmas[i] < 0.0 else model.Lk[i] for i in range(len(segments_lengths))]
 			else:
 				raise ValueError('Invalid event index for local supercoiling relaxation.')
 		elif event_index < events_indices[4]: # Topoisomerase-mediated supercoiling relaxation: supercoiling_relaxation_dynamics_mode = 2
@@ -62,5 +66,5 @@ def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupA
 			if all_genes_completed:
 				simulation_setup_and_state.simulation_completed = True
 				break
-	
-	transcription_rates = simulation_setup_and_state.calculate_RNAP_transcription_times(model) # Calculate average RNAP velocities for each gene
+	if print_at_end_of_simulation is not None:
+		print_at_end_of_simulation(model, simulation_setup_and_state) # Print final state / outcome if a print function is provided

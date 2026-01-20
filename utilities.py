@@ -23,6 +23,12 @@ def read_genes_information(filename: str) -> tuple[list[str], list[float], list[
 def construct_genomic_setup(filename: str, chromatin_type: str, promoter_mode: str = 'constitutive', buffer_length: float = 10000.0*0.34, **kwargs) -> GenomicSetup: # Return a GenomicSetup object constructed from a gene information file; buffer_length in nm
 	gene_names, TSSes, gene_lengths, gene_directions, RNAP_on_rates = read_genes_information(filename)
 
+	if 'explicit_RNAP_on_rates' in kwargs: # Modify RNAP_on_rates if explicit rates are provided
+		explicit_RNAP_on_rates = kwargs['explicit_RNAP_on_rates']
+		if len(explicit_RNAP_on_rates) != len(gene_names):
+			raise ValueError('Length of explicit_RNAP_on_rates must match number of genes.')
+		RNAP_on_rates = [RNAP_on_rates[i]*explicit_RNAP_on_rates[i] for i in range(len(gene_names))]
+
 	if promoter_mode == 'non-constitutive':
 		if 'TF_on_off_rates' not in kwargs:
 			raise ValueError('For promoter_mode "non-constitutive", "TF_on_off_rates" argument must be provided.')
