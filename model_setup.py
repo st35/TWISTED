@@ -40,7 +40,7 @@ class GenomicSetup: # Class to hold genomic setup information
 		print('=' * 40)
 
 class ModelSetup: # Class to hold model setup parameters
-	def __init__(self, w0: float = 1.85, chi: float = 0.05, eta: float = 0.0005, alpha: float = 1.5, v0: float = 20.0, tau_c: float = 12.0, force: float = 1.0, kBT: float = 4.1, between_RNAPs_steric_effect_cutoff: float = 15.0, clamps_status: tuple[int, int] = (1, 1), finite_size_effect_flag: int = 1, supercoiling_relaxation_dynamics_mode: int = 0, mRNA_dynamics_mode: int = 0, model_observation_event_rate: float = 1.0 / 2.0, **kwargs) -> None:
+	def __init__(self, w0: float = 1.85, chi: float = 0.05, eta: float = 0.0005, alpha: float = 1.5, v0: float = 20.0, tau_c: float = 12.0, force: float = 1.0, kBT: float = 4.1, between_RNAPs_steric_effect_cutoff: float = 15.0, clamps_status: tuple[int, int] = (1, 1), finite_size_effect_flag: int = 1, supercoiling_relaxation_dynamics_mode: str = 'global_overall', mRNA_dynamics_mode: int = 0, model_observation_event_rate: float = 1.0 / 2.0, **kwargs) -> None:
 		self.w0 = w0 # Default: 1.85 1 / nm
 		self.h_dna = (2.0*3.14) / w0 # From w0*h_dna = 2*pi
 		self.chi = chi # Default: 0.05 pN*nm*s
@@ -65,29 +65,29 @@ class ModelSetup: # Class to hold model setup parameters
 				self.finite_size_effect_length = float(kwargs['finite_size_effect_length'])
 		
 		self.supercoiling_relaxation_dynamics_mode = supercoiling_relaxation_dynamics_mode
-		assert supercoiling_relaxation_dynamics_mode in [0, 1, 2], 'supercoiling_relaxation_dynamics_mode must be 0 (global relaxation), 1 (local relaxation with rates specified), or 2 (local relaxation with topoisomerase copy number specified).'
-		self.global_supercoiling_relaxation_rate = 0.0 # Rate for global supercoiling relaxation (in 1 / s); only relevant if supercoiling_relaxation_dynamics_mode = 0
-		if self.supercoiling_relaxation_dynamics_mode == 0: # Global supercoiling relaxation: supercoiling is relaxed at once throughout the genomic segment
+		assert supercoiling_relaxation_dynamics_mode in ['global_overall', 'global_per_segment', 'global_by_type', 'per_segment_by_type', 'topoisomerase_based'], 'supercoiling_relaxation_dynamics_mode must be one of "global_overall", "global_per_segment", "global_by_type", "per_segment_by_type", or "topoisomerase_based".'
+		self.global_supercoiling_relaxation_rate = 0.0 # Rate for global supercoiling relaxation (in 1 / s)
+		if self.supercoiling_relaxation_dynamics_mode in ['global_overall', 'global_per_segment']: # Global supercoiling relaxation: supercoiling is relaxed at once throughout the genomic segment
 			if 'global_supercoiling_relaxation_rate' not in kwargs:
-				raise ValueError('For supercoiling_relaxation_dynamics_mode 0 (i.e., global relaxation), "global_supercoiling_relaxation_rate" argument must be provided.')
+				raise ValueError('For supercoiling_relaxation_dynamics_mode "global_overall" or "global_per_segment", "global_supercoiling_relaxation_rate" argument must be provided.')
 			self.global_supercoiling_relaxation_rate = float(kwargs['global_supercoiling_relaxation_rate'])
-		self.local_supercoiling_relaxation_rates = [0.0, 0.0] # Rates for local supercoiling relaxation of positive and negative supercoiling (in 1 / s); only relevant if supercoiling_relaxation_dynamics_mode = 1
-		if self.supercoiling_relaxation_dynamics_mode == 1: # Local supercoiling relaxation with specified rates; positive and negative supercoiling are relaxed independently at specified rates
+		self.local_supercoiling_relaxation_rates = [0.0, 0.0] # Rates for local supercoiling relaxation of positive and negative supercoiling (in 1 / s)
+		if self.supercoiling_relaxation_dynamics_mode in ['global_by_type', 'per_segment_by_type']: # Local supercoiling relaxation with specified rates; positive and negative supercoiling are relaxed independently at specified rates
 			if 'local_supercoiling_relaxation_rates' not in kwargs:
-				raise ValueError('For supercoiling_relaxation_dynamics_mode 1 (i.e., local relaxation with rates specified), "local_supercoiling_relaxation_rates" argument must be provided.')
+				raise ValueError('For supercoiling_relaxation_dynamics_mode "global_by_type" or "per_segment_by_type", "local_supercoiling_relaxation_rates" argument must be provided.')
 			if len(kwargs['local_supercoiling_relaxation_rates']) != 2:
 				raise ValueError('"local_supercoiling_relaxation_rates" must be a list or tuple of two floats: [rate_positive, rate_negative].')
 			self.local_supercoiling_relaxation_rates = [float(rate) for rate in kwargs['local_supercoiling_relaxation_rates']]
-		self.topoisomerase_copy_numbers = [0, 0] # Copy numbers for TOP1 and TOP2; only relevant if supercoiling_relaxation_dynamics_mode = 2
-		self.topoisomerase_on_off_rates = [(0.0, 0.0), (0.0, 0.0)] # On and off rates for TOP1 and TOP2; only relevant if supercoiling_relaxation_dynamics_mode = 2
-		if self.supercoiling_relaxation_dynamics_mode == 2: # Supercoiling relaxation per segment based on topoisomerase binding and unbinding; requires specifying topoisomerase copy numbers and on/off rates
+		self.topoisomerase_copy_numbers = [0, 0] # Copy numbers for TOP1 and TOP2
+		self.topoisomerase_on_off_rates = [(0.0, 0.0), (0.0, 0.0)] # On and off rates for TOP1 and TOP2
+		if self.supercoiling_relaxation_dynamics_mode == 'topoisomerase_based': # Supercoiling relaxation per segment based on topoisomerase binding and unbinding; requires specifying topoisomerase copy numbers and on/off rates
 			if 'topoisomerase_copy_numbers' not in kwargs:
-				raise ValueError('For supercoiling_relaxation_dynamics_mode 2 (i.e., local relaxation with topoisomerase copy number specified), "topoisomerase_copy_numbers" argument must be provided.')
+				raise ValueError('For supercoiling_relaxation_dynamics_mode "topoisomerase_based", "topoisomerase_copy_numbers" argument must be provided.')
 			if len(kwargs['topoisomerase_copy_numbers']) != 2:
 				raise ValueError('"topoisomerase_copy_numbers" must be a list or tuple of two integers: [num_TOP1, num_TOP2].')
 			self.topoisomerase_copy_numbers = [int(num) for num in kwargs['topoisomerase_copy_numbers']]
 			if 'topoisomerase_on_off_rates' not in kwargs:
-				raise ValueError('For supercoiling_relaxation_dynamics_mode 2, "topoisomerase_on_off_rates" argument must be provided.')
+				raise ValueError('For supercoiling_relaxation_dynamics_mode "topoisomerase_based", "topoisomerase_on_off_rates" argument must be provided.')
 			if len(kwargs['topoisomerase_on_off_rates']) != 2:
 				raise ValueError('"topoisomerase_on_off_rates" must be a list or tuple of two tuples: [(TOP1_on_rate, TOP1_off_rate), (TOP2_on_rate, TOP2_off_rate)].')
 			self.topoisomerase_on_off_rates = [(float(rates[0]), float(rates[1])) for rates in kwargs['topoisomerase_on_off_rates']]
@@ -113,7 +113,7 @@ class Model: # Class to hold the model, including genomic setup, model setup, an
 		self.promoter_status = [1 for _ in genomic_setup.gene_names] if genomic_setup.promoter_mode == 'constitutive' else [floor(uniform_random_in_interval(0.0, 2.0)) for _ in genomic_setup.gene_names] # List to hold promoter status (1: ON, 0: OFF) for each gene
 		self.mRNA_counts = [0 for _ in genomic_setup.gene_names] # List to hold mRNA counts for each gene
 
-		if model_setup.supercoiling_relaxation_dynamics_mode == 2: # State variables for topoisomerases
+		if model_setup.supercoiling_relaxation_dynamics_mode == 'topoisomerase_based': # State variables for topoisomerases
 			self.topoisomerase_type = [0 for _ in range(model_setup.topoisomerase_copy_numbers[0])] + [1 for _ in range(model_setup.topoisomerase_copy_numbers[1])] # 0: TOP1, 1: TOP2
 			self.topoisomerase_positions = [-1.0 for _ in range(model_setup.topoisomerase_copy_numbers[0] + model_setup.topoisomerase_copy_numbers[1])] # Positions of topoisomerases; -1.0 indicates unbound; initially all unbound
 			self.topoisomerase_status = [0 for _ in range(model_setup.topoisomerase_copy_numbers[0] + model_setup.topoisomerase_copy_numbers[1])] # Topoisomerase binding status; 0: unbound, 1: bound; initially all unbound

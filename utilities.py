@@ -64,20 +64,22 @@ def get_TSS_steric_hindrance_status(TSS_position: float, RNAP_gene_index: list[i
 			return 1
 	return 0
 
-def select_event_based_on_propensities(rates_vector: list[float], p: float) -> int: # Select an event index based on the given rates vector and random number p in [0, 1)
+def select_event_based_on_propensities(rates_vector: list[float], p: float) -> Union[int, None]: # Select an event index based on the given rates vector and random number p in [0, 1)
 	a0 = sum(rates_vector)
-	event_index = -1
+	if a0 > 0.0:
+		event_index = -1
 
-	sum_prev = 0.0
-	sum_new = 0.0
-	for i in range(len(rates_vector)):
-		sum_new = sum_prev + (rates_vector[i] / a0)
-		if p >= sum_prev and p < sum_new:
-			event_index = i
-			break
-		sum_prev = sum_new
-	
-	return event_index
+		sum_prev = 0.0
+		sum_new = 0.0
+		for i in range(len(rates_vector)):
+			sum_new = sum_prev + (rates_vector[i] / a0)
+			if p >= sum_prev and p < sum_new:
+				event_index = i
+				break
+			sum_prev = sum_new
+		
+		return event_index
+	return None
 
 def print_list(name: str, lst: list[float]) -> None: # Utility function to print a list with a name
 	print(f'{name}:', end = ' ')
