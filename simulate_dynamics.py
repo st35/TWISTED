@@ -47,27 +47,24 @@ def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupA
 					model.Lk[chosen_segment_index] = segments_Lk0[chosen_segment_index]
 			else:
 				raise ValueError('Invalid type for global supercoiling relaxation.')
-		elif event_index < events_indices[3]: # Local supercoiling relaxation event: supercoiling_relaxation_dynamics_mode in ['global_by_type', 'per_segment_by_type']
+		elif event_index < events_indices[3]: # Type-specific supercoiling relaxation event: supercoiling_relaxation_dynamics_mode in ['global_by_type', 'per_segment_by_type']
 			event = event_index - events_indices[2]
 			segments_Lk0 = [segments_length / model.model_setup.h_dna for segments_length in segments_lengths]
-			if event == 0: # Relax positive supercoiling only
-				if model.model_setup.supercoiling_relaxation_dynamics_mode == 'global_by_type':
+			if model.model_setup.supercoiling_relaxation_dynamics_mode == 'global_by_type':
+				if event == 0: # Relax positive supercoiling only
 					model.Lk = [segments_Lk0[i] if segments_sigmas[i] > 0.0 else model.Lk[i] for i in range(len(segments_lengths))]
-				elif model.model_setup.supercoiling_relaxation_dynamics_mode == 'per_segment_by_type':
+				elif event == 1: # Relax negative supercoiling only
+					model.Lk = [segments_Lk0[i] if segments_sigmas[i] < 0.0 else model.Lk[i] for i in range(len(segments_lengths))]
+			else:
+				chosen_segment_index = None
+				if event == 0: # Relax positive supercoiling only
 					per_segment_propensity = [segments_lengths[i] / (model.genomic_setup.clamp_right - model.genomic_setup.clamp_left) if segments_sigmas[i] > 0.0 else 0.0 for i in range(len(segments_lengths))]
 					chosen_segment_index = select_event_based_on_propensities(per_segment_propensity, random())
-					if chosen_segment_index is not None:
-						model.Lk[chosen_segment_index] = segments_Lk0[chosen_segment_index]
-			elif event == 1: # Relax negative supercoiling only
-				if model.model_setup.supercoiling_relaxation_dynamics_mode == 'global_by_type':
-					model.Lk = [segments_Lk0[i] if segments_sigmas[i] < 0.0 else model.Lk[i] for i in range(len(segments_lengths))]
-				elif model.model_setup.supercoiling_relaxation_dynamics_mode == 'per_segment_by_type':
+				elif event == 1: # Relax negative supercoiling only
 					per_segment_propensity = [segments_lengths[i] / (model.genomic_setup.clamp_right - model.genomic_setup.clamp_left) if segments_sigmas[i] < 0.0 else 0.0 for i in range(len(segments_lengths))]
 					chosen_segment_index = select_event_based_on_propensities(per_segment_propensity, random())
-					if chosen_segment_index is not None:
-						model.Lk[chosen_segment_index] = segments_Lk0[chosen_segment_index]
-			else:
-				raise ValueError('Invalid event index for local supercoiling relaxation.')
+				if chosen_segment_index is not None:
+					model.Lk[chosen_segment_index] = segments_Lk0[chosen_segment_index]
 		elif event_index < events_indices[4]: # Topoisomerase-mediated supercoiling relaxation: supercoiling_relaxation_dynamics_mode == 'topoisomerase_based'
 			raise NotImplementedError('Topoisomerase-mediated supercoiling relaxation not implemented yet.')
 		else:
