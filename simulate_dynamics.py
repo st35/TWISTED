@@ -65,8 +65,35 @@ def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupA
 					chosen_segment_index = select_event_based_on_propensities(per_segment_propensity, random())
 				if chosen_segment_index is not None:
 					model.Lk[chosen_segment_index] = segments_Lk0[chosen_segment_index]
-		elif event_index < events_indices[4]: # Topoisomerase-mediated supercoiling relaxation: supercoiling_relaxation_dynamics_mode == 'topoisomerase_based'
-			raise NotImplementedError('Topoisomerase-mediated supercoiling relaxation not implemented yet.')
+		elif event_index < events_indices[4]: # Topoisomerase-mediated supercoiling relaxation: TOP1 / TOP2 binding event
+			event = event_index - events_indices[3]
+			if model.topoisomerase_status[event] == 1: # Topoisomerase is already bound; cannot bind again
+				raise ValueError('Binding event selected for already bound topoisomerase.')
+			else:
+				if model.topoisomerase_type[event] == 0:
+					TOP1_on_rates_per_segment = get_per_TOP1_binding_rate_for_each_segment(model, segments_lengths, segments_sigmas)
+					chosen_segment_index = select_event_based_on_propensities(TOP1_on_rates_per_segment, random())
+					binding_position = model.genomic_setup.clamp_left + sum(segments_lengths[:chosen_segment_index]) + (segments_lengths[chosen_segment_index]*uniform_random_in_interval(0.0, 1.0))
+					if is_TOPO_binding_blocked(model, state_vector, binding_position) == 0:
+						model.topoisomerase_status[event] = 1 # Bind topoisomerase
+						model.topoisomerase_segment_indices[event] = chosen_segment_index
+						model.topoisomerase_positions[event] = binding_position
+				else:
+					TOP2_on_rates_per_segment = get_per_TOP2_binding_rate_for_each_segment(model, segments_lengths, segments_sigmas)
+					chosen_segment_index = select_event_based_on_propensities(TOP2_on_rates_per_segment, random())
+					binding_position = model.genomic_setup.clamp_left + sum(segments_lengths[:chosen_segment_index]) + (segments_lengths[chosen_segment_index]*uniform_random_in_interval(0.0, 1.0))
+					if is_TOPO_binding_blocked(model, state_vector, binding_position) == 0:
+						model.topoisomerase_status[event] = 1 # Bind topoisomerase
+						model.topoisomerase_segment_indices[event] = chosen_segment_index
+						model.topoisomerase_positions[event] = binding_position
+		elif event_index < events_indices[5]: # Topoisomerase-mediated supercoiling relaxation: TOP1 / TOP2 unbinding event
+			event = event_index - events_indices[4]
+			if model.topoisomerase_status[event] == 0: # Topoisomerase is already unbound; cannot unbind again
+				raise ValueError('Unbinding event selected for already unbound topoisomerase.')
+			else:
+				model.topoisomerase_status[event] = 0 # Unbind topoisomerase
+				model.topoisomerase_segment_indices[event] = -1
+				model.topoisomerase_positions[event] = -1.0
 		else:
 			raise ValueError('Event index out of bounds during simulation.')
 		

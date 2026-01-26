@@ -64,6 +64,13 @@ def get_TSS_steric_hindrance_status(TSS_position: float, RNAP_gene_index: list[i
 			return 1
 	return 0
 
+def is_TOPO_binding_blocked(model: Model, state_vector: list[float], binding_position: float) -> int: # Check if TOPO binding is blocked at the given position due to existing RNAPs; return 1 if blocked, 0 if not
+	RNAP_count = len(state_vector)
+	for x in state_vector[:RNAP_count]:
+		if abs(x - binding_position) < model.model_setup.RNAP_TOPO_steric_effect_cutoff:
+			return 1
+	return 0
+
 def select_event_based_on_propensities(rates_vector: list[float], p: float) -> Union[int, None]: # Select an event index based on the given rates vector and random number p in [0, 1)
 	a0 = sum(rates_vector)
 	if a0 > 0.0:

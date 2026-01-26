@@ -40,7 +40,7 @@ class GenomicSetup: # Class to hold genomic setup information
 		print('=' * 40)
 
 class ModelSetup: # Class to hold model setup parameters
-	def __init__(self, w0: float = 1.85, chi: float = 0.05, eta: float = 0.0005, alpha: float = 1.5, v0: float = 20.0, tau_c: float = 12.0, force: float = 1.0, kBT: float = 4.1, between_RNAPs_steric_effect_cutoff: float = 15.0, clamps_status: tuple[int, int] = (1, 1), finite_size_effect_flag: int = 1, supercoiling_relaxation_dynamics_mode: str = 'global_overall', mRNA_dynamics_mode: int = 0, model_observation_event_rate: float = 1.0 / 2.0, **kwargs) -> None:
+	def __init__(self, w0: float = 1.85, chi: float = 0.05, eta: float = 0.0005, alpha: float = 1.5, v0: float = 20.0, tau_c: float = 12.0, force: float = 1.0, kBT: float = 4.1, TOP1_k0: float = 11.0, TOP1_theta: float = 0.25, TOP2_V0: float = 2.6, TOP2_k12: float = 2.0, between_RNAPs_steric_effect_cutoff: float = 15.0, RNAP_TOPO_steric_effect_cutoff: float = 15.0, clamps_status: tuple[int, int] = (1, 1), finite_size_effect_flag: int = 1, supercoiling_relaxation_dynamics_mode: str = 'global_overall', mRNA_dynamics_mode: int = 0, model_observation_event_rate: float = 1.0 / 2.0, **kwargs) -> None:
 		self.w0 = w0 # Default: 1.85 1 / nm
 		self.h_dna = (2.0*3.14) / w0 # From w0*h_dna = 2*pi
 		self.chi = chi # Default: 0.05 pN*nm*s
@@ -50,7 +50,12 @@ class ModelSetup: # Class to hold model setup parameters
 		self.tau_c = tau_c # Default: 12.0 pN*nm
 		self.force = force # Default: 1.0 pN
 		self.kBT = kBT # Default: 4.1 pN*nm (room temperature)
+		self.TOP1_k0 = TOP1_k0 # Default: 11.0 1 / s
+		self.TOP1_theta = TOP1_theta # Default: 0.25
+		self.TOP2_V0 = TOP2_V0 # Default: 2.6 1 / s
+		self.TOP2_k12 = TOP2_k12 # Default: 2.0
 		self.between_RNAPs_steric_effect_cutoff = between_RNAPs_steric_effect_cutoff # Default: 15.0 nm; steric hindrance cutoff distance between RNAPs
+		self.RNAP_TOPO_steric_effect_cutoff = RNAP_TOPO_steric_effect_cutoff # Default: 15.0 nm; steric hindrance cutoff distance between RNAPs and topoisomerases
 		self.clamps_status = tuple(clamps_status) # Tuple of two integers indicating whether the left and right ends of the DNA are clamped (1) or free (0); default: (1, 1)
 		if len(self.clamps_status) != 2 or any(clamp not in [0, 1] for clamp in self.clamps_status):
 			raise ValueError('clamps_status must be a tuple of two integers, each either 0 (free) or 1 (clamped).')
@@ -116,6 +121,7 @@ class Model: # Class to hold the model, including genomic setup, model setup, an
 		if model_setup.supercoiling_relaxation_dynamics_mode == 'topoisomerase_based': # State variables for topoisomerases
 			self.topoisomerase_type = [0 for _ in range(model_setup.topoisomerase_copy_numbers[0])] + [1 for _ in range(model_setup.topoisomerase_copy_numbers[1])] # 0: TOP1, 1: TOP2
 			self.topoisomerase_positions = [-1.0 for _ in range(model_setup.topoisomerase_copy_numbers[0] + model_setup.topoisomerase_copy_numbers[1])] # Positions of topoisomerases; -1.0 indicates unbound; initially all unbound
+			self.topoisomerase_segment_indices = [-1 for _ in range(model_setup.topoisomerase_copy_numbers[0] + model_setup.topoisomerase_copy_numbers[1])] # Segment indices of bound topoisomerases; -1 indicates unbound; initially all unbound
 			self.topoisomerase_status = [0 for _ in range(model_setup.topoisomerase_copy_numbers[0] + model_setup.topoisomerase_copy_numbers[1])] # Topoisomerase binding status; 0: unbound, 1: bound; initially all unbound
 
 class SimulationSetupAndState: # Class to hold simulation setup parameters

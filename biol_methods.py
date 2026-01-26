@@ -1,6 +1,6 @@
 from model_setup import *
 
-from math import tanh, sqrt
+from math import tanh, sqrt, exp
 
 def get_RNAP_velocity(model: Model, gene_index: int, left_segment_length: float, right_segment_length: float, left_torque: float, right_torque: float) -> float: # Get the velocity of an RNAP based on the torques on the DNA segments ahead and behind it
     v0 = model.model_setup.v0
@@ -48,11 +48,60 @@ def get_RNAP_recruitment_rate(model: Model, TSS_index: int, promoter_status: int
     
     return model.genomic_setup.RNAP_on_rates[TSS_index]
 
-def get_TOP1_events_rates(model: Model, segments_lengths: list[float], segments_sigmas: list[float]) -> list[float]: # Get the rates of TOP1 binding and unbinding
-    return [0.0, 0.0]
+def get_per_TOP1_binding_rate_for_each_segment(model: Model, segments_lengths: float, segments_sigmas: float) -> list[float]: # Get the TOP1 binding rate for a DNA segment based on its length and supercoiling density
+    TOP1_on_rate = model.model_setup.topoisomerase_on_off_rates[0][0] # Note that this is the binding rate for the overall genomic segment, not the per unit length rate
 
-def get_TOP2_events_rates(model: Model, segments_lengths: list[float], segments_sigmas: list[float]) -> list[float]: # Get the rates of TOP2 binding and unbinding
-    return [0.0, 0.0]
+    TOP1_on_rates_per_segment = []
+    for i in range(len(segments_lengths)):
+        segment_length = segments_lengths[i]
+        segment_sigma = segments_sigmas[i]
+
+        TOP1_on_rates_per_segment.append(TOP1_on_rate*(segment_length / (model.genomic_setup.clamp_right - model.genomic_setup.clamp_left)))
+
+    return TOP1_on_rates_per_segment
+
+def get_per_TOP2_binding_rate_for_each_segment(model: Model, segments_lengths: float, segments_sigmas: float) -> list[float]: # Get the TOP2 binding rate for a DNA segment based on its length and supercoiling density
+    TOP2_on_rate = model.model_setup.topoisomerase_on_off_rates[1][0] # Note that this is the binding rate for the overall genomic segment, not the per unit length rate
+
+    TOP2_on_rates_per_segment = []
+    for i in range(len(segments_lengths)):
+        segment_length = segments_lengths[i]
+        segment_sigma = segments_sigmas[i]
+
+        TOP2_on_rates_per_segment.append(TOP2_on_rate*(segment_length / (model.genomic_setup.clamp_right - model.genomic_setup.clamp_left)))
+
+    return TOP2_on_rates_per_segment
+
+def get_TOP1_effect_on_Lk_dynamics(model: Model, segment_length: float, segment_sigma: float, segment_torque: float, segment_writhe_frac: float, bound_TOP1_count: int) -> float: # Get the effect of bound TOP1 enzymes on the rate of change of linking number for a DNA segment
+    if segment_writhe_frac > 0.0: # Non-zero writhe; TOP1 cannot act
+        return 0.0
+    k0 = model.model_setup.TOP1_k0
+    beta = 1.0 / model.model_setup.kBT
+    theta = model.model_setup.TOP1_theta
+    tau = abs(segment_torque)
+
+    if segment_sigma > 0.0: # Positively supercoiled DNA
+        try:
+            return -bound_TOP1_count*k0*exp(theta*beta*tau)*(1.0 - exp(-beta*2*3.14*tau))
+        except OverflowError as e:
+            print('Overflow error in calculating TOP1 effect on Lk dynamics:' , theta, beta, tau, theta*beta*tau, exp(theta*beta*tau))
+            raise e
+    else: # Negatively supercoiled DNA
+        try:
+            return bound_TOP1_count*k0*exp(-theta*beta*tau)*(1.0 - exp(-beta*2*3.14*tau))
+        except OverflowError as e:
+            print('Overflow error in calculating TOP1 effect on Lk dynamics:' , theta, beta, tau, theta*beta*tau, exp(theta*beta*tau))
+            raise e
+
+def get_TOP2_effect_on_Lk_dynamics(model: Model, segment_length: float, segment_sigma: float, segment_torque: float, segment_writhe_frac: float, bound_TOP2_count: int) -> float: # Get the effect of bound TOP2 enzymes on the rate of change of linking number for a DNA segment
+    if segment_writhe_frac > 0.0: # Non-zero writhe; TOP2 can act
+        Wr = abs(segment_sigma*segment_writhe_frac)
+        V0 = model.model_setup.TOP2_V0
+        k12 = model.model_setup.TOP2_k12
+
+        return -bound_TOP2_count*V0*(Wr / (Wr + k12)) if segment_sigma > 0.0 else bound_TOP2_count*V0*(Wr / (Wr + k12))
+    
+    return 0.0
 
 def get_prokaryotic_torque(w0: float, force: float, kBT: float, segment_length: float, sigma: float, finite_size_effect_flag: int, finite_size_effect_length: float) -> tuple[float, int, float]: # Get the torque, DNA state, and writhe fraction for prokaryotic DNA based on supercoiling density and force
     A = 50.0
