@@ -5,6 +5,7 @@ from utilities import *
 from scipy.integrate import solve_ivp
 from math import log
 import numpy as np
+from typing import Callable
 
 def get_state_vectors_from_dicts(model: Model) -> tuple[list[int], list[float]]: # Get the RNAP_gene_index and state_vector from the model's x_dict, theta_dict, and Lk RNAPs are ordered from right to left on the DNA
 	RNAP_gene_index = []
@@ -82,7 +83,7 @@ def calculate_segments_attributes(model: Model, RNAP_gene_index: list[int], stat
 	
 	return (segments_lengths, segments_sigmas, segments_torques, segments_dna_states, segments_writhe_fractions)
 
-def get_RNAP_velocities(model: Model, RNAP_gene_index: list[int], segments_lengths: list[float], segments_torques: list[float]) -> list[float]: # Get the velocities of all RNAPs based on the segments lengths and torques
+def get_RNAP_velocities(model: Model, state_vector: list[float], RNAP_gene_index: list[int], segments_lengths: list[float], segments_torques: list[float]) -> list[float]: # Get the velocities of all RNAPs based on the segments lengths and torques
 	RNAP_count = len(RNAP_gene_index)
 	if RNAP_count == 0: # No RNAPs on the DNA; return empty list
 		return []
@@ -104,10 +105,10 @@ def get_RNAP_velocities(model: Model, RNAP_gene_index: list[int], segments_lengt
 	for i in range(RNAP_count):
 		for topo_pos in TOPO_positions:
 			if model.genomic_setup.gene_directions[RNAP_gene_index[i]] == 1:
-				if topo_pos - model.x_dict[RNAP_gene_index[i]][0] >= 0.0 and topo_pos - model.x_dict[RNAP_gene_index[i]][0] < model.model_setup.RNAP_TOPO_steric_effect_cutoff:
+				if topo_pos - state_vector[i] >= 0.0 and topo_pos - state_vector[i] < model.model_setup.RNAP_TOPO_steric_effect_cutoff:
 					RNAP_velocities[i] = 0.0
 			else:
-				if model.x_dict[RNAP_gene_index[i]][0] - topo_pos >= 0.0 and model.x_dict[RNAP_gene_index[i]][0] - topo_pos < model.model_setup.RNAP_TOPO_steric_effect_cutoff:
+				if state_vector[i] - topo_pos >= 0.0 and state_vector[i] - topo_pos < model.model_setup.RNAP_TOPO_steric_effect_cutoff:
 					RNAP_velocities[i] = 0.0
 	
 	return RNAP_velocities
@@ -172,7 +173,7 @@ def get_RNAP_recruitment_rates(model: Model, RNAP_gene_index: list[int], state_v
 	x_vector = state_vector[0:RNAP_count]
 
 	TSS_segments_indices = [get_spot_segment_index(model.genomic_setup.TSSes[i], segments_lengths) for i in range(len(model.genomic_setup.gene_names))] # Get the segment indices for all TSSes
-	is_TSS_blocked = [get_TSS_steric_hindrance_status(model.genomic_setup.TSSes[i], RNAP_gene_index, state_vector, model.model_setup.between_RNAPs_steric_effect_cutoff) for i in range(len(model.genomic_setup.gene_names))] # Get the steric hindrance status for all TSSes
+	is_TSS_blocked = [get_TSS_steric_hindrance_status(model, model.genomic_setup.TSSes[i], RNAP_gene_index, state_vector) for i in range(len(model.genomic_setup.gene_names))] # Get the steric hindrance status for all TSSes
 
 	RNAP_recruitment_rates = []
 	for i in range(len(model.genomic_setup.gene_names)):
@@ -341,13 +342,13 @@ def model_dynamics(t: float, state_vector: list[float], RNAP_gene_index: list[in
 
 	rates_vector, _ = get_events_rates(model, RNAP_gene_index, state_vector)
 
-	dx_dt = get_RNAP_velocities(model, RNAP_gene_index, segments_lengths, segments_torques)
+	dx_dt = get_RNAP_velocities(model, state_vector, RNAP_gene_index, segments_lengths, segments_torques)
 	dtheta_dt = get_RNAP_angular_velocities(model, RNAP_gene_index, state_vector, segments_lengths, segments_torques, dx_dt)
 	dLk_dt = get_segments_Lk_dynamics(model, dtheta_dt, segments_lengths, segments_sigmas, segments_torques, segments_writhe_fractions)
 
 	return dx_dt + dtheta_dt + dLk_dt + [sum(rates_vector)]
 
-def integrate(model: Model, simulation_setup_and_state: SimulationSetupAndState, t_start: float, state_vector: list[float], RNAP_gene_index: list[int], p0: float) -> None: # Integrate the model dynamics until the next event occurs; return the time step dt and cumulative propensity a0 at event time
+def integrate(model: Model, simulation_setup_and_state: SimulationSetupAndState, t_start: float, state_vector: list[float], RNAP_gene_index: list[int], p0: float, print_at_each_integration_step: Union[Callable, None]) -> None: # Integrate the model dynamics until the next event occurs; return the time step dt and cumulative propensity a0 at event time
 	dt = simulation_setup_and_state.RNAP_alive_status_check_interval
 	t = t_start
 	a0_ini = state_vector[-1]
@@ -355,6 +356,8 @@ def integrate(model: Model, simulation_setup_and_state: SimulationSetupAndState,
 	t_event_index = -1
 
 	while True:
+		if print_at_each_integration_step is not None:
+			print_at_each_integration_step(model, simulation_setup_and_state, t, state_vector)
 		t_eval = []
 		t_first = t
 		while t_first < t + dt:

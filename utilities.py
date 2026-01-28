@@ -57,11 +57,17 @@ def get_spot_segment_index(spot: float, segments_lengths: list[float]) -> int: #
 	
 	return spot_segment_index
 
-def get_TSS_steric_hindrance_status(TSS_position: float, RNAP_gene_index: list[int], state_vector: list[float], between_RNAPs_steric_effect_cutoff: float) -> int: # Check if there is steric hindrance at the TSS position due to existing RNAPs; return 1 if hindered, 0 if not
+def get_TSS_steric_hindrance_status(model: Model, TSS_position: float, RNAP_gene_index: list[int], state_vector: list[float]) -> int: # Check if there is steric hindrance at the TSS position due to existing RNAPs; return 1 if hindered, 0 if not
 	RNAP_count = len(RNAP_gene_index)
 	for x in state_vector[:RNAP_count]:
-		if abs(x - TSS_position) < between_RNAPs_steric_effect_cutoff:
+		if abs(x - TSS_position) < model.model_setup.between_RNAPs_steric_effect_cutoff:
 			return 1
+	
+	TOPO_positions = [model.topoisomerase_positions[i] for i in range(len(model.topoisomerase_positions)) if model.topoisomerase_status[i] == 1]
+	for topo_pos in TOPO_positions:
+		if abs(topo_pos - TSS_position) < model.model_setup.RNAP_TOPO_steric_effect_cutoff:
+			return 1
+	
 	return 0
 
 def is_TOPO_binding_blocked(model: Model, state_vector: list[float], binding_position: float) -> int: # Check if TOPO binding is blocked at the given position due to existing RNAPs; return 1 if blocked, 0 if not

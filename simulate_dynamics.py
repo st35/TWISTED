@@ -6,7 +6,7 @@ from typing import Callable
 from random import random
 from math import log
 
-def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupAndState, print_at_each_simulation_step: Union[Callable, None] = None, print_at_end_of_simulation: Union[Callable, None] = None) -> None: # Main function to simulate the dynamics of the model until the end condition is met
+def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupAndState, print_at_each_integration_step: Union[Callable, None] = None, print_at_each_simulation_step: Union[Callable, None] = None, print_at_end_of_simulation: Union[Callable, None] = None) -> None: # Main function to simulate the dynamics of the model until the end condition is met
 	while True:
 		if print_at_each_simulation_step is not None:
 			print_at_each_simulation_step(model, simulation_setup_and_state) # Print current state if a print function is provided
@@ -14,7 +14,7 @@ def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupA
 		RNAP_gene_index, state_vector = get_state_vectors_from_dicts(model) # Get current state vectors from model dictionaries
 
 		p0 = random() # Generate a random number for event time calculation
-		dt, _ = integrate(model, simulation_setup_and_state, simulation_setup_and_state.curr_simulation_time, state_vector, RNAP_gene_index, p0) # Integrate dynamics until next event
+		dt, _ = integrate(model, simulation_setup_and_state, simulation_setup_and_state.curr_simulation_time, state_vector, RNAP_gene_index, p0, print_at_each_integration_step) # Integrate dynamics until next event
 		assert dt is not None, 'Integration failed to return a valid time step.'
 		update_dicts_from_state_vector(model, RNAP_gene_index, state_vector) # Update model dictionaries from updated state vectors
 		simulation_setup_and_state.curr_simulation_time += dt # Update current simulation time
@@ -26,7 +26,7 @@ def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupA
 
 		if event_index < events_indices[0]: # RNAP recruitment event
 			event = event_index - 0
-			if get_TSS_steric_hindrance_status(model.genomic_setup.TSSes[event], RNAP_gene_index, state_vector, model.model_setup.between_RNAPs_steric_effect_cutoff) == 1: # Steric hindrance at TSS; recruitment fails
+			if get_TSS_steric_hindrance_status(model, model.genomic_setup.TSSes[event], RNAP_gene_index, state_vector) == 1: # Steric hindrance at TSS; recruitment fails
 				pass
 			else:
 				event_gene_index = event
