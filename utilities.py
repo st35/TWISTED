@@ -63,6 +63,9 @@ def get_TSS_steric_hindrance_status(model: Model, TSS_position: float, RNAP_gene
 		if abs(x - TSS_position) < model.model_setup.between_RNAPs_steric_effect_cutoff:
 			return 1
 	
+	if model.model_setup.supercoiling_relaxation_dynamics_mode in ['global_overall', 'global_per_segment', 'global_by_type', 'per_segment_by_type']:
+		return 0
+	
 	TOPO_positions = [model.topoisomerase_positions[i] for i in range(len(model.topoisomerase_positions)) if model.topoisomerase_status[i] == 1]
 	for topo_pos in TOPO_positions:
 		if abs(topo_pos - TSS_position) < model.model_setup.RNAP_TOPO_steric_effect_cutoff:
