@@ -125,7 +125,7 @@ class Model: # Class to hold the model, including genomic setup, model setup, an
 			self.topoisomerase_status = [0 for _ in range(model_setup.topoisomerase_copy_numbers[0] + model_setup.topoisomerase_copy_numbers[1])] # Topoisomerase binding status; 0: unbound, 1: bound; initially all unbound
 
 class SimulationSetupAndState: # Class to hold simulation setup parameters
-	def __init__(self, genomic_setup: GenomicSetup, simulation_end_mode: int, simulation_end_criterion: Union[float, list[int]], integration_time_resolution: float = 1.0e-1, RNAP_alive_status_check_interval: float = 1.0) -> None:
+	def __init__(self, genomic_setup: GenomicSetup, simulation_end_mode: int, simulation_end_criterion: Union[float, list[int]], integration_time_resolution: float = 1.0e-1, RNAP_alive_status_check_interval: float = 1.0, max_RNAPs_to_recruit: list[int] = None) -> None:
 		self.simulation_end_mode = simulation_end_mode # 0: time-based, 1: event-based
 		assert simulation_end_mode in [0, 1], 'simulation_end_mode must be either 0 (time-based) or 1 (event-based).'
 
@@ -144,6 +144,14 @@ class SimulationSetupAndState: # Class to hold simulation setup parameters
 
 		self.RNAP_alive_status_check_interval = RNAP_alive_status_check_interval # Interval for checking RNAP alive status (in s)
 		assert RNAP_alive_status_check_interval > 0.0, 'RNAP_alive_status_check_interval must be a positive float.'
+
+		if max_RNAPs_to_recruit is not None:
+			assert len(max_RNAPs_to_recruit) == len(genomic_setup.gene_names), 'Length of max_RNAPs_to_recruit list must match the number of genes in genomic_setup.'
+		self.max_RNAPs_to_recruit = max_RNAPs_to_recruit # Maximum number of RNAPs to recruit for each gene
+		if self.max_RNAPs_to_recruit is not None and self.simulation_end_mode == 1:
+			for i in range(len(self.simulation_end_event_counts)):
+				if self.simulation_end_event_counts[i] > self.max_RNAPs_to_recruit[i]:
+					raise ValueError(f'For gene index {i}, simulation_end_event_counts ({self.simulation_end_event_counts[i]}) cannot be greater than max_RNAPs_to_recruit ({self.max_RNAPs_to_recruit[i]}).')
 
 		self.RNAPs_finished_transcription = [0 for _ in genomic_setup.gene_names] # List to hold counts of RNAPs that have finished transcription for each gene
 		self.RNAPs_exit_positions = [[] for _ in genomic_setup.gene_names] # List of lists to hold exit positions of RNAPs for each gene

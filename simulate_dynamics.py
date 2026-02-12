@@ -28,6 +28,8 @@ def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupA
 			event = event_index - 0
 			if get_TSS_steric_hindrance_status(model, model.genomic_setup.TSSes[event], RNAP_gene_index, state_vector) == 1: # Steric hindrance at TSS; recruitment fails
 				pass
+			if len(simulation_setup_and_state.RNAP_recruitment_times[event]) >= simulation_setup_and_state.max_RNAPs_to_recruit[event]: # Maximum number of RNAPs already recruited for this gene; recruitment fails
+				pass
 			else:
 				event_gene_index = event
 				model.x_dict[event_gene_index].append(model.genomic_setup.TSSes[event_gene_index])
