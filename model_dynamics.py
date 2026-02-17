@@ -45,7 +45,7 @@ def update_dicts_from_state_vector(model: Model, RNAP_gene_index: list[int], sta
 	
 	model.Lk = [val for val in Lk_vector]
 
-def calculate_segments_attributes(model: Model, RNAP_gene_index: list[int], state_vector: list[float]) -> tuple[list[float], list[float], list[float], list[int], list[float]]: # Calculate and return the segments_lengths, segments_sigmas, segments_torques, segments_dna_states, and segments_writhe_fractions based on the current state_vector; segments are ordered from right to left on the DNA
+def calculate_segments_attributes(model: Model, RNAP_gene_index: list[int], state_vector: list[float]) -> tuple[list[float], list[float], list[float], list[int], list[float], list[float]]: # Calculate and return the segments_lengths, segments_sigmas, segments_torques, segments_dna_states, segments_writhe_fractions, and segments_plectoneme_thresholds based on the current state_vector; segments are ordered from right to left on the DNA
 	RNAP_count = len(RNAP_gene_index)
 	x_vector = state_vector[0:RNAP_count]
 	theta_vector = state_vector[RNAP_count:2*RNAP_count]
@@ -77,11 +77,12 @@ def calculate_segments_attributes(model: Model, RNAP_gene_index: list[int], stat
 		else:
 			raise NotImplementedError('Chromatin type "eukaryotic" not yet implemented.')
 	
+	segments_plectoneme_thresholds = [val[3] for val in segments_torques]
 	segments_writhe_fractions = [val[2] for val in segments_torques]
 	segments_dna_states = [val[1] for val in segments_torques]
 	segments_torques = [val[0] for val in segments_torques]
 	
-	return (segments_lengths, segments_sigmas, segments_torques, segments_dna_states, segments_writhe_fractions)
+	return (segments_lengths, segments_sigmas, segments_torques, segments_dna_states, segments_writhe_fractions, segments_plectoneme_thresholds)
 
 def get_RNAP_velocities(model: Model, state_vector: list[float], RNAP_gene_index: list[int], segments_lengths: list[float], segments_torques: list[float]) -> list[float]: # Get the velocities of all RNAPs based on the segments lengths and torques
 	RNAP_count = len(RNAP_gene_index)
@@ -213,7 +214,7 @@ def get_TOPO_binding_rates(model: Model, segments_lengths: float, segments_sigma
 	TOP2_on_rates_per_segment = get_per_TOP2_binding_rate_for_each_segment(model, segments_lengths, segments_sigmas)
 	TOPO_binding_rates = []
 
-	if model.model_setup.supercoiling_relaxation_dynamics_mode in ['global_overall', 'global_per_segment', 'global_by_type', 'per_segment_by_type']:
+	if model.model_setup.supercoiling_relaxation_dynamics_mode in model.model_setup.supercoiling_relaxation_dynamics_modes_with_no_steric_hindrance:
 		return TOPO_binding_rates
 
 	for i in range(len(model.topoisomerase_status)):
@@ -231,7 +232,7 @@ def get_TOPO_unbinding_rates(model: Model, segments_lengths: float, segments_sig
 	TOP2_off_rate = model.model_setup.topoisomerase_on_off_rates[1][1]
 	TOPO_unbinding_rates = []
 
-	if model.model_setup.supercoiling_relaxation_dynamics_mode in ['global_overall', 'global_per_segment', 'global_by_type', 'per_segment_by_type']:
+	if model.model_setup.supercoiling_relaxation_dynamics_mode in model.model_setup.supercoiling_relaxation_dynamics_modes_with_no_steric_hindrance:
 		return TOPO_unbinding_rates
 
 	for i in range(len(model.topoisomerase_status)):
@@ -275,7 +276,7 @@ def update_Lk_vector_after_RNAP_recruitment(model: Model, TSS_index: int, RNAP_g
 	model.Lk = model.Lk[:TSS_segment_index] + [right_Lk, left_Lk] + model.Lk[TSS_segment_index + 1:]
 
 	RNAP_gene_index, state_vector = get_state_vectors_from_dicts(model)
-	segments_lengths, segments_sigmas, _, _, _ = calculate_segments_attributes(model, RNAP_gene_index, state_vector)
+	segments_lengths, segments_sigmas, _, _, _, _ = calculate_segments_attributes(model, RNAP_gene_index, state_vector)
 	if model.model_setup.supercoiling_relaxation_dynamics_mode == 'topoisomerase_based':
 		model.topoisomerase_segment_indices = [get_spot_segment_index(model.topoisomerase_positions[i], segments_lengths) for i in range(len(model.topoisomerase_status))]
 
@@ -318,20 +319,21 @@ def update_state_vector_to_remove_dead_RNAPs(model: Model, RNAP_gene_index: list
 	RNAP_gene_index[:] = new_RNAP_gene_index
 
 	if model.model_setup.supercoiling_relaxation_dynamics_mode == 'topoisomerase_based':
-		segments_lengths, segments_sigmas, _, _, _ = calculate_segments_attributes(model, RNAP_gene_index, state_vector)
+		segments_lengths, segments_sigmas, _, _, _, _ = calculate_segments_attributes(model, RNAP_gene_index, state_vector)
 		model.topoisomerase_segment_indices = [get_spot_segment_index(model.topoisomerase_positions[i], segments_lengths) for i in range(len(model.topoisomerase_status))]
 
 def get_events_rates(model: Model, RNAP_gene_index: list[int], state_vector: list[float]) -> tuple[list[float], list[int]]: # Get the rates of all possible events and the indices that separate different event types in the rates_vector
-	segments_lengths, segments_sigmas, segments_torques, segments_dna_states, segments_writhe_fractions = calculate_segments_attributes(model, RNAP_gene_index, state_vector)
+	segments_lengths, segments_sigmas, segments_torques, segments_dna_states, segments_writhe_fractions, segments_plectoneme_thresholds = calculate_segments_attributes(model, RNAP_gene_index, state_vector)
 
 	RNAP_recruitment_rates = get_RNAP_recruitment_rates(model, RNAP_gene_index, state_vector, segments_lengths, segments_torques)
 	model_observation_event_rate = [model.model_setup.model_observation_event_rate]
 	global_supercoiling_relaxation_rate = [model.model_setup.global_supercoiling_relaxation_rate]
 	local_supercoiling_relaxation_rates = model.model_setup.local_supercoiling_relaxation_rates
+	TOPO_activity_rates = [model.model_setup.TOP1_effective_relaxation_rate, model.model_setup.TOP2_effective_relaxation_rate]
 	TOPO_binding_rates = get_TOPO_binding_rates(model, segments_lengths, segments_sigmas)
 	TOPO_unbinding_rates = get_TOPO_unbinding_rates(model, segments_lengths, segments_sigmas)
 
-	rates_vector = RNAP_recruitment_rates + model_observation_event_rate + global_supercoiling_relaxation_rate + local_supercoiling_relaxation_rates + TOPO_binding_rates + TOPO_unbinding_rates
+	rates_vector = RNAP_recruitment_rates + model_observation_event_rate + global_supercoiling_relaxation_rate + local_supercoiling_relaxation_rates + TOPO_activity_rates + TOPO_binding_rates + TOPO_unbinding_rates
 	assert all(rate >= 0.0 for rate in rates_vector), 'Negative rate encountered in calculating events rates.'
 
 	events_indices = []
@@ -339,6 +341,7 @@ def get_events_rates(model: Model, RNAP_gene_index: list[int], state_vector: lis
 	events_indices.append(events_indices[-1] + len(model_observation_event_rate))
 	events_indices.append(events_indices[-1] + len(global_supercoiling_relaxation_rate))
 	events_indices.append(events_indices[-1] + len(local_supercoiling_relaxation_rates))
+	events_indices.append(events_indices[-1] + len(TOPO_activity_rates))
 	events_indices.append(events_indices[-1] + len(TOPO_binding_rates))
 	events_indices.append(events_indices[-1] + len(TOPO_unbinding_rates))
 
@@ -347,7 +350,7 @@ def get_events_rates(model: Model, RNAP_gene_index: list[int], state_vector: lis
 def model_dynamics(t: float, state_vector: list[float], RNAP_gene_index: list[int], model: Model, simulation_setup_and_state: SimulationSetupAndState) -> list[float]: # Calculate the time derivatives of the state_vector and the cumulative propensity for event selection
 	RNAP_count = len(RNAP_gene_index)
 
-	segments_lengths, segments_sigmas, segments_torques, segments_dna_states, segments_writhe_fractions = calculate_segments_attributes(model, RNAP_gene_index, state_vector)
+	segments_lengths, segments_sigmas, segments_torques, segments_dna_states, segments_writhe_fractions, segments_plectoneme_thresholds = calculate_segments_attributes(model, RNAP_gene_index, state_vector)
 
 	rates_vector, _ = get_events_rates(model, RNAP_gene_index, state_vector)
 

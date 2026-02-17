@@ -70,7 +70,7 @@ class ModelSetup: # Class to hold model setup parameters
 				self.finite_size_effect_length = float(kwargs['finite_size_effect_length'])
 		
 		self.supercoiling_relaxation_dynamics_mode = supercoiling_relaxation_dynamics_mode
-		assert supercoiling_relaxation_dynamics_mode in ['global_overall', 'global_per_segment', 'global_by_type', 'per_segment_by_type', 'topoisomerase_based'], 'supercoiling_relaxation_dynamics_mode must be one of "global_overall", "global_per_segment", "global_by_type", "per_segment_by_type", or "topoisomerase_based".'
+		assert supercoiling_relaxation_dynamics_mode in ['global_overall', 'global_per_segment', 'global_by_type', 'per_segment_by_type', 'topoisomerase_approximated', 'topoisomerase_based'], 'supercoiling_relaxation_dynamics_mode must be one of "global_overall", "global_per_segment", "global_by_type", "per_segment_by_type", "topoisomerase_approximated", or "topoisomerase_based".'
 		self.global_supercoiling_relaxation_rate = 0.0 # Rate for global supercoiling relaxation (in 1 / s)
 		if self.supercoiling_relaxation_dynamics_mode in ['global_overall', 'global_per_segment']: # Global supercoiling relaxation: supercoiling is relaxed at once throughout the genomic segment
 			if 'global_supercoiling_relaxation_rate' not in kwargs:
@@ -83,6 +83,15 @@ class ModelSetup: # Class to hold model setup parameters
 			if len(kwargs['local_supercoiling_relaxation_rates']) != 2:
 				raise ValueError('"local_supercoiling_relaxation_rates" must be a list or tuple of two floats: [rate_positive, rate_negative].')
 			self.local_supercoiling_relaxation_rates = [float(rate) for rate in kwargs['local_supercoiling_relaxation_rates']]
+		self.TOP1_effective_relaxation_rate = 0.0 # Effective relaxation rate for TOP1 (in 1 / s)
+		self.TOP2_effective_relaxation_rate = 0.0 # Effective relaxation rate for TOP2 (in 1 / s)
+		if self.supercoiling_relaxation_dynamics_mode == 'topoisomerase_approximated': # Approximate topoisomerase-based supercoiling relaxation: approximate TOP1 / TOP2 activity by effective relaxation rates instead of explicitly modeling topoisomerase binding and unbinding dynamics
+			if 'TOP1_effective_relaxation_rate' not in kwargs:
+				raise ValueError('For supercoiling_relaxation_dynamics_mode "topoisomerase_approximated", "TOP1_effective_relaxation_rate" argument must be provided.')
+			if 'TOP2_effective_relaxation_rate' not in kwargs:
+				raise ValueError('For supercoiling_relaxation_dynamics_mode "topoisomerase_approximated", "TOP2_effective_relaxation_rate" argument must be provided.')
+			self.TOP1_effective_relaxation_rate = float(kwargs['TOP1_effective_relaxation_rate'])
+			self.TOP2_effective_relaxation_rate = float(kwargs['TOP2_effective_relaxation_rate'])
 		self.topoisomerase_copy_numbers = [0, 0] # Copy numbers for TOP1 and TOP2
 		self.topoisomerase_on_off_rates = [(0.0, 0.0), (0.0, 0.0)] # On and off rates for TOP1 and TOP2
 		if self.supercoiling_relaxation_dynamics_mode == 'topoisomerase_based': # Supercoiling relaxation per segment based on topoisomerase binding and unbinding; requires specifying topoisomerase copy numbers and on/off rates
@@ -107,6 +116,8 @@ class ModelSetup: # Class to hold model setup parameters
 		
 		self.model_observation_event_rate = model_observation_event_rate # Rate for model observation events (in 1 / s)
 		assert model_observation_event_rate > 0.0, 'model_observation_event_rate must be a positive float.'
+
+		self.supercoiling_relaxation_dynamics_modes_with_no_steric_hindrance = ['global_overall', 'global_per_segment', 'global_by_type', 'per_segment_by_type', 'topoisomerase_approximated'] # List of supercoiling relaxation dynamics modes that do explicitly model topoisomerase binding and unbinding dynamics and therefore do not exert steric hindrance effects on RNAPs
 
 class Model: # Class to hold the model, including genomic setup, model setup, and dynamic state variables
 	def __init__(self, genomic_setup: GenomicSetup, model_setup: ModelSetup) -> None:

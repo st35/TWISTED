@@ -103,7 +103,7 @@ def get_TOP2_effect_on_Lk_dynamics(model: Model, segment_length: float, segment_
     
     return 0.0
 
-def get_prokaryotic_torque(w0: float, force: float, kBT: float, segment_length: float, sigma: float, finite_size_effect_flag: int, finite_size_effect_length: float) -> tuple[float, int, float]: # Get the torque, DNA state, and writhe fraction for prokaryotic DNA based on supercoiling density and force
+def get_prokaryotic_torque(w0: float, force: float, kBT: float, segment_length: float, sigma: float, finite_size_effect_flag: int, finite_size_effect_length: float) -> tuple[float, int, float, float]: # Get the torque, DNA state, writhe fraction, and sigma_s (threshold beyond which plectonemes form) for prokaryotic DNA based on supercoiling density and force
     A = 50.0
     C = 95.0
     P = 24.0
@@ -156,4 +156,4 @@ def get_prokaryotic_torque(w0: float, force: float, kBT: float, segment_length: 
         dna_state = 6 # Twisted plectoneme
         writhe_frac = 1.0
 
-    return (torque, dna_state, writhe_frac)
+    return (torque, dna_state, writhe_frac, sigma_s)

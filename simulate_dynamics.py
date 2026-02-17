@@ -18,7 +18,7 @@ def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupA
 		assert dt is not None, 'Integration failed to return a valid time step.'
 		update_dicts_from_state_vector(model, RNAP_gene_index, state_vector) # Update model dictionaries from updated state vectors
 		simulation_setup_and_state.curr_simulation_time += dt # Update current simulation time
-		segments_lengths, segments_sigmas, segments_torques, segments_dna_states, segments_writhe_fractions = calculate_segments_attributes(model, RNAP_gene_index, state_vector) # Recalculate segment attributes after integration
+		segments_lengths, segments_sigmas, segments_torques, segments_dna_states, segments_writhe_fractions, segments_plectoneme_thresholds = calculate_segments_attributes(model, RNAP_gene_index, state_vector) # Recalculate segment attributes after integration
 
 		rates_vector, events_indices = get_events_rates(model, RNAP_gene_index, state_vector) # Get event rates and event indices
 		p1 = random() # Generate a random number for event selection
@@ -28,7 +28,7 @@ def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupA
 			event = event_index - 0
 			if get_TSS_steric_hindrance_status(model, model.genomic_setup.TSSes[event], RNAP_gene_index, state_vector) == 1: # Steric hindrance at TSS; recruitment fails
 				pass
-			if len(simulation_setup_and_state.RNAP_recruitment_times[event]) >= simulation_setup_and_state.max_RNAPs_to_recruit[event]: # Maximum number of RNAPs already recruited for this gene; recruitment fails
+			elif simulation_setup_and_state.max_RNAPs_to_recruit is not None and len(simulation_setup_and_state.RNAP_recruitment_times[event]) >= simulation_setup_and_state.max_RNAPs_to_recruit[event]: # Maximum number of RNAPs already recruited for this gene; recruitment fails
 				pass
 			else:
 				event_gene_index = event
@@ -67,8 +67,22 @@ def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupA
 					chosen_segment_index = select_event_based_on_propensities(per_segment_propensity, random())
 				if chosen_segment_index is not None:
 					model.Lk[chosen_segment_index] = segments_Lk0[chosen_segment_index]
-		elif event_index < events_indices[4]: # Topoisomerase-mediated supercoiling relaxation: TOP1 / TOP2 binding event
-			event = event_index - events_indices[3]
+		elif event_index < events_indices[4]: # Topoisomerase-mediated supercoiling relaxation; approximating TOP1 / TOP2 activity
+			event = event_index - events_indices[3] # event = 0 for TOP1-mediated relaxation, event = 1 for TOP2-mediated relaxation
+			segments_Lk0 = [segments_length / model.model_setup.h_dna for segments_length in segments_lengths]
+			per_segment_propensity = [segments_lengths[i] / (model.genomic_setup.clamp_right - model.genomic_setup.clamp_left) for i in range(len(segments_lengths))]
+			chosen_segment_index = select_event_based_on_propensities(per_segment_propensity, random())
+			if chosen_segment_index is not None:
+				if event == 0: # TOP1 activity: relax supercoiling to a relaxed state if no writhe, otherwise TOP1 cannot act
+					if segments_writhe_fractions[chosen_segment_index] > 0.0: # Non-zero writhe; TOP1 cannot act
+						pass
+					else:
+						model.Lk[chosen_segment_index] = segments_Lk0[chosen_segment_index] # Relax supercoiling to a relaxed state
+				elif event == 1: # TOP2 activity: relax supercoiling if writhe is present, otherwise TOP2 cannot act
+					if segments_writhe_fractions[chosen_segment_index] > 0.0: # Non-zero writhe; TOP2 can act:
+						model.Lk[chosen_segment_index] = segments_Lk0[chosen_segment_index]*(1.0 + segments_plectoneme_thresholds[chosen_segment_index]) # Relax supercoiling to the threshold beyond which plectonemes form, since TOP2 relaxes supercoiling only until writhe is removed
+		elif event_index < events_indices[5]: # Topoisomerase-mediated supercoiling relaxation: TOP1 / TOP2 binding event
+			event = event_index - events_indices[4]
 			if model.topoisomerase_status[event] == 1: # Topoisomerase is already bound; cannot bind again
 				raise ValueError('Binding event selected for already bound topoisomerase.')
 			else:
@@ -88,8 +102,8 @@ def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupA
 						model.topoisomerase_status[event] = 1 # Bind topoisomerase
 						model.topoisomerase_segment_indices[event] = chosen_segment_index
 						model.topoisomerase_positions[event] = binding_position
-		elif event_index < events_indices[5]: # Topoisomerase-mediated supercoiling relaxation: TOP1 / TOP2 unbinding event
-			event = event_index - events_indices[4]
+		elif event_index < events_indices[6]: # Topoisomerase-mediated supercoiling relaxation: TOP1 / TOP2 unbinding event
+			event = event_index - events_indices[5]
 			if model.topoisomerase_status[event] == 0: # Topoisomerase is already unbound; cannot unbind again
 				raise ValueError('Unbinding event selected for already unbound topoisomerase.')
 			else:
