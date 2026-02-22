@@ -2,6 +2,7 @@ from model_setup import *
 from biol_methods import *
 from utilities import *
 
+import sys
 from scipy.integrate import solve_ivp
 from math import log
 import numpy as np
@@ -310,8 +311,16 @@ def update_state_vector_to_remove_dead_RNAPs(model: Model, RNAP_gene_index: list
 			new_Lk_vector.append(Lk_front_segment)
 			RNAP_index += 1
 		else:
-			new_Lk_vector.append(Lk_front_segment + Lk_back_segment)
-			RNAP_index += 2
+			index_of_next_alive_RNAP = RNAP_index
+			total_Lk_merged_segment = 0.0
+			while index_of_next_alive_RNAP < RNAP_count and RNAPs_alive_status[index_of_next_alive_RNAP] == 0:
+				Lk_front_segment = Lk_vector[index_of_next_alive_RNAP]
+				Lk_back_segment = Lk_vector[index_of_next_alive_RNAP + 1]
+				total_Lk_merged_segment += Lk_front_segment
+				index_of_next_alive_RNAP += 1
+			total_Lk_merged_segment += Lk_vector[index_of_next_alive_RNAP] # Add the Lk of the segment after the last dead RNAP to the total Lk of the merged segment
+			new_Lk_vector.append(total_Lk_merged_segment)
+			RNAP_index = index_of_next_alive_RNAP + 1
 	if RNAPs_alive_status[-1] == 1:
 		new_Lk_vector.append(Lk_vector[-1])
 	
@@ -390,8 +399,10 @@ def integrate(model: Model, simulation_setup_and_state: SimulationSetupAndState,
 		if t_event > 0.0: # Event has occurred within this integration interval
 			state_vector[:] = sol.y[:, t_event_index]
 			update_state_vector_to_remove_dead_RNAPs(model, RNAP_gene_index, t + dt_current, state_vector, simulation_setup_and_state)
+			assert len(state_vector) == len(RNAP_gene_index) + len(RNAP_gene_index) + len(RNAP_gene_index) + 1 + 1, 'State vector length mismatch after integration and removing dead RNAPs (when event occurred during integration).'
 			return (dt_current, a0)
 		# No event has occurred; update state_vector and continue integration
 		state_vector[:] = sol.y[:, -1]
 		update_state_vector_to_remove_dead_RNAPs(model, RNAP_gene_index, t + dt, state_vector, simulation_setup_and_state)
+		assert len(state_vector) == len(RNAP_gene_index) + len(RNAP_gene_index) + len(RNAP_gene_index) + 1 + 1, 'State vector length mismatch after integration and removing dead RNAPs (when no event occurred during integration).'
 		t += dt
