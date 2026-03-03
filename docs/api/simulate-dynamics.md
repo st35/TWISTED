@@ -53,6 +53,7 @@ Each iteration of the loop:
 | `events_indices[3]–events_indices[4]` | **Topoisomerase approximated** | TOP1: reset `Lk` if no writhe; TOP2: reset to plectoneme threshold if writhe present |
 | `events_indices[4]–events_indices[5]` | **Topoisomerase binding** | Selects segment and position; binds topoisomerase if not sterically blocked |
 | `events_indices[5]–events_indices[6]` | **Topoisomerase unbinding** | Releases bound topoisomerase; resets position and segment index to `-1` |
+| `events_indices[6]–events_indices[7]` | **mRNA degradation** | Decrements `model.mRNA_counts` for the selected gene by 1. Raises `ValueError` if the gene has zero mRNA (should not be selected when count is 0, as the rate is 0) |
 
 ### RNAP Recruitment Details
 

@@ -157,6 +157,14 @@ get_TOPO_unbinding_rates(
 
 Returns unbinding rates for all bound topoisomerases.
 
+### `get_mRNA_degradation_rates`
+
+```python
+get_mRNA_degradation_rates(model: Model) -> list[float]
+```
+
+Returns a list of mRNA degradation rates (s⁻¹), one per gene. Each rate equals `mRNA_degradation_rate × mRNA_counts[i]`. When `mRNA_dynamics_mode = 0`, `ModelSetup` sets `mRNA_degradation_rate = 0.0`, so all rates are zero regardless of current counts.
+
 ### `get_events_rates`
 
 ```python
@@ -177,9 +185,10 @@ Assembles the complete rates vector and returns `(rates_vector, events_indices)`
 [TOPO_activity_rates...]      # indices events_indices[3] to events_indices[4]-1
 [TOPO_binding_rates...]       # indices events_indices[4] to events_indices[5]-1
 [TOPO_unbinding_rates...]     # indices events_indices[5] to events_indices[6]-1
+[mRNA_degradation_rates...]   # indices events_indices[6] to events_indices[7]-1
 ```
 
-`events_indices` is a 7-element list of cumulative boundary indices.
+`events_indices` is an 8-element list of cumulative boundary indices.
 
 ---
 
@@ -262,7 +271,7 @@ update_state_vector_to_remove_dead_RNAPs(
 ) -> None
 ```
 
-Removes RNAPs that have passed the end of their gene. The linking numbers of the segments flanking a departing RNAP are summed into a single merged segment. Simultaneously records exit times, positions, and completion counts in `simulation_setup_and_state`. Modifies `RNAP_gene_index` and `state_vector` in-place.
+Removes RNAPs that have passed the end of their gene. The linking numbers of the segments flanking a departing RNAP are summed into a single merged segment. For each departing RNAP, increments `model.mRNA_counts` for the corresponding gene (one new mRNA produced) and records exit times, positions, and completion counts in `simulation_setup_and_state`. Modifies `RNAP_gene_index` and `state_vector` in-place.
 
 ### `are_RNAPs_alive`
 

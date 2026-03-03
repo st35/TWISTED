@@ -170,6 +170,29 @@ $$\dot{Lk}^{\mathrm{TOP2}} = \mp n \, V_0 \frac{Wr}{Wr + k_{12}}, \quad Wr = |\s
 
 ---
 
+## `get_mRNA_degradation_rate`
+
+```python
+get_mRNA_degradation_rate(
+    model: Model,
+    mRNA_count: int
+) -> float
+```
+
+Returns the mRNA degradation rate (s⁻¹) for a single gene given its current mRNA copy number. Used when `mRNA_dynamics_mode = 1` in `ModelSetup`.
+
+$$r_{\mathrm{deg}} = \delta \cdot n_{\mathrm{mRNA}}$$
+
+where $\delta$ is `mRNA_degradation_rate` from `ModelSetup` and $n_{\mathrm{mRNA}}$ is the current mRNA copy number. The rate scales linearly with copy number (first-order degradation).
+
+**Parameters:**
+
+| Name | Description |
+|------|-------------|
+| `mRNA_count` | Current mRNA copy number for the gene |
+
+---
+
 ## `get_prokaryotic_torque`
 
 ```python
