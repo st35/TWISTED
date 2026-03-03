@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.3">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.4">
     
     
       
@@ -1434,7 +1434,7 @@
 <li>For a positive-strand gene: <code>clamp_right = TSS + gene_length + buffer_length</code></li>
 <li>For a negative-strand gene: <code>clamp_right = TSS + buffer_length</code></li>
 </ul>
-<p>Both ends are treated as fixed boundaries (torsional clamps) by default. The clamp status can be changed via <code>ModelSetup.clamps_status</code>.</p>
+<p>The torsional boundary condition at each end is set by <code>ModelSetup.clamps_status</code>. A <code>'clamped'</code> end fixes the DNA angle (no twist can escape past the boundary). A <code>'free'</code> end allows twist to dissipate, so <span class="arithmatex">\(\dot{Lk}\)</span> for the terminal segment is driven by RNAP displacement rather than angular velocity transfer — see <a href="../../api/biol-methods/#get_segment_lk_dynamics"><code>get_segment_Lk_dynamics</code></a>.</p>
 <hr />
 <h2 id="promoter-modes">Promoter Modes<a class="headerlink" href="#promoter-modes" title="Permanent link">&para;</a></h2>
 <h3 id="constitutive">Constitutive<a class="headerlink" href="#constitutive" title="Permanent link">&para;</a></h3>

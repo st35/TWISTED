@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.3">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.4">
     
     
       
@@ -1328,6 +1328,11 @@
 <td><code>events_indices[5]–events_indices[6]</code></td>
 <td><strong>Topoisomerase unbinding</strong></td>
 <td>Releases bound topoisomerase; resets position and segment index to <code>-1</code></td>
+</tr>
+<tr>
+<td><code>events_indices[6]–events_indices[7]</code></td>
+<td><strong>mRNA degradation</strong></td>
+<td>Decrements <code>model.mRNA_counts</code> for the selected gene by 1. Raises <code>ValueError</code> if the gene has zero mRNA (should not be selected when count is 0, as the rate is 0)</td>
 </tr>
 </tbody>
 </table>
