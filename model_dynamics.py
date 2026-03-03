@@ -247,6 +247,12 @@ def get_TOPO_unbinding_rates(model: Model, segments_lengths: float, segments_sig
 
 	return TOPO_unbinding_rates
 
+def get_mRNA_degradation_rates(model: Model) -> list[float]: # Get the mRNA degradation rates for all genes based on their current mRNA counts
+	mRNA_degradation_rates = []
+	for i in range(len(model.genomic_setup.gene_names)):
+		mRNA_degradation_rates.append(get_mRNA_degradation_rate(model, model.mRNA_counts[i]))
+	return mRNA_degradation_rates
+
 def update_Lk_vector_after_RNAP_recruitment(model: Model, TSS_index: int, RNAP_gene_index: list[int], state_vector: list[float], segments_lengths: list[float], segments_sigmas: list[float]) -> None: # Update the model's Lk vector after an RNAP is recruited at the given TSS_index; Lk for the segments on either side of the TSS are calculated such that the supercoiling density in the segments is the same as in the segment spanning the TSS before recruitment
 	TSS_segment_index = get_spot_segment_index(model.genomic_setup.TSSes[TSS_index], segments_lengths)
 	TSS_sigma = segments_sigmas[TSS_segment_index]
@@ -293,6 +299,7 @@ def update_state_vector_to_remove_dead_RNAPs(model: Model, RNAP_gene_index: list
 	RNAPs_alive_status = are_RNAPs_alive(model, RNAP_gene_index, state_vector)
 	for i in range(RNAP_count):
 		if RNAPs_alive_status[i] == 0: # RNAP has finished transcription; update simulation_setup_and_state accordingly
+			model.mRNA_counts[RNAP_gene_index[i]] += 1
 			simulation_setup_and_state.RNAPs_finished_transcription[RNAP_gene_index[i]] += 1
 			simulation_setup_and_state.RNAPs_exit_positions[RNAP_gene_index[i]].append(x_vector[i])
 			simulation_setup_and_state.RNAP_exit_times[RNAP_gene_index[i]].append(t)
@@ -341,8 +348,9 @@ def get_events_rates(model: Model, RNAP_gene_index: list[int], state_vector: lis
 	TOPO_activity_rates = [model.model_setup.TOP1_effective_relaxation_rate, model.model_setup.TOP2_effective_relaxation_rate]
 	TOPO_binding_rates = get_TOPO_binding_rates(model, segments_lengths, segments_sigmas)
 	TOPO_unbinding_rates = get_TOPO_unbinding_rates(model, segments_lengths, segments_sigmas)
+	mRNA_degradation_rates = get_mRNA_degradation_rates(model)
 
-	rates_vector = RNAP_recruitment_rates + model_observation_event_rate + global_supercoiling_relaxation_rate + local_supercoiling_relaxation_rates + TOPO_activity_rates + TOPO_binding_rates + TOPO_unbinding_rates
+	rates_vector = RNAP_recruitment_rates + model_observation_event_rate + global_supercoiling_relaxation_rate + local_supercoiling_relaxation_rates + TOPO_activity_rates + TOPO_binding_rates + TOPO_unbinding_rates + mRNA_degradation_rates
 	assert all(rate >= 0.0 for rate in rates_vector), 'Negative rate encountered in calculating events rates.'
 
 	events_indices = []
@@ -353,6 +361,7 @@ def get_events_rates(model: Model, RNAP_gene_index: list[int], state_vector: lis
 	events_indices.append(events_indices[-1] + len(TOPO_activity_rates))
 	events_indices.append(events_indices[-1] + len(TOPO_binding_rates))
 	events_indices.append(events_indices[-1] + len(TOPO_unbinding_rates))
+	events_indices.append(events_indices[-1] + len(mRNA_degradation_rates))
 
 	return rates_vector, events_indices
 

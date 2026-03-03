@@ -103,6 +103,9 @@ def get_TOP2_effect_on_Lk_dynamics(model: Model, segment_length: float, segment_
     
     return 0.0
 
+def get_mRNA_degradation_rate(model: Model, mRNA_count: int) -> float: # Get the mRNA degradation rates for each gene
+    return model.model_setup.mRNA_degradation_rate*mRNA_count
+
 def get_prokaryotic_torque(w0: float, force: float, kBT: float, segment_length: float, sigma: float, finite_size_effect_flag: int, finite_size_effect_length: float) -> tuple[float, int, float, float]: # Get the torque, DNA state, writhe fraction, and sigma_s (threshold beyond which plectonemes form) for prokaryotic DNA based on supercoiling density and force
     A = 50.0
     C = 95.0

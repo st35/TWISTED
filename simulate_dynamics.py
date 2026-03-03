@@ -110,6 +110,12 @@ def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupA
 				model.topoisomerase_status[event] = 0 # Unbind topoisomerase
 				model.topoisomerase_segment_indices[event] = -1
 				model.topoisomerase_positions[event] = -1.0
+		elif event_index < events_indices[7]: # mRNA degradation event
+			event = event_index - events_indices[6]
+			if model.mRNA_counts[event] <= 0: # No mRNA to degrade; cannot degrade
+				raise ValueError('mRNA degradation event selected for gene with zero mRNA count.')
+			else:
+				model.mRNA_counts[event] -= 1 # Degrade one mRNA molecule for the gene
 		else:
 			raise ValueError('Event index out of bounds during simulation.')
 		
