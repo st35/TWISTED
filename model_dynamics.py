@@ -134,25 +134,41 @@ def get_RNAP_angular_velocities(model: Model, RNAP_gene_index: list[int], state_
 	
 	return RNAP_angular_velocities
 
-def get_segments_Lk_dynamics(model: Model, dtheta_dt: list[float], segments_lengths: list[float], segments_sigmas: list[float], segments_torques: list[float], segments_writhe_fractions: list[float]) -> list[float]: # Get the rates of change of linking number for all DNA segments based on the RNAP angular velocities
+def get_segments_Lk_dynamics(model: Model, dx_dt: list[float], dtheta_dt: list[float], segments_lengths: list[float], segments_sigmas: list[float], segments_torques: list[float], segments_writhe_fractions: list[float]) -> list[float]: # Get the rates of change of linking number for all DNA segments based on the RNAP angular velocities
 	RNAP_count = len(dtheta_dt)
 	if RNAP_count == 0: # No RNAPs on the DNA; there is only one segment between clamps and there is no change in linking number
 		return [0.0]
 	
 	dLk_dt = []
+	dx_dt_front = 0.0
+	dx_dt_back = 0.0
 	dtheta_dt_front = 0.0
 	dtheta_dt_back = 0.0
+	is_rightmost_segment = False
+	is_leftmost_segment = False
 	for i in range(RNAP_count + 1):
 		if i == 0: # Rightmost segment
+			dx_dt_front = 0.0
+			dx_dt_back = dx_dt[i]
 			dtheta_dt_front = 0.0
 			dtheta_dt_back = dtheta_dt[i]
+			is_rightmost_segment = True
+			is_leftmost_segment = False
 		elif i == RNAP_count: # Leftmost segment
+			dx_dt_front = dx_dt[i - 1]
+			dx_dt_back = 0.0
 			dtheta_dt_front = dtheta_dt[i - 1]
 			dtheta_dt_back = 0.0
+			is_rightmost_segment = False
+			is_leftmost_segment = True
 		else:
+			dx_dt_front = dx_dt[i - 1]
+			dx_dt_back = dx_dt[i]
 			dtheta_dt_front = dtheta_dt[i - 1]
 			dtheta_dt_back = dtheta_dt[i]
-		dLk_dt.append(get_segment_Lk_dynamics(model, dtheta_dt_front, dtheta_dt_back))
+			is_rightmost_segment = False
+			is_leftmost_segment = False
+		dLk_dt.append(get_segment_Lk_dynamics(model, dx_dt_front, dx_dt_back, dtheta_dt_front, dtheta_dt_back, is_rightmost_segment, is_leftmost_segment))
 	
 	if model.model_setup.supercoiling_relaxation_dynamics_mode == 'topoisomerase_based':
 		segement_TOP1_count = [0 for _ in range(RNAP_count + 1)]
@@ -374,7 +390,7 @@ def model_dynamics(t: float, state_vector: list[float], RNAP_gene_index: list[in
 
 	dx_dt = get_RNAP_velocities(model, state_vector, RNAP_gene_index, segments_lengths, segments_torques)
 	dtheta_dt = get_RNAP_angular_velocities(model, RNAP_gene_index, state_vector, segments_lengths, segments_torques, dx_dt)
-	dLk_dt = get_segments_Lk_dynamics(model, dtheta_dt, segments_lengths, segments_sigmas, segments_torques, segments_writhe_fractions)
+	dLk_dt = get_segments_Lk_dynamics(model, dx_dt, dtheta_dt, segments_lengths, segments_sigmas, segments_torques, segments_writhe_fractions)
 
 	return dx_dt + dtheta_dt + dLk_dt + [sum(rates_vector)]
 

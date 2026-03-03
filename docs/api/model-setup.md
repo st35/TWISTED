@@ -74,7 +74,7 @@ class ModelSetup:
         TOP2_k12: float = 2.0,
         between_RNAPs_steric_effect_cutoff: float = 15.0,
         RNAP_TOPO_steric_effect_cutoff: float = 15.0,
-        clamps_status: tuple[int, int] = (1, 1),
+        clamps_status: tuple[str, str] = ('clamped', 'clamped'),
         finite_size_effect_flag: int = 1,
         supercoiling_relaxation_dynamics_mode: str = 'global_overall',
         mRNA_dynamics_mode: int = 0,
@@ -90,6 +90,8 @@ See [Model Parameters](../user-guide/model-setup.md) for full parameter descript
 | Attribute | Description |
 |-----------|-------------|
 | `h_dna` | Helical repeat `= 2π / w0` (nm/turn) |
+| `left_clamp_status` | `1` = torsionally clamped, `0` = free (derived from `clamps_status[0]`) |
+| `right_clamp_status` | `1` = torsionally clamped, `0` = free (derived from `clamps_status[1]`) |
 | `global_supercoiling_relaxation_rate` | Set from `**kwargs` when mode is `global_overall` or `global_per_segment` |
 | `local_supercoiling_relaxation_rates` | `[rate_pos, rate_neg]` when mode is `global_by_type` or `per_segment_by_type` |
 | `TOP1_effective_relaxation_rate` | Effective TOP1 rate when mode is `topoisomerase_approximated` |

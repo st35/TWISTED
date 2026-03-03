@@ -14,7 +14,7 @@ ModelSetup(
     TOP2_V0=2.6, TOP2_k12=2.0,
     between_RNAPs_steric_effect_cutoff=15.0,
     RNAP_TOPO_steric_effect_cutoff=15.0,
-    clamps_status=(1, 1),
+    clamps_status=('clamped', 'clamped'),
     finite_size_effect_flag=1,
     supercoiling_relaxation_dynamics_mode='global_overall',
     mRNA_dynamics_mode=0,
@@ -83,7 +83,7 @@ These parameters govern the action of Type I (TOP1) and Type II (TOP2) topoisome
 
 | Parameter | Default | Values | Description |
 |-----------|---------|--------|-------------|
-| `clamps_status` | `(1, 1)` | `(0 or 1, 0 or 1)` | Whether the left and right ends of the DNA are torsionally clamped (`1`) or free (`0`). Free ends do not resist torsional stress |
+| `clamps_status` | `('clamped', 'clamped')` | `('clamped'` or `'free', 'clamped'` or `'free')` | Whether the left and right ends of the DNA are torsionally clamped or free. Free ends do not resist torsional stress. Internally stored as `left_clamp_status` and `right_clamp_status` (1 = clamped, 0 = free) |
 
 ---
 

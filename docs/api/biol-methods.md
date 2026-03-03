@@ -73,14 +73,41 @@ $$\dot\theta = \frac{\omega_0 \dot{x}\, \chi}{\chi + \eta |x - x_{\mathrm{TSS}}|
 ```python
 get_segment_Lk_dynamics(
     model: Model,
+    dx_dt_front: float,
+    dx_dt_back: float,
     dtheta_dt_front: float,
-    dtheta_dt_back: float
+    dtheta_dt_back: float,
+    is_rightmost_segment: bool,
+    is_leftmost_segment: bool
 ) -> float
 ```
 
-Returns the rate of change of linking number for a DNA segment (turns/s):
+Returns the rate of change of linking number (turns/s) for a DNA segment, accounting for free-end boundary conditions.
+
+**Clamped ends (default):**
 
 $$\dot{Lk} = \frac{1}{2\pi}(\dot\theta_{\mathrm{front}} - \dot\theta_{\mathrm{back}})$$
+
+**Free right clamp** (rightmost segment, `right_clamp_status == 0`):
+
+$$\dot{Lk} = \frac{-\dot{x}_{\mathrm{back}}}{h_{\mathrm{DNA}}}$$
+
+**Free left clamp** (leftmost segment, `left_clamp_status == 0`):
+
+$$\dot{Lk} = \frac{\dot{x}_{\mathrm{front}}}{h_{\mathrm{DNA}}}$$
+
+where $h_{\mathrm{DNA}} = 2\pi / \omega_0$ is the helical repeat (nm/turn). For free ends, the change in $Lk$ is driven by the displacement of the bounding RNAP rather than by torsional twist transfer, since the free end cannot sustain torque.
+
+**Parameters:**
+
+| Name | Description |
+|------|-------------|
+| `dx_dt_front` | Linear velocity (nm/s) of the RNAP at the right boundary of the segment |
+| `dx_dt_back` | Linear velocity (nm/s) of the RNAP at the left boundary of the segment |
+| `dtheta_dt_front` | Angular velocity (rad/s) of the front boundary |
+| `dtheta_dt_back` | Angular velocity (rad/s) of the back boundary |
+| `is_rightmost_segment` | `True` if this is the segment between the right clamp and the rightmost RNAP |
+| `is_leftmost_segment` | `True` if this is the segment between the leftmost RNAP and the left clamp |
 
 ---
 

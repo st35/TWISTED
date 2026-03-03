@@ -40,7 +40,7 @@ class GenomicSetup: # Class to hold genomic setup information
 		print('=' * 40)
 
 class ModelSetup: # Class to hold model setup parameters
-	def __init__(self, w0: float = 1.85, chi: float = 0.05, eta: float = 0.0005, alpha: float = 1.5, v0: float = 20.0, tau_c: float = 12.0, force: float = 1.0, kBT: float = 4.1, TOP1_k0: float = 11.0, TOP1_theta: float = 0.25, TOP2_V0: float = 2.6, TOP2_k12: float = 2.0, between_RNAPs_steric_effect_cutoff: float = 15.0, RNAP_TOPO_steric_effect_cutoff: float = 15.0, clamps_status: tuple[int, int] = (1, 1), finite_size_effect_flag: int = 1, supercoiling_relaxation_dynamics_mode: str = 'global_overall', mRNA_dynamics_mode: int = 0, model_observation_event_rate: float = 1.0 / 2.0, **kwargs) -> None:
+	def __init__(self, w0: float = 1.85, chi: float = 0.05, eta: float = 0.0005, alpha: float = 1.5, v0: float = 20.0, tau_c: float = 12.0, force: float = 1.0, kBT: float = 4.1, TOP1_k0: float = 11.0, TOP1_theta: float = 0.25, TOP2_V0: float = 2.6, TOP2_k12: float = 2.0, between_RNAPs_steric_effect_cutoff: float = 15.0, RNAP_TOPO_steric_effect_cutoff: float = 15.0, clamps_status: tuple[str, str] = ('clamped', 'clamped'), finite_size_effect_flag: int = 1, supercoiling_relaxation_dynamics_mode: str = 'global_overall', mRNA_dynamics_mode: int = 0, model_observation_event_rate: float = 1.0 / 2.0, **kwargs) -> None:
 		self.w0 = w0 # Default: 1.85 1 / nm
 		self.h_dna = (2.0*3.14) / w0 # From w0*h_dna = 2*pi
 		self.chi = chi # Default: 0.05 pN*nm*s
@@ -56,9 +56,10 @@ class ModelSetup: # Class to hold model setup parameters
 		self.TOP2_k12 = TOP2_k12 # Default: 2.0
 		self.between_RNAPs_steric_effect_cutoff = between_RNAPs_steric_effect_cutoff # Default: 15.0 nm; steric hindrance cutoff distance between RNAPs
 		self.RNAP_TOPO_steric_effect_cutoff = RNAP_TOPO_steric_effect_cutoff # Default: 15.0 nm; steric hindrance cutoff distance between RNAPs and topoisomerases
-		self.clamps_status = tuple(clamps_status) # Tuple of two integers indicating whether the left and right ends of the DNA are clamped (1) or free (0); default: (1, 1)
-		if len(self.clamps_status) != 2 or any(clamp not in [0, 1] for clamp in self.clamps_status):
-			raise ValueError('clamps_status must be a tuple of two integers, each either 0 (free) or 1 (clamped).')
+		assert len(clamps_status) == 2, 'clamps_status must be a tuple of two strings representing the status of the left and right clamps, respectively.'
+		assert all(status in ['clamped', 'free'] for status in clamps_status), 'Each clamp status in clamps_status must be either "clamped" or "free".'
+		self.left_clamp_status = 0 if clamps_status[0] == 'free' else 1
+		self.right_clamp_status = 0 if clamps_status[1] == 'free' else 1
 
 		self.finite_size_effect_flag = finite_size_effect_flag # Default: 1 (enabled); indiacates whether to consider finite size effect in torque calculations
 		assert finite_size_effect_flag in [0, 1], 'finite_size_effect_flag must be either 0 (disabled) or 1 (enabled).'

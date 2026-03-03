@@ -62,7 +62,7 @@ The simulated DNA runs from `clamp_left = 0.0 nm` to a `clamp_right` position co
 - For a positive-strand gene: `clamp_right = TSS + gene_length + buffer_length`
 - For a negative-strand gene: `clamp_right = TSS + buffer_length`
 
-Both ends are treated as fixed boundaries (torsional clamps) by default. The clamp status can be changed via `ModelSetup.clamps_status`.
+The torsional boundary condition at each end is set by `ModelSetup.clamps_status`. A `'clamped'` end fixes the DNA angle (no twist can escape past the boundary). A `'free'` end allows twist to dissipate, so $\dot{Lk}$ for the terminal segment is driven by RNAP displacement rather than angular velocity transfer — see [`get_segment_Lk_dynamics`](../api/biol-methods.md#get_segment_lk_dynamics).
 
 ---
 
