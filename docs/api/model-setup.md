@@ -144,6 +144,9 @@ Additional attributes present only when `supercoiling_relaxation_dynamics_mode =
 - All RNAPs start absent (`x_dict` and `theta_dict` are empty lists per gene).
 - Constitutive promoters start `ON`; non-constitutive promoters start with a random binary state.
 
+!!! warning "Non-constitutive promoters"
+    Stochastic promoter toggling is not yet implemented. Non-constitutive promoters retain their initial random state for the entire simulation. Full support is planned for a future release.
+
 ---
 
 ## `SimulationSetupAndState`
@@ -182,13 +185,13 @@ class SimulationSetupAndState:
 
 ### Methods
 
-#### `calculate_RNAP_transcription_times(model: Model) → list[list[float]]`
+#### `calculate_RNAP_transcription_rates(model: Model) → list[list[float]]`
 
 Returns the effective transcription rate in **bp/s** for each RNAP that completed transcription, grouped by gene.
 
 ```python
-rates = sim.calculate_RNAP_transcription_times(model)
+rates = sim.calculate_RNAP_transcription_rates(model)
 # rates[gene_index][rnap_index] → float (bp/s)
 ```
 
-The rate is computed as the gene length (converted to bp) divided by the elapsed time from recruitment to exit.
+The rate is computed as the distance from the TSS to the exit position (converted to bp) divided by the elapsed time from recruitment to exit.

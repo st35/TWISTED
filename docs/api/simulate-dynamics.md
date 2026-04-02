@@ -25,7 +25,7 @@ Runs the main simulation loop. Modifies `model` and `simulation_setup_and_state`
 |-----------|------|-------------|
 | `model` | `Model` | The model to simulate |
 | `simulation_setup_and_state` | `SimulationSetupAndState` | Controls termination and stores results |
-| `print_at_each_integration_step` | `Callable or None` | Called at every ODE evaluation point; receives `(model, sim, t, state_vector)` |
+| `print_at_each_integration_step` | `Callable or None` | Called at the start of each integration interval (approximately every `RNAP_alive_status_check_interval` seconds); receives `(model, sim, t, state_vector)` |
 | `print_at_each_simulation_step` | `Callable or None` | Called at the start of each Gillespie step; receives `(model, sim)` |
 | `print_at_end_of_simulation` | `Callable or None` | Called once when the termination criterion is met; receives `(model, sim)` |
 

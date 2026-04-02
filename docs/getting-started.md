@@ -12,6 +12,15 @@ pip install scipy numpy
 
 No additional installation step is required — simply import the modules directly from the `code/` directory.
 
+### Serving the Documentation Locally
+
+To build and serve the documentation site locally:
+
+```bash
+pip install -r docs/requirements.txt
+mkdocs serve
+```
+
 ## Dependencies
 
 | Package | Purpose |
@@ -64,8 +73,8 @@ simulate_dynamics(model, sim)
 # ── 4. Results ────────────────────────────────────────────────────────────────
 print('RNAPs finished transcription:', sim.RNAPs_finished_transcription)
 print('Recruitment times:', sim.RNAP_recruitment_times)
-transcription_times = sim.calculate_RNAP_transcription_times(model)
-print('Transcription rates (bp/s):', transcription_times)
+transcription_rates = sim.calculate_RNAP_transcription_rates(model)
+print('Transcription rates (bp/s):', transcription_rates)
 ```
 
 ---
@@ -95,7 +104,7 @@ genomic_setup = GenomicSetup(
     gene_directions=[1, 1],
     RNAP_on_rates=[0.02, 0.02],
     promoter_mode='constitutive',
-    buffer_length=3400.0,
+    buffer_length=4080.0,            # must extend beyond all genes
 )
 ```
 

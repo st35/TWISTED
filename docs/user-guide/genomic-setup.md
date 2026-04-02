@@ -74,7 +74,10 @@ All promoters start in the `ON` state (`promoter_status = 1`) and remain there. 
 
 ### Non-constitutive
 
-Promoter state toggles stochastically between `ON` (1) and `OFF` (0) with rates provided by `TF_on_off_rates`. RNAP is recruited only when the promoter is `ON`.
+!!! warning "Not yet implemented"
+    The non-constitutive promoter mode is defined in `GenomicSetup` but stochastic promoter toggling is not yet implemented in the simulation loop. Promoters initialised in the `OFF` state will remain `OFF` for the entire simulation, and vice versa. Full support will be added in a future release.
+
+When implemented, promoter state will toggle stochastically between `ON` (1) and `OFF` (0) with rates provided by `TF_on_off_rates`. RNAP will be recruited only when the promoter is `ON`.
 
 ```python
 genomic_setup = GenomicSetup(
@@ -103,12 +106,12 @@ genomic_setup = GenomicSetup(
     gene_directions=[1, 1],
     RNAP_on_rates=[0.02, 0.02],
     promoter_mode='constitutive',
-    buffer_length=3400.0,
+    buffer_length=4420.0,            # must extend beyond all genes
 )
 ```
 
 !!! warning "Multi-gene constraints"
-    The current implementation only correctly computes `clamp_right` for the first gene listed. When simulating multiple genes, ensure that `TSSes[0]` is the leftmost gene and that `buffer_length` is sufficient to extend beyond all genes.
+    The right boundary (`clamp_right`) is computed from the first gene listed only. When simulating multiple genes, either list the gene that defines the rightmost extent of the DNA first, or increase `buffer_length` so that `clamp_right` extends beyond all genes.
 
 ---
 

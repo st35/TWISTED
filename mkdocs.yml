@@ -56,6 +56,7 @@ extra_javascript:
 nav:
   - Home: index.md
   - Getting Started: getting-started.md
+  - Tutorials: tutorials.md
   - User Guide:
     - Overview: user-guide/overview.md
     - Genomic Setup: user-guide/genomic-setup.md

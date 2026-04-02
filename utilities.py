@@ -73,8 +73,8 @@ def get_TSS_steric_hindrance_status(model: Model, TSS_position: float, RNAP_gene
 	
 	return 0
 
-def is_TOPO_binding_blocked(model: Model, state_vector: list[float], binding_position: float) -> int: # Check if TOPO binding is blocked at the given position due to existing RNAPs; return 1 if blocked, 0 if not
-	RNAP_count = len(state_vector)
+def is_TOPO_binding_blocked(model: Model, RNAP_gene_index: list[int], state_vector: list[float], binding_position: float) -> int: # Check if TOPO binding is blocked at the given position due to existing RNAPs; return 1 if blocked, 0 if not
+	RNAP_count = len(RNAP_gene_index)
 	for x in state_vector[:RNAP_count]:
 		if abs(x - binding_position) < model.model_setup.RNAP_TOPO_steric_effect_cutoff:
 			return 1

@@ -105,6 +105,7 @@ Returns angular velocities (rad/s) for all RNAPs using the distances from their 
 ```python
 get_segments_Lk_dynamics(
     model: Model,
+    dx_dt: list[float],
     dtheta_dt: list[float],
     segments_lengths: list[float],
     segments_sigmas: list[float],
@@ -132,6 +133,9 @@ get_RNAP_recruitment_rates(
 ```
 
 Returns recruitment rates (s⁻¹) for each gene. A rate of 0 is returned if the TSS is sterically blocked or the promoter is OFF.
+
+!!! note
+    The function contains a placeholder (`if False`) for additional recruitment-blocking conditions (e.g., supercoiling-dependent recruitment). This is reserved for future implementation and currently has no effect.
 
 ### `get_TOPO_binding_rates`
 

@@ -173,7 +173,7 @@ class SimulationSetupAndState: # Class to hold simulation setup parameters
 		self.curr_simulation_time = 0.0 # Current simulation time (in s)
 		self.simulation_completed = False # Flag indicating whether the simulation has completed
 	
-	def calculate_RNAP_transcription_times(self, model: Model) -> list[list[float]]: # Calculate and return the transcription rates (in bp / s) for each RNAP that has finished transcription for each gene
+	def calculate_RNAP_transcription_rates(self, model: Model) -> list[list[float]]: # Calculate and return the transcription rates (in bp / s) for each RNAP that has finished transcription for each gene
 		transcription_rates = [[] for _ in model.genomic_setup.gene_names]
 		for gene_index in range(len(model.genomic_setup.gene_names)):
 			for i in range(len(self.RNAP_exit_times[gene_index])):

@@ -35,13 +35,12 @@ Each iteration of the main loop performs:
 
 1. **Extract state vectors** from the model's internal dictionaries (`get_state_vectors_from_dicts`).
 2. **Draw a random number** `p0 ∈ (0, 1)` for event-time sampling.
-3. **Integrate** the ODEs forward until the cumulative propensity satisfies `A(t) > ln(1/p0)` (`integrate`).
-4. **Remove completed RNAPs** that have traversed their gene (`update_state_vector_to_remove_dead_RNAPs`).
-5. **Update model dictionaries** from the new state vector.
-6. **Recalculate segment attributes** (lengths, supercoiling densities, torques, DNA state).
-7. **Draw a second random number** `p1 ∈ (0, 1)` for event-type selection.
-8. **Select and execute an event** from the propensity-weighted distribution.
-9. **Check termination condition** (time-based or event-count-based).
+3. **Integrate** the ODEs forward until the cumulative propensity satisfies `A(t) > ln(1/p0)` (`integrate`). Completed RNAPs that have traversed their gene are removed during integration (`update_state_vector_to_remove_dead_RNAPs`).
+4. **Update model dictionaries** from the new state vector.
+5. **Recalculate segment attributes** (lengths, supercoiling densities, torques, DNA state).
+6. **Draw a second random number** `p1 ∈ (0, 1)` for event-type selection.
+7. **Select and execute an event** from the propensity-weighted distribution.
+8. **Check termination condition** (time-based or event-count-based).
 
 ---
 

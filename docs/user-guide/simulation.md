@@ -160,7 +160,7 @@ After the simulation completes, results are stored in `SimulationSetupAndState`:
 
 ```python
 # Returns list[list[float]] — transcription rate in bp/s for each RNAP per gene
-rates = sim.calculate_RNAP_transcription_times(model)
+rates = sim.calculate_RNAP_transcription_rates(model)
 ```
 
 ### Inter-RNAP Intervals
@@ -190,7 +190,7 @@ genomic_setup = GenomicSetup(
     gene_directions=[1, 1],
     RNAP_on_rates=[0.02, 0.02],
     promoter_mode='constitutive',
-    buffer_length=3400.0,
+    buffer_length=4420.0,
 )
 
 model_setup = ModelSetup(
@@ -209,6 +209,6 @@ sim = SimulationSetupAndState(
 simulate_dynamics(model, sim)
 
 for i, name in enumerate(genomic_setup.gene_names):
-    rates = sim.calculate_RNAP_transcription_times(model)[i]
+    rates = sim.calculate_RNAP_transcription_rates(model)[i]
     print(f'{name}: mean transcription rate = {np.mean(rates):.1f} bp/s')
 ```

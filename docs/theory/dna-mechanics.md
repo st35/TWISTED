@@ -112,7 +112,7 @@ where $\beta = 1/k_BT$ and the sign convention ensures relaxation toward $\sigma
 
 ### Type II Topoisomerase (TOP2)
 
-TOP2 relaxes positive plectonemic supercoiling (segment writhe $\Phi_w > 0$) by passing one DNA double helix through another, reducing writhe by 2:
+TOP2 relaxes plectonemic supercoiling (segment writhe $\Phi_w > 0$) by passing one DNA double helix through another, acting on both positive and negative $\sigma$ to drive it toward zero:
 
 $$\dot{Lk}^{\mathrm{TOP2}} = \mp n_2 \, V_0 \frac{Wr}{Wr + k_{12}}$$
 

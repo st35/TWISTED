@@ -96,7 +96,7 @@ Returns a uniform random float in the half-open interval `[start, end)`.
 get_spot_segment_index(spot: float, segments_lengths: list[float]) -> int
 ```
 
-Returns the index of the DNA segment containing `spot` (given as a cumulative length measured from the **right** clamp). Segments are ordered right-to-left.
+Returns the index of the DNA segment containing `spot` (given as an absolute position measured from the **left** clamp). Segments are ordered right-to-left.
 
 Returns `-1` if the spot falls outside all segments (which should not occur in a correctly configured simulation).
 
@@ -126,6 +126,7 @@ Blocking is triggered by:
 ```python
 is_TOPO_binding_blocked(
     model: Model,
+    RNAP_gene_index: list[int],
     state_vector: list[float],
     binding_position: float
 ) -> int

@@ -357,7 +357,7 @@ def update_state_vector_to_remove_dead_RNAPs(model: Model, RNAP_gene_index: list
 def get_events_rates(model: Model, RNAP_gene_index: list[int], state_vector: list[float]) -> tuple[list[float], list[int]]: # Get the rates of all possible events and the indices that separate different event types in the rates_vector
 	segments_lengths, segments_sigmas, segments_torques, segments_dna_states, segments_writhe_fractions, segments_plectoneme_thresholds = calculate_segments_attributes(model, RNAP_gene_index, state_vector)
 
-	RNAP_recruitment_rates = get_RNAP_recruitment_rates(model, RNAP_gene_index, state_vector, segments_lengths, segments_torques)
+	RNAP_recruitment_rates = get_RNAP_recruitment_rates(model, RNAP_gene_index, state_vector, segments_lengths, segments_sigmas)
 	model_observation_event_rate = [model.model_setup.model_observation_event_rate]
 	global_supercoiling_relaxation_rate = [model.model_setup.global_supercoiling_relaxation_rate]
 	local_supercoiling_relaxation_rates = model.model_setup.local_supercoiling_relaxation_rates
@@ -394,7 +394,7 @@ def model_dynamics(t: float, state_vector: list[float], RNAP_gene_index: list[in
 
 	return dx_dt + dtheta_dt + dLk_dt + [sum(rates_vector)]
 
-def integrate(model: Model, simulation_setup_and_state: SimulationSetupAndState, t_start: float, state_vector: list[float], RNAP_gene_index: list[int], p0: float, print_at_each_integration_step: Union[Callable, None]) -> None: # Integrate the model dynamics until the next event occurs; return the time step dt and cumulative propensity a0 at event time
+def integrate(model: Model, simulation_setup_and_state: SimulationSetupAndState, t_start: float, state_vector: list[float], RNAP_gene_index: list[int], p0: float, print_at_each_integration_step: Union[Callable, None]) -> tuple[float, float]: # Integrate the model dynamics until the next event occurs; return the time step dt and cumulative propensity a0 at event time
 	dt = simulation_setup_and_state.RNAP_alive_status_check_interval
 	t = t_start
 	a0_ini = state_vector[-1]

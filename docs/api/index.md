@@ -15,14 +15,14 @@ The TWISTED codebase is organized into five modules. Each module is documented o
 ## Dependency Graph
 
 ```
-utilities.py
-    └── model_setup.py
-            └── biol_methods.py
-                    └── model_dynamics.py
-                                └── simulate_dynamics.py
+utilities.py ←──────────────────────────┐
+    └── model_setup.py                  │
+            ├── biol_methods.py          │
+            └── model_dynamics.py ───────┤
+                    └── simulate_dynamics.py
 ```
 
-Each module imports all symbols from the module above it via `from <module> import *`.
+All modules use `from <module> import *`. The primary chain is `utilities → model_setup → biol_methods → model_dynamics → simulate_dynamics`. In addition, `model_dynamics` and `simulate_dynamics` import directly from `utilities`, and `utilities` imports from `model_setup` (circular).
 
 ---
 
