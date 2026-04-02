@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.4">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
@@ -262,6 +262,25 @@
   
   
   
+    <li class="md-tabs__item">
+      <a href="../../tutorials/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Tutorials
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
     
     
       <li class="md-tabs__item">
@@ -424,6 +443,33 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../../tutorials/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
     
     
     
@@ -440,10 +486,10 @@
         
           
         
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
             
   
   
@@ -461,8 +507,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -641,10 +687,10 @@
         
           
         
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
             
   
   
@@ -662,8 +708,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -733,10 +779,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
             
   
   
@@ -754,8 +800,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_5">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1018,10 +1064,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#calculate_rnap_transcription_timesmodel-model-listlistfloat" class="md-nav__link">
+  <a href="#calculate_rnap_transcription_ratesmodel-model-listlistfloat" class="md-nav__link">
     <span class="md-ellipsis">
       
-        calculate_RNAP_transcription_times(model: Model) → list[list[float]]
+        calculate_RNAP_transcription_rates(model: Model) → list[list[float]]
       
     </span>
   </a>
@@ -1351,10 +1397,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#calculate_rnap_transcription_timesmodel-model-listlistfloat" class="md-nav__link">
+  <a href="#calculate_rnap_transcription_ratesmodel-model-listlistfloat" class="md-nav__link">
     <span class="md-ellipsis">
       
-        calculate_RNAP_transcription_times(model: Model) → list[list[float]]
+        calculate_RNAP_transcription_rates(model: Model) → list[list[float]]
       
     </span>
   </a>
@@ -1661,6 +1707,10 @@
 <li>All RNAPs start absent (<code>x_dict</code> and <code>theta_dict</code> are empty lists per gene).</li>
 <li>Constitutive promoters start <code>ON</code>; non-constitutive promoters start with a random binary state.</li>
 </ul>
+<div class="admonition warning">
+<p class="admonition-title">Non-constitutive promoters</p>
+<p>Stochastic promoter toggling is not yet implemented. Non-constitutive promoters retain their initial random state for the entire simulation. Full support is planned for a future release.</p>
+</div>
 <hr />
 <h2 id="simulationsetupandstate"><code>SimulationSetupAndState</code><a class="headerlink" href="#simulationsetupandstate" title="Permanent link">&para;</a></h2>
 <p>Controls simulation termination and accumulates results.</p>
@@ -1748,12 +1798,12 @@
 </tbody>
 </table>
 <h3 id="methods_1">Methods<a class="headerlink" href="#methods_1" title="Permanent link">&para;</a></h3>
-<h4 id="calculate_rnap_transcription_timesmodel-model-listlistfloat"><code>calculate_RNAP_transcription_times(model: Model) → list[list[float]]</code><a class="headerlink" href="#calculate_rnap_transcription_timesmodel-model-listlistfloat" title="Permanent link">&para;</a></h4>
+<h4 id="calculate_rnap_transcription_ratesmodel-model-listlistfloat"><code>calculate_RNAP_transcription_rates(model: Model) → list[list[float]]</code><a class="headerlink" href="#calculate_rnap_transcription_ratesmodel-model-listlistfloat" title="Permanent link">&para;</a></h4>
 <p>Returns the effective transcription rate in <strong>bp/s</strong> for each RNAP that completed transcription, grouped by gene.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">rates</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">calculate_RNAP_transcription_times</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">rates</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">calculate_RNAP_transcription_rates</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
 <a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="c1"># rates[gene_index][rnap_index] → float (bp/s)</span>
 </code></pre></div>
-<p>The rate is computed as the gene length (converted to bp) divided by the elapsed time from recruitment to exit.</p>
+<p>The rate is computed as the distance from the TSS to the exit position (converted to bp) divided by the elapsed time from recruitment to exit.</p>
 
 
 
