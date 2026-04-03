@@ -990,6 +990,34 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#bindingprotein" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BindingProtein
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="BindingProtein">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#model" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1323,6 +1351,34 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#bindingprotein" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BindingProtein
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="BindingProtein">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#model" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1613,14 +1669,91 @@
 </tbody>
 </table>
 <hr />
-<h2 id="model"><code>Model</code><a class="headerlink" href="#model" title="Permanent link">&para;</a></h2>
-<p>Container for the complete dynamic state of a simulation.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">Model</span><span class="p">:</span>
+<h2 id="bindingprotein"><code>BindingProtein</code><a class="headerlink" href="#bindingprotein" title="Permanent link">&para;</a></h2>
+<p>Represents a type of DNA-binding protein that can bind and unbind from DNA segments during the simulation.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">BindingProtein</span><span class="p">:</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>        <span class="bp">self</span><span class="p">,</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>        <span class="n">genomic_setup</span><span class="p">:</span> <span class="n">GenomicSetup</span><span class="p">,</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>        <span class="n">model_setup</span><span class="p">:</span> <span class="n">ModelSetup</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>        <span class="n">protein_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>        <span class="n">total_copy_number</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>        <span class="n">is_steric_barrier_to_RNAPs</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>        <span class="n">is_topological_barrier</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>        <span class="n">basal_on_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>        <span class="n">basal_off_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>        <span class="n">on_rate_func</span><span class="p">:</span> <span class="nb">callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>        <span class="n">off_rate_func</span><span class="p">:</span> <span class="nb">callable</span> <span class="o">=</span> <span class="kc">None</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</code></pre></div>
+<h3 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>protein_name</code></td>
+<td><code>str</code></td>
+<td>Identifier for this protein type</td>
+</tr>
+<tr>
+<td><code>total_copy_number</code></td>
+<td><code>int</code></td>
+<td>Total number of molecules of this protein</td>
+</tr>
+<tr>
+<td><code>is_steric_barrier_to_RNAPs</code></td>
+<td><code>bool</code></td>
+<td>Whether bound proteins block RNAP passage (not yet implemented)</td>
+</tr>
+<tr>
+<td><code>is_topological_barrier</code></td>
+<td><code>bool</code></td>
+<td>Whether bound proteins act as barriers to supercoiling diffusion (not yet implemented)</td>
+</tr>
+<tr>
+<td><code>basal_on_rate</code></td>
+<td><code>float</code></td>
+<td>Basal binding rate (s⁻¹ nm⁻¹); the per-segment on-rate is <code>basal_on_rate × segment_length</code></td>
+</tr>
+<tr>
+<td><code>basal_off_rate</code></td>
+<td><code>float</code></td>
+<td>Basal unbinding rate (s⁻¹)</td>
+</tr>
+<tr>
+<td><code>on_rate_func</code></td>
+<td><code>callable or None</code></td>
+<td>Optional function <code>(segment_length, segment_sigma) → float</code> that multiplies the basal on-rate × segment_length. Defaults to <code>1.0</code> (no modulation)</td>
+</tr>
+<tr>
+<td><code>off_rate_func</code></td>
+<td><code>callable or None</code></td>
+<td>Optional function <code>(segment_length, segment_sigma) → float</code> that multiplies the basal off-rate. Defaults to <code>1.0</code> (no modulation)</td>
+</tr>
+</tbody>
+</table>
+<p>The effective per-segment on-rate for unbound proteins is:</p>
+<div class="arithmatex">\[r_{\text{on}} = n_{\text{unbound}} \times \texttt{basal\_on\_rate} \times L_{\text{segment}} \times f_{\text{on}}(L, \sigma)\]</div>
+<p>The effective off-rate for a bound protein on a given segment is:</p>
+<div class="arithmatex">\[r_{\text{off}} = \texttt{basal\_off\_rate} \times f_{\text{off}}(L, \sigma)\]</div>
+<div class="admonition warning">
+<p class="admonition-title">Not yet implemented</p>
+<p><code>is_steric_barrier_to_RNAPs</code> and <code>is_topological_barrier</code> are stored but not yet enforced during the simulation. Support will be added in a future release.</p>
+</div>
+<hr />
+<h2 id="model"><code>Model</code><a class="headerlink" href="#model" title="Permanent link">&para;</a></h2>
+<p>Container for the complete dynamic state of a simulation.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">Model</span><span class="p">:</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>        <span class="bp">self</span><span class="p">,</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>        <span class="n">genomic_setup</span><span class="p">:</span> <span class="n">GenomicSetup</span><span class="p">,</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>        <span class="n">model_setup</span><span class="p">:</span> <span class="n">ModelSetup</span><span class="p">,</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>        <span class="n">binding_proteins</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BindingProtein</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </code></pre></div>
 <h3 id="attributes_1">Attributes<a class="headerlink" href="#attributes_1" title="Permanent link">&para;</a></h3>
 <table>
@@ -1666,6 +1799,16 @@
 <td><code>mRNA_counts</code></td>
 <td><code>list[int]</code></td>
 <td>mRNA copy numbers per gene</td>
+</tr>
+<tr>
+<td><code>binding_proteins</code></td>
+<td><code>list[BindingProtein]</code></td>
+<td>List of binding protein types (empty list if none provided)</td>
+</tr>
+<tr>
+<td><code>binding_proteins_positions</code></td>
+<td><code>list[list[float]]</code></td>
+<td>Positions (nm) of bound proteins, indexed <code>[protein_type][bound_index]</code></td>
 </tr>
 </tbody>
 </table>
@@ -1714,16 +1857,16 @@
 <hr />
 <h2 id="simulationsetupandstate"><code>SimulationSetupAndState</code><a class="headerlink" href="#simulationsetupandstate" title="Permanent link">&para;</a></h2>
 <p>Controls simulation termination and accumulates results.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">SimulationSetupAndState</span><span class="p">:</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>        <span class="bp">self</span><span class="p">,</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>        <span class="n">genomic_setup</span><span class="p">:</span> <span class="n">GenomicSetup</span><span class="p">,</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>        <span class="n">simulation_end_mode</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>        <span class="n">simulation_end_criterion</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>        <span class="n">integration_time_resolution</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>        <span class="n">RNAP_alive_status_check_interval</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>        <span class="n">max_RNAPs_to_recruit</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">SimulationSetupAndState</span><span class="p">:</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>        <span class="bp">self</span><span class="p">,</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>        <span class="n">genomic_setup</span><span class="p">:</span> <span class="n">GenomicSetup</span><span class="p">,</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>        <span class="n">simulation_end_mode</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>        <span class="n">simulation_end_criterion</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>        <span class="n">integration_time_resolution</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>        <span class="n">RNAP_alive_status_check_interval</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>        <span class="n">max_RNAPs_to_recruit</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </code></pre></div>
 <h3 id="attributes_2">Attributes<a class="headerlink" href="#attributes_2" title="Permanent link">&para;</a></h3>
 <table>
@@ -1800,8 +1943,8 @@
 <h3 id="methods_1">Methods<a class="headerlink" href="#methods_1" title="Permanent link">&para;</a></h3>
 <h4 id="calculate_rnap_transcription_ratesmodel-model-listlistfloat"><code>calculate_RNAP_transcription_rates(model: Model) → list[list[float]]</code><a class="headerlink" href="#calculate_rnap_transcription_ratesmodel-model-listlistfloat" title="Permanent link">&para;</a></h4>
 <p>Returns the effective transcription rate in <strong>bp/s</strong> for each RNAP that completed transcription, grouped by gene.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">rates</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">calculate_RNAP_transcription_rates</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="c1"># rates[gene_index][rnap_index] → float (bp/s)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">rates</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">calculate_RNAP_transcription_rates</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="c1"># rates[gene_index][rnap_index] → float (bp/s)</span>
 </code></pre></div>
 <p>The rate is computed as the distance from the TSS to the exit position (converted to bp) divided by the elapsed time from recruitment to exit.</p>
 

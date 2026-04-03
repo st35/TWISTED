@@ -1380,6 +1380,16 @@
 <td><strong>mRNA degradation</strong></td>
 <td>Decrements <code>model.mRNA_counts</code> for the selected gene by 1. Raises <code>ValueError</code> if the gene has zero mRNA (should not be selected when count is 0, as the rate is 0)</td>
 </tr>
+<tr>
+<td><code>events_indices[7]–events_indices[8]</code></td>
+<td><strong>Binding protein binding</strong></td>
+<td>Selects a segment proportional to per-segment on-rates, places the protein at a random position within that segment, and appends to <code>model.binding_proteins_positions</code></td>
+</tr>
+<tr>
+<td><code>events_indices[8]–events_indices[9]</code></td>
+<td><strong>Binding protein unbinding</strong></td>
+<td>Selects which bound protein to release (proportional to per-molecule off-rates) and removes it from <code>model.binding_proteins_positions</code></td>
+</tr>
 </tbody>
 </table>
 <h3 id="rnap-recruitment-details">RNAP Recruitment Details<a class="headerlink" href="#rnap-recruitment-details" title="Permanent link">&para;</a></h3>
