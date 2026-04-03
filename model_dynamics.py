@@ -114,6 +114,19 @@ def get_RNAP_velocities(model: Model, state_vector: list[float], RNAP_gene_index
 					if state_vector[i] - topo_pos >= 0.0 and state_vector[i] - topo_pos < model.model_setup.RNAP_TOPO_steric_effect_cutoff:
 						RNAP_velocities[i] = 0.0
 	
+	binding_proteins_positions = []
+	for i in range(len(model.binding_proteins)):
+		if model.binding_proteins[i].is_steric_barrier_to_RNAPs:
+			binding_proteins_positions = binding_proteins_positions + model.binding_proteins_positions[i]
+	for i in range(RNAP_count):
+		for protein_pos in binding_proteins_positions:
+			if model.genomic_setup.gene_directions[RNAP_gene_index[i]] == 1:
+				if protein_pos - state_vector[i] >= 0.0 and protein_pos - state_vector[i] < model.model_setup.RNAP_other_steric_effect_cutoff:
+					RNAP_velocities[i] = 0.0
+			else:
+				if state_vector[i] - protein_pos >= 0.0 and state_vector[i] - protein_pos < model.model_setup.RNAP_other_steric_effect_cutoff:
+					RNAP_velocities[i] = 0.0
+	
 	return RNAP_velocities
 
 def get_RNAP_angular_velocities(model: Model, RNAP_gene_index: list[int], state_vector: list[float], segments_lengths: list[float], segments_torques: list[float], RNAP_velocities: list[float]) -> list[float]: # Get the angular velocities of all RNAPs based on the state_vector, segments lengths and torques, and RNAP linear velocities
@@ -269,6 +282,27 @@ def get_mRNA_degradation_rates(model: Model) -> list[float]: # Get the mRNA degr
 		mRNA_degradation_rates.append(get_mRNA_degradation_rate(model, model.mRNA_counts[i]))
 	return mRNA_degradation_rates
 
+def get_binding_proteins_on_rates(model: Model, segments_lengths: list[float], segments_sigmas: list[float]) -> list[list[float]]:
+	binding_proteins_on_rates = []
+	for i in range(len(model.binding_proteins)):
+		protein = model.binding_proteins[i]
+		bound_protein_count = len(model.binding_proteins_positions[i])
+		unbound_protein_count = protein.total_copy_number - bound_protein_count
+		per_segment_on_rates = [protein.on_rate_func(segment_length, segment_sigma) for segment_length, segment_sigma in zip(segments_lengths, segments_sigmas)]
+		binding_proteins_on_rates.append([unbound_protein_count*per_segment_on_rate for per_segment_on_rate in per_segment_on_rates])
+	
+	return binding_proteins_on_rates
+
+def get_binding_proteins_off_rates(model: Model, segments_lengths: list[float], segments_sigmas: list[float]) -> list[list[float]]:
+	binding_proteins_off_rates = []
+	for i in range(len(model.binding_proteins)):
+		protein = model.binding_proteins[i]
+		segment_of_bound_proteins = [get_spot_segment_index(model.binding_proteins_positions[i][j], segments_lengths) for j in range(len(model.binding_proteins_positions[i]))]
+		per_segment_off_rates = [protein.off_rate_func(segment_length, segment_sigma) for segment_length, segment_sigma in zip(segments_lengths, segments_sigmas)]
+		binding_proteins_off_rates.append([per_segment_off_rates[segment_index] for segment_index in segment_of_bound_proteins])
+	
+	return binding_proteins_off_rates
+
 def update_Lk_vector_after_RNAP_recruitment(model: Model, TSS_index: int, RNAP_gene_index: list[int], state_vector: list[float], segments_lengths: list[float], segments_sigmas: list[float]) -> None: # Update the model's Lk vector after an RNAP is recruited at the given TSS_index; Lk for the segments on either side of the TSS are calculated such that the supercoiling density in the segments is the same as in the segment spanning the TSS before recruitment
 	TSS_segment_index = get_spot_segment_index(model.genomic_setup.TSSes[TSS_index], segments_lengths)
 	TSS_sigma = segments_sigmas[TSS_segment_index]
@@ -365,8 +399,10 @@ def get_events_rates(model: Model, RNAP_gene_index: list[int], state_vector: lis
 	TOPO_binding_rates = get_TOPO_binding_rates(model, segments_lengths, segments_sigmas)
 	TOPO_unbinding_rates = get_TOPO_unbinding_rates(model, segments_lengths, segments_sigmas)
 	mRNA_degradation_rates = get_mRNA_degradation_rates(model)
+	binding_proteins_on_rates = [sum(per_protein_on_rates) for per_protein_on_rates in get_binding_proteins_on_rates(model, segments_lengths, segments_sigmas)]
+	binding_proteins_off_rates = [sum(per_protein_off_rates) for per_protein_off_rates in get_binding_proteins_off_rates(model, segments_lengths, segments_sigmas)]
 
-	rates_vector = RNAP_recruitment_rates + model_observation_event_rate + global_supercoiling_relaxation_rate + local_supercoiling_relaxation_rates + TOPO_activity_rates + TOPO_binding_rates + TOPO_unbinding_rates + mRNA_degradation_rates
+	rates_vector = RNAP_recruitment_rates + model_observation_event_rate + global_supercoiling_relaxation_rate + local_supercoiling_relaxation_rates + TOPO_activity_rates + TOPO_binding_rates + TOPO_unbinding_rates + mRNA_degradation_rates + binding_proteins_on_rates + binding_proteins_off_rates
 	assert all(rate >= 0.0 for rate in rates_vector), 'Negative rate encountered in calculating events rates.'
 
 	events_indices = []
@@ -378,6 +414,8 @@ def get_events_rates(model: Model, RNAP_gene_index: list[int], state_vector: lis
 	events_indices.append(events_indices[-1] + len(TOPO_binding_rates))
 	events_indices.append(events_indices[-1] + len(TOPO_unbinding_rates))
 	events_indices.append(events_indices[-1] + len(mRNA_degradation_rates))
+	events_indices.append(events_indices[-1] + len(binding_proteins_on_rates))
+	events_indices.append(events_indices[-1] + len(binding_proteins_off_rates))
 
 	return rates_vector, events_indices
 

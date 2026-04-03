@@ -40,7 +40,7 @@ class GenomicSetup: # Class to hold genomic setup information
 		print('=' * 40)
 
 class ModelSetup: # Class to hold model setup parameters
-	def __init__(self, w0: float = 1.85, chi: float = 0.05, eta: float = 0.0005, alpha: float = 1.5, v0: float = 20.0, tau_c: float = 12.0, force: float = 1.0, kBT: float = 4.1, TOP1_k0: float = 11.0, TOP1_theta: float = 0.25, TOP2_V0: float = 2.6, TOP2_k12: float = 2.0, between_RNAPs_steric_effect_cutoff: float = 15.0, RNAP_TOPO_steric_effect_cutoff: float = 15.0, clamps_status: tuple[str, str] = ('clamped', 'clamped'), finite_size_effect_flag: int = 1, supercoiling_relaxation_dynamics_mode: str = 'global_overall', mRNA_dynamics_mode: int = 0, model_observation_event_rate: float = 1.0 / 2.0, **kwargs) -> None:
+	def __init__(self, w0: float = 1.85, chi: float = 0.05, eta: float = 0.0005, alpha: float = 1.5, v0: float = 20.0, tau_c: float = 12.0, force: float = 1.0, kBT: float = 4.1, TOP1_k0: float = 11.0, TOP1_theta: float = 0.25, TOP2_V0: float = 2.6, TOP2_k12: float = 2.0, between_RNAPs_steric_effect_cutoff: float = 15.0, RNAP_TOPO_steric_effect_cutoff: float = 15.0, RNAP_other_steric_effect_cutoff: float = 15.0, between_proteins_steric_effect_cutoff: float = 15.0, clamps_status: tuple[str, str] = ('clamped', 'clamped'), finite_size_effect_flag: int = 1, supercoiling_relaxation_dynamics_mode: str = 'global_overall', mRNA_dynamics_mode: int = 0, model_observation_event_rate: float = 1.0 / 2.0, **kwargs) -> None:
 		self.w0 = w0 # Default: 1.85 1 / nm
 		self.h_dna = (2.0*3.14) / w0 # From w0*h_dna = 2*pi
 		self.chi = chi # Default: 0.05 pN*nm*s
@@ -56,6 +56,8 @@ class ModelSetup: # Class to hold model setup parameters
 		self.TOP2_k12 = TOP2_k12 # Default: 2.0
 		self.between_RNAPs_steric_effect_cutoff = between_RNAPs_steric_effect_cutoff # Default: 15.0 nm; steric hindrance cutoff distance between RNAPs
 		self.RNAP_TOPO_steric_effect_cutoff = RNAP_TOPO_steric_effect_cutoff # Default: 15.0 nm; steric hindrance cutoff distance between RNAPs and topoisomerases
+		self.RNAP_other_steric_effect_cutoff = RNAP_other_steric_effect_cutoff # Default: 15.0 nm; steric hindrance cutoff distance between RNAPs and other proteins
+		self.between_proteins_steric_effect_cutoff = between_proteins_steric_effect_cutoff # Default: 15.0 nm; steric hindrance cutoff distance between DNA-binding proteins (not including RNAPs)
 		assert len(clamps_status) == 2, 'clamps_status must be a tuple of two strings representing the status of the left and right clamps, respectively.'
 		assert all(status in ['clamped', 'free'] for status in clamps_status), 'Each clamp status in clamps_status must be either "clamped" or "free".'
 		self.left_clamp_status = 0 if clamps_status[0] == 'free' else 1
@@ -120,8 +122,29 @@ class ModelSetup: # Class to hold model setup parameters
 
 		self.supercoiling_relaxation_dynamics_modes_with_no_steric_hindrance = ['global_overall', 'global_per_segment', 'global_by_type', 'per_segment_by_type', 'topoisomerase_approximated'] # List of supercoiling relaxation dynamics modes that do explicitly model topoisomerase binding and unbinding dynamics and therefore do not exert steric hindrance effects on RNAPs
 
+class BindingProtein:
+	def __init__(self, protein_name: str, total_copy_number: int, is_steric_barrier_to_RNAPs: bool, is_topological_barrier: bool, basal_on_rate: float, basal_off_rate: float, on_rate_func: callable = None, off_rate_func: callable = None) -> None:
+		self.protein_name = protein_name
+		self.total_copy_number = total_copy_number
+		self.is_steric_barrier_to_RNAPs = is_steric_barrier_to_RNAPs
+		self.is_topological_barrier = is_topological_barrier
+		self.basal_on_rate = basal_on_rate
+		self.basal_off_rate = basal_off_rate
+		if on_rate_func is None:
+			self.on_rate_func = lambda segment_length, segment_sigma, *args: basal_on_rate*segment_length
+		else:
+			if not callable(on_rate_func):
+				raise ValueError('on_rate_func must be a callable function if provided.')
+			self.on_rate_func = lambda segment_length, segment_sigma, *args: on_rate_func(segment_length, segment_sigma, *args)*basal_on_rate*segment_length
+		if off_rate_func is None:
+			self.off_rate_func = lambda segment_length, segment_sigma, *args: basal_off_rate
+		else:
+			if not callable(off_rate_func):
+				raise ValueError('off_rate_func must be a callable function if provided.')
+			self.off_rate_func = lambda segment_length, segment_sigma, *args: off_rate_func(segment_length, segment_sigma, *args)*basal_off_rate
+
 class Model: # Class to hold the model, including genomic setup, model setup, and dynamic state variables
-	def __init__(self, genomic_setup: GenomicSetup, model_setup: ModelSetup) -> None:
+	def __init__(self, genomic_setup: GenomicSetup, model_setup: ModelSetup, binding_proteins: list[BindingProtein] = None) -> None:
 		self.genomic_setup = genomic_setup # GenomicSetup object
 		self.model_setup = model_setup # ModelSetup object
 		self.x_dict = [[] for _ in genomic_setup.gene_names] # List of lists to hold positions of RNAPs for each gene
@@ -135,6 +158,11 @@ class Model: # Class to hold the model, including genomic setup, model setup, an
 			self.topoisomerase_positions = [-1.0 for _ in range(model_setup.topoisomerase_copy_numbers[0] + model_setup.topoisomerase_copy_numbers[1])] # Positions of topoisomerases; -1.0 indicates unbound; initially all unbound
 			self.topoisomerase_segment_indices = [-1 for _ in range(model_setup.topoisomerase_copy_numbers[0] + model_setup.topoisomerase_copy_numbers[1])] # Segment indices of bound topoisomerases; -1 indicates unbound; initially all unbound
 			self.topoisomerase_status = [0 for _ in range(model_setup.topoisomerase_copy_numbers[0] + model_setup.topoisomerase_copy_numbers[1])] # Topoisomerase binding status; 0: unbound, 1: bound; initially all unbound
+		
+		if binding_proteins is None:
+			binding_proteins = []
+		self.binding_proteins = binding_proteins # List of BindingProtein objects representing other DNA-binding proteins in the system
+		self.binding_proteins_positions = [[] for _ in binding_proteins] # List of lists to hold positions of each bound protein; each sublist corresponds to a binding protein type and contains the positions of all bound proteins of that type
 
 class SimulationSetupAndState: # Class to hold simulation setup parameters
 	def __init__(self, genomic_setup: GenomicSetup, simulation_end_mode: int, simulation_end_criterion: Union[float, list[int]], integration_time_resolution: float = 1.0e-1, RNAP_alive_status_check_interval: float = 1.0, max_RNAPs_to_recruit: list[int] = None) -> None:

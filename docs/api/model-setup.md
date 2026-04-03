@@ -104,6 +104,51 @@ See [Model Parameters](../user-guide/model-setup.md) for full parameter descript
 
 ---
 
+## `BindingProtein`
+
+Represents a type of DNA-binding protein that can bind and unbind from DNA segments during the simulation.
+
+```python
+class BindingProtein:
+    def __init__(
+        self,
+        protein_name: str,
+        total_copy_number: int,
+        is_steric_barrier_to_RNAPs: bool,
+        is_topological_barrier: bool,
+        basal_on_rate: float,
+        basal_off_rate: float,
+        on_rate_func: callable = None,
+        off_rate_func: callable = None
+    ) -> None
+```
+
+### Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `protein_name` | `str` | Identifier for this protein type |
+| `total_copy_number` | `int` | Total number of molecules of this protein |
+| `is_steric_barrier_to_RNAPs` | `bool` | Whether bound proteins block RNAP passage (not yet implemented) |
+| `is_topological_barrier` | `bool` | Whether bound proteins act as barriers to supercoiling diffusion (not yet implemented) |
+| `basal_on_rate` | `float` | Basal binding rate (s⁻¹ nm⁻¹); the per-segment on-rate is `basal_on_rate × segment_length` |
+| `basal_off_rate` | `float` | Basal unbinding rate (s⁻¹) |
+| `on_rate_func` | `callable or None` | Optional function `(segment_length, segment_sigma) → float` that multiplies the basal on-rate × segment_length. Defaults to `1.0` (no modulation) |
+| `off_rate_func` | `callable or None` | Optional function `(segment_length, segment_sigma) → float` that multiplies the basal off-rate. Defaults to `1.0` (no modulation) |
+
+The effective per-segment on-rate for unbound proteins is:
+
+$$r_{\text{on}} = n_{\text{unbound}} \times \texttt{basal\_on\_rate} \times L_{\text{segment}} \times f_{\text{on}}(L, \sigma)$$
+
+The effective off-rate for a bound protein on a given segment is:
+
+$$r_{\text{off}} = \texttt{basal\_off\_rate} \times f_{\text{off}}(L, \sigma)$$
+
+!!! warning "Not yet implemented"
+    `is_steric_barrier_to_RNAPs` and `is_topological_barrier` are stored but not yet enforced during the simulation. Support will be added in a future release.
+
+---
+
 ## `Model`
 
 Container for the complete dynamic state of a simulation.
@@ -113,7 +158,8 @@ class Model:
     def __init__(
         self,
         genomic_setup: GenomicSetup,
-        model_setup: ModelSetup
+        model_setup: ModelSetup,
+        binding_proteins: list[BindingProtein] = None
     ) -> None
 ```
 
@@ -128,6 +174,8 @@ class Model:
 | `Lk` | `list[float]` | Linking number of each DNA segment (length = n_RNAPs + 1). Ordered right-to-left |
 | `promoter_status` | `list[int]` | `1` (ON) or `0` (OFF) per gene |
 | `mRNA_counts` | `list[int]` | mRNA copy numbers per gene |
+| `binding_proteins` | `list[BindingProtein]` | List of binding protein types (empty list if none provided) |
+| `binding_proteins_positions` | `list[list[float]]` | Positions (nm) of bound proteins, indexed `[protein_type][bound_index]` |
 
 Additional attributes present only when `supercoiling_relaxation_dynamics_mode == 'topoisomerase_based'`:
 

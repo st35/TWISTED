@@ -54,6 +54,8 @@ Each iteration of the loop:
 | `events_indices[4]–events_indices[5]` | **Topoisomerase binding** | Selects segment and position; binds topoisomerase if not sterically blocked |
 | `events_indices[5]–events_indices[6]` | **Topoisomerase unbinding** | Releases bound topoisomerase; resets position and segment index to `-1` |
 | `events_indices[6]–events_indices[7]` | **mRNA degradation** | Decrements `model.mRNA_counts` for the selected gene by 1. Raises `ValueError` if the gene has zero mRNA (should not be selected when count is 0, as the rate is 0) |
+| `events_indices[7]–events_indices[8]` | **Binding protein binding** | Selects a segment proportional to per-segment on-rates, places the protein at a random position within that segment, and appends to `model.binding_proteins_positions` |
+| `events_indices[8]–events_indices[9]` | **Binding protein unbinding** | Selects which bound protein to release (proportional to per-molecule off-rates) and removes it from `model.binding_proteins_positions` |
 
 ### RNAP Recruitment Details
 

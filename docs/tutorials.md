@@ -624,6 +624,170 @@ The output files can then be loaded and plotted with any standard tool
 
 ---
 
+## Example 8 — DNA-Binding Proteins
+
+TWISTED can model additional DNA-binding proteins that stochastically bind and
+unbind from DNA segments. Each protein type is defined as a `BindingProtein`
+object and passed to the `Model` constructor.
+
+### 8.1 Define a binding protein
+
+```python
+from model_setup import BindingProtein
+
+# A hypothetical protein with 10 copies, binding at 0.001 / (s * nm)
+# and unbinding at 0.01 / s
+my_protein = BindingProtein(
+    protein_name='ProteinX',
+    total_copy_number=10,
+    is_steric_barrier_to_RNAPs=False,   # Not yet enforced
+    is_topological_barrier=False,        # Not yet enforced
+    basal_on_rate=0.001,                 # s⁻¹ nm⁻¹
+    basal_off_rate=0.01,                 # s⁻¹
+)
+```
+
+The effective per-segment on-rate is `basal_on_rate × segment_length × n_unbound`,
+so longer segments attract more binding. The off-rate is constant per bound
+molecule.
+
+### 8.2 Custom rate functions
+
+You can supply optional `on_rate_func` and `off_rate_func` callables that
+modulate the basal rates based on segment length and supercoiling density:
+
+```python
+# Protein that binds faster on negatively supercoiled DNA
+def enhanced_binding(segment_length, segment_sigma):
+    return 5.0 if segment_sigma < -0.02 else 1.0
+
+my_protein = BindingProtein(
+    protein_name='SC_sensor',
+    total_copy_number=20,
+    is_steric_barrier_to_RNAPs=False,
+    is_topological_barrier=False,
+    basal_on_rate=0.0005,
+    basal_off_rate=0.02,
+    on_rate_func=enhanced_binding,  # Multiplies basal_on_rate × segment_length
+)
+```
+
+The effective on-rate becomes
+`n_unbound × basal_on_rate × segment_length × on_rate_func(L, σ)`.
+
+### 8.3 Run a simulation with binding proteins
+
+```python
+import random
+random.seed(3)
+
+genomic_setup = construct_genomic_setup(
+    'single_gene.config',
+    'prokaryotic',
+    'constitutive',
+)
+
+model_setup = ModelSetup(
+    supercoiling_relaxation_dynamics_mode='topoisomerase_approximated',
+    TOP1_effective_relaxation_rate=0.004,
+    TOP2_effective_relaxation_rate=0.004,
+)
+
+# Pass binding proteins to the Model constructor
+model = Model(genomic_setup, model_setup, binding_proteins=[my_protein])
+
+simulation_setup_and_state = SimulationSetupAndState(
+    genomic_setup,
+    simulation_end_mode=1,
+    simulation_end_criterion=[30],
+)
+
+simulate_dynamics(model, simulation_setup_and_state)
+
+# Inspect bound protein positions after the simulation
+print(f'Bound {my_protein.protein_name} count: {len(model.binding_proteins_positions[0])}')
+print(f'Positions: {model.binding_proteins_positions[0]}')
+```
+
+### 8.4 Multiple binding protein types
+
+You can define several protein types with different kinetics and pass them all
+to `Model`. Each type is tracked independently — positions for protein type `i`
+are stored in `model.binding_proteins_positions[i]`.
+
+```python
+import random
+random.seed(5)
+
+# Fast-binding, fast-unbinding protein (high turnover)
+transient_binder = BindingProtein(
+    protein_name='Transient',
+    total_copy_number=50,
+    is_steric_barrier_to_RNAPs=False,
+    is_topological_barrier=False,
+    basal_on_rate=0.005,    # s⁻¹ nm⁻¹
+    basal_off_rate=0.5,     # s⁻¹ (short residence time)
+)
+
+# Slow-binding, slow-unbinding protein (long-lived occupancy)
+stable_binder = BindingProtein(
+    protein_name='Stable',
+    total_copy_number=5,
+    is_steric_barrier_to_RNAPs=False,
+    is_topological_barrier=False,
+    basal_on_rate=0.0002,   # s⁻¹ nm⁻¹
+    basal_off_rate=0.005,   # s⁻¹ (long residence time)
+)
+
+# Supercoiling-sensitive protein that unbinds faster under positive supercoiling
+def sc_dependent_off(segment_length, segment_sigma):
+    return 10.0 if segment_sigma > 0.02 else 1.0
+
+sc_sensor = BindingProtein(
+    protein_name='SC_sensor',
+    total_copy_number=15,
+    is_steric_barrier_to_RNAPs=False,
+    is_topological_barrier=False,
+    basal_on_rate=0.001,
+    basal_off_rate=0.01,
+    off_rate_func=sc_dependent_off,  # 10× faster unbinding on positively supercoiled DNA
+)
+
+# Set up and run
+genomic_setup = construct_genomic_setup(
+    'single_gene.config',
+    'prokaryotic',
+    'constitutive',
+)
+
+model_setup = ModelSetup(
+    supercoiling_relaxation_dynamics_mode='topoisomerase_approximated',
+    TOP1_effective_relaxation_rate=0.004,
+    TOP2_effective_relaxation_rate=0.004,
+)
+
+model = Model(
+    genomic_setup,
+    model_setup,
+    binding_proteins=[transient_binder, stable_binder, sc_sensor],
+)
+
+simulation_setup_and_state = SimulationSetupAndState(
+    genomic_setup,
+    simulation_end_mode=0,
+    simulation_end_criterion=120.0,  # 120 seconds
+)
+
+simulate_dynamics(model, simulation_setup_and_state)
+
+# Report bound counts for each protein type
+for i, protein in enumerate(model.binding_proteins):
+    n_bound = len(model.binding_proteins_positions[i])
+    print(f'{protein.protein_name}: {n_bound} / {protein.total_copy_number} bound')
+```
+
+---
+
 ## Quick Reference
 
 ### Config file format

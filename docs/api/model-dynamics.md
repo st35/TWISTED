@@ -169,6 +169,30 @@ get_mRNA_degradation_rates(model: Model) -> list[float]
 
 Returns a list of mRNA degradation rates (s⁻¹), one per gene. Each rate equals `mRNA_degradation_rate × mRNA_counts[i]`. When `mRNA_dynamics_mode = 0`, `ModelSetup` sets `mRNA_degradation_rate = 0.0`, so all rates are zero regardless of current counts.
 
+### `get_binding_proteins_on_rates`
+
+```python
+get_binding_proteins_on_rates(
+    model: Model,
+    segments_lengths: list[float],
+    segments_sigmas: list[float]
+) -> list[list[float]]
+```
+
+Returns a nested list of binding rates, indexed `[protein_type][segment_index]`. For each protein type, the per-segment rate is `n_unbound × on_rate_func(segment_length, segment_sigma)` where `on_rate_func` incorporates `basal_on_rate × segment_length` (and optional modulation). Empty list per type when no binding proteins are defined.
+
+### `get_binding_proteins_off_rates`
+
+```python
+get_binding_proteins_off_rates(
+    model: Model,
+    segments_lengths: list[float],
+    segments_sigmas: list[float]
+) -> list[list[float]]
+```
+
+Returns a nested list of unbinding rates, indexed `[protein_type][bound_molecule_index]`. For each bound protein, the rate is `off_rate_func(segment_length, segment_sigma)` evaluated for the segment the protein occupies. The off-rate function incorporates `basal_off_rate` (and optional modulation). Empty list per type when no proteins are bound.
+
 ### `get_events_rates`
 
 ```python
@@ -182,17 +206,19 @@ get_events_rates(
 Assembles the complete rates vector and returns `(rates_vector, events_indices)`. The rates vector layout:
 
 ```
-[RNAP_recruitment_rates...]   # indices 0 to events_indices[0]-1
-[model_observation_rate]      # index events_indices[0]
-[global_relaxation_rate]      # index events_indices[1]
-[local_relaxation_rates...]   # indices events_indices[2] to events_indices[3]-1
-[TOPO_activity_rates...]      # indices events_indices[3] to events_indices[4]-1
-[TOPO_binding_rates...]       # indices events_indices[4] to events_indices[5]-1
-[TOPO_unbinding_rates...]     # indices events_indices[5] to events_indices[6]-1
-[mRNA_degradation_rates...]   # indices events_indices[6] to events_indices[7]-1
+[RNAP_recruitment_rates...]        # indices 0 to events_indices[0]-1
+[model_observation_rate]           # index events_indices[0]
+[global_relaxation_rate]           # index events_indices[1]
+[local_relaxation_rates...]        # indices events_indices[2] to events_indices[3]-1
+[TOPO_activity_rates...]           # indices events_indices[3] to events_indices[4]-1
+[TOPO_binding_rates...]            # indices events_indices[4] to events_indices[5]-1
+[TOPO_unbinding_rates...]          # indices events_indices[5] to events_indices[6]-1
+[mRNA_degradation_rates...]        # indices events_indices[6] to events_indices[7]-1
+[binding_proteins_on_rates...]     # indices events_indices[7] to events_indices[8]-1
+[binding_proteins_off_rates...]    # indices events_indices[8] to events_indices[9]-1
 ```
 
-`events_indices` is an 8-element list of cumulative boundary indices.
+`events_indices` is a 10-element list of cumulative boundary indices.
 
 ---
 

@@ -116,6 +116,20 @@ def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupA
 				raise ValueError('mRNA degradation event selected for gene with zero mRNA count.')
 			else:
 				model.mRNA_counts[event] -= 1 # Degrade one mRNA molecule for the gene
+		elif event_index < events_indices[8]: # Binding protein binding event
+			event = event_index - events_indices[7]
+			per_segment_on_rates = get_binding_proteins_on_rates(model, segments_lengths, segments_sigmas)[event]
+			chosen_segment_index = select_event_based_on_propensities(per_segment_on_rates, random())
+			binding_position = model.genomic_setup.clamp_left + sum(segments_lengths[chosen_segment_index + 1:]) + (segments_lengths[chosen_segment_index]*uniform_random_in_interval(0.0, 1.0))
+			if is_protein_binding_blocked(model, RNAP_gene_index, state_vector, event, binding_position) == 0:
+				model.binding_proteins_positions[event].append(binding_position) # Bind the binding protein at the chosen position
+		elif event_index < events_indices[9]: # Binding protein unbinding event
+			event = event_index - events_indices[8]
+			binding_proteins_off_rates = get_binding_proteins_off_rates(model, segments_lengths, segments_sigmas)[event]
+			assert len(binding_proteins_off_rates) == len(model.binding_proteins_positions[event]), 'Length of binding proteins off rates does not match number of bound proteins for the event.'
+			chosen_bound_protein_index = select_event_based_on_propensities(binding_proteins_off_rates, random())
+			if chosen_bound_protein_index is not None:
+				model.binding_proteins_positions[event].pop(chosen_bound_protein_index) # Unbind the chosen binding protein
 		else:
 			raise ValueError('Event index out of bounds during simulation.')
 		
