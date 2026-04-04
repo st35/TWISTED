@@ -60,7 +60,7 @@ def get_spot_segment_index(spot: float, segments_lengths: list[float]) -> int: #
 def get_TSS_steric_hindrance_status(model: Model, TSS_position: float, RNAP_gene_index: list[int], state_vector: list[float]) -> int: # Check if there is steric hindrance at the TSS position due to existing RNAPs; return 1 if hindered, 0 if not
 	RNAP_count = len(RNAP_gene_index)
 	for x in state_vector[:RNAP_count]:
-		if abs(x - TSS_position) < model.model_setup.between_RNAPs_steric_effect_cutoff:
+		if abs(x - TSS_position) < model.model_setup.RNAP_diameter:
 			return 1
 	
 	if model.model_setup.supercoiling_relaxation_dynamics_mode in model.model_setup.supercoiling_relaxation_dynamics_modes_with_no_steric_hindrance:
@@ -68,15 +68,23 @@ def get_TSS_steric_hindrance_status(model: Model, TSS_position: float, RNAP_gene
 	
 	TOPO_positions = [model.topoisomerase_positions[i] for i in range(len(model.topoisomerase_positions)) if model.topoisomerase_status[i] == 1]
 	for topo_pos in TOPO_positions:
-		if abs(topo_pos - TSS_position) < model.model_setup.RNAP_TOPO_steric_effect_cutoff:
+		if abs(topo_pos - TSS_position) < (model.model_setup.RNAP_diameter + model.model_setup.TOPO_diameter) / 2.0:
+			return 1
+	
+	nucl_positions = []
+	for i in range(len(model.binding_proteins)):
+		if model.binding_proteins[i].is_a_nucleosome and model.binding_proteins[i].is_steric_barrier_to_RNAPs:
+			nucl_positions = nucl_positions + model.binding_proteins_positions[i]
+	for nucl_pos in nucl_positions:
+		if abs(nucl_pos - TSS_position) < (model.model_setup.RNAP_diameter + model.genomic_setup.per_nucleosome_DNA_length + model.genomic_setup.nucleosome_linker_length) / 2.0:
 			return 1
 	
 	bound_protein_positions = []
 	for i in range(len(model.binding_proteins)):
-		if model.binding_proteins[i].is_steric_barrier_to_RNAPs:
+		if model.binding_proteins[i].is_a_nucleosome is False and model.binding_proteins[i].is_steric_barrier_to_RNAPs:
 			bound_protein_positions = bound_protein_positions + model.binding_proteins_positions[i]
 	for protein_pos in bound_protein_positions:
-		if abs(protein_pos - TSS_position) < model.model_setup.RNAP_other_steric_effect_cutoff:
+		if abs(protein_pos - TSS_position) < (model.model_setup.RNAP_diameter + model.model_setup.generic_binding_protein_diameter) / 2.0:
 			return 1
 	
 	return 0
@@ -84,22 +92,36 @@ def get_TSS_steric_hindrance_status(model: Model, TSS_position: float, RNAP_gene
 def is_protein_binding_blocked(model: Model, RNAP_gene_index: list[int], state_vector: list[float], protein_index: int, binding_position: float) -> int:
 	RNAP_count = len(RNAP_gene_index)
 	for x in state_vector[:RNAP_count]:
-		if abs(x - binding_position) < model.model_setup.RNAP_other_steric_effect_cutoff:
-			return 1
+		if model.binding_proteins[protein_index].is_a_nucleosome:
+			if abs(x - binding_position) < (model.model_setup.RNAP_diameter + model.genomic_setup.per_nucleosome_DNA_length + model.genomic_setup.nucleosome_linker_length) / 2.0:
+				return 1
+		else:
+			if abs(x - binding_position) < (model.model_setup.RNAP_diameter + model.model_setup.generic_binding_protein_diameter) / 2.0:
+				return 1
 	
-	bound_protein_positions = []
-	for i in range(len(model.binding_proteins)):
-		bound_protein_positions = bound_protein_positions + model.binding_proteins_positions[i]
-	for protein_pos in bound_protein_positions:
-		if abs(protein_pos - binding_position) < model.model_setup.between_proteins_steric_effect_cutoff:
-			return 1
+	if model.binding_proteins[protein_index].is_a_nucleosome:
+		bound_nucl_positions = []
+		for i in range(len(model.binding_proteins)):
+			if model.binding_proteins[i].is_a_nucleosome:
+				bound_nucl_positions = bound_nucl_positions + model.binding_proteins_positions[i]
+		for nucl_pos in bound_nucl_positions:
+			if abs(nucl_pos - binding_position) < (model.genomic_setup.per_nucleosome_DNA_length + model.genomic_setup.nucleosome_linker_length):
+				return 1
+	
+	if model.binding_proteins[protein_index].is_a_nucleosome is False:
+		bound_protein_positions = []
+		for i in range(len(model.binding_proteins)):
+			bound_protein_positions = bound_protein_positions + model.binding_proteins_positions[i]
+		for protein_pos in bound_protein_positions:
+			if abs(protein_pos - binding_position) < model.model_setup.generic_binding_protein_diameter:
+				return 1
 
 	return 0
 
 def is_TOPO_binding_blocked(model: Model, RNAP_gene_index: list[int], state_vector: list[float], binding_position: float) -> int: # Check if TOPO binding is blocked at the given position due to existing RNAPs; return 1 if blocked, 0 if not
 	RNAP_count = len(RNAP_gene_index)
 	for x in state_vector[:RNAP_count]:
-		if abs(x - binding_position) < model.model_setup.RNAP_TOPO_steric_effect_cutoff:
+		if abs(x - binding_position) < (model.model_setup.RNAP_diameter + model.model_setup.TOPO_diameter) / 2.0:
 			return 1
 	return 0
 

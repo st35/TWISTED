@@ -24,8 +24,40 @@ class GenomicSetup: # Class to hold genomic setup information
 				raise ValueError("For promoter_mode 'non-constitutive', 'TF_on_off_rates' argument must be provided.")
 			self.TF_on_off_rates = [(rates[0], rates[1]) for rates in kwargs['TF_on_off_rates']]
 		
+		if self.chromatin_type == 'eukaryotic':
+			if 'per_nucleosome_DNA_length' not in kwargs:
+				self.per_nucleosome_DNA_length = 147.0*0.34 # Default: 147 bp
+			else:
+				self.per_nucleosome_DNA_length = float(kwargs['per_nucleosome_DNA_length'])*0.34
+			if 'nucleosome_linker_length' not in kwargs:
+				self.nucleosome_linker_length = 30.0*0.34 # Default: 30 bp
+			else:
+				self.nucleosome_linker_length = float(kwargs['nucleosome_linker_length'])*0.34
+			if 'nucleosomes_are_steric_barriers_to_RNAPs' not in kwargs:
+				self.nucleosomes_are_steric_barriers_to_RNAPs = True
+			else:
+				self.nucleosomes_are_steric_barriers_to_RNAPs = bool(kwargs['nucleosomes_are_steric_barriers_to_RNAPs'])
+			if 'nucleosome_count' in kwargs:
+				self.explicit_nucleosome_count = int(kwargs['nucleosome_count'])
+			else:
+				self.explicit_nucleosome_count = None
+		
 		self.clamp_left = 0.0 # Left end of DNA is at position 0 nm
 		self.clamp_right = TSSes[0] + gene_lengths[0] + buffer_length if gene_directions[0] == 1 else TSSes[0] + buffer_length # Right end of DNA is at position beyond the last gene plus buffer length
+	
+	def get_total_nucleosome_count(self) -> int:
+		if self.chromatin_type == 'prokaryotic':
+			return 0
+		if self.explicit_nucleosome_count is not None:
+			return self.explicit_nucleosome_count
+		nucl_count = 0
+		start_pos = self.clamp_left + (self.nucleosome_linker_length / 2.0)
+		while start_pos < self.clamp_right:
+			if start_pos + self.per_nucleosome_DNA_length > self.clamp_right:
+				break
+			nucl_count += 1
+			start_pos += self.per_nucleosome_DNA_length + self.nucleosome_linker_length
+		return nucl_count
 	
 	def print_genomic_setup(self) -> None: # Utility function to print genomic setup information
 		print('Chromatin type:', self.chromatin_type.capitalize())
@@ -40,7 +72,7 @@ class GenomicSetup: # Class to hold genomic setup information
 		print('=' * 40)
 
 class ModelSetup: # Class to hold model setup parameters
-	def __init__(self, w0: float = 1.85, chi: float = 0.05, eta: float = 0.0005, alpha: float = 1.5, v0: float = 20.0, tau_c: float = 12.0, force: float = 1.0, kBT: float = 4.1, TOP1_k0: float = 11.0, TOP1_theta: float = 0.25, TOP2_V0: float = 2.6, TOP2_k12: float = 2.0, between_RNAPs_steric_effect_cutoff: float = 15.0, RNAP_TOPO_steric_effect_cutoff: float = 15.0, RNAP_other_steric_effect_cutoff: float = 15.0, between_proteins_steric_effect_cutoff: float = 15.0, clamps_status: tuple[str, str] = ('clamped', 'clamped'), finite_size_effect_flag: int = 1, supercoiling_relaxation_dynamics_mode: str = 'global_overall', mRNA_dynamics_mode: int = 0, model_observation_event_rate: float = 1.0 / 2.0, **kwargs) -> None:
+	def __init__(self, w0: float = 1.85, chi: float = 0.05, eta: float = 0.0005, alpha: float = 1.5, v0: float = 20.0, tau_c: float = 12.0, force: float = 1.0, kBT: float = 4.1, TOP1_k0: float = 11.0, TOP1_theta: float = 0.25, TOP2_V0: float = 2.6, TOP2_k12: float = 2.0, RNAP_diameter: float = 15.0, TOPO_diameter: float = 15.0, generic_binding_protein_diameter: float = 15.0, clamps_status: tuple[str, str] = ('clamped', 'clamped'), finite_size_effect_flag: int = 1, supercoiling_relaxation_dynamics_mode: str = 'global_overall', mRNA_dynamics_mode: int = 0, model_observation_event_rate: float = 1.0 / 2.0, **kwargs) -> None:
 		self.w0 = w0 # Default: 1.85 1 / nm
 		self.h_dna = (2.0*3.14) / w0 # From w0*h_dna = 2*pi
 		self.chi = chi # Default: 0.05 pN*nm*s
@@ -54,10 +86,9 @@ class ModelSetup: # Class to hold model setup parameters
 		self.TOP1_theta = TOP1_theta # Default: 0.25
 		self.TOP2_V0 = TOP2_V0 # Default: 2.6 1 / s
 		self.TOP2_k12 = TOP2_k12 # Default: 2.0
-		self.between_RNAPs_steric_effect_cutoff = between_RNAPs_steric_effect_cutoff # Default: 15.0 nm; steric hindrance cutoff distance between RNAPs
-		self.RNAP_TOPO_steric_effect_cutoff = RNAP_TOPO_steric_effect_cutoff # Default: 15.0 nm; steric hindrance cutoff distance between RNAPs and topoisomerases
-		self.RNAP_other_steric_effect_cutoff = RNAP_other_steric_effect_cutoff # Default: 15.0 nm; steric hindrance cutoff distance between RNAPs and other proteins
-		self.between_proteins_steric_effect_cutoff = between_proteins_steric_effect_cutoff # Default: 15.0 nm; steric hindrance cutoff distance between DNA-binding proteins (not including RNAPs)
+		self.RNAP_diameter = RNAP_diameter # Default: 15.0 nm; used for calculating steric hindrance effects involving RNAPs
+		self.TOPO_diameter = TOPO_diameter # Default: 15.0 nm; used for calculating steric hindrance effects involving topoisomerases
+		self.generic_binding_protein_diameter = generic_binding_protein_diameter # Default: 15.0 nm; used for calculating steric hindrance effects involving generic DNA-binding proteins
 		assert len(clamps_status) == 2, 'clamps_status must be a tuple of two strings representing the status of the left and right clamps, respectively.'
 		assert all(status in ['clamped', 'free'] for status in clamps_status), 'Each clamp status in clamps_status must be either "clamped" or "free".'
 		self.left_clamp_status = 0 if clamps_status[0] == 'free' else 1
@@ -123,7 +154,7 @@ class ModelSetup: # Class to hold model setup parameters
 		self.supercoiling_relaxation_dynamics_modes_with_no_steric_hindrance = ['global_overall', 'global_per_segment', 'global_by_type', 'per_segment_by_type', 'topoisomerase_approximated'] # List of supercoiling relaxation dynamics modes that do explicitly model topoisomerase binding and unbinding dynamics and therefore do not exert steric hindrance effects on RNAPs
 
 class BindingProtein:
-	def __init__(self, protein_name: str, total_copy_number: int, is_steric_barrier_to_RNAPs: bool, is_topological_barrier: bool, basal_on_rate: float, basal_off_rate: float, on_rate_func: callable = None, off_rate_func: callable = None) -> None:
+	def __init__(self, protein_name: str, total_copy_number: int, is_steric_barrier_to_RNAPs: bool, is_topological_barrier: bool, basal_on_rate: float, basal_off_rate: float, on_rate_func: callable = None, off_rate_func: callable = None, is_a_nucleosome: bool = False) -> None:
 		self.protein_name = protein_name
 		self.total_copy_number = total_copy_number
 		self.is_steric_barrier_to_RNAPs = is_steric_barrier_to_RNAPs
@@ -142,6 +173,7 @@ class BindingProtein:
 			if not callable(off_rate_func):
 				raise ValueError('off_rate_func must be a callable function if provided.')
 			self.off_rate_func = lambda segment_length, segment_sigma, *args: off_rate_func(segment_length, segment_sigma, *args)*basal_off_rate
+		self.is_a_nucleosome = is_a_nucleosome
 
 class Model: # Class to hold the model, including genomic setup, model setup, and dynamic state variables
 	def __init__(self, genomic_setup: GenomicSetup, model_setup: ModelSetup, binding_proteins: list[BindingProtein] = None) -> None:
@@ -162,7 +194,11 @@ class Model: # Class to hold the model, including genomic setup, model setup, an
 		if binding_proteins is None:
 			binding_proteins = []
 		self.binding_proteins = binding_proteins # List of BindingProtein objects representing other DNA-binding proteins in the system
-		self.binding_proteins_positions = [[] for _ in binding_proteins] # List of lists to hold positions of each bound protein; each sublist corresponds to a binding protein type and contains the positions of all bound proteins of that type
+		if genomic_setup.chromatin_type == 'eukaryotic':
+			nucl_count = genomic_setup.get_total_nucleosome_count()
+			nucleosomes = BindingProtein(protein_name = 'nucleosome', total_copy_number = nucl_count, is_steric_barrier_to_RNAPs = genomic_setup.nucleosomes_are_steric_barriers_to_RNAPs, is_topological_barrier = False, basal_on_rate = 1.2 / (genomic_setup.clamp_right - genomic_setup.clamp_left), basal_off_rate = 0.4, is_a_nucleosome = True)
+			self.binding_proteins = [nucleosomes] + self.binding_proteins
+		self.binding_proteins_positions = [[] for _ in self.binding_proteins] # List of lists to hold positions of each bound protein; each sublist corresponds to a binding protein type and contains the positions of all bound proteins of that type
 
 class SimulationSetupAndState: # Class to hold simulation setup parameters
 	def __init__(self, genomic_setup: GenomicSetup, simulation_end_mode: int, simulation_end_criterion: Union[float, list[int]], integration_time_resolution: float = 1.0e-1, RNAP_alive_status_check_interval: float = 1.0, max_RNAPs_to_recruit: list[int] = None) -> None:

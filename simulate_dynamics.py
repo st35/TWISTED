@@ -89,7 +89,7 @@ def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupA
 				if model.topoisomerase_type[event] == 0:
 					TOP1_on_rates_per_segment = get_per_TOP1_binding_rate_for_each_segment(model, segments_lengths, segments_sigmas)
 					chosen_segment_index = select_event_based_on_propensities(TOP1_on_rates_per_segment, random())
-					binding_position = model.genomic_setup.clamp_left + sum(segments_lengths[:chosen_segment_index]) + (segments_lengths[chosen_segment_index]*uniform_random_in_interval(0.0, 1.0))
+					binding_position = model.genomic_setup.clamp_left + sum(segments_lengths[chosen_segment_index + 1:]) + (segments_lengths[chosen_segment_index]*uniform_random_in_interval(0.0, 1.0))
 					if is_TOPO_binding_blocked(model, RNAP_gene_index, state_vector, binding_position) == 0:
 						model.topoisomerase_status[event] = 1 # Bind topoisomerase
 						model.topoisomerase_segment_indices[event] = chosen_segment_index
@@ -97,7 +97,7 @@ def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupA
 				else:
 					TOP2_on_rates_per_segment = get_per_TOP2_binding_rate_for_each_segment(model, segments_lengths, segments_sigmas)
 					chosen_segment_index = select_event_based_on_propensities(TOP2_on_rates_per_segment, random())
-					binding_position = model.genomic_setup.clamp_left + sum(segments_lengths[:chosen_segment_index]) + (segments_lengths[chosen_segment_index]*uniform_random_in_interval(0.0, 1.0))
+					binding_position = model.genomic_setup.clamp_left + sum(segments_lengths[chosen_segment_index + 1:]) + (segments_lengths[chosen_segment_index]*uniform_random_in_interval(0.0, 1.0))
 					if is_TOPO_binding_blocked(model, RNAP_gene_index, state_vector, binding_position) == 0:
 						model.topoisomerase_status[event] = 1 # Bind topoisomerase
 						model.topoisomerase_segment_indices[event] = chosen_segment_index

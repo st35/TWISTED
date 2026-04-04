@@ -71,12 +71,27 @@ def calculate_segments_attributes(model: Model, RNAP_gene_index: list[int], stat
 	for Lk, Lk0 in zip(Lk_vector, segments_LK0):
 		segments_sigmas.append((Lk - Lk0) / Lk0)
 	
+	segments_nucleosome_counts = [0 for _ in segments_lengths]
+	segments_nucleosome_densities = [0.0 for _ in segments_lengths]
+	if model.genomic_setup.chromatin_type == 'eukaryotic':
+		nucl_positions = []
+		for i in range(len(model.binding_proteins)):
+			if model.binding_proteins[i].is_a_nucleosome:
+				nucl_positions = nucl_positions + model.binding_proteins_positions[i]
+		for nucl_pos in nucl_positions:
+			nucl_segment_index = get_spot_segment_index(nucl_pos, segments_lengths)
+			segments_nucleosome_counts[nucl_segment_index] += 1
+		segments_nucleosome_densities = [(nucl_count*(model.genomic_setup.per_nucleosome_DNA_length + model.genomic_setup.nucleosome_linker_length)) / segment_length for nucl_count, segment_length in zip(segments_nucleosome_counts, segments_lengths)]
+		for psi in segments_nucleosome_densities:
+			if psi > 1.0:
+				raise ValueError('Nucleosome density cannot be greater than 1.0; check the total nucleosome count.')
+	
 	segments_torques = []
-	for segment_length, segment_sigma in zip(segments_lengths, segments_sigmas):
+	for segment_length, segment_sigma, segment_psi in zip(segments_lengths, segments_sigmas, segments_nucleosome_densities):
 		if model.genomic_setup.chromatin_type == 'prokaryotic':
 			segments_torques.append(get_prokaryotic_torque(model.model_setup.w0, model.model_setup.force, model.model_setup.kBT, segment_length, segment_sigma, model.model_setup.finite_size_effect_flag, model.model_setup.finite_size_effect_length))
 		else:
-			raise NotImplementedError('Chromatin type "eukaryotic" not yet implemented.')
+			segments_torques.append(get_eukaryotic_torque(model.model_setup.force, segment_length, segment_psi, segment_sigma, model.model_setup.finite_size_effect_flag, model.model_setup.finite_size_effect_length))
 	
 	segments_plectoneme_thresholds = [val[3] for val in segments_torques]
 	segments_writhe_fractions = [val[2] for val in segments_torques]
@@ -108,23 +123,34 @@ def get_RNAP_velocities(model: Model, state_vector: list[float], RNAP_gene_index
 		for i in range(RNAP_count):
 			for topo_pos in TOPO_positions:
 				if model.genomic_setup.gene_directions[RNAP_gene_index[i]] == 1:
-					if topo_pos - state_vector[i] >= 0.0 and topo_pos - state_vector[i] < model.model_setup.RNAP_TOPO_steric_effect_cutoff:
+					if topo_pos - state_vector[i] >= 0.0 and topo_pos - state_vector[i] < (model.model_setup.RNAP_diameter + model.model_setup.TOPO_diameter) / 2.0:
 						RNAP_velocities[i] = 0.0
 				else:
-					if state_vector[i] - topo_pos >= 0.0 and state_vector[i] - topo_pos < model.model_setup.RNAP_TOPO_steric_effect_cutoff:
+					if state_vector[i] - topo_pos >= 0.0 and state_vector[i] - topo_pos < (model.model_setup.RNAP_diameter + model.model_setup.TOPO_diameter) / 2.0:
 						RNAP_velocities[i] = 0.0
 	
-	binding_proteins_positions = []
+	nucl_positions = []
+	other_binding_proteins_positions = []
 	for i in range(len(model.binding_proteins)):
-		if model.binding_proteins[i].is_steric_barrier_to_RNAPs:
-			binding_proteins_positions = binding_proteins_positions + model.binding_proteins_positions[i]
+		if model.binding_proteins[i].is_a_nucleosome and model.binding_proteins[i].is_steric_barrier_to_RNAPs:
+			nucl_positions = nucl_positions + model.binding_proteins_positions[i]
+	for i in range(len(model.binding_proteins)):
+		if model.binding_proteins[i].is_steric_barrier_to_RNAPs and model.binding_proteins[i].is_a_nucleosome is False:
+			other_binding_proteins_positions = other_binding_proteins_positions + model.binding_proteins_positions[i]
 	for i in range(RNAP_count):
-		for protein_pos in binding_proteins_positions:
+		for nucl_pos in nucl_positions:
 			if model.genomic_setup.gene_directions[RNAP_gene_index[i]] == 1:
-				if protein_pos - state_vector[i] >= 0.0 and protein_pos - state_vector[i] < model.model_setup.RNAP_other_steric_effect_cutoff:
+				if nucl_pos - state_vector[i] >= 0.0 and nucl_pos - state_vector[i] < (model.model_setup.RNAP_diameter + model.genomic_setup.per_nucleosome_DNA_length + model.genomic_setup.nucleosome_linker_length) / 2.0:
 					RNAP_velocities[i] = 0.0
 			else:
-				if state_vector[i] - protein_pos >= 0.0 and state_vector[i] - protein_pos < model.model_setup.RNAP_other_steric_effect_cutoff:
+				if state_vector[i] - nucl_pos >= 0.0 and state_vector[i] - nucl_pos < (model.model_setup.RNAP_diameter + model.genomic_setup.per_nucleosome_DNA_length + model.genomic_setup.nucleosome_linker_length) / 2.0:
+					RNAP_velocities[i] = 0.0
+		for protein_pos in other_binding_proteins_positions:
+			if model.genomic_setup.gene_directions[RNAP_gene_index[i]] == 1:
+				if protein_pos - state_vector[i] >= 0.0 and protein_pos - state_vector[i] < (model.model_setup.RNAP_diameter + model.model_setup.generic_binding_protein_diameter) / 2.0:
+					RNAP_velocities[i] = 0.0
+			else:
+				if state_vector[i] - protein_pos >= 0.0 and state_vector[i] - protein_pos < (model.model_setup.RNAP_diameter + model.model_setup.generic_binding_protein_diameter) / 2.0:
 					RNAP_velocities[i] = 0.0
 	
 	return RNAP_velocities
@@ -184,20 +210,20 @@ def get_segments_Lk_dynamics(model: Model, dx_dt: list[float], dtheta_dt: list[f
 		dLk_dt.append(get_segment_Lk_dynamics(model, dx_dt_front, dx_dt_back, dtheta_dt_front, dtheta_dt_back, is_rightmost_segment, is_leftmost_segment))
 	
 	if model.model_setup.supercoiling_relaxation_dynamics_mode == 'topoisomerase_based':
-		segement_TOP1_count = [0 for _ in range(RNAP_count + 1)]
-		segement_TOP2_count = [0 for _ in range(RNAP_count + 1)]
+		segment_TOP1_count = [0 for _ in range(RNAP_count + 1)]
+		segment_TOP2_count = [0 for _ in range(RNAP_count + 1)]
 		for i in range(len(model.topoisomerase_status)):
 			if model.topoisomerase_status[i] == 1:
 				if model.topoisomerase_type[i] == 0: # TOP1
-					segement_TOP1_count[model.topoisomerase_segment_indices[i]] += 1
+					segment_TOP1_count[model.topoisomerase_segment_indices[i]] += 1
 				else: # TOP2
-					segement_TOP2_count[model.topoisomerase_segment_indices[i]] += 1
+					segment_TOP2_count[model.topoisomerase_segment_indices[i]] += 1
 		
 		for i in range(RNAP_count + 1):
-			if segement_TOP1_count[i] > 0:
-				dLk_dt[i] += get_TOP1_effect_on_Lk_dynamics(model, segments_lengths[i], segments_sigmas[i], segments_torques[i], segments_writhe_fractions[i], segement_TOP1_count[i])
-			if segement_TOP2_count[i] > 0:
-				dLk_dt[i] += get_TOP2_effect_on_Lk_dynamics(model, segments_lengths[i], segments_sigmas[i], segments_torques[i], segments_writhe_fractions[i], segement_TOP2_count[i])
+			if segment_TOP1_count[i] > 0:
+				dLk_dt[i] += get_TOP1_effect_on_Lk_dynamics(model, segments_lengths[i], segments_sigmas[i], segments_torques[i], segments_writhe_fractions[i], segment_TOP1_count[i])
+			if segment_TOP2_count[i] > 0:
+				dLk_dt[i] += get_TOP2_effect_on_Lk_dynamics(model, segments_lengths[i], segments_sigmas[i], segments_torques[i], segments_writhe_fractions[i], segment_TOP2_count[i])
 	
 	return dLk_dt
 
@@ -206,7 +232,7 @@ def get_RNAP_recruitment_rates(model: Model, RNAP_gene_index: list[int], state_v
 	x_vector = state_vector[0:RNAP_count]
 
 	TSS_segments_indices = [get_spot_segment_index(model.genomic_setup.TSSes[i], segments_lengths) for i in range(len(model.genomic_setup.gene_names))] # Get the segment indices for all TSSes
-	is_TSS_blocked = [get_TSS_steric_hindrance_status(model, model.genomic_setup.TSSes[i], RNAP_gene_index, state_vector) for i in range(len(model.genomic_setup.gene_names))] # Get the steric hindrance status for all TSSes
+	# is_TSS_blocked = [get_TSS_steric_hindrance_status(model, model.genomic_setup.TSSes[i], RNAP_gene_index, state_vector) for i in range(len(model.genomic_setup.gene_names))] # Get the steric hindrance status for all TSSes
 
 	RNAP_recruitment_rates = []
 	for i in range(len(model.genomic_setup.gene_names)):
@@ -239,7 +265,7 @@ def are_RNAPs_alive(model: Model, RNAP_gene_index: list[int], state_vector: list
 	
 	return RNAPs_alive_status
 
-def get_TOPO_binding_rates(model: Model, segments_lengths: float, segments_sigmas: float) -> list[float]: # Get the binding rates for all topoisomerases based on their type and segment attributes
+def get_TOPO_binding_rates(model: Model, segments_lengths: list[float], segments_sigmas: list[float]) -> list[float]: # Get the binding rates for all topoisomerases based on their type and segment attributes
 	TOP1_on_rates_per_segment = get_per_TOP1_binding_rate_for_each_segment(model, segments_lengths, segments_sigmas)
 	TOP2_on_rates_per_segment = get_per_TOP2_binding_rate_for_each_segment(model, segments_lengths, segments_sigmas)
 	TOPO_binding_rates = []
@@ -257,7 +283,7 @@ def get_TOPO_binding_rates(model: Model, segments_lengths: float, segments_sigma
 				TOPO_binding_rates.append(sum(TOP2_on_rates_per_segment))
 	return TOPO_binding_rates
 
-def get_TOPO_unbinding_rates(model: Model, segments_lengths: float, segments_sigmas: float) -> list[float]: # Get the unbinding rates for all topoisomerases based on their type and segment attributes
+def get_TOPO_unbinding_rates(model: Model, segments_lengths: list[float], segments_sigmas: list[float]) -> list[float]: # Get the unbinding rates for all topoisomerases based on their type and segment attributes
 	TOP1_off_rate = model.model_setup.topoisomerase_on_off_rates[0][1]
 	TOP2_off_rate = model.model_setup.topoisomerase_on_off_rates[1][1]
 	TOPO_unbinding_rates = []

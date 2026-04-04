@@ -19,7 +19,7 @@ def get_RNAP_velocity(model: Model, gene_index: int, left_segment_length: float,
         tau_f = left_torque
         tau_b = right_torque
 	
-    if segment_ahead_length < model.model_setup.between_RNAPs_steric_effect_cutoff:
+    if segment_ahead_length < model.model_setup.RNAP_diameter:
         return 0.0
     
     if model.genomic_setup.gene_directions[gene_index] == 1:
@@ -166,3 +166,54 @@ def get_prokaryotic_torque(w0: float, force: float, kBT: float, segment_length: 
         writhe_frac = 1.0
 
     return (torque, dna_state, writhe_frac, sigma_s)
+
+def get_eukaryotic_torque(force:float, segment_length: float, psi: float, sigma: float, finite_size_effect_flag: int, finite_size_effect_cutoff: float) -> tuple[float, int, float, float]:
+    melted_cutoff = -0.013
+    twisted_cutoff = 0.001
+    buffering_cutoff = 0.0576*psi + 0.0013
+    pos_twisted_cutoff = 0.0578*psi + 0.0205
+    plectoneme_cutoff = 0.0772
+    
+    melted_torque = -10.0026
+    twisted_slope = 763.064
+    buffering_torque = melted_torque + (twisted_cutoff - melted_cutoff)*twisted_slope
+    pos_twisted_slope = 753.3442
+    plectoneme_torque = buffering_torque + (pos_twisted_cutoff - buffering_cutoff)*pos_twisted_slope
+    twisted_plectoneme_slope_coeff = [1.1105e3, -1.3736e3, 770.6726, 37.0125, 187.2197]
+    twisted_plectoneme_slope = sum([twisted_plectoneme_slope_coeff[i]*(psi**(4 - i)) for i in range(5)])
+
+    if finite_size_effect_flag == 1:
+        pos_twisted_cutoff = pos_twisted_cutoff*(1.0 + pow((finite_size_effect_cutoff / segment_length), 2.0))
+    
+    torque = 0.0
+    chromatin_type = -1
+    writhe_frac = 0.0
+
+    if sigma < melted_cutoff:
+        torque = melted_torque
+        chromatin_type = 1
+        writhe_frac = 0.0
+    elif sigma < twisted_cutoff:
+        torque = melted_torque + (sigma - melted_cutoff)*twisted_slope
+        chromatin_type = 2
+        writhe_frac = 0.0
+    elif sigma < buffering_cutoff:
+        torque = buffering_torque
+        chromatin_type = 3
+        writhe_frac = 0.0
+    elif sigma < pos_twisted_cutoff:
+        torque = buffering_torque + (sigma - buffering_cutoff)*pos_twisted_slope
+        chromatin_type = 4
+        writhe_frac = 0.0
+    elif sigma < plectoneme_cutoff:
+        torque = plectoneme_torque
+        chromatin_type = 5
+        writhe_frac = (sigma - pos_twisted_cutoff) / (plectoneme_cutoff - pos_twisted_cutoff)
+    else:
+        torque = plectoneme_torque + (sigma - plectoneme_cutoff)*twisted_plectoneme_slope
+        if torque > 40.0:
+            torque = 40.0
+        chromatin_type = 6
+        writhe_frac = 1.0
+    
+    return (torque, chromatin_type, writhe_frac, pos_twisted_cutoff)
