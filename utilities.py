@@ -1,6 +1,8 @@
 from model_setup import *
 
 from random import random
+from bisect import bisect
+from math import tanh
 
 def read_genes_information(filename: str) -> tuple[list[str], list[float], list[float], list[int], list[float]]: # Read gene information from a tab-delimited file
 	gene_names = []
@@ -24,7 +26,7 @@ def construct_genomic_setup(filename: str, chromatin_type: str, promoter_mode: s
 	gene_names, TSSes, gene_lengths, gene_directions, RNAP_on_rates = read_genes_information(filename)
 
 	if 'explicit_RNAP_on_rates' in kwargs: # Modify RNAP_on_rates if explicit rates are provided
-		explicit_RNAP_on_rates = kwargs['explicit_RNAP_on_rates']
+		explicit_RNAP_on_rates = kwargs.pop('explicit_RNAP_on_rates')
 		if len(explicit_RNAP_on_rates) != len(gene_names):
 			raise ValueError('Length of explicit_RNAP_on_rates must match number of genes.')
 		RNAP_on_rates = [RNAP_on_rates[i]*explicit_RNAP_on_rates[i] for i in range(len(gene_names))]
@@ -35,10 +37,8 @@ def construct_genomic_setup(filename: str, chromatin_type: str, promoter_mode: s
 		TF_on_off_rates = kwargs['TF_on_off_rates']
 		if len(TF_on_off_rates) != len(gene_names):
 			raise ValueError('Length of TF_on_off_rates must match number of genes.')
-		
-		return GenomicSetup(chromatin_type, gene_names, TSSes, gene_lengths, gene_directions, RNAP_on_rates, promoter_mode, buffer_length, TF_on_off_rates = TF_on_off_rates)
-	
-	return GenomicSetup(chromatin_type, gene_names, TSSes, gene_lengths, gene_directions, RNAP_on_rates, promoter_mode, buffer_length)
+
+	return GenomicSetup(chromatin_type, gene_names, TSSes, gene_lengths, gene_directions, RNAP_on_rates, promoter_mode, buffer_length, **kwargs)
 	
 def uniform_random_in_interval(start: float, end: float) -> float: # Generate a uniform random number in [start, end)
 	return start + (end - start)*random()
@@ -57,19 +57,39 @@ def get_spot_segment_index(spot: float, segments_lengths: list[float]) -> int: #
 	
 	return spot_segment_index
 
+def get_nucleosome_occupied_fraction_per_segment(model: Model, segments_lengths: list[float], segment_index: int) -> float:
+	nucl_positions = []
+	for i in range(len(model.binding_proteins)):
+		if model.binding_proteins[i].is_a_nucleosome:
+			nucl_positions = nucl_positions + model.binding_proteins_positions[i]
+	segment_left_end = model.genomic_setup.clamp_left + sum(segments_lengths[segment_index + 1:])
+	segment_right_end = segment_left_end + segments_lengths[segment_index]
+	assert segment_left_end < segment_right_end, 'Invalid segment boundaries.'
+
+	occupied_length = 0.0
+	for nucl_pos in nucl_positions:
+		nucl_left_edge = nucl_pos - (model.genomic_setup.per_nucleosome_DNA_length + model.genomic_setup.nucleosome_linker_length) / 2.0
+		nucl_right_edge = nucl_pos + (model.genomic_setup.per_nucleosome_DNA_length + model.genomic_setup.nucleosome_linker_length) / 2.0
+		assert nucl_left_edge < nucl_right_edge, 'Invalid nucleosome boundaries.'
+
+		overlap_left = max(segment_left_end, nucl_left_edge)
+		overlap_right = min(segment_right_end, nucl_right_edge)
+		if overlap_left < overlap_right:
+			occupied_length += (overlap_right - overlap_left)
+
+	return occupied_length / segments_lengths[segment_index]
+
 def get_TSS_steric_hindrance_status(model: Model, TSS_position: float, RNAP_gene_index: list[int], state_vector: list[float]) -> int: # Check if there is steric hindrance at the TSS position due to existing RNAPs; return 1 if hindered, 0 if not
 	RNAP_count = len(RNAP_gene_index)
 	for x in state_vector[:RNAP_count]:
 		if abs(x - TSS_position) < model.model_setup.RNAP_diameter:
 			return 1
 	
-	if model.model_setup.supercoiling_relaxation_dynamics_mode in model.model_setup.supercoiling_relaxation_dynamics_modes_with_no_steric_hindrance:
-		return 0
-	
-	TOPO_positions = [model.topoisomerase_positions[i] for i in range(len(model.topoisomerase_positions)) if model.topoisomerase_status[i] == 1]
-	for topo_pos in TOPO_positions:
-		if abs(topo_pos - TSS_position) < (model.model_setup.RNAP_diameter + model.model_setup.TOPO_diameter) / 2.0:
-			return 1
+	if model.model_setup.supercoiling_relaxation_dynamics_mode not in model.model_setup.supercoiling_relaxation_dynamics_modes_with_no_steric_hindrance:	
+		TOPO_positions = [model.topoisomerase_positions[i] for i in range(len(model.topoisomerase_positions)) if model.topoisomerase_status[i] == 1]
+		for topo_pos in TOPO_positions:
+			if abs(topo_pos - TSS_position) < (model.model_setup.RNAP_diameter + model.model_setup.TOPO_diameter) / 2.0:
+				return 1
 	
 	nucl_positions = []
 	for i in range(len(model.binding_proteins)):
@@ -124,6 +144,66 @@ def is_TOPO_binding_blocked(model: Model, RNAP_gene_index: list[int], state_vect
 		if abs(x - binding_position) < (model.model_setup.RNAP_diameter + model.model_setup.TOPO_diameter) / 2.0:
 			return 1
 	return 0
+
+def get_ordering_of_RNAPs_and_proteins(model: Model, RNAP_gene_index: list[int], state_vector: list[float]) -> tuple[list[float], list[str]]:
+	RNAP_positions = list(state_vector[:len(RNAP_gene_index)])
+	RNAP_ids = ['RNAP_' + str(i) for i in range(len(RNAP_gene_index))]
+
+	bound_protein_positions = []
+	bound_protein_ids = []
+	for i in range(len(model.binding_proteins)):
+		if model.binding_proteins[i].is_steric_barrier_to_RNAPs:
+			bound_protein_positions = bound_protein_positions + model.binding_proteins_positions[i]
+			bound_protein_ids = bound_protein_ids + [str(i) for _ in range(len(model.binding_proteins_positions[i]))]
+	
+	all_positions = RNAP_positions + bound_protein_positions
+	all_ids = RNAP_ids + bound_protein_ids
+
+	zipped_pairs = sorted(zip(all_positions, all_ids), key = lambda pair: pair[0], reverse = False)
+	sorted_positions, sorted_ids = zip(*zipped_pairs)
+
+	return list(sorted_positions), list(sorted_ids)
+
+def get_nearest_steric_obstacles_for_RNAP(RNAP_index: int, RNAP_pos:float, sorted_positions: list[float], sorted_ids: list[str]) -> tuple[Union[float, None], Union[str, None], Union[float, None], Union[str, None]]:
+	RNAP_id = 'RNAP_' + str(RNAP_index)
+	index_in_ordering = bisect(sorted_positions, RNAP_pos)
+	index_in_ordering = index_in_ordering - 1 # bisect returns the insertion point, so subtract 1 to get the index of the RNAP itself
+	assert index_in_ordering >= 0 and index_in_ordering < len(sorted_ids) and sorted_ids[index_in_ordering] == RNAP_id, 'RNAP ID not found in sorted IDs list.'
+
+	left_obstacle_index = index_in_ordering - 1 if index_in_ordering - 1 >= 0 else None
+	right_obstacle_index = index_in_ordering + 1 if index_in_ordering + 1 < len(sorted_positions) else None
+
+	left_obstacle_position = sorted_positions[left_obstacle_index] if left_obstacle_index is not None else None
+	left_obstacle_id = sorted_ids[left_obstacle_index] if left_obstacle_index is not None else None
+
+	right_obstacle_position = sorted_positions[right_obstacle_index] if right_obstacle_index is not None else None
+	right_obstacle_id = sorted_ids[right_obstacle_index] if right_obstacle_index is not None else None
+
+	return left_obstacle_position, left_obstacle_id, right_obstacle_position, right_obstacle_id
+
+def check_separation_between_nucleosomes(model: Model) -> None:
+	nucl_positions = []
+	for i in range(len(model.binding_proteins)):
+		if model.binding_proteins[i].is_a_nucleosome:
+			nucl_positions = nucl_positions + model.binding_proteins_positions[i]
+	nucl_positions.sort()
+	for i in range(len(nucl_positions) - 1):
+		if abs(nucl_positions[i + 1] - nucl_positions[i]) < model.genomic_setup.per_nucleosome_DNA_length + model.genomic_setup.nucleosome_linker_length:
+			raise ValueError('Nucleosomes are too close to each other.')
+
+def check_separation_between_nucleosomes_and_RNAPs(model: Model, RNAP_gene_index: list[int], state_vector: list[float]) -> None:
+	RNAP_count = len(RNAP_gene_index)
+	nucl_positions = []
+	for i in range(len(model.binding_proteins)):
+		if model.binding_proteins[i].is_a_nucleosome:
+			nucl_positions = nucl_positions + model.binding_proteins_positions[i]
+	for x in state_vector[:RNAP_count]:
+		for nucl_pos in nucl_positions:
+			if abs(x - nucl_pos) < (model.model_setup.RNAP_diameter + model.genomic_setup.per_nucleosome_DNA_length) / 2.0:
+				raise ValueError('RNAP and nucleosome are too close to each other.')
+
+def get_steric_hindrance_factor(model:Model, separation: float, steric_hindrance_distance: float) -> float:
+	return (1.0 / 2.0)*(1 + tanh((separation - steric_hindrance_distance) / model.model_setup.steric_hindrance_constraint_parameter))
 
 def select_event_based_on_propensities(rates_vector: list[float], p: float) -> Union[int, None]: # Select an event index based on the given rates vector and random number p in [0, 1)
 	a0 = sum(rates_vector)

@@ -26,7 +26,7 @@ The velocity follows the torque-dependent form:
 
 $$v = \frac{v_0}{2}\left(1 - \tanh\!\frac{\tau_f - \tau_b}{\tau_c}\right)$$
 
-Returns `0.0` if the segment ahead of the RNAP is shorter than `between_RNAPs_steric_effect_cutoff` (steric stalling).
+Steric interactions are handled separately in `get_RNAP_velocities` (see [model_dynamics](model-dynamics.md)).
 
 **Parameters:**
 
@@ -244,3 +244,53 @@ Calculates torque and DNA state for a prokaryotic DNA segment. Returns a 4-tuple
 | 3 | $\sigma_s$ | `float` | Plectoneme-formation threshold |
 
 See [DNA Mechanics](../theory/dna-mechanics.md) for the full torque model derivation.
+
+---
+
+## `get_eukaryotic_torque`
+
+```python
+get_eukaryotic_torque(
+    force: float,
+    segment_length: float,
+    psi: float,
+    sigma: float,
+    finite_size_effect_flag: int,
+    finite_size_effect_cutoff: float
+) -> tuple[float, int, float, float]
+```
+
+Calculates torque and chromatin state for a eukaryotic DNA segment as a function of nucleosome density `psi` and supercoiling density `sigma`. Returns a 4-tuple:
+
+| Index | Symbol | Type | Description |
+|-------|--------|------|-------------|
+| 0 | $\tau$ | `float` | Torque (pN·nm) |
+| 1 | state | `int` | Chromatin state code (1=melted, 2=twisted, 3=buffering, 4=pos-twisted, 5=pos-plectoneme, 6=twisted-plectoneme) |
+| 2 | $\Phi_w$ | `float` | Writhe fraction (0 to 1) |
+| 3 | $\sigma_{pt}$ | `float` | Positive-twisted cutoff (plectoneme-formation threshold) |
+
+### Chromatin States
+
+The torque–sigma relationship has six regimes, with thresholds that depend on nucleosome density $\psi$:
+
+| State | Code | $\sigma$ range | Torque behaviour |
+|-------|------|----------------|------------------|
+| Melted | 1 | $\sigma < -0.013$ | Constant $\tau = -10.0$ pN·nm |
+| Twisted | 2 | $-0.013 \leq \sigma < 0.001$ | Linear, slope 763.064 |
+| Buffering | 3 | $0.001 \leq \sigma < 0.0576\psi + 0.0013$ | Constant (nucleosome absorption) |
+| Positive twisted | 4 | buffering cutoff $\leq \sigma <$ pos\_twisted cutoff | Linear, slope 753.3442 |
+| Positive plectoneme | 5 | pos\_twisted cutoff $\leq \sigma < 0.0772$ | Constant, writhe fraction 0–1 |
+| Twisted plectoneme | 6 | $\sigma \geq 0.0772$ | Linear with $\psi$-dependent slope, capped at 40 pN·nm |
+
+The **buffering** state (state 3) is characteristic of eukaryotic chromatin: nucleosomes absorb positive supercoiling within a $\psi$-dependent range without increasing torque.
+
+**Parameters:**
+
+| Name | Description |
+|------|-------------|
+| `force` | Applied stretching force (pN); reserved for future use |
+| `segment_length` | Length of the DNA segment (nm) |
+| `psi` | Nucleosome density: fraction of segment occupied by nucleosomes (0 to 1) |
+| `sigma` | Supercoiling density of the segment |
+| `finite_size_effect_flag` | `1` to enable finite-size correction, `0` to disable |
+| `finite_size_effect_cutoff` | Length scale for finite-size correction (nm) |

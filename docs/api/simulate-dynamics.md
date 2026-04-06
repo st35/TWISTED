@@ -51,8 +51,8 @@ Each iteration of the loop:
 | `events_indices[1]` | **Global supercoiling relaxation** | Resets `Lk` of all or one segment(s) to relaxed value; mode-dependent |
 | `events_indices[2]–events_indices[3]` | **Type-specific relaxation** | Selectively resets positively or negatively supercoiled segments |
 | `events_indices[3]–events_indices[4]` | **Topoisomerase approximated** | TOP1: reset `Lk` if no writhe; TOP2: reset to plectoneme threshold if writhe present |
-| `events_indices[4]–events_indices[5]` | **Topoisomerase binding** | Selects segment and position; binds topoisomerase if not sterically blocked |
-| `events_indices[5]–events_indices[6]` | **Topoisomerase unbinding** | Releases bound topoisomerase; resets position and segment index to `-1` |
+| `events_indices[4]–events_indices[5]` | **Topoisomerase binding** | Selects segment and position; binds topoisomerase if not sterically blocked. *Not yet implemented.* |
+| `events_indices[5]–events_indices[6]` | **Topoisomerase unbinding** | Releases bound topoisomerase; resets position and segment index to `-1`. *Not yet implemented.* |
 | `events_indices[6]–events_indices[7]` | **mRNA degradation** | Decrements `model.mRNA_counts` for the selected gene by 1. Raises `ValueError` if the gene has zero mRNA (should not be selected when count is 0, as the rate is 0) |
 | `events_indices[7]–events_indices[8]` | **Binding protein binding** | Selects a segment proportional to per-segment on-rates, places the protein at a random position within that segment, and appends to `model.binding_proteins_positions` |
 | `events_indices[8]–events_indices[9]` | **Binding protein unbinding** | Selects which bound protein to release (proportional to per-molecule off-rates) and removes it from `model.binding_proteins_positions` |
@@ -61,9 +61,11 @@ Each iteration of the loop:
 
 An RNAP recruitment event succeeds only when **all** of the following conditions hold:
 
-1. The TSS is not sterically blocked by another RNAP within `between_RNAPs_steric_effect_cutoff` nm.
-2. No bound topoisomerase is within `RNAP_TOPO_steric_effect_cutoff` nm of the TSS (in `topoisomerase_based` mode).
-3. The `max_RNAPs_to_recruit` cap for that gene has not been reached.
+1. The TSS is not sterically blocked by another RNAP within `RNAP_diameter` nm.
+2. No bound topoisomerase is within `(RNAP_diameter + TOPO_diameter) / 2` nm of the TSS (in `topoisomerase_based` mode).
+3. No bound nucleosome (with `is_steric_barrier_to_RNAPs=True`) is within `(RNAP_diameter + per_nucleosome_DNA_length + nucleosome_linker_length) / 2` nm of the TSS.
+4. No other bound protein (with `is_steric_barrier_to_RNAPs=True`) is within `(RNAP_diameter + generic_binding_protein_diameter) / 2` nm of the TSS.
+5. The `max_RNAPs_to_recruit` cap for that gene has not been reached.
 
 If recruitment fails, the event iteration is still consumed (time advances).
 
@@ -79,7 +81,7 @@ If recruitment fails, the event iteration is still consumed (time advances).
 
 **`topoisomerase_approximated`:** A segment is chosen proportional to length. TOP1 resets `Lk = Lk₀` only if writhe is absent. TOP2 resets `Lk = Lk₀(1 + σ_s)` only if writhe is present (relaxes to the plectoneme-formation threshold, emulating strand passage).
 
-**`topoisomerase_based`:** Topoisomerase binding positions are drawn uniformly within the chosen segment; binding is refused if an RNAP is within the steric cutoff.
+**`topoisomerase_based`:** *Not yet implemented.* Topoisomerase binding positions are drawn uniformly within the chosen segment; binding is refused if an RNAP is within `(RNAP_diameter + TOPO_diameter) / 2` nm.
 
 ### Termination
 

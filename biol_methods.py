@@ -18,9 +18,6 @@ def get_RNAP_velocity(model: Model, gene_index: int, left_segment_length: float,
         segment_ahead_length = left_segment_length
         tau_f = left_torque
         tau_b = right_torque
-	
-    if segment_ahead_length < model.model_setup.RNAP_diameter:
-        return 0.0
     
     if model.genomic_setup.gene_directions[gene_index] == 1:
         return (v0 / 2.0)*(1.0 - tanh((tau_f - tau_b) / tau_c))

@@ -61,6 +61,15 @@ Factory function that reads a gene file and returns a configured `GenomicSetup`.
 | `explicit_RNAP_on_rates` | `list[float]` | Multipliers applied element-wise to the file's RNAP on-rates |
 | `TF_on_off_rates` | `list[tuple[float,float]]` | Required when `promoter_mode='non-constitutive'` |
 
+All eukaryotic keyword arguments accepted by `GenomicSetup` can also be passed through this function (see [Eukaryotic Keyword Arguments](../user-guide/genomic-setup.md#eukaryotic-keyword-arguments)):
+
+| Keyword | Type | Default | Description |
+|---------|------|---------|-------------|
+| `per_nucleosome_DNA_length` | `float` | 147 (bp) | DNA wrapped per nucleosome (converted to nm internally) |
+| `nucleosome_linker_length` | `float` | 30 (bp) | Linker DNA between nucleosomes (converted to nm internally) |
+| `nucleosomes_are_steric_barriers_to_RNAPs` | `bool` | `True` | Whether nucleosomes block RNAP passage |
+| `nucleosome_count` | `int` | auto | Explicit nucleosome count; if omitted, computed by tiling |
+
 **Example:**
 ```python
 from utilities import construct_genomic_setup
@@ -118,10 +127,35 @@ get_TSS_steric_hindrance_status(
 Returns `1` if the TSS at `TSS_position` is sterically blocked, `0` otherwise.
 
 Blocking is triggered by:
-- Any active RNAP within `between_RNAPs_steric_effect_cutoff` nm of the TSS.
-- Any bound topoisomerase within `RNAP_TOPO_steric_effect_cutoff` nm of the TSS (in `topoisomerase_based` mode only).
+
+- Any active RNAP within `RNAP_diameter` nm of the TSS.
+- Any bound topoisomerase within `(RNAP_diameter + TOPO_diameter) / 2` nm of the TSS (in `topoisomerase_based` mode only).
+- Any bound nucleosome (with `is_steric_barrier_to_RNAPs=True`) within `(RNAP_diameter + per_nucleosome_DNA_length + nucleosome_linker_length) / 2` nm of the TSS.
+- Any other bound protein (with `is_steric_barrier_to_RNAPs=True`) within `(RNAP_diameter + generic_binding_protein_diameter) / 2` nm of the TSS.
+
+### `is_protein_binding_blocked`
+
+```python
+is_protein_binding_blocked(
+    model: Model,
+    RNAP_gene_index: list[int],
+    state_vector: list[float],
+    protein_index: int,
+    binding_position: float
+) -> int
+```
+
+Returns `1` if a binding protein of the given type cannot bind at `binding_position`, `0` otherwise.
+
+Blocking is triggered by:
+
+- Any RNAP within `(RNAP_diameter + size) / 2` nm, where `size` is `per_nucleosome_DNA_length + nucleosome_linker_length` for nucleosomes or `generic_binding_protein_diameter` for other proteins.
+- For nucleosomes: any other bound nucleosome within `per_nucleosome_DNA_length + nucleosome_linker_length` nm.
+- For non-nucleosome proteins: any bound protein within `generic_binding_protein_diameter` nm.
 
 ### `is_TOPO_binding_blocked`
+
+> *Not yet implemented.* This function is defined but the `topoisomerase_based` mode that uses it is not currently available.
 
 ```python
 is_TOPO_binding_blocked(
@@ -132,7 +166,80 @@ is_TOPO_binding_blocked(
 ) -> int
 ```
 
-Returns `1` if a topoisomerase cannot bind at `binding_position` because an RNAP is within `RNAP_TOPO_steric_effect_cutoff` nm, `0` otherwise.
+Returns `1` if a topoisomerase cannot bind at `binding_position` because an RNAP is within `(RNAP_diameter + TOPO_diameter) / 2` nm, `0` otherwise.
+
+### `get_nucleosome_occupied_fraction_per_segment`
+
+```python
+get_nucleosome_occupied_fraction_per_segment(
+    model: Model,
+    segments_lengths: list[float],
+    segment_index: int
+) -> float
+```
+
+Returns the fraction of a DNA segment occupied by nucleosomes (0.0 to 1.0). Computes geometric overlap between each bound nucleosome's footprint (`per_nucleosome_DNA_length + nucleosome_linker_length`) and the segment boundaries, then divides total occupied length by segment length.
+
+### `check_separation_between_nucleosomes`
+
+```python
+check_separation_between_nucleosomes(model: Model) -> None
+```
+
+Validation function that raises `ValueError` if any two bound nucleosomes are closer than `per_nucleosome_DNA_length + nucleosome_linker_length` nm (centre-to-centre).
+
+### `check_separation_between_nucleosomes_and_RNAPs`
+
+```python
+check_separation_between_nucleosomes_and_RNAPs(
+    model: Model,
+    RNAP_gene_index: list[int],
+    state_vector: list[float]
+) -> None
+```
+
+Validation function that raises `ValueError` if any RNAP is closer than `(RNAP_diameter + per_nucleosome_DNA_length) / 2` nm to a bound nucleosome (centre-to-centre). This uses a deliberately weaker threshold (core footprint only, no linker) compared to the steric enforcement checks.
+
+### `get_ordering_of_RNAPs_and_proteins`
+
+```python
+get_ordering_of_RNAPs_and_proteins(
+    model: Model,
+    RNAP_gene_index: list[int],
+    state_vector: list[float]
+) -> tuple[list[float], list[str]]
+```
+
+Merges all RNAP positions and bound steric-barrier protein positions into a single list sorted by position. Returns `(sorted_positions, sorted_ids)` where each ID is either `'RNAP_<index>'` for an RNAP or `'<binding_protein_index>'` for a bound protein (matching the index into `model.binding_proteins`).
+
+### `get_nearest_steric_obstacles_for_RNAP`
+
+```python
+get_nearest_steric_obstacles_for_RNAP(
+    RNAP_index: int,
+    RNAP_pos: float,
+    sorted_positions: list[float],
+    sorted_ids: list[str]
+) -> tuple[float | None, str | None, float | None, str | None]
+```
+
+Given the sorted ordering from `get_ordering_of_RNAPs_and_proteins`, finds the nearest obstacle to the left and right of the specified RNAP. Returns `(left_position, left_id, right_position, right_id)`. Any value is `None` if no obstacle exists on that side.
+
+### `get_steric_hindrance_factor`
+
+```python
+get_steric_hindrance_factor(
+    model: Model,
+    separation: float,
+    steric_hindrance_distance: float
+) -> float
+```
+
+Computes the soft steric velocity reduction factor:
+
+$$f(s) = \frac{1}{2}\left(1 + \tanh\!\frac{s - d}{\lambda}\right)$$
+
+where $s$ is `separation`, $d$ is `steric_hindrance_distance`, and $\lambda$ is `model.model_setup.steric_hindrance_constraint_parameter`. Returns a value in $(0, 1)$ that approaches 0 near the exclusion distance and 1 far from it.
 
 ---
 

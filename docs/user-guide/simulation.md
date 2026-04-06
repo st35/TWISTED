@@ -41,6 +41,8 @@ After construction, `model` holds:
 | `model.Lk` | `list[float]` — linking numbers of all DNA segments |
 | `model.promoter_status` | `list[int]` — `1` (ON) or `0` (OFF) per gene |
 | `model.mRNA_counts` | `list[int]` — mRNA copy numbers per gene |
+| `model.binding_proteins` | `list[BindingProtein]` — binding protein types (auto-includes nucleosomes for eukaryotic) |
+| `model.binding_proteins_positions` | `list[list[float]]` — positions (nm) of bound proteins per type |
 | `model.topoisomerase_*` | Topoisomerase state (only when `mode == 'topoisomerase_based'`) |
 
 **Do not modify these attributes directly** during a simulation; use the provided functions in `model_dynamics.py`.

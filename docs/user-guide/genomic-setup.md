@@ -24,7 +24,7 @@ GenomicSetup(
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `chromatin_type` | `str` | `'prokaryotic'` or `'eukaryotic'` (eukaryotic not yet implemented) |
+| `chromatin_type` | `str` | `'prokaryotic'` or `'eukaryotic'` |
 | `gene_names` | `list[str]` | Identifier strings for each gene |
 | `TSSes` | `list[float]` | Transcription start site positions in **nm** |
 | `gene_lengths` | `list[float]` | Length of each gene in **nm** — RNAP exits when it has traveled this distance from the TSS |
@@ -40,6 +40,17 @@ All list parameters must have the same length.
 | Keyword | Required when | Type | Description |
 |---------|--------------|------|-------------|
 | `TF_on_off_rates` | `promoter_mode == 'non-constitutive'` | `list[tuple[float, float]]` | List of `(k_on, k_off)` pairs for each gene's transcription factor |
+
+### Eukaryotic Keyword Arguments
+
+These keywords are used only when `chromatin_type == 'eukaryotic'`:
+
+| Keyword | Type | Default | Description |
+|---------|------|---------|-------------|
+| `per_nucleosome_DNA_length` | `float` | 147 (bp) | DNA wrapped per nucleosome (passed in bp; converted to nm internally) |
+| `nucleosome_linker_length` | `float` | 30 (bp) | Linker DNA between nucleosomes (passed in bp; converted to nm internally) |
+| `nucleosomes_are_steric_barriers_to_RNAPs` | `bool` | `True` | Whether nucleosomes block RNAP passage |
+| `nucleosome_count` | `int` | auto | Explicit nucleosome count; if omitted, computed by tiling the domain |
 
 ---
 

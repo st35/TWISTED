@@ -72,7 +72,7 @@ class GenomicSetup: # Class to hold genomic setup information
 		print('=' * 40)
 
 class ModelSetup: # Class to hold model setup parameters
-	def __init__(self, w0: float = 1.85, chi: float = 0.05, eta: float = 0.0005, alpha: float = 1.5, v0: float = 20.0, tau_c: float = 12.0, force: float = 1.0, kBT: float = 4.1, TOP1_k0: float = 11.0, TOP1_theta: float = 0.25, TOP2_V0: float = 2.6, TOP2_k12: float = 2.0, RNAP_diameter: float = 15.0, TOPO_diameter: float = 15.0, generic_binding_protein_diameter: float = 15.0, clamps_status: tuple[str, str] = ('clamped', 'clamped'), finite_size_effect_flag: int = 1, supercoiling_relaxation_dynamics_mode: str = 'global_overall', mRNA_dynamics_mode: int = 0, model_observation_event_rate: float = 1.0 / 2.0, **kwargs) -> None:
+	def __init__(self, w0: float = 1.85, chi: float = 0.05, eta: float = 0.0005, alpha: float = 1.5, v0: float = 20.0, tau_c: float = 12.0, force: float = 1.0, kBT: float = 4.1, TOP1_k0: float = 11.0, TOP1_theta: float = 0.25, TOP2_V0: float = 2.6, TOP2_k12: float = 2.0, RNAP_diameter: float = 15.0, TOPO_diameter: float = 15.0, generic_binding_protein_diameter: float = 15.0, steric_hindrance_constraint_parameter: float = 2.0, clamps_status: tuple[str, str] = ('clamped', 'clamped'), finite_size_effect_flag: int = 1, supercoiling_relaxation_dynamics_mode: str = 'global_overall', mRNA_dynamics_mode: int = 0, model_observation_event_rate: float = 1.0 / 2.0, **kwargs) -> None:
 		self.w0 = w0 # Default: 1.85 1 / nm
 		self.h_dna = (2.0*3.14) / w0 # From w0*h_dna = 2*pi
 		self.chi = chi # Default: 0.05 pN*nm*s
@@ -89,6 +89,7 @@ class ModelSetup: # Class to hold model setup parameters
 		self.RNAP_diameter = RNAP_diameter # Default: 15.0 nm; used for calculating steric hindrance effects involving RNAPs
 		self.TOPO_diameter = TOPO_diameter # Default: 15.0 nm; used for calculating steric hindrance effects involving topoisomerases
 		self.generic_binding_protein_diameter = generic_binding_protein_diameter # Default: 15.0 nm; used for calculating steric hindrance effects involving generic DNA-binding proteins
+		self.steric_hindrance_constraint_parameter = steric_hindrance_constraint_parameter # Default: 2.0; used for calculating steric hindrance effects
 		assert len(clamps_status) == 2, 'clamps_status must be a tuple of two strings representing the status of the left and right clamps, respectively.'
 		assert all(status in ['clamped', 'free'] for status in clamps_status), 'Each clamp status in clamps_status must be either "clamped" or "free".'
 		self.left_clamp_status = 0 if clamps_status[0] == 'free' else 1

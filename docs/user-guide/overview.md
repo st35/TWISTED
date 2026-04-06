@@ -63,7 +63,7 @@ where `n` is the current number of active RNAPs and there are `n+1` DNA segments
 
 | Module | Responsibility |
 |--------|---------------|
-| `model_setup.py` | Data classes: `GenomicSetup`, `ModelSetup`, `Model`, `SimulationSetupAndState` |
+| `model_setup.py` | Data classes: `GenomicSetup`, `ModelSetup`, `BindingProtein`, `Model`, `SimulationSetupAndState` |
 | `biol_methods.py` | Physical equations: RNAP velocity/angular velocity, torque, topoisomerase effects |
 | `model_dynamics.py` | State vector management, ODE right-hand side, event rate calculation, integration |
 | `simulate_dynamics.py` | Main simulation loop and event dispatch |

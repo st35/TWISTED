@@ -62,6 +62,9 @@ def calculate_segments_attributes(model: Model, RNAP_gene_index: list[int], stat
 			else:
 				segments_lengths.append(x_vector[i - 1] - x_vector[i])
 		segments_lengths.append(x_vector[-1] - model.genomic_setup.clamp_left)
+	for segment_length in segments_lengths:
+		if segment_length < 0.0:
+			raise ValueError('Negative segment length calculated, which is invalid.')
 	
 	segments_LK0 = []
 	for length in segments_lengths:
@@ -71,20 +74,11 @@ def calculate_segments_attributes(model: Model, RNAP_gene_index: list[int], stat
 	for Lk, Lk0 in zip(Lk_vector, segments_LK0):
 		segments_sigmas.append((Lk - Lk0) / Lk0)
 	
-	segments_nucleosome_counts = [0 for _ in segments_lengths]
 	segments_nucleosome_densities = [0.0 for _ in segments_lengths]
 	if model.genomic_setup.chromatin_type == 'eukaryotic':
-		nucl_positions = []
-		for i in range(len(model.binding_proteins)):
-			if model.binding_proteins[i].is_a_nucleosome:
-				nucl_positions = nucl_positions + model.binding_proteins_positions[i]
-		for nucl_pos in nucl_positions:
-			nucl_segment_index = get_spot_segment_index(nucl_pos, segments_lengths)
-			segments_nucleosome_counts[nucl_segment_index] += 1
-		segments_nucleosome_densities = [(nucl_count*(model.genomic_setup.per_nucleosome_DNA_length + model.genomic_setup.nucleosome_linker_length)) / segment_length for nucl_count, segment_length in zip(segments_nucleosome_counts, segments_lengths)]
-		for psi in segments_nucleosome_densities:
-			if psi > 1.0:
-				raise ValueError('Nucleosome density cannot be greater than 1.0; check the total nucleosome count.')
+		for i in range(len(segments_lengths)):
+			segments_nucleosome_densities[i] = get_nucleosome_occupied_fraction_per_segment(model, segments_lengths, i)
+			assert segments_nucleosome_densities[i] >= 0.0 and segments_nucleosome_densities[i] <= 1.0, 'Invalid nucleosome density for segment ' + str(i) + ': ' + str(segments_nucleosome_densities[i])
 	
 	segments_torques = []
 	for segment_length, segment_sigma, segment_psi in zip(segments_lengths, segments_sigmas, segments_nucleosome_densities):
@@ -118,40 +112,29 @@ def get_RNAP_velocities(model: Model, state_vector: list[float], RNAP_gene_index
 
 		RNAP_velocities.append(get_RNAP_velocity(model, RNAP_gene_index[i], left_segment_length, right_segment_length, left_torque, right_torque))
 	
-	if model.model_setup.supercoiling_relaxation_dynamics_mode == 'topoisomerase_based':
-		TOPO_positions = [model.topoisomerase_positions[i] for i in range(len(model.topoisomerase_status)) if model.topoisomerase_status[i] == 1]
-		for i in range(RNAP_count):
-			for topo_pos in TOPO_positions:
-				if model.genomic_setup.gene_directions[RNAP_gene_index[i]] == 1:
-					if topo_pos - state_vector[i] >= 0.0 and topo_pos - state_vector[i] < (model.model_setup.RNAP_diameter + model.model_setup.TOPO_diameter) / 2.0:
-						RNAP_velocities[i] = 0.0
-				else:
-					if state_vector[i] - topo_pos >= 0.0 and state_vector[i] - topo_pos < (model.model_setup.RNAP_diameter + model.model_setup.TOPO_diameter) / 2.0:
-						RNAP_velocities[i] = 0.0
-	
-	nucl_positions = []
-	other_binding_proteins_positions = []
-	for i in range(len(model.binding_proteins)):
-		if model.binding_proteins[i].is_a_nucleosome and model.binding_proteins[i].is_steric_barrier_to_RNAPs:
-			nucl_positions = nucl_positions + model.binding_proteins_positions[i]
-	for i in range(len(model.binding_proteins)):
-		if model.binding_proteins[i].is_steric_barrier_to_RNAPs and model.binding_proteins[i].is_a_nucleosome is False:
-			other_binding_proteins_positions = other_binding_proteins_positions + model.binding_proteins_positions[i]
+	sorted_positions, sorted_ids = get_ordering_of_RNAPs_and_proteins(model, RNAP_gene_index, state_vector)
 	for i in range(RNAP_count):
-		for nucl_pos in nucl_positions:
-			if model.genomic_setup.gene_directions[RNAP_gene_index[i]] == 1:
-				if nucl_pos - state_vector[i] >= 0.0 and nucl_pos - state_vector[i] < (model.model_setup.RNAP_diameter + model.genomic_setup.per_nucleosome_DNA_length + model.genomic_setup.nucleosome_linker_length) / 2.0:
-					RNAP_velocities[i] = 0.0
-			else:
-				if state_vector[i] - nucl_pos >= 0.0 and state_vector[i] - nucl_pos < (model.model_setup.RNAP_diameter + model.genomic_setup.per_nucleosome_DNA_length + model.genomic_setup.nucleosome_linker_length) / 2.0:
-					RNAP_velocities[i] = 0.0
-		for protein_pos in other_binding_proteins_positions:
-			if model.genomic_setup.gene_directions[RNAP_gene_index[i]] == 1:
-				if protein_pos - state_vector[i] >= 0.0 and protein_pos - state_vector[i] < (model.model_setup.RNAP_diameter + model.model_setup.generic_binding_protein_diameter) / 2.0:
-					RNAP_velocities[i] = 0.0
-			else:
-				if state_vector[i] - protein_pos >= 0.0 and state_vector[i] - protein_pos < (model.model_setup.RNAP_diameter + model.model_setup.generic_binding_protein_diameter) / 2.0:
-					RNAP_velocities[i] = 0.0
+		left_obstacle_position, left_obstacle_id, right_obstacle_position, right_obstacle_id = get_nearest_steric_obstacles_for_RNAP(i, state_vector[i], sorted_positions, sorted_ids)
+		if model.genomic_setup.gene_directions[RNAP_gene_index[i]] == 1:
+			if right_obstacle_position is not None:
+				steric_hindrance_distance = model.model_setup.RNAP_diameter / 2.0
+				if 'RNAP' in right_obstacle_id:
+					steric_hindrance_distance += model.model_setup.RNAP_diameter / 2.0
+				elif model.binding_proteins[int(right_obstacle_id)].is_a_nucleosome:
+					steric_hindrance_distance += (model.genomic_setup.per_nucleosome_DNA_length + model.genomic_setup.nucleosome_linker_length) / 2.0
+				else:
+					steric_hindrance_distance += model.model_setup.generic_binding_protein_diameter / 2.0
+				RNAP_velocities[i] = RNAP_velocities[i]*get_steric_hindrance_factor(model, right_obstacle_position - state_vector[i], steric_hindrance_distance)
+		else:
+			if left_obstacle_position is not None:
+				steric_hindrance_distance = model.model_setup.RNAP_diameter / 2.0
+				if 'RNAP' in left_obstacle_id:
+					steric_hindrance_distance += model.model_setup.RNAP_diameter / 2.0
+				elif model.binding_proteins[int(left_obstacle_id)].is_a_nucleosome:
+					steric_hindrance_distance += (model.genomic_setup.per_nucleosome_DNA_length + model.genomic_setup.nucleosome_linker_length) / 2.0
+				else:
+					steric_hindrance_distance += model.model_setup.generic_binding_protein_diameter / 2.0
+				RNAP_velocities[i] = RNAP_velocities[i]*get_steric_hindrance_factor(model, state_vector[i] - left_obstacle_position, steric_hindrance_distance)
 	
 	return RNAP_velocities
 

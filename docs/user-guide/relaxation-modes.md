@@ -92,6 +92,8 @@ ModelSetup(
 
 ### `topoisomerase_based`
 
+> **Not yet implemented.** This mode is planned but not currently available. Use `topoisomerase_approximated` as an alternative.
+
 The most mechanistically detailed mode. A fixed pool of TOP1 and TOP2 molecules bind and unbind the DNA stochastically and catalyse supercoiling relaxation while bound. This mode also introduces **steric interactions** between bound topoisomerases and transcribing RNAPs.
 
 **Binding:** proportional to segment length (length-weighted probability).
@@ -112,8 +114,8 @@ ModelSetup(
 
 #### Steric Interactions in `topoisomerase_based`
 
-- An RNAP within `RNAP_TOPO_steric_effect_cutoff` nm of a bound topoisomerase is **stalled**.
-- A topoisomerase cannot bind within `RNAP_TOPO_steric_effect_cutoff` nm of any RNAP.
+- An RNAP within `(RNAP_diameter + TOPO_diameter) / 2` nm of a bound topoisomerase is **stalled**.
+- A topoisomerase cannot bind within `(RNAP_diameter + TOPO_diameter) / 2` nm of any RNAP.
 - These effects are **absent** in all other relaxation modes.
 
 ---

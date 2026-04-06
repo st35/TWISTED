@@ -437,7 +437,8 @@ individually. TOP1 relaxes torsional stress on non-plectonemic DNA (writhe
 fraction = 0), while TOP2 relaxes plectonemic supercoiling (writhe fraction
 > 0). Both enzymes act on positive and negative supercoiling, driving $\sigma$
 toward zero. Their binding positions are subject to steric hindrance from
-nearby RNAPs (controlled by `RNAP_TOPO_steric_effect_cutoff`, default 15 nm).
+nearby RNAPs (exclusion distance `(RNAP_diameter + TOPO_diameter) / 2`, default
+15 nm).
 
 ---
 
@@ -640,8 +641,8 @@ from model_setup import BindingProtein
 my_protein = BindingProtein(
     protein_name='ProteinX',
     total_copy_number=10,
-    is_steric_barrier_to_RNAPs=False,   # Not yet enforced
-    is_topological_barrier=False,        # Not yet enforced
+    is_steric_barrier_to_RNAPs=False,
+    is_topological_barrier=False,
     basal_on_rate=0.001,                 # s⁻¹ nm⁻¹
     basal_off_rate=0.01,                 # s⁻¹
 )
@@ -785,6 +786,116 @@ for i, protein in enumerate(model.binding_proteins):
     n_bound = len(model.binding_proteins_positions[i])
     print(f'{protein.protein_name}: {n_bound} / {protein.total_copy_number} bound')
 ```
+
+---
+
+## Example 9 — Eukaryotic Simulation with Nucleosomes
+
+TWISTED supports eukaryotic chromatin simulations where nucleosomes dynamically
+bind and unbind from DNA, modulating the torque–supercoiling relationship through
+a density-dependent buffering mechanism.
+
+### 9.1 Config file
+
+Create `eukaryotic_gene.config`:
+
+```text
+geneA	10000	5300	1	1.0
+```
+
+### 9.2 Set up a eukaryotic genomic setup
+
+To use eukaryotic mode, set `chromatin_type='eukaryotic'` and optionally
+provide nucleosome-related keyword arguments:
+
+```python
+import random
+random.seed(42)
+
+from utilities import *
+from model_setup import *
+from simulate_dynamics import *
+
+genomic_setup = construct_genomic_setup(
+    'eukaryotic_gene.config',
+    chromatin_type='eukaryotic',
+    per_nucleosome_DNA_length=147,       # bp (converted to nm internally)
+    nucleosome_linker_length=30,         # bp (converted to nm internally)
+    nucleosomes_are_steric_barriers_to_RNAPs=True,
+)
+genomic_setup.print_genomic_setup()
+print(f'Total nucleosomes: {genomic_setup.get_total_nucleosome_count()}')
+```
+
+The nucleosome count is automatically computed by tiling the domain with
+nucleosomes spaced by `per_nucleosome_DNA_length + nucleosome_linker_length`.
+You can override this with an explicit count:
+
+```python
+# Or specify an explicit nucleosome count
+genomic_setup_explicit = construct_genomic_setup(
+    'eukaryotic_gene.config',
+    chromatin_type='eukaryotic',
+    nucleosome_count=50,  # Override automatic tiling
+)
+```
+
+### 9.3 Configure model parameters
+
+```python
+model_setup = ModelSetup(
+    supercoiling_relaxation_dynamics_mode='topoisomerase_approximated',
+    TOP1_effective_relaxation_rate=0.004,
+    TOP2_effective_relaxation_rate=0.004,
+)
+```
+
+### 9.4 Create the model
+
+When you create a `Model` with a eukaryotic `GenomicSetup`, nucleosomes are
+automatically added as the first entry in `model.binding_proteins`:
+
+```python
+model = Model(genomic_setup, model_setup)
+
+# The nucleosome BindingProtein is at index 0
+nucleosome_protein = model.binding_proteins[0]
+print(f'Nucleosome protein: {nucleosome_protein.protein_name}')
+print(f'Total copies: {nucleosome_protein.total_copy_number}')
+print(f'Is nucleosome: {nucleosome_protein.is_a_nucleosome}')
+print(f'Steric barrier to RNAPs: {nucleosome_protein.is_steric_barrier_to_RNAPs}')
+```
+
+!!! note
+    Any additional binding proteins you pass to `Model(... binding_proteins=[...])` will
+    appear at indices 1, 2, … after the auto-created nucleosome entry.
+
+### 9.5 Run the simulation
+
+```python
+simulation_setup_and_state = SimulationSetupAndState(
+    genomic_setup,
+    simulation_end_mode=1,
+    simulation_end_criterion=[20],
+)
+
+simulate_dynamics(model, simulation_setup_and_state)
+
+# Inspect results
+transcription_rates = simulation_setup_and_state.calculate_RNAP_transcription_rates(model)
+avg_rate = (
+    sum(transcription_rates[0]) / len(transcription_rates[0])
+    if transcription_rates[0] else 'N/A'
+)
+print(f'Average transcription rate: {avg_rate} bp/s')
+print(f'Bound nucleosomes at end: {len(model.binding_proteins_positions[0])}')
+```
+
+The eukaryotic torque model features a **buffering regime** where nucleosomes
+absorb positive supercoiling without increasing torque. The width of this
+buffering regime scales with the local nucleosome density $\psi$ (fraction of
+segment length occupied by nucleosomes). As RNAPs displace nucleosomes, $\psi$
+decreases and the buffering capacity shrinks, allowing supercoiling to build up.
 
 ---
 

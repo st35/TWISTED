@@ -70,10 +70,19 @@ $$v_i = \frac{v_0}{2}\left(1 - \tanh\!\frac{\tau_f - \tau_b}{\tau_c}\right)$$
 
 where $\tau_f$ is the torque in the segment ahead (right) and $\tau_b$ behind (left). For negative-strand genes the sign is flipped.
 
-**Stalling conditions:**
+**Steric hindrance:**
 
-- The RNAP is set to $v = 0$ if the gap to the next RNAP ahead is less than `between_RNAPs_steric_effect_cutoff`.
-- In `topoisomerase_based` mode, the RNAP is also stalled when a bound topoisomerase is within `RNAP_TOPO_steric_effect_cutoff` nm ahead.
+Rather than a hard wall ($v = 0$), steric interactions are modelled as a smooth reduction via a tanh ramp. For an RNAP approaching an obstacle in its direction of travel:
+
+$$v_i \to v_i \cdot \frac{1}{2}\left(1 + \tanh\!\frac{s - d}{\lambda}\right)$$
+
+where $s$ is the centre-to-centre separation, $d$ is the exclusion distance `(d1 + d2) / 2`, and $\lambda$ is `steric_hindrance_constraint_parameter` (default 2.0 nm). The factor approaches 0 as the RNAP reaches the exclusion distance and 1 far from it.
+
+Obstacles that trigger steric hindrance:
+
+- Other RNAPs, with exclusion distance `RNAP_diameter`.
+- Bound nucleosomes (with `is_steric_barrier_to_RNAPs=True`), with exclusion distance `(RNAP_diameter + per_nucleosome_DNA_length + nucleosome_linker_length) / 2` nm.
+- Other bound proteins (with `is_steric_barrier_to_RNAPs=True`), with exclusion distance `(RNAP_diameter + generic_binding_protein_diameter) / 2` nm.
 
 ---
 

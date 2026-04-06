@@ -12,8 +12,10 @@ ModelSetup(
     v0=20.0, tau_c=12.0, force=1.0, kBT=4.1,
     TOP1_k0=11.0, TOP1_theta=0.25,
     TOP2_V0=2.6, TOP2_k12=2.0,
-    between_RNAPs_steric_effect_cutoff=15.0,
-    RNAP_TOPO_steric_effect_cutoff=15.0,
+    RNAP_diameter=15.0,
+    TOPO_diameter=15.0,
+    generic_binding_protein_diameter=15.0,
+    steric_hindrance_constraint_parameter=2.0,
     clamps_status=('clamped', 'clamped'),
     finite_size_effect_flag=1,
     supercoiling_relaxation_dynamics_mode='global_overall',
@@ -72,10 +74,20 @@ These parameters govern the action of Type I (TOP1) and Type II (TOP2) topoisome
 
 ## Steric Interaction Parameters
 
+Steric interactions between molecular species are modelled as a **soft constraint**. Rather than zeroing an RNAP's velocity at a hard exclusion distance, the velocity is continuously reduced by a smooth factor:
+
+$$f(s) = \frac{1}{2}\left(1 + \tanh\!\frac{s - d}{\lambda}\right)$$
+
+where $s$ is the centre-to-centre separation, $d$ is the exclusion distance `(d1 + d2) / 2`, and $\lambda$ is the `steric_hindrance_constraint_parameter`. The factor approaches 0 when the obstacle is very close ($s \ll d$) and 1 when far away ($s \gg d$). The transition spans approximately $\pm 2\lambda$ around $d$.
+
+Nucleosomes are a special case: their physical extent is `per_nucleosome_DNA_length + nucleosome_linker_length` (from `GenomicSetup`).
+
 | Parameter | Default | Units | Description |
 |-----------|---------|-------|-------------|
-| `between_RNAPs_steric_effect_cutoff` | 15.0 | nm | Minimum centre-to-centre distance allowed between RNAPs; RNAPs closer than this are stalled. Also enforced during RNAP recruitment |
-| `RNAP_TOPO_steric_effect_cutoff` | 15.0 | nm | Minimum distance between an RNAP and a bound topoisomerase; both stall each other |
+| `RNAP_diameter` | 15.0 | nm | RNAP physical diameter; used for RNAP–RNAP, RNAP–protein, and RNAP–nucleosome steric checks |
+| `TOPO_diameter` | 15.0 | nm | Topoisomerase physical diameter; used for TSS–TOPO steric checks |
+| `generic_binding_protein_diameter` | 15.0 | nm | Default diameter for non-nucleosome binding proteins; used for RNAP–protein and protein–protein steric checks |
+| `steric_hindrance_constraint_parameter` | 2.0 | nm | Controls the width of the soft steric transition zone in the tanh ramp |
 
 ---
 
@@ -126,6 +138,8 @@ See the dedicated page: [Supercoiling Relaxation Modes](relaxation-modes.md).
 ---
 
 ## Example: Topoisomerase-based Mode
+
+> **Not yet implemented.** The `topoisomerase_based` mode is planned but not currently available. Use `topoisomerase_approximated` as an alternative.
 
 ```python
 model_setup = ModelSetup(

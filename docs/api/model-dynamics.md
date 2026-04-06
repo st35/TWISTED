@@ -65,7 +65,9 @@ calculate_segments_attributes(
 ]
 ```
 
-Computes the geometric and mechanical properties of all DNA segments given the current state vector. Calls `get_prokaryotic_torque` for each segment.
+Computes the geometric and mechanical properties of all DNA segments given the current state vector. Calls `get_prokaryotic_torque` for prokaryotic setups or `get_eukaryotic_torque` for eukaryotic setups.
+
+For eukaryotic chromatin, this function also computes per-segment nucleosome counts and nucleosome densities ($\psi$), which are passed to `get_eukaryotic_torque`. An `AssertionError` is raised if any segment's nucleosome density falls outside the range [0.0, 1.0].
 
 ---
 
@@ -83,7 +85,15 @@ get_RNAP_velocities(
 ) -> list[float]
 ```
 
-Returns linear velocities (nm/s) for all RNAPs. Also zeroes velocities for RNAPs blocked by bound topoisomerases in `topoisomerase_based` mode.
+Returns linear velocities (nm/s) for all RNAPs. After computing each RNAP's torque-dependent velocity, applies a soft steric hindrance factor for each RNAP's nearest obstacle in its direction of travel:
+
+$$v_i \to v_i \cdot \frac{1}{2}\left(1 + \tanh\!\frac{s - d}{\lambda}\right)$$
+
+where $s$ is the centre-to-centre separation, $d$ is the exclusion distance, and $\lambda$ is `steric_hindrance_constraint_parameter`. Obstacles considered:
+
+- Other RNAPs within `RNAP_diameter` nm
+- Bound nucleosomes within `(RNAP_diameter + per_nucleosome_DNA_length + nucleosome_linker_length) / 2` nm (when `is_steric_barrier_to_RNAPs` is set)
+- Other bound proteins within `(RNAP_diameter + generic_binding_protein_diameter) / 2` nm (when `is_steric_barrier_to_RNAPs` is set)
 
 ### `get_RNAP_angular_velocities`
 
@@ -132,7 +142,7 @@ get_RNAP_recruitment_rates(
 ) -> list[float]
 ```
 
-Returns recruitment rates (s⁻¹) for each gene. A rate of 0 is returned if the TSS is sterically blocked or the promoter is OFF.
+Returns recruitment rates (s⁻¹) for each gene. A rate of 0 is returned if the promoter is OFF. Note that steric hindrance at the TSS is checked at event dispatch time in `simulate_dynamics`, not in this function.
 
 !!! note
     The function contains a placeholder (`if False`) for additional recruitment-blocking conditions (e.g., supercoiling-dependent recruitment). This is reserved for future implementation and currently has no effect.

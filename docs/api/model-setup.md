@@ -44,7 +44,22 @@ See [Genomic Setup](../user-guide/genomic-setup.md) for full parameter descripti
 | `clamp_left` | `float` | Left DNA boundary (always 0.0 nm) |
 | `clamp_right` | `float` | Right DNA boundary (nm) |
 
+Additional attributes present only when `chromatin_type == 'eukaryotic'`:
+
+| Attribute | Type | Description |
+|-----------|------|-------------|
+| `per_nucleosome_DNA_length` | `float` | DNA wrapped per nucleosome (nm); default 147 bp × 0.34 = 49.98 nm |
+| `nucleosome_linker_length` | `float` | Linker DNA between nucleosomes (nm); default 30 bp × 0.34 = 10.2 nm |
+| `nucleosomes_are_steric_barriers_to_RNAPs` | `bool` | Whether nucleosomes block RNAP passage; default `True` |
+| `explicit_nucleosome_count` | `int or None` | User-specified nucleosome count; if `None`, computed automatically by tiling |
+
+These can be set via `**kwargs` in the constructor (pass values in **bp** for lengths; they are converted to nm internally).
+
 ### Methods
+
+#### `get_total_nucleosome_count() → int`
+
+Returns the total number of nucleosomes for the construct. Returns `0` for prokaryotic setups. If `explicit_nucleosome_count` is set, returns that value. Otherwise, tiles nucleosomes across the domain starting from `clamp_left + linker/2`, placing one nucleosome per `per_nucleosome_DNA_length + nucleosome_linker_length` interval.
 
 #### `print_genomic_setup() → None`
 
@@ -72,8 +87,10 @@ class ModelSetup:
         TOP1_theta: float = 0.25,
         TOP2_V0: float = 2.6,
         TOP2_k12: float = 2.0,
-        between_RNAPs_steric_effect_cutoff: float = 15.0,
-        RNAP_TOPO_steric_effect_cutoff: float = 15.0,
+        RNAP_diameter: float = 15.0,
+        TOPO_diameter: float = 15.0,
+        generic_binding_protein_diameter: float = 15.0,
+        steric_hindrance_constraint_parameter: float = 2.0,
         clamps_status: tuple[str, str] = ('clamped', 'clamped'),
         finite_size_effect_flag: int = 1,
         supercoiling_relaxation_dynamics_mode: str = 'global_overall',
@@ -119,7 +136,8 @@ class BindingProtein:
         basal_on_rate: float,
         basal_off_rate: float,
         on_rate_func: callable = None,
-        off_rate_func: callable = None
+        off_rate_func: callable = None,
+        is_a_nucleosome: bool = False
     ) -> None
 ```
 
@@ -129,12 +147,13 @@ class BindingProtein:
 |-----------|------|-------------|
 | `protein_name` | `str` | Identifier for this protein type |
 | `total_copy_number` | `int` | Total number of molecules of this protein |
-| `is_steric_barrier_to_RNAPs` | `bool` | Whether bound proteins block RNAP passage (not yet implemented) |
+| `is_steric_barrier_to_RNAPs` | `bool` | Whether bound proteins block RNAP passage |
 | `is_topological_barrier` | `bool` | Whether bound proteins act as barriers to supercoiling diffusion (not yet implemented) |
 | `basal_on_rate` | `float` | Basal binding rate (s⁻¹ nm⁻¹); the per-segment on-rate is `basal_on_rate × segment_length` |
 | `basal_off_rate` | `float` | Basal unbinding rate (s⁻¹) |
 | `on_rate_func` | `callable or None` | Optional function `(segment_length, segment_sigma) → float` that multiplies the basal on-rate × segment_length. Defaults to `1.0` (no modulation) |
 | `off_rate_func` | `callable or None` | Optional function `(segment_length, segment_sigma) → float` that multiplies the basal off-rate. Defaults to `1.0` (no modulation) |
+| `is_a_nucleosome` | `bool` | If `True`, this protein is treated as a nucleosome with special steric handling (uses `per_nucleosome_DNA_length + nucleosome_linker_length` as its physical extent instead of `generic_binding_protein_diameter`). Default `False` |
 
 The effective per-segment on-rate for unbound proteins is:
 
@@ -144,8 +163,11 @@ The effective off-rate for a bound protein on a given segment is:
 
 $$r_{\text{off}} = \texttt{basal\_off\_rate} \times f_{\text{off}}(L, \sigma)$$
 
+!!! note "Steric barriers"
+    `is_steric_barrier_to_RNAPs` is enforced: bound proteins with this flag set to `True` will stall nearby RNAPs and block RNAP recruitment at nearby TSSes. Nucleosomes (`is_a_nucleosome=True`) use `per_nucleosome_DNA_length + nucleosome_linker_length` as their physical extent for steric checks; other proteins use `generic_binding_protein_diameter`.
+
 !!! warning "Not yet implemented"
-    `is_steric_barrier_to_RNAPs` and `is_topological_barrier` are stored but not yet enforced during the simulation. Support will be added in a future release.
+    `is_topological_barrier` is stored but not yet enforced during the simulation. Support will be added in a future release.
 
 ---
 
@@ -174,7 +196,7 @@ class Model:
 | `Lk` | `list[float]` | Linking number of each DNA segment (length = n_RNAPs + 1). Ordered right-to-left |
 | `promoter_status` | `list[int]` | `1` (ON) or `0` (OFF) per gene |
 | `mRNA_counts` | `list[int]` | mRNA copy numbers per gene |
-| `binding_proteins` | `list[BindingProtein]` | List of binding protein types (empty list if none provided) |
+| `binding_proteins` | `list[BindingProtein]` | List of binding protein types. For eukaryotic setups, a nucleosome `BindingProtein` is automatically prepended at index 0 |
 | `binding_proteins_positions` | `list[list[float]]` | Positions (nm) of bound proteins, indexed `[protein_type][bound_index]` |
 
 Additional attributes present only when `supercoiling_relaxation_dynamics_mode == 'topoisomerase_based'`:
@@ -191,6 +213,7 @@ Additional attributes present only when `supercoiling_relaxation_dynamics_mode =
 - `Lk` is initialised to a single element corresponding to the fully relaxed linking number of the complete DNA.
 - All RNAPs start absent (`x_dict` and `theta_dict` are empty lists per gene).
 - Constitutive promoters start `ON`; non-constitutive promoters start with a random binary state.
+- For eukaryotic setups, a nucleosome `BindingProtein` is automatically created and prepended to `binding_proteins`. Its `total_copy_number` is determined by `GenomicSetup.get_total_nucleosome_count()`, its `basal_on_rate` is normalised by total DNA length (`1.2 / (clamp_right - clamp_left)`), and `is_steric_barrier_to_RNAPs` is set from `GenomicSetup.nucleosomes_are_steric_barriers_to_RNAPs`. User-supplied binding proteins follow at subsequent indices.
 
 !!! warning "Non-constitutive promoters"
     Stochastic promoter toggling is not yet implemented. Non-constitutive promoters retain their initial random state for the entire simulation. Full support is planned for a future release.
