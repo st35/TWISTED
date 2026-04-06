@@ -1924,7 +1924,7 @@
 </code></pre></div>
 <p>Integrates the ODE from <code>t_start</code> until the cumulative propensity increment satisfies:</p>
 <div class="arithmatex">\[\int_{t_{\mathrm{start}}}^{t_{\mathrm{event}}} a_0(t')\,dt' \geq \ln(1/p_0)\]</div>
-<p>Uses <code>scipy.integrate.solve_ivp</code> with <code>method='RK45'</code>. Calls <code>update_state_vector_to_remove_dead_RNAPs</code> at each ODE output time point.</p>
+<p>Uses <code>scipy.integrate.solve_ivp</code> with the method specified by <code>simulation_setup_and_state.integration_method</code> (default <code>'RK23'</code>). Calls <code>update_state_vector_to_remove_dead_RNAPs</code> at each ODE output time point.</p>
 <p>Returns <code>(dt, cumulative_propensity_at_event)</code> where <code>dt = t_event - t_start</code>.</p>
 <hr />
 <h2 id="state-update-utilities">State Update Utilities<a class="headerlink" href="#state-update-utilities" title="Permanent link">&para;</a></h2>

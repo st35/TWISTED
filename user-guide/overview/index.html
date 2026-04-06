@@ -1192,7 +1192,7 @@
 <h1 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h1>
 <p>TWISTED simulates the coupled dynamics of RNA polymerase (RNAP) elongation and DNA supercoiling on a one-dimensional DNA molecule. The simulation couples:</p>
 <ol>
-<li><strong>Continuous mechanics</strong> — RNAP positions, angular positions, and DNA linking numbers evolve according to ODEs that are integrated with an adaptive RK45 solver.</li>
+<li><strong>Continuous mechanics</strong> — RNAP positions, angular positions, and DNA linking numbers evolve according to ODEs that are integrated with an adaptive ODE solver (RK23 by default).</li>
 <li><strong>Discrete stochastic events</strong> — RNAP recruitment, supercoiling relaxation, and topoisomerase binding/unbinding are selected stochastically using a Gillespie-style algorithm.</li>
 </ol>
 <hr />
