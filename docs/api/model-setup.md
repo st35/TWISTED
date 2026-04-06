@@ -231,6 +231,7 @@ class SimulationSetupAndState:
         genomic_setup: GenomicSetup,
         simulation_end_mode: int,
         simulation_end_criterion: Union[float, list[int]],
+        integration_method: str = 'RK23',
         integration_time_resolution: float = 0.1,
         RNAP_alive_status_check_interval: float = 1.0,
         max_RNAPs_to_recruit: list[int] = None
@@ -244,6 +245,7 @@ class SimulationSetupAndState:
 | `simulation_end_mode` | `int` | `0` = time-based; `1` = event-based |
 | `simulation_end_time` | `float` | Target simulation time (mode 0 only) |
 | `simulation_end_event_counts` | `list[int]` | Per-gene RNAP completion targets (mode 1 only) |
+| `integration_method` | `str` | ODE solver method passed to `solve_ivp`. One of `RK23`, `RK45`, `DOP853`, `Radau`, `BDF`, `LSODA`. Solvers other than `RK23` may crash due to non-physical intermediate states violating steric constraints |
 | `integration_time_resolution` | `float` | ODE evaluation time step (s) |
 | `RNAP_alive_status_check_interval` | `float` | RNAP status check interval (s) |
 | `max_RNAPs_to_recruit` | `list[int] or None` | Cap on total recruits per gene |

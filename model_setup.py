@@ -2,6 +2,7 @@ from utilities import *
 
 from typing import Union
 from math import floor
+import warnings
 
 class GenomicSetup: # Class to hold genomic setup information
 	def __init__(self, chromatin_type: str, gene_names: list[str], TSSes: list[float], gene_lengths: list[float], gene_directions: list[int], RNAP_on_rates: list[float], promoter_mode: str, buffer_length: float, **kwargs) -> None:
@@ -202,7 +203,7 @@ class Model: # Class to hold the model, including genomic setup, model setup, an
 		self.binding_proteins_positions = [[] for _ in self.binding_proteins] # List of lists to hold positions of each bound protein; each sublist corresponds to a binding protein type and contains the positions of all bound proteins of that type
 
 class SimulationSetupAndState: # Class to hold simulation setup parameters
-	def __init__(self, genomic_setup: GenomicSetup, simulation_end_mode: int, simulation_end_criterion: Union[float, list[int]], integration_time_resolution: float = 1.0e-1, RNAP_alive_status_check_interval: float = 1.0, max_RNAPs_to_recruit: list[int] = None) -> None:
+	def __init__(self, genomic_setup: GenomicSetup, simulation_end_mode: int, simulation_end_criterion: Union[float, list[int]], integration_method: str = 'RK23', integration_time_resolution: float = 1.0e-1, RNAP_alive_status_check_interval: float = 1.0, max_RNAPs_to_recruit: list[int] = None) -> None:
 		self.simulation_end_mode = simulation_end_mode # 0: time-based, 1: event-based
 		assert simulation_end_mode in [0, 1], 'simulation_end_mode must be either 0 (time-based) or 1 (event-based).'
 
@@ -215,6 +216,11 @@ class SimulationSetupAndState: # Class to hold simulation setup parameters
 			if len(simulation_end_criterion) != len(genomic_setup.gene_names):
 				raise ValueError('Length of simulation_end_criterion list must match the number of genes in genomic_setup.')
 			self.simulation_end_event_counts = list(simulation_end_criterion)
+		
+		self.integration_method = integration_method
+		assert integration_method in ['RK23', 'RK45', 'DOP853', 'Radau', 'BDF', 'LSODA'], 'integration_method must be one of: RK23, RK45, DOP853, Radau, BDF, LSODA.'
+		if integration_method != 'RK23':
+			warnings.warn('Using integration method "' + integration_method + '". Solvers other than RK23 may produce non-physical intermediate states that violate steric constraints, causing the simulation to crash.')
 
 		self.integration_time_resolution = integration_time_resolution # Time resolution for integration (in s)
 		assert integration_time_resolution > 0.0, 'integration_time_resolution must be a positive float.'

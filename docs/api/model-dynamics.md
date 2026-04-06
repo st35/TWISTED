@@ -276,7 +276,7 @@ Integrates the ODE from `t_start` until the cumulative propensity increment sati
 
 $$\int_{t_{\mathrm{start}}}^{t_{\mathrm{event}}} a_0(t')\,dt' \geq \ln(1/p_0)$$
 
-Uses `scipy.integrate.solve_ivp` with `method='RK45'`. Calls `update_state_vector_to_remove_dead_RNAPs` at each ODE output time point.
+Uses `scipy.integrate.solve_ivp` with the method specified by `simulation_setup_and_state.integration_method` (default `'RK23'`). Calls `update_state_vector_to_remove_dead_RNAPs` at each ODE output time point.
 
 Returns `(dt, cumulative_propensity_at_event)` where `dt = t_event - t_start`.
 

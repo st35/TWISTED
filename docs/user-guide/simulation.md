@@ -56,6 +56,7 @@ SimulationSetupAndState(
     genomic_setup,
     simulation_end_mode,
     simulation_end_criterion,
+    integration_method='RK23',
     integration_time_resolution=0.1,
     RNAP_alive_status_check_interval=1.0,
     max_RNAPs_to_recruit=None,
