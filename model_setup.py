@@ -131,6 +131,7 @@ class ModelSetup: # Class to hold model setup parameters
 		self.topoisomerase_copy_numbers = [0, 0] # Copy numbers for TOP1 and TOP2
 		self.topoisomerase_on_off_rates = [(0.0, 0.0), (0.0, 0.0)] # On and off rates for TOP1 and TOP2
 		if self.supercoiling_relaxation_dynamics_mode == 'topoisomerase_based': # Supercoiling relaxation per segment based on topoisomerase binding and unbinding; requires specifying topoisomerase copy numbers and on/off rates
+			raise NotImplementedError('supercoiling_relaxation_dynamics_mode "topoisomerase_based" is not yet implemented.')
 			if 'topoisomerase_copy_numbers' not in kwargs:
 				raise ValueError('For supercoiling_relaxation_dynamics_mode "topoisomerase_based", "topoisomerase_copy_numbers" argument must be provided.')
 			if len(kwargs['topoisomerase_copy_numbers']) != 2:
