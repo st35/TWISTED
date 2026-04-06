@@ -649,6 +649,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#eukaryotic-keyword-arguments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Eukaryotic Keyword Arguments
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1243,6 +1254,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#eukaryotic-keyword-arguments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Eukaryotic Keyword Arguments
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1408,7 +1430,7 @@
 <tr>
 <td><code>chromatin_type</code></td>
 <td><code>str</code></td>
-<td><code>'prokaryotic'</code> or <code>'eukaryotic'</code> (eukaryotic not yet implemented)</td>
+<td><code>'prokaryotic'</code> or <code>'eukaryotic'</code></td>
 </tr>
 <tr>
 <td><code>gene_names</code></td>
@@ -1464,6 +1486,44 @@
 <td><code>promoter_mode == 'non-constitutive'</code></td>
 <td><code>list[tuple[float, float]]</code></td>
 <td>List of <code>(k_on, k_off)</code> pairs for each gene's transcription factor</td>
+</tr>
+</tbody>
+</table>
+<h3 id="eukaryotic-keyword-arguments">Eukaryotic Keyword Arguments<a class="headerlink" href="#eukaryotic-keyword-arguments" title="Permanent link">&para;</a></h3>
+<p>These keywords are used only when <code>chromatin_type == 'eukaryotic'</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Keyword</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>per_nucleosome_DNA_length</code></td>
+<td><code>float</code></td>
+<td>147 (bp)</td>
+<td>DNA wrapped per nucleosome (passed in bp; converted to nm internally)</td>
+</tr>
+<tr>
+<td><code>nucleosome_linker_length</code></td>
+<td><code>float</code></td>
+<td>30 (bp)</td>
+<td>Linker DNA between nucleosomes (passed in bp; converted to nm internally)</td>
+</tr>
+<tr>
+<td><code>nucleosomes_are_steric_barriers_to_RNAPs</code></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>Whether nucleosomes block RNAP passage</td>
+</tr>
+<tr>
+<td><code>nucleosome_count</code></td>
+<td><code>int</code></td>
+<td>auto</td>
+<td>Explicit nucleosome count; if omitted, computed by tiling the domain</td>
 </tr>
 </tbody>
 </table>

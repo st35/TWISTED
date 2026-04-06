@@ -941,6 +941,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#get_total_nucleosome_count-int" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_total_nucleosome_count() → int
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#print_genomic_setup-none" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1302,6 +1313,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#get_total_nucleosome_count-int" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_total_nucleosome_count() → int
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#print_genomic_setup-none" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1577,7 +1599,42 @@
 </tr>
 </tbody>
 </table>
+<p>Additional attributes present only when <code>chromatin_type == 'eukaryotic'</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>per_nucleosome_DNA_length</code></td>
+<td><code>float</code></td>
+<td>DNA wrapped per nucleosome (nm); default 147 bp × 0.34 = 49.98 nm</td>
+</tr>
+<tr>
+<td><code>nucleosome_linker_length</code></td>
+<td><code>float</code></td>
+<td>Linker DNA between nucleosomes (nm); default 30 bp × 0.34 = 10.2 nm</td>
+</tr>
+<tr>
+<td><code>nucleosomes_are_steric_barriers_to_RNAPs</code></td>
+<td><code>bool</code></td>
+<td>Whether nucleosomes block RNAP passage; default <code>True</code></td>
+</tr>
+<tr>
+<td><code>explicit_nucleosome_count</code></td>
+<td><code>int or None</code></td>
+<td>User-specified nucleosome count; if <code>None</code>, computed automatically by tiling</td>
+</tr>
+</tbody>
+</table>
+<p>These can be set via <code>**kwargs</code> in the constructor (pass values in <strong>bp</strong> for lengths; they are converted to nm internally).</p>
 <h3 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h3>
+<h4 id="get_total_nucleosome_count-int"><code>get_total_nucleosome_count() → int</code><a class="headerlink" href="#get_total_nucleosome_count-int" title="Permanent link">&para;</a></h4>
+<p>Returns the total number of nucleosomes for the construct. Returns <code>0</code> for prokaryotic setups. If <code>explicit_nucleosome_count</code> is set, returns that value. Otherwise, tiles nucleosomes across the domain starting from <code>clamp_left + linker/2</code>, placing one nucleosome per <code>per_nucleosome_DNA_length + nucleosome_linker_length</code> interval.</p>
 <h4 id="print_genomic_setup-none"><code>print_genomic_setup() → None</code><a class="headerlink" href="#print_genomic_setup-none" title="Permanent link">&para;</a></h4>
 <p>Prints a formatted summary table of gene properties to stdout.</p>
 <hr />
@@ -1598,15 +1655,17 @@
 <a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>        <span class="n">TOP1_theta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.25</span><span class="p">,</span>
 <a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>        <span class="n">TOP2_V0</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.6</span><span class="p">,</span>
 <a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>        <span class="n">TOP2_k12</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span>
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>        <span class="n">between_RNAPs_steric_effect_cutoff</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">15.0</span><span class="p">,</span>
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>        <span class="n">RNAP_TOPO_steric_effect_cutoff</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">15.0</span><span class="p">,</span>
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>        <span class="n">clamps_status</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;clamped&#39;</span><span class="p">,</span> <span class="s1">&#39;clamped&#39;</span><span class="p">),</span>
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>        <span class="n">finite_size_effect_flag</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>        <span class="n">supercoiling_relaxation_dynamics_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;global_overall&#39;</span><span class="p">,</span>
-<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>        <span class="n">mRNA_dynamics_mode</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>        <span class="n">model_observation_event_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
-<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>        <span class="o">**</span><span class="n">kwargs</span>
-<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>        <span class="n">RNAP_diameter</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">15.0</span><span class="p">,</span>
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>        <span class="n">TOPO_diameter</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">15.0</span><span class="p">,</span>
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>        <span class="n">generic_binding_protein_diameter</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">15.0</span><span class="p">,</span>
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>        <span class="n">steric_hindrance_constraint_parameter</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span>
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>        <span class="n">clamps_status</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;clamped&#39;</span><span class="p">,</span> <span class="s1">&#39;clamped&#39;</span><span class="p">),</span>
+<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>        <span class="n">finite_size_effect_flag</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>        <span class="n">supercoiling_relaxation_dynamics_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;global_overall&#39;</span><span class="p">,</span>
+<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>        <span class="n">mRNA_dynamics_mode</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>        <span class="n">model_observation_event_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
+<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a>        <span class="o">**</span><span class="n">kwargs</span>
+<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </code></pre></div>
 <p>See <a href="../../user-guide/model-setup/">Model Parameters</a> for full parameter descriptions.</p>
 <h3 id="key-derived-attributes">Key Derived Attributes<a class="headerlink" href="#key-derived-attributes" title="Permanent link">&para;</a></h3>
@@ -1681,8 +1740,9 @@
 <a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>        <span class="n">basal_on_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
 <a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>        <span class="n">basal_off_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
 <a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>        <span class="n">on_rate_func</span><span class="p">:</span> <span class="nb">callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>        <span class="n">off_rate_func</span><span class="p">:</span> <span class="nb">callable</span> <span class="o">=</span> <span class="kc">None</span>
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>        <span class="n">off_rate_func</span><span class="p">:</span> <span class="nb">callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>        <span class="n">is_a_nucleosome</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </code></pre></div>
 <h3 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h3>
 <table>
@@ -1707,7 +1767,7 @@
 <tr>
 <td><code>is_steric_barrier_to_RNAPs</code></td>
 <td><code>bool</code></td>
-<td>Whether bound proteins block RNAP passage (not yet implemented)</td>
+<td>Whether bound proteins block RNAP passage</td>
 </tr>
 <tr>
 <td><code>is_topological_barrier</code></td>
@@ -1734,15 +1794,24 @@
 <td><code>callable or None</code></td>
 <td>Optional function <code>(segment_length, segment_sigma) → float</code> that multiplies the basal off-rate. Defaults to <code>1.0</code> (no modulation)</td>
 </tr>
+<tr>
+<td><code>is_a_nucleosome</code></td>
+<td><code>bool</code></td>
+<td>If <code>True</code>, this protein is treated as a nucleosome with special steric handling (uses <code>per_nucleosome_DNA_length + nucleosome_linker_length</code> as its physical extent instead of <code>generic_binding_protein_diameter</code>). Default <code>False</code></td>
+</tr>
 </tbody>
 </table>
 <p>The effective per-segment on-rate for unbound proteins is:</p>
 <div class="arithmatex">\[r_{\text{on}} = n_{\text{unbound}} \times \texttt{basal\_on\_rate} \times L_{\text{segment}} \times f_{\text{on}}(L, \sigma)\]</div>
 <p>The effective off-rate for a bound protein on a given segment is:</p>
 <div class="arithmatex">\[r_{\text{off}} = \texttt{basal\_off\_rate} \times f_{\text{off}}(L, \sigma)\]</div>
+<div class="admonition note">
+<p class="admonition-title">Steric barriers</p>
+<p><code>is_steric_barrier_to_RNAPs</code> is enforced: bound proteins with this flag set to <code>True</code> will stall nearby RNAPs and block RNAP recruitment at nearby TSSes. Nucleosomes (<code>is_a_nucleosome=True</code>) use <code>per_nucleosome_DNA_length + nucleosome_linker_length</code> as their physical extent for steric checks; other proteins use <code>generic_binding_protein_diameter</code>.</p>
+</div>
 <div class="admonition warning">
 <p class="admonition-title">Not yet implemented</p>
-<p><code>is_steric_barrier_to_RNAPs</code> and <code>is_topological_barrier</code> are stored but not yet enforced during the simulation. Support will be added in a future release.</p>
+<p><code>is_topological_barrier</code> is stored but not yet enforced during the simulation. Support will be added in a future release.</p>
 </div>
 <hr />
 <h2 id="model"><code>Model</code><a class="headerlink" href="#model" title="Permanent link">&para;</a></h2>
@@ -1803,7 +1872,7 @@
 <tr>
 <td><code>binding_proteins</code></td>
 <td><code>list[BindingProtein]</code></td>
-<td>List of binding protein types (empty list if none provided)</td>
+<td>List of binding protein types. For eukaryotic setups, a nucleosome <code>BindingProtein</code> is automatically prepended at index 0</td>
 </tr>
 <tr>
 <td><code>binding_proteins_positions</code></td>
@@ -1849,6 +1918,7 @@
 <li><code>Lk</code> is initialised to a single element corresponding to the fully relaxed linking number of the complete DNA.</li>
 <li>All RNAPs start absent (<code>x_dict</code> and <code>theta_dict</code> are empty lists per gene).</li>
 <li>Constitutive promoters start <code>ON</code>; non-constitutive promoters start with a random binary state.</li>
+<li>For eukaryotic setups, a nucleosome <code>BindingProtein</code> is automatically created and prepended to <code>binding_proteins</code>. Its <code>total_copy_number</code> is determined by <code>GenomicSetup.get_total_nucleosome_count()</code>, its <code>basal_on_rate</code> is normalised by total DNA length (<code>1.2 / (clamp_right - clamp_left)</code>), and <code>is_steric_barrier_to_RNAPs</code> is set from <code>GenomicSetup.nucleosomes_are_steric_barriers_to_RNAPs</code>. User-supplied binding proteins follow at subsequent indices.</li>
 </ul>
 <div class="admonition warning">
 <p class="admonition-title">Non-constitutive promoters</p>

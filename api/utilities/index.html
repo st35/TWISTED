@@ -1134,10 +1134,87 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#is_protein_binding_blocked" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        is_protein_binding_blocked
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#is_topo_binding_blocked" class="md-nav__link">
     <span class="md-ellipsis">
       
         is_TOPO_binding_blocked
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_nucleosome_occupied_fraction_per_segment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_nucleosome_occupied_fraction_per_segment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check_separation_between_nucleosomes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        check_separation_between_nucleosomes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check_separation_between_nucleosomes_and_rnaps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        check_separation_between_nucleosomes_and_RNAPs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_ordering_of_rnaps_and_proteins" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_ordering_of_RNAPs_and_proteins
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_nearest_steric_obstacles_for_rnap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_nearest_steric_obstacles_for_RNAP
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_steric_hindrance_factor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_steric_hindrance_factor
       
     </span>
   </a>
@@ -1366,10 +1443,87 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#is_protein_binding_blocked" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        is_protein_binding_blocked
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#is_topo_binding_blocked" class="md-nav__link">
     <span class="md-ellipsis">
       
         is_TOPO_binding_blocked
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_nucleosome_occupied_fraction_per_segment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_nucleosome_occupied_fraction_per_segment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check_separation_between_nucleosomes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        check_separation_between_nucleosomes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check_separation_between_nucleosomes_and_rnaps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        check_separation_between_nucleosomes_and_RNAPs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_ordering_of_rnaps_and_proteins" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_ordering_of_RNAPs_and_proteins
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_nearest_steric_obstacles_for_rnap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_nearest_steric_obstacles_for_RNAP
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_steric_hindrance_factor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_steric_hindrance_factor
       
     </span>
   </a>
@@ -1515,6 +1669,43 @@
 </tr>
 </tbody>
 </table>
+<p>All eukaryotic keyword arguments accepted by <code>GenomicSetup</code> can also be passed through this function (see <a href="../../user-guide/genomic-setup/#eukaryotic-keyword-arguments">Eukaryotic Keyword Arguments</a>):</p>
+<table>
+<thead>
+<tr>
+<th>Keyword</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>per_nucleosome_DNA_length</code></td>
+<td><code>float</code></td>
+<td>147 (bp)</td>
+<td>DNA wrapped per nucleosome (converted to nm internally)</td>
+</tr>
+<tr>
+<td><code>nucleosome_linker_length</code></td>
+<td><code>float</code></td>
+<td>30 (bp)</td>
+<td>Linker DNA between nucleosomes (converted to nm internally)</td>
+</tr>
+<tr>
+<td><code>nucleosomes_are_steric_barriers_to_RNAPs</code></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>Whether nucleosomes block RNAP passage</td>
+</tr>
+<tr>
+<td><code>nucleosome_count</code></td>
+<td><code>int</code></td>
+<td>auto</td>
+<td>Explicit nucleosome count; if omitted, computed by tiling</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Example:</strong>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">utilities</span><span class="w"> </span><span class="kn">import</span> <span class="n">construct_genomic_setup</span>
 <a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
@@ -1550,25 +1741,95 @@
 <a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span>
 </code></pre></div>
 <p>Returns <code>1</code> if the TSS at <code>TSS_position</code> is sterically blocked, <code>0</code> otherwise.</p>
-<p>Blocking is triggered by:
-- Any active RNAP within <code>between_RNAPs_steric_effect_cutoff</code> nm of the TSS.
-- Any bound topoisomerase within <code>RNAP_TOPO_steric_effect_cutoff</code> nm of the TSS (in <code>topoisomerase_based</code> mode only).</p>
-<h3 id="is_topo_binding_blocked"><code>is_TOPO_binding_blocked</code><a class="headerlink" href="#is_topo_binding_blocked" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">is_TOPO_binding_blocked</span><span class="p">(</span>
+<p>Blocking is triggered by:</p>
+<ul>
+<li>Any active RNAP within <code>RNAP_diameter</code> nm of the TSS.</li>
+<li>Any bound topoisomerase within <code>(RNAP_diameter + TOPO_diameter) / 2</code> nm of the TSS (in <code>topoisomerase_based</code> mode only).</li>
+<li>Any bound nucleosome (with <code>is_steric_barrier_to_RNAPs=True</code>) within <code>(RNAP_diameter + per_nucleosome_DNA_length + nucleosome_linker_length) / 2</code> nm of the TSS.</li>
+<li>Any other bound protein (with <code>is_steric_barrier_to_RNAPs=True</code>) within <code>(RNAP_diameter + generic_binding_protein_diameter) / 2</code> nm of the TSS.</li>
+</ul>
+<h3 id="is_protein_binding_blocked"><code>is_protein_binding_blocked</code><a class="headerlink" href="#is_protein_binding_blocked" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">is_protein_binding_blocked</span><span class="p">(</span>
 <a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span>
 <a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    <span class="n">RNAP_gene_index</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
 <a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    <span class="n">state_vector</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>    <span class="n">binding_position</span><span class="p">:</span> <span class="nb">float</span>
-<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>    <span class="n">protein_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>    <span class="n">binding_position</span><span class="p">:</span> <span class="nb">float</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span>
 </code></pre></div>
-<p>Returns <code>1</code> if a topoisomerase cannot bind at <code>binding_position</code> because an RNAP is within <code>RNAP_TOPO_steric_effect_cutoff</code> nm, <code>0</code> otherwise.</p>
+<p>Returns <code>1</code> if a binding protein of the given type cannot bind at <code>binding_position</code>, <code>0</code> otherwise.</p>
+<p>Blocking is triggered by:</p>
+<ul>
+<li>Any RNAP within <code>(RNAP_diameter + size) / 2</code> nm, where <code>size</code> is <code>per_nucleosome_DNA_length + nucleosome_linker_length</code> for nucleosomes or <code>generic_binding_protein_diameter</code> for other proteins.</li>
+<li>For nucleosomes: any other bound nucleosome within <code>per_nucleosome_DNA_length + nucleosome_linker_length</code> nm.</li>
+<li>For non-nucleosome proteins: any bound protein within <code>generic_binding_protein_diameter</code> nm.</li>
+</ul>
+<h3 id="is_topo_binding_blocked"><code>is_TOPO_binding_blocked</code><a class="headerlink" href="#is_topo_binding_blocked" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p><em>Not yet implemented.</em> This function is defined but the <code>topoisomerase_based</code> mode that uses it is not currently available.</p>
+</blockquote>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">is_TOPO_binding_blocked</span><span class="p">(</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>    <span class="n">RNAP_gene_index</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>    <span class="n">state_vector</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>    <span class="n">binding_position</span><span class="p">:</span> <span class="nb">float</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span>
+</code></pre></div>
+<p>Returns <code>1</code> if a topoisomerase cannot bind at <code>binding_position</code> because an RNAP is within <code>(RNAP_diameter + TOPO_diameter) / 2</code> nm, <code>0</code> otherwise.</p>
+<h3 id="get_nucleosome_occupied_fraction_per_segment"><code>get_nucleosome_occupied_fraction_per_segment</code><a class="headerlink" href="#get_nucleosome_occupied_fraction_per_segment" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">get_nucleosome_occupied_fraction_per_segment</span><span class="p">(</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>    <span class="n">segments_lengths</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>    <span class="n">segment_index</span><span class="p">:</span> <span class="nb">int</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span>
+</code></pre></div>
+<p>Returns the fraction of a DNA segment occupied by nucleosomes (0.0 to 1.0). Computes geometric overlap between each bound nucleosome's footprint (<code>per_nucleosome_DNA_length + nucleosome_linker_length</code>) and the segment boundaries, then divides total occupied length by segment length.</p>
+<h3 id="check_separation_between_nucleosomes"><code>check_separation_between_nucleosomes</code><a class="headerlink" href="#check_separation_between_nucleosomes" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">check_separation_between_nucleosomes</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</code></pre></div>
+<p>Validation function that raises <code>ValueError</code> if any two bound nucleosomes are closer than <code>per_nucleosome_DNA_length + nucleosome_linker_length</code> nm (centre-to-centre).</p>
+<h3 id="check_separation_between_nucleosomes_and_rnaps"><code>check_separation_between_nucleosomes_and_RNAPs</code><a class="headerlink" href="#check_separation_between_nucleosomes_and_rnaps" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">check_separation_between_nucleosomes_and_RNAPs</span><span class="p">(</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>    <span class="n">RNAP_gene_index</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>    <span class="n">state_vector</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</code></pre></div>
+<p>Validation function that raises <code>ValueError</code> if any RNAP is closer than <code>(RNAP_diameter + per_nucleosome_DNA_length) / 2</code> nm to a bound nucleosome (centre-to-centre). This uses a deliberately weaker threshold (core footprint only, no linker) compared to the steric enforcement checks.</p>
+<h3 id="get_ordering_of_rnaps_and_proteins"><code>get_ordering_of_RNAPs_and_proteins</code><a class="headerlink" href="#get_ordering_of_rnaps_and_proteins" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">get_ordering_of_RNAPs_and_proteins</span><span class="p">(</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>    <span class="n">RNAP_gene_index</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>    <span class="n">state_vector</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
+</code></pre></div>
+<p>Merges all RNAP positions and bound steric-barrier protein positions into a single list sorted by position. Returns <code>(sorted_positions, sorted_ids)</code> where each ID is either <code>'RNAP_&lt;index&gt;'</code> for an RNAP or <code>'&lt;binding_protein_index&gt;'</code> for a bound protein (matching the index into <code>model.binding_proteins</code>).</p>
+<h3 id="get_nearest_steric_obstacles_for_rnap"><code>get_nearest_steric_obstacles_for_RNAP</code><a class="headerlink" href="#get_nearest_steric_obstacles_for_rnap" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">get_nearest_steric_obstacles_for_RNAP</span><span class="p">(</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>    <span class="n">RNAP_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>    <span class="n">RNAP_pos</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>    <span class="n">sorted_positions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>    <span class="n">sorted_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span>
+</code></pre></div>
+<p>Given the sorted ordering from <code>get_ordering_of_RNAPs_and_proteins</code>, finds the nearest obstacle to the left and right of the specified RNAP. Returns <code>(left_position, left_id, right_position, right_id)</code>. Any value is <code>None</code> if no obstacle exists on that side.</p>
+<h3 id="get_steric_hindrance_factor"><code>get_steric_hindrance_factor</code><a class="headerlink" href="#get_steric_hindrance_factor" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="n">get_steric_hindrance_factor</span><span class="p">(</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span>
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>    <span class="n">separation</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>    <span class="n">steric_hindrance_distance</span><span class="p">:</span> <span class="nb">float</span>
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span>
+</code></pre></div>
+<p>Computes the soft steric velocity reduction factor:</p>
+<div class="arithmatex">\[f(s) = \frac{1}{2}\left(1 + \tanh\!\frac{s - d}{\lambda}\right)\]</div>
+<p>where <span class="arithmatex">\(s\)</span> is <code>separation</code>, <span class="arithmatex">\(d\)</span> is <code>steric_hindrance_distance</code>, and <span class="arithmatex">\(\lambda\)</span> is <code>model.model_setup.steric_hindrance_constraint_parameter</code>. Returns a value in <span class="arithmatex">\((0, 1)\)</span> that approaches 0 near the exclusion distance and 1 far from it.</p>
 <hr />
 <h2 id="event-selection">Event Selection<a class="headerlink" href="#event-selection" title="Permanent link">&para;</a></h2>
 <h3 id="select_event_based_on_propensities"><code>select_event_based_on_propensities</code><a class="headerlink" href="#select_event_based_on_propensities" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">select_event_based_on_propensities</span><span class="p">(</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    <span class="n">rates_vector</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>    <span class="n">p</span><span class="p">:</span> <span class="nb">float</span>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="n">select_event_based_on_propensities</span><span class="p">(</span>
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>    <span class="n">rates_vector</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>    <span class="n">p</span><span class="p">:</span> <span class="nb">float</span>
+<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span>
 </code></pre></div>
 <p>Gillespie event-type selection. Returns the index of the selected event in <code>rates_vector</code> given a uniform random number <code>p ∈ [0, 1)</code>.</p>
 <p>Returns <code>None</code> if the total rate is zero (no events possible).</p>
@@ -1577,7 +1838,7 @@
 <hr />
 <h2 id="debugging">Debugging<a class="headerlink" href="#debugging" title="Permanent link">&para;</a></h2>
 <h3 id="print_list"><code>print_list</code><a class="headerlink" href="#print_list" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">print_list</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">lst</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="n">print_list</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">lst</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </code></pre></div>
 <p>Prints <code>name: val1 val2 val3 ...</code> on a single line. Convenience function for debugging state vectors.</p>
 

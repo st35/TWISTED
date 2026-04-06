@@ -1417,6 +1417,9 @@
 </code></pre></div>
 <hr />
 <h3 id="topoisomerase_based"><code>topoisomerase_based</code><a class="headerlink" href="#topoisomerase_based" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p><strong>Not yet implemented.</strong> This mode is planned but not currently available. Use <code>topoisomerase_approximated</code> as an alternative.</p>
+</blockquote>
 <p>The most mechanistically detailed mode. A fixed pool of TOP1 and TOP2 molecules bind and unbind the DNA stochastically and catalyse supercoiling relaxation while bound. This mode also introduces <strong>steric interactions</strong> between bound topoisomerases and transcribing RNAPs.</p>
 <p><strong>Binding:</strong> proportional to segment length (length-weighted probability).
 <strong>Unbinding:</strong> at constant off-rates.
@@ -1433,8 +1436,8 @@
 </code></pre></div>
 <h4 id="steric-interactions-in-topoisomerase_based">Steric Interactions in <code>topoisomerase_based</code><a class="headerlink" href="#steric-interactions-in-topoisomerase_based" title="Permanent link">&para;</a></h4>
 <ul>
-<li>An RNAP within <code>RNAP_TOPO_steric_effect_cutoff</code> nm of a bound topoisomerase is <strong>stalled</strong>.</li>
-<li>A topoisomerase cannot bind within <code>RNAP_TOPO_steric_effect_cutoff</code> nm of any RNAP.</li>
+<li>An RNAP within <code>(RNAP_diameter + TOPO_diameter) / 2</code> nm of a bound topoisomerase is <strong>stalled</strong>.</li>
+<li>A topoisomerase cannot bind within <code>(RNAP_diameter + TOPO_diameter) / 2</code> nm of any RNAP.</li>
 <li>These effects are <strong>absent</strong> in all other relaxation modes.</li>
 </ul>
 <hr />

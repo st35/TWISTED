@@ -1330,15 +1330,17 @@
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">v0</span><span class="o">=</span><span class="mf">20.0</span><span class="p">,</span> <span class="n">tau_c</span><span class="o">=</span><span class="mf">12.0</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">kBT</span><span class="o">=</span><span class="mf">4.1</span><span class="p">,</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">TOP1_k0</span><span class="o">=</span><span class="mf">11.0</span><span class="p">,</span> <span class="n">TOP1_theta</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>
 <a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">TOP2_V0</span><span class="o">=</span><span class="mf">2.6</span><span class="p">,</span> <span class="n">TOP2_k12</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n">between_RNAPs_steric_effect_cutoff</span><span class="o">=</span><span class="mf">15.0</span><span class="p">,</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n">RNAP_TOPO_steric_effect_cutoff</span><span class="o">=</span><span class="mf">15.0</span><span class="p">,</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n">clamps_status</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;clamped&#39;</span><span class="p">,</span> <span class="s1">&#39;clamped&#39;</span><span class="p">),</span>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="n">finite_size_effect_flag</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="n">supercoiling_relaxation_dynamics_mode</span><span class="o">=</span><span class="s1">&#39;global_overall&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="n">mRNA_dynamics_mode</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="n">model_observation_event_rate</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="o">**</span><span class="n">kwargs</span>
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="p">)</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n">RNAP_diameter</span><span class="o">=</span><span class="mf">15.0</span><span class="p">,</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n">TOPO_diameter</span><span class="o">=</span><span class="mf">15.0</span><span class="p">,</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n">generic_binding_protein_diameter</span><span class="o">=</span><span class="mf">15.0</span><span class="p">,</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="n">steric_hindrance_constraint_parameter</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="n">clamps_status</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;clamped&#39;</span><span class="p">,</span> <span class="s1">&#39;clamped&#39;</span><span class="p">),</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="n">finite_size_effect_flag</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="n">supercoiling_relaxation_dynamics_mode</span><span class="o">=</span><span class="s1">&#39;global_overall&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="n">mRNA_dynamics_mode</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    <span class="n">model_observation_event_rate</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>    <span class="o">**</span><span class="n">kwargs</span>
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="p">)</span>
 </code></pre></div>
 <hr />
 <h2 id="dna-parameters">DNA Parameters<a class="headerlink" href="#dna-parameters" title="Permanent link">&para;</a></h2>
@@ -1462,6 +1464,10 @@
 </table>
 <hr />
 <h2 id="steric-interaction-parameters">Steric Interaction Parameters<a class="headerlink" href="#steric-interaction-parameters" title="Permanent link">&para;</a></h2>
+<p>Steric interactions between molecular species are modelled as a <strong>soft constraint</strong>. Rather than zeroing an RNAP's velocity at a hard exclusion distance, the velocity is continuously reduced by a smooth factor:</p>
+<div class="arithmatex">\[f(s) = \frac{1}{2}\left(1 + \tanh\!\frac{s - d}{\lambda}\right)\]</div>
+<p>where <span class="arithmatex">\(s\)</span> is the centre-to-centre separation, <span class="arithmatex">\(d\)</span> is the exclusion distance <code>(d1 + d2) / 2</code>, and <span class="arithmatex">\(\lambda\)</span> is the <code>steric_hindrance_constraint_parameter</code>. The factor approaches 0 when the obstacle is very close (<span class="arithmatex">\(s \ll d\)</span>) and 1 when far away (<span class="arithmatex">\(s \gg d\)</span>). The transition spans approximately <span class="arithmatex">\(\pm 2\lambda\)</span> around <span class="arithmatex">\(d\)</span>.</p>
+<p>Nucleosomes are a special case: their physical extent is <code>per_nucleosome_DNA_length + nucleosome_linker_length</code> (from <code>GenomicSetup</code>).</p>
 <table>
 <thead>
 <tr>
@@ -1473,16 +1479,28 @@
 </thead>
 <tbody>
 <tr>
-<td><code>between_RNAPs_steric_effect_cutoff</code></td>
+<td><code>RNAP_diameter</code></td>
 <td>15.0</td>
 <td>nm</td>
-<td>Minimum centre-to-centre distance allowed between RNAPs; RNAPs closer than this are stalled. Also enforced during RNAP recruitment</td>
+<td>RNAP physical diameter; used for RNAP–RNAP, RNAP–protein, and RNAP–nucleosome steric checks</td>
 </tr>
 <tr>
-<td><code>RNAP_TOPO_steric_effect_cutoff</code></td>
+<td><code>TOPO_diameter</code></td>
 <td>15.0</td>
 <td>nm</td>
-<td>Minimum distance between an RNAP and a bound topoisomerase; both stall each other</td>
+<td>Topoisomerase physical diameter; used for TSS–TOPO steric checks</td>
+</tr>
+<tr>
+<td><code>generic_binding_protein_diameter</code></td>
+<td>15.0</td>
+<td>nm</td>
+<td>Default diameter for non-nucleosome binding proteins; used for RNAP–protein and protein–protein steric checks</td>
+</tr>
+<tr>
+<td><code>steric_hindrance_constraint_parameter</code></td>
+<td>2.0</td>
+<td>nm</td>
+<td>Controls the width of the soft steric transition zone in the tanh ramp</td>
 </tr>
 </tbody>
 </table>
@@ -1586,6 +1604,9 @@
 </table>
 <hr />
 <h2 id="example-topoisomerase-based-mode">Example: Topoisomerase-based Mode<a class="headerlink" href="#example-topoisomerase-based-mode" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p><strong>Not yet implemented.</strong> The <code>topoisomerase_based</code> mode is planned but not currently available. Use <code>topoisomerase_approximated</code> as an alternative.</p>
+</blockquote>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">model_setup</span> <span class="o">=</span> <span class="n">ModelSetup</span><span class="p">(</span>
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">v0</span><span class="o">=</span><span class="mf">20.0</span><span class="p">,</span>
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="n">tau_c</span><span class="o">=</span><span class="mf">12.0</span><span class="p">,</span>

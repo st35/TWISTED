@@ -1487,6 +1487,14 @@
 <td><code>list[int]</code> — mRNA copy numbers per gene</td>
 </tr>
 <tr>
+<td><code>model.binding_proteins</code></td>
+<td><code>list[BindingProtein]</code> — binding protein types (auto-includes nucleosomes for eukaryotic)</td>
+</tr>
+<tr>
+<td><code>model.binding_proteins_positions</code></td>
+<td><code>list[list[float]]</code> — positions (nm) of bound proteins per type</td>
+</tr>
+<tr>
 <td><code>model.topoisomerase_*</code></td>
 <td>Topoisomerase state (only when <code>mode == 'topoisomerase_based'</code>)</td>
 </tr>

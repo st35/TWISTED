@@ -1426,10 +1426,15 @@
 <p>Translational velocity of RNAP <span class="arithmatex">\(i\)</span> (on a positive-strand gene):</p>
 <div class="arithmatex">\[v_i = \frac{v_0}{2}\left(1 - \tanh\!\frac{\tau_f - \tau_b}{\tau_c}\right)\]</div>
 <p>where <span class="arithmatex">\(\tau_f\)</span> is the torque in the segment ahead (right) and <span class="arithmatex">\(\tau_b\)</span> behind (left). For negative-strand genes the sign is flipped.</p>
-<p><strong>Stalling conditions:</strong></p>
+<p><strong>Steric hindrance:</strong></p>
+<p>Rather than a hard wall (<span class="arithmatex">\(v = 0\)</span>), steric interactions are modelled as a smooth reduction via a tanh ramp. For an RNAP approaching an obstacle in its direction of travel:</p>
+<div class="arithmatex">\[v_i \to v_i \cdot \frac{1}{2}\left(1 + \tanh\!\frac{s - d}{\lambda}\right)\]</div>
+<p>where <span class="arithmatex">\(s\)</span> is the centre-to-centre separation, <span class="arithmatex">\(d\)</span> is the exclusion distance <code>(d1 + d2) / 2</code>, and <span class="arithmatex">\(\lambda\)</span> is <code>steric_hindrance_constraint_parameter</code> (default 2.0 nm). The factor approaches 0 as the RNAP reaches the exclusion distance and 1 far from it.</p>
+<p>Obstacles that trigger steric hindrance:</p>
 <ul>
-<li>The RNAP is set to <span class="arithmatex">\(v = 0\)</span> if the gap to the next RNAP ahead is less than <code>between_RNAPs_steric_effect_cutoff</code>.</li>
-<li>In <code>topoisomerase_based</code> mode, the RNAP is also stalled when a bound topoisomerase is within <code>RNAP_TOPO_steric_effect_cutoff</code> nm ahead.</li>
+<li>Other RNAPs, with exclusion distance <code>RNAP_diameter</code>.</li>
+<li>Bound nucleosomes (with <code>is_steric_barrier_to_RNAPs=True</code>), with exclusion distance <code>(RNAP_diameter + per_nucleosome_DNA_length + nucleosome_linker_length) / 2</code> nm.</li>
+<li>Other bound proteins (with <code>is_steric_barrier_to_RNAPs=True</code>), with exclusion distance <code>(RNAP_diameter + generic_binding_protein_diameter) / 2</code> nm.</li>
 </ul>
 <hr />
 <h2 id="rnap-angular-velocity">RNAP Angular Velocity<a class="headerlink" href="#rnap-angular-velocity" title="Permanent link">&para;</a></h2>

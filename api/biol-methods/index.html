@@ -1043,6 +1043,34 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#get_eukaryotic_torque" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_eukaryotic_torque
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="get_eukaryotic_torque">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#chromatin-states" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chromatin States
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1279,6 +1307,34 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#get_eukaryotic_torque" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_eukaryotic_torque
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="get_eukaryotic_torque">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#chromatin-states" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chromatin States
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1317,7 +1373,7 @@
 <p>Returns the linear velocity of an RNAP in nm/s.</p>
 <p>The velocity follows the torque-dependent form:</p>
 <div class="arithmatex">\[v = \frac{v_0}{2}\left(1 - \tanh\!\frac{\tau_f - \tau_b}{\tau_c}\right)\]</div>
-<p>Returns <code>0.0</code> if the segment ahead of the RNAP is shorter than <code>between_RNAPs_steric_effect_cutoff</code> (steric stalling).</p>
+<p>Steric interactions are handled separately in <code>get_RNAP_velocities</code> (see <a href="../model-dynamics/">model_dynamics</a>).</p>
 <p><strong>Parameters:</strong></p>
 <table>
 <thead>
@@ -1577,6 +1633,140 @@
 </tbody>
 </table>
 <p>See <a href="../../theory/dna-mechanics/">DNA Mechanics</a> for the full torque model derivation.</p>
+<hr />
+<h2 id="get_eukaryotic_torque"><code>get_eukaryotic_torque</code><a class="headerlink" href="#get_eukaryotic_torque" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">get_eukaryotic_torque</span><span class="p">(</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    <span class="n">force</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>    <span class="n">segment_length</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>    <span class="n">psi</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>    <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>    <span class="n">finite_size_effect_flag</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>    <span class="n">finite_size_effect_cutoff</span><span class="p">:</span> <span class="nb">float</span>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
+</code></pre></div>
+<p>Calculates torque and chromatin state for a eukaryotic DNA segment as a function of nucleosome density <code>psi</code> and supercoiling density <code>sigma</code>. Returns a 4-tuple:</p>
+<table>
+<thead>
+<tr>
+<th>Index</th>
+<th>Symbol</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td><span class="arithmatex">\(\tau\)</span></td>
+<td><code>float</code></td>
+<td>Torque (pN·nm)</td>
+</tr>
+<tr>
+<td>1</td>
+<td>state</td>
+<td><code>int</code></td>
+<td>Chromatin state code (1=melted, 2=twisted, 3=buffering, 4=pos-twisted, 5=pos-plectoneme, 6=twisted-plectoneme)</td>
+</tr>
+<tr>
+<td>2</td>
+<td><span class="arithmatex">\(\Phi_w\)</span></td>
+<td><code>float</code></td>
+<td>Writhe fraction (0 to 1)</td>
+</tr>
+<tr>
+<td>3</td>
+<td><span class="arithmatex">\(\sigma_{pt}\)</span></td>
+<td><code>float</code></td>
+<td>Positive-twisted cutoff (plectoneme-formation threshold)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="chromatin-states">Chromatin States<a class="headerlink" href="#chromatin-states" title="Permanent link">&para;</a></h3>
+<p>The torque–sigma relationship has six regimes, with thresholds that depend on nucleosome density <span class="arithmatex">\(\psi\)</span>:</p>
+<table>
+<thead>
+<tr>
+<th>State</th>
+<th>Code</th>
+<th><span class="arithmatex">\(\sigma\)</span> range</th>
+<th>Torque behaviour</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Melted</td>
+<td>1</td>
+<td><span class="arithmatex">\(\sigma &lt; -0.013\)</span></td>
+<td>Constant <span class="arithmatex">\(\tau = -10.0\)</span> pN·nm</td>
+</tr>
+<tr>
+<td>Twisted</td>
+<td>2</td>
+<td><span class="arithmatex">\(-0.013 \leq \sigma &lt; 0.001\)</span></td>
+<td>Linear, slope 763.064</td>
+</tr>
+<tr>
+<td>Buffering</td>
+<td>3</td>
+<td><span class="arithmatex">\(0.001 \leq \sigma &lt; 0.0576\psi + 0.0013\)</span></td>
+<td>Constant (nucleosome absorption)</td>
+</tr>
+<tr>
+<td>Positive twisted</td>
+<td>4</td>
+<td>buffering cutoff <span class="arithmatex">\(\leq \sigma &lt;\)</span> pos_twisted cutoff</td>
+<td>Linear, slope 753.3442</td>
+</tr>
+<tr>
+<td>Positive plectoneme</td>
+<td>5</td>
+<td>pos_twisted cutoff <span class="arithmatex">\(\leq \sigma &lt; 0.0772\)</span></td>
+<td>Constant, writhe fraction 0–1</td>
+</tr>
+<tr>
+<td>Twisted plectoneme</td>
+<td>6</td>
+<td><span class="arithmatex">\(\sigma \geq 0.0772\)</span></td>
+<td>Linear with <span class="arithmatex">\(\psi\)</span>-dependent slope, capped at 40 pN·nm</td>
+</tr>
+</tbody>
+</table>
+<p>The <strong>buffering</strong> state (state 3) is characteristic of eukaryotic chromatin: nucleosomes absorb positive supercoiling within a <span class="arithmatex">\(\psi\)</span>-dependent range without increasing torque.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>force</code></td>
+<td>Applied stretching force (pN); reserved for future use</td>
+</tr>
+<tr>
+<td><code>segment_length</code></td>
+<td>Length of the DNA segment (nm)</td>
+</tr>
+<tr>
+<td><code>psi</code></td>
+<td>Nucleosome density: fraction of segment occupied by nucleosomes (0 to 1)</td>
+</tr>
+<tr>
+<td><code>sigma</code></td>
+<td>Supercoiling density of the segment</td>
+</tr>
+<tr>
+<td><code>finite_size_effect_flag</code></td>
+<td><code>1</code> to enable finite-size correction, <code>0</code> to disable</td>
+</tr>
+<tr>
+<td><code>finite_size_effect_cutoff</code></td>
+<td>Length scale for finite-size correction (nm)</td>
+</tr>
+</tbody>
+</table>
 
 
 
