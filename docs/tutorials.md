@@ -862,7 +862,7 @@ genomic_setup_custom = construct_genomic_setup(
 ```
 
 These functions multiply the basal on/off rates (see
-[BindingProtein](../api/model-setup.md#bindingprotein) for details).
+[BindingProtein](api/model-setup.md#bindingprotein) for details).
 
 ### 9.3 Configure model parameters
 
