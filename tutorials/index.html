@@ -2859,24 +2859,44 @@ You can override this with an explicit count:</p>
 <a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a>    <span class="n">nucleosome_count</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>  <span class="c1"># Override automatic tiling</span>
 <a id="__codelineno-30-6" name="__codelineno-30-6" href="#__codelineno-30-6"></a><span class="p">)</span>
 </code></pre></div>
+<p>You can also provide custom rate functions that modulate nucleosome
+binding and unbinding as a function of segment length and supercoiling density:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a><span class="c1"># Custom nucleosome rate functions</span>
+<a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">nucleosome_on_rate_modifier</span><span class="p">(</span><span class="n">segment_length</span><span class="p">,</span> <span class="n">segment_sigma</span><span class="p">):</span>
+<a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a>    <span class="c1"># Suppress binding on highly negatively supercoiled segments</span>
+<a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a>    <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="mf">10.0</span> <span class="o">*</span> <span class="n">segment_sigma</span><span class="p">)</span>
+<a id="__codelineno-31-5" name="__codelineno-31-5" href="#__codelineno-31-5"></a>
+<a id="__codelineno-31-6" name="__codelineno-31-6" href="#__codelineno-31-6"></a><span class="k">def</span><span class="w"> </span><span class="nf">nucleosome_off_rate_modifier</span><span class="p">(</span><span class="n">segment_length</span><span class="p">,</span> <span class="n">segment_sigma</span><span class="p">):</span>
+<a id="__codelineno-31-7" name="__codelineno-31-7" href="#__codelineno-31-7"></a>    <span class="c1"># Enhance unbinding on highly negatively supercoiled segments</span>
+<a id="__codelineno-31-8" name="__codelineno-31-8" href="#__codelineno-31-8"></a>    <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="mf">10.0</span> <span class="o">*</span> <span class="n">segment_sigma</span><span class="p">)</span>
+<a id="__codelineno-31-9" name="__codelineno-31-9" href="#__codelineno-31-9"></a>
+<a id="__codelineno-31-10" name="__codelineno-31-10" href="#__codelineno-31-10"></a><span class="n">genomic_setup_custom</span> <span class="o">=</span> <span class="n">construct_genomic_setup</span><span class="p">(</span>
+<a id="__codelineno-31-11" name="__codelineno-31-11" href="#__codelineno-31-11"></a>    <span class="s1">&#39;eukaryotic_gene.config&#39;</span><span class="p">,</span>
+<a id="__codelineno-31-12" name="__codelineno-31-12" href="#__codelineno-31-12"></a>    <span class="n">chromatin_type</span><span class="o">=</span><span class="s1">&#39;eukaryotic&#39;</span><span class="p">,</span>
+<a id="__codelineno-31-13" name="__codelineno-31-13" href="#__codelineno-31-13"></a>    <span class="n">nucleosome_on_rate_func</span><span class="o">=</span><span class="n">nucleosome_on_rate_modifier</span><span class="p">,</span>
+<a id="__codelineno-31-14" name="__codelineno-31-14" href="#__codelineno-31-14"></a>    <span class="n">nucleosome_off_rate_func</span><span class="o">=</span><span class="n">nucleosome_off_rate_modifier</span><span class="p">,</span>
+<a id="__codelineno-31-15" name="__codelineno-31-15" href="#__codelineno-31-15"></a><span class="p">)</span>
+</code></pre></div>
+<p>These functions multiply the basal on/off rates (see
+<a href="../api/model-setup.md#bindingprotein">BindingProtein</a> for details).</p>
 <h3 id="93-configure-model-parameters">9.3 Configure model parameters<a class="headerlink" href="#93-configure-model-parameters" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a><span class="n">model_setup</span> <span class="o">=</span> <span class="n">ModelSetup</span><span class="p">(</span>
-<a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>    <span class="n">supercoiling_relaxation_dynamics_mode</span><span class="o">=</span><span class="s1">&#39;topoisomerase_approximated&#39;</span><span class="p">,</span>
-<a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a>    <span class="n">TOP1_effective_relaxation_rate</span><span class="o">=</span><span class="mf">0.004</span><span class="p">,</span>
-<a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a>    <span class="n">TOP2_effective_relaxation_rate</span><span class="o">=</span><span class="mf">0.004</span><span class="p">,</span>
-<a id="__codelineno-31-5" name="__codelineno-31-5" href="#__codelineno-31-5"></a><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a><span class="n">model_setup</span> <span class="o">=</span> <span class="n">ModelSetup</span><span class="p">(</span>
+<a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>    <span class="n">supercoiling_relaxation_dynamics_mode</span><span class="o">=</span><span class="s1">&#39;topoisomerase_approximated&#39;</span><span class="p">,</span>
+<a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a>    <span class="n">TOP1_effective_relaxation_rate</span><span class="o">=</span><span class="mf">0.004</span><span class="p">,</span>
+<a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a>    <span class="n">TOP2_effective_relaxation_rate</span><span class="o">=</span><span class="mf">0.004</span><span class="p">,</span>
+<a id="__codelineno-32-5" name="__codelineno-32-5" href="#__codelineno-32-5"></a><span class="p">)</span>
 </code></pre></div>
 <h3 id="94-create-the-model">9.4 Create the model<a class="headerlink" href="#94-create-the-model" title="Permanent link">&para;</a></h3>
 <p>When you create a <code>Model</code> with a eukaryotic <code>GenomicSetup</code>, nucleosomes are
 automatically added as the first entry in <code>model.binding_proteins</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">genomic_setup</span><span class="p">,</span> <span class="n">model_setup</span><span class="p">)</span>
-<a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>
-<a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a><span class="c1"># The nucleosome BindingProtein is at index 0</span>
-<a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a><span class="n">nucleosome_protein</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">binding_proteins</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<a id="__codelineno-32-5" name="__codelineno-32-5" href="#__codelineno-32-5"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Nucleosome protein: </span><span class="si">{</span><span class="n">nucleosome_protein</span><span class="o">.</span><span class="n">protein_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-<a id="__codelineno-32-6" name="__codelineno-32-6" href="#__codelineno-32-6"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Total copies: </span><span class="si">{</span><span class="n">nucleosome_protein</span><span class="o">.</span><span class="n">total_copy_number</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-<a id="__codelineno-32-7" name="__codelineno-32-7" href="#__codelineno-32-7"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Is nucleosome: </span><span class="si">{</span><span class="n">nucleosome_protein</span><span class="o">.</span><span class="n">is_a_nucleosome</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-<a id="__codelineno-32-8" name="__codelineno-32-8" href="#__codelineno-32-8"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Steric barrier to RNAPs: </span><span class="si">{</span><span class="n">nucleosome_protein</span><span class="o">.</span><span class="n">is_steric_barrier_to_RNAPs</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">genomic_setup</span><span class="p">,</span> <span class="n">model_setup</span><span class="p">)</span>
+<a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a>
+<a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a><span class="c1"># The nucleosome BindingProtein is at index 0</span>
+<a id="__codelineno-33-4" name="__codelineno-33-4" href="#__codelineno-33-4"></a><span class="n">nucleosome_protein</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">binding_proteins</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<a id="__codelineno-33-5" name="__codelineno-33-5" href="#__codelineno-33-5"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Nucleosome protein: </span><span class="si">{</span><span class="n">nucleosome_protein</span><span class="o">.</span><span class="n">protein_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<a id="__codelineno-33-6" name="__codelineno-33-6" href="#__codelineno-33-6"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Total copies: </span><span class="si">{</span><span class="n">nucleosome_protein</span><span class="o">.</span><span class="n">total_copy_number</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<a id="__codelineno-33-7" name="__codelineno-33-7" href="#__codelineno-33-7"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Is nucleosome: </span><span class="si">{</span><span class="n">nucleosome_protein</span><span class="o">.</span><span class="n">is_a_nucleosome</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<a id="__codelineno-33-8" name="__codelineno-33-8" href="#__codelineno-33-8"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Steric barrier to RNAPs: </span><span class="si">{</span><span class="n">nucleosome_protein</span><span class="o">.</span><span class="n">is_steric_barrier_to_RNAPs</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -2884,22 +2904,22 @@ automatically added as the first entry in <code>model.binding_proteins</code>:</
 appear at indices 1, 2, … after the auto-created nucleosome entry.</p>
 </div>
 <h3 id="95-run-the-simulation">9.5 Run the simulation<a class="headerlink" href="#95-run-the-simulation" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="n">simulation_setup_and_state</span> <span class="o">=</span> <span class="n">SimulationSetupAndState</span><span class="p">(</span>
-<a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a>    <span class="n">genomic_setup</span><span class="p">,</span>
-<a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a>    <span class="n">simulation_end_mode</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-<a id="__codelineno-33-4" name="__codelineno-33-4" href="#__codelineno-33-4"></a>    <span class="n">simulation_end_criterion</span><span class="o">=</span><span class="p">[</span><span class="mi">20</span><span class="p">],</span>
-<a id="__codelineno-33-5" name="__codelineno-33-5" href="#__codelineno-33-5"></a><span class="p">)</span>
-<a id="__codelineno-33-6" name="__codelineno-33-6" href="#__codelineno-33-6"></a>
-<a id="__codelineno-33-7" name="__codelineno-33-7" href="#__codelineno-33-7"></a><span class="n">simulate_dynamics</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">simulation_setup_and_state</span><span class="p">)</span>
-<a id="__codelineno-33-8" name="__codelineno-33-8" href="#__codelineno-33-8"></a>
-<a id="__codelineno-33-9" name="__codelineno-33-9" href="#__codelineno-33-9"></a><span class="c1"># Inspect results</span>
-<a id="__codelineno-33-10" name="__codelineno-33-10" href="#__codelineno-33-10"></a><span class="n">transcription_rates</span> <span class="o">=</span> <span class="n">simulation_setup_and_state</span><span class="o">.</span><span class="n">calculate_RNAP_transcription_rates</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
-<a id="__codelineno-33-11" name="__codelineno-33-11" href="#__codelineno-33-11"></a><span class="n">avg_rate</span> <span class="o">=</span> <span class="p">(</span>
-<a id="__codelineno-33-12" name="__codelineno-33-12" href="#__codelineno-33-12"></a>    <span class="nb">sum</span><span class="p">(</span><span class="n">transcription_rates</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">transcription_rates</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<a id="__codelineno-33-13" name="__codelineno-33-13" href="#__codelineno-33-13"></a>    <span class="k">if</span> <span class="n">transcription_rates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">else</span> <span class="s1">&#39;N/A&#39;</span>
-<a id="__codelineno-33-14" name="__codelineno-33-14" href="#__codelineno-33-14"></a><span class="p">)</span>
-<a id="__codelineno-33-15" name="__codelineno-33-15" href="#__codelineno-33-15"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Average transcription rate: </span><span class="si">{</span><span class="n">avg_rate</span><span class="si">}</span><span class="s1"> bp/s&#39;</span><span class="p">)</span>
-<a id="__codelineno-33-16" name="__codelineno-33-16" href="#__codelineno-33-16"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Bound nucleosomes at end: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">binding_proteins_positions</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a><span class="n">simulation_setup_and_state</span> <span class="o">=</span> <span class="n">SimulationSetupAndState</span><span class="p">(</span>
+<a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a>    <span class="n">genomic_setup</span><span class="p">,</span>
+<a id="__codelineno-34-3" name="__codelineno-34-3" href="#__codelineno-34-3"></a>    <span class="n">simulation_end_mode</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<a id="__codelineno-34-4" name="__codelineno-34-4" href="#__codelineno-34-4"></a>    <span class="n">simulation_end_criterion</span><span class="o">=</span><span class="p">[</span><span class="mi">20</span><span class="p">],</span>
+<a id="__codelineno-34-5" name="__codelineno-34-5" href="#__codelineno-34-5"></a><span class="p">)</span>
+<a id="__codelineno-34-6" name="__codelineno-34-6" href="#__codelineno-34-6"></a>
+<a id="__codelineno-34-7" name="__codelineno-34-7" href="#__codelineno-34-7"></a><span class="n">simulate_dynamics</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">simulation_setup_and_state</span><span class="p">)</span>
+<a id="__codelineno-34-8" name="__codelineno-34-8" href="#__codelineno-34-8"></a>
+<a id="__codelineno-34-9" name="__codelineno-34-9" href="#__codelineno-34-9"></a><span class="c1"># Inspect results</span>
+<a id="__codelineno-34-10" name="__codelineno-34-10" href="#__codelineno-34-10"></a><span class="n">transcription_rates</span> <span class="o">=</span> <span class="n">simulation_setup_and_state</span><span class="o">.</span><span class="n">calculate_RNAP_transcription_rates</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+<a id="__codelineno-34-11" name="__codelineno-34-11" href="#__codelineno-34-11"></a><span class="n">avg_rate</span> <span class="o">=</span> <span class="p">(</span>
+<a id="__codelineno-34-12" name="__codelineno-34-12" href="#__codelineno-34-12"></a>    <span class="nb">sum</span><span class="p">(</span><span class="n">transcription_rates</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">transcription_rates</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<a id="__codelineno-34-13" name="__codelineno-34-13" href="#__codelineno-34-13"></a>    <span class="k">if</span> <span class="n">transcription_rates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">else</span> <span class="s1">&#39;N/A&#39;</span>
+<a id="__codelineno-34-14" name="__codelineno-34-14" href="#__codelineno-34-14"></a><span class="p">)</span>
+<a id="__codelineno-34-15" name="__codelineno-34-15" href="#__codelineno-34-15"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Average transcription rate: </span><span class="si">{</span><span class="n">avg_rate</span><span class="si">}</span><span class="s1"> bp/s&#39;</span><span class="p">)</span>
+<a id="__codelineno-34-16" name="__codelineno-34-16" href="#__codelineno-34-16"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Bound nucleosomes at end: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">binding_proteins_positions</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </code></pre></div>
 <p>The eukaryotic torque model features a <strong>buffering regime</strong> where nucleosomes
 absorb positive supercoiling without increasing torque. The width of this
@@ -2910,7 +2930,7 @@ decreases and the buffering capacity shrinks, allowing supercoiling to build up.
 <h2 id="quick-reference">Quick Reference<a class="headerlink" href="#quick-reference" title="Permanent link">&para;</a></h2>
 <h3 id="config-file-format">Config file format<a class="headerlink" href="#config-file-format" title="Permanent link">&para;</a></h3>
 <p>Tab-delimited, one gene per line:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a>name    TSS_bp    length_bp    direction    RNAP_on_rate
+<div class="highlight"><pre><span></span><code><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a>name    TSS_bp    length_bp    direction    RNAP_on_rate
 </code></pre></div>
 <h3 id="relaxation-modes">Relaxation modes<a class="headerlink" href="#relaxation-modes" title="Permanent link">&para;</a></h3>
 <table>
@@ -2970,14 +2990,14 @@ decreases and the buffering capacity shrinks, allowing supercoiling to build up.
 </tbody>
 </table>
 <h3 id="callback-signatures">Callback signatures<a class="headerlink" href="#callback-signatures" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a><span class="c1"># Called at the start of each integration interval (~every RNAP_alive_status_check_interval seconds)</span>
-<a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">on_integration_step</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">simulation_setup_and_state</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state_vector</span><span class="p">):</span> <span class="o">...</span>
-<a id="__codelineno-35-3" name="__codelineno-35-3" href="#__codelineno-35-3"></a>
-<a id="__codelineno-35-4" name="__codelineno-35-4" href="#__codelineno-35-4"></a><span class="c1"># Called at every Gillespie step (before event selection)</span>
-<a id="__codelineno-35-5" name="__codelineno-35-5" href="#__codelineno-35-5"></a><span class="k">def</span><span class="w"> </span><span class="nf">on_gillespie_step</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">simulation_setup_and_state</span><span class="p">):</span> <span class="o">...</span>
-<a id="__codelineno-35-6" name="__codelineno-35-6" href="#__codelineno-35-6"></a>
-<a id="__codelineno-35-7" name="__codelineno-35-7" href="#__codelineno-35-7"></a><span class="c1"># Called once when the simulation ends</span>
-<a id="__codelineno-35-8" name="__codelineno-35-8" href="#__codelineno-35-8"></a><span class="k">def</span><span class="w"> </span><span class="nf">on_end</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">simulation_setup_and_state</span><span class="p">):</span> <span class="o">...</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a><span class="c1"># Called at the start of each integration interval (~every RNAP_alive_status_check_interval seconds)</span>
+<a id="__codelineno-36-2" name="__codelineno-36-2" href="#__codelineno-36-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">on_integration_step</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">simulation_setup_and_state</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state_vector</span><span class="p">):</span> <span class="o">...</span>
+<a id="__codelineno-36-3" name="__codelineno-36-3" href="#__codelineno-36-3"></a>
+<a id="__codelineno-36-4" name="__codelineno-36-4" href="#__codelineno-36-4"></a><span class="c1"># Called at every Gillespie step (before event selection)</span>
+<a id="__codelineno-36-5" name="__codelineno-36-5" href="#__codelineno-36-5"></a><span class="k">def</span><span class="w"> </span><span class="nf">on_gillespie_step</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">simulation_setup_and_state</span><span class="p">):</span> <span class="o">...</span>
+<a id="__codelineno-36-6" name="__codelineno-36-6" href="#__codelineno-36-6"></a>
+<a id="__codelineno-36-7" name="__codelineno-36-7" href="#__codelineno-36-7"></a><span class="c1"># Called once when the simulation ends</span>
+<a id="__codelineno-36-8" name="__codelineno-36-8" href="#__codelineno-36-8"></a><span class="k">def</span><span class="w"> </span><span class="nf">on_end</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">simulation_setup_and_state</span><span class="p">):</span> <span class="o">...</span>
 </code></pre></div>
 
 

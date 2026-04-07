@@ -1629,6 +1629,16 @@
 <td><code>int or None</code></td>
 <td>User-specified nucleosome count; if <code>None</code>, computed automatically by tiling</td>
 </tr>
+<tr>
+<td><code>nucleosome_on_rate_func</code></td>
+<td><code>callable or None</code></td>
+<td>Optional function passed as <code>on_rate_func</code> to the auto-created nucleosome <code>BindingProtein</code>; default <code>None</code></td>
+</tr>
+<tr>
+<td><code>nucleosome_off_rate_func</code></td>
+<td><code>callable or None</code></td>
+<td>Optional function passed as <code>off_rate_func</code> to the auto-created nucleosome <code>BindingProtein</code>; default <code>None</code></td>
+</tr>
 </tbody>
 </table>
 <p>These can be set via <code>**kwargs</code> in the constructor (pass values in <strong>bp</strong> for lengths; they are converted to nm internally).</p>

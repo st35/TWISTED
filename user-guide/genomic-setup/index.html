@@ -1525,6 +1525,18 @@
 <td>auto</td>
 <td>Explicit nucleosome count; if omitted, computed by tiling the domain</td>
 </tr>
+<tr>
+<td><code>nucleosome_on_rate_func</code></td>
+<td><code>callable or None</code></td>
+<td><code>None</code></td>
+<td>Optional function <code>(segment_length, segment_sigma) → float</code> that modulates the nucleosome binding rate. Passed as <code>on_rate_func</code> to the auto-created nucleosome <code>BindingProtein</code> (see <a href="../../api/model-setup/#bindingprotein">BindingProtein</a>)</td>
+</tr>
+<tr>
+<td><code>nucleosome_off_rate_func</code></td>
+<td><code>callable or None</code></td>
+<td><code>None</code></td>
+<td>Optional function <code>(segment_length, segment_sigma) → float</code> that modulates the nucleosome unbinding rate. Passed as <code>off_rate_func</code> to the auto-created nucleosome <code>BindingProtein</code></td>
+</tr>
 </tbody>
 </table>
 <hr />
