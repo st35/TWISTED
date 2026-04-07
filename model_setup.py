@@ -42,6 +42,18 @@ class GenomicSetup: # Class to hold genomic setup information
 				self.explicit_nucleosome_count = int(kwargs['nucleosome_count'])
 			else:
 				self.explicit_nucleosome_count = None
+			if 'nucleosome_on_rate_func' not in kwargs:
+				self.nucleosome_on_rate_func = None
+			else:
+				if not callable(kwargs['nucleosome_on_rate_func']):
+					raise ValueError('nucleosome_on_rate_func must be a callable function if provided.')
+				self.nucleosome_on_rate_func = kwargs['nucleosome_on_rate_func']
+			if 'nucleosome_off_rate_func' not in kwargs:
+				self.nucleosome_off_rate_func = None
+			else:
+				if not callable(kwargs['nucleosome_off_rate_func']):
+					raise ValueError('nucleosome_off_rate_func must be a callable function if provided.')
+				self.nucleosome_off_rate_func = kwargs['nucleosome_off_rate_func']
 		
 		self.clamp_left = 0.0 # Left end of DNA is at position 0 nm
 		self.clamp_right = TSSes[0] + gene_lengths[0] + buffer_length if gene_directions[0] == 1 else TSSes[0] + buffer_length # Right end of DNA is at position beyond the last gene plus buffer length
@@ -199,7 +211,7 @@ class Model: # Class to hold the model, including genomic setup, model setup, an
 		self.binding_proteins = binding_proteins # List of BindingProtein objects representing other DNA-binding proteins in the system
 		if genomic_setup.chromatin_type == 'eukaryotic':
 			nucl_count = genomic_setup.get_total_nucleosome_count()
-			nucleosomes = BindingProtein(protein_name = 'nucleosome', total_copy_number = nucl_count, is_steric_barrier_to_RNAPs = genomic_setup.nucleosomes_are_steric_barriers_to_RNAPs, is_topological_barrier = False, basal_on_rate = 1.2 / (genomic_setup.clamp_right - genomic_setup.clamp_left), basal_off_rate = 0.4, is_a_nucleosome = True)
+			nucleosomes = BindingProtein(protein_name = 'nucleosome', total_copy_number = nucl_count, is_steric_barrier_to_RNAPs = genomic_setup.nucleosomes_are_steric_barriers_to_RNAPs, is_topological_barrier = False, basal_on_rate = 1.2 / (genomic_setup.clamp_right - genomic_setup.clamp_left), basal_off_rate = 0.4, is_a_nucleosome = True, on_rate_func = genomic_setup.nucleosome_on_rate_func, off_rate_func = genomic_setup.nucleosome_off_rate_func)
 			self.binding_proteins = [nucleosomes] + self.binding_proteins
 		self.binding_proteins_positions = [[] for _ in self.binding_proteins] # List of lists to hold positions of each bound protein; each sublist corresponds to a binding protein type and contains the positions of all bound proteins of that type
 

@@ -840,6 +840,30 @@ genomic_setup_explicit = construct_genomic_setup(
 )
 ```
 
+You can also provide custom rate functions that modulate nucleosome
+binding and unbinding as a function of segment length and supercoiling density:
+
+```python
+# Custom nucleosome rate functions
+def nucleosome_on_rate_modifier(segment_length, segment_sigma):
+    # Suppress binding on highly negatively supercoiled segments
+    return max(0.0, 1.0 + 10.0 * segment_sigma)
+
+def nucleosome_off_rate_modifier(segment_length, segment_sigma):
+    # Enhance unbinding on highly negatively supercoiled segments
+    return max(1.0, 1.0 - 10.0 * segment_sigma)
+
+genomic_setup_custom = construct_genomic_setup(
+    'eukaryotic_gene.config',
+    chromatin_type='eukaryotic',
+    nucleosome_on_rate_func=nucleosome_on_rate_modifier,
+    nucleosome_off_rate_func=nucleosome_off_rate_modifier,
+)
+```
+
+These functions multiply the basal on/off rates (see
+[BindingProtein](../api/model-setup.md#bindingprotein) for details).
+
 ### 9.3 Configure model parameters
 
 ```python

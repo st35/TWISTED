@@ -51,6 +51,8 @@ These keywords are used only when `chromatin_type == 'eukaryotic'`:
 | `nucleosome_linker_length` | `float` | 30 (bp) | Linker DNA between nucleosomes (passed in bp; converted to nm internally) |
 | `nucleosomes_are_steric_barriers_to_RNAPs` | `bool` | `True` | Whether nucleosomes block RNAP passage |
 | `nucleosome_count` | `int` | auto | Explicit nucleosome count; if omitted, computed by tiling the domain |
+| `nucleosome_on_rate_func` | `callable or None` | `None` | Optional function `(segment_length, segment_sigma) → float` that modulates the nucleosome binding rate. Passed as `on_rate_func` to the auto-created nucleosome `BindingProtein` (see [BindingProtein](../api/model-setup.md#bindingprotein)) |
+| `nucleosome_off_rate_func` | `callable or None` | `None` | Optional function `(segment_length, segment_sigma) → float` that modulates the nucleosome unbinding rate. Passed as `off_rate_func` to the auto-created nucleosome `BindingProtein` |
 
 ---
 

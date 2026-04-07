@@ -52,6 +52,8 @@ Additional attributes present only when `chromatin_type == 'eukaryotic'`:
 | `nucleosome_linker_length` | `float` | Linker DNA between nucleosomes (nm); default 30 bp × 0.34 = 10.2 nm |
 | `nucleosomes_are_steric_barriers_to_RNAPs` | `bool` | Whether nucleosomes block RNAP passage; default `True` |
 | `explicit_nucleosome_count` | `int or None` | User-specified nucleosome count; if `None`, computed automatically by tiling |
+| `nucleosome_on_rate_func` | `callable or None` | Optional function passed as `on_rate_func` to the auto-created nucleosome `BindingProtein`; default `None` |
+| `nucleosome_off_rate_func` | `callable or None` | Optional function passed as `off_rate_func` to the auto-created nucleosome `BindingProtein`; default `None` |
 
 These can be set via `**kwargs` in the constructor (pass values in **bp** for lengths; they are converted to nm internally).
 
