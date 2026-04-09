@@ -1043,6 +1043,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="RNAP Recruitment Details">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#protein-displacement-at-tss" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Protein Displacement at TSS
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -1206,6 +1223,23 @@
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="RNAP Recruitment Details">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#protein-displacement-at-tss" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Protein Displacement at TSS
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -1397,11 +1431,13 @@
 <ol>
 <li>The TSS is not sterically blocked by another RNAP within <code>RNAP_diameter</code> nm.</li>
 <li>No bound topoisomerase is within <code>(RNAP_diameter + TOPO_diameter) / 2</code> nm of the TSS (in <code>topoisomerase_based</code> mode).</li>
-<li>No bound nucleosome (with <code>is_steric_barrier_to_RNAPs=True</code>) is within <code>(RNAP_diameter + per_nucleosome_DNA_length + nucleosome_linker_length) / 2</code> nm of the TSS.</li>
-<li>No other bound protein (with <code>is_steric_barrier_to_RNAPs=True</code>) is within <code>(RNAP_diameter + generic_binding_protein_diameter) / 2</code> nm of the TSS.</li>
+<li>No bound nucleosome (with <code>is_steric_barrier_to_RNAPs=True</code>) is within <code>(RNAP_diameter + per_nucleosome_DNA_length + nucleosome_linker_length) / 2</code> nm of the TSS — <strong>unless</strong> the nucleosome has <code>can_be_displaced_at_TSS_by_RNAP=True</code> (see below).</li>
+<li>No other bound protein (with <code>is_steric_barrier_to_RNAPs=True</code>) is within <code>(RNAP_diameter + generic_binding_protein_diameter) / 2</code> nm of the TSS — <strong>unless</strong> the protein has <code>can_be_displaced_at_TSS_by_RNAP=True</code> (see below).</li>
 <li>The <code>max_RNAPs_to_recruit</code> cap for that gene has not been reached.</li>
 </ol>
 <p>If recruitment fails, the event iteration is still consumed (time advances).</p>
+<h4 id="protein-displacement-at-tss">Protein Displacement at TSS<a class="headerlink" href="#protein-displacement-at-tss" title="Permanent link">&para;</a></h4>
+<p>When a binding protein blocks the TSS but has <code>can_be_displaced_at_TSS_by_RNAP=True</code>, the RNAP recruitment <strong>succeeds</strong> and the blocking protein is removed from <code>model.binding_proteins_positions</code>. This models scenarios where an incoming RNAP can evict an obstacle — for example, nucleosome displacement during transcription initiation in eukaryotic chromatin. The displacement is controlled per protein type via the <code>can_be_displaced_at_TSS_by_RNAP</code> attribute on <code>BindingProtein</code>, and for auto-created nucleosomes via the <code>nucleosomes_can_be_displaced_at_TSS_by_RNAP</code> keyword on <code>GenomicSetup</code>.</p>
 <h3 id="supercoiling-relaxation-details">Supercoiling Relaxation Details<a class="headerlink" href="#supercoiling-relaxation-details" title="Permanent link">&para;</a></h3>
 <p><strong><code>global_overall</code>:</strong> All segment linking numbers are immediately reset to their relaxed values.</p>
 <p><strong><code>global_per_segment</code>:</strong> One segment is chosen with probability proportional to its fractional length; its <code>Lk</code> is reset.</p>

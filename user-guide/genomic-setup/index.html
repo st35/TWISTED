@@ -1537,6 +1537,12 @@
 <td><code>None</code></td>
 <td>Optional function <code>(segment_length, segment_sigma) → float</code> that modulates the nucleosome unbinding rate. Passed as <code>off_rate_func</code> to the auto-created nucleosome <code>BindingProtein</code></td>
 </tr>
+<tr>
+<td><code>nucleosomes_can_be_displaced_at_TSS_by_RNAP</code></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>Whether nucleosomes blocking a TSS can be displaced (removed) by an incoming RNAP. Forwarded as <code>can_be_displaced_at_TSS_by_RNAP</code> to the auto-created nucleosome <code>BindingProtein</code></td>
+</tr>
 </tbody>
 </table>
 <hr />

@@ -1639,6 +1639,11 @@
 <td><code>callable or None</code></td>
 <td>Optional function passed as <code>off_rate_func</code> to the auto-created nucleosome <code>BindingProtein</code>; default <code>None</code></td>
 </tr>
+<tr>
+<td><code>nucleosomes_can_be_displaced_at_TSS_by_RNAP</code></td>
+<td><code>bool</code></td>
+<td>Whether nucleosomes can be displaced by an RNAP being recruited at a TSS; forwarded as <code>can_be_displaced_at_TSS_by_RNAP</code> to the auto-created nucleosome <code>BindingProtein</code>; default <code>False</code></td>
+</tr>
 </tbody>
 </table>
 <p>These can be set via <code>**kwargs</code> in the constructor (pass values in <strong>bp</strong> for lengths; they are converted to nm internally).</p>
@@ -1751,8 +1756,9 @@
 <a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>        <span class="n">basal_off_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
 <a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>        <span class="n">on_rate_func</span><span class="p">:</span> <span class="nb">callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>        <span class="n">off_rate_func</span><span class="p">:</span> <span class="nb">callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>        <span class="n">is_a_nucleosome</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>        <span class="n">is_a_nucleosome</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>        <span class="n">can_be_displaced_at_TSS_by_RNAP</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </code></pre></div>
 <h3 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h3>
 <table>
@@ -1808,6 +1814,11 @@
 <td><code>is_a_nucleosome</code></td>
 <td><code>bool</code></td>
 <td>If <code>True</code>, this protein is treated as a nucleosome with special steric handling (uses <code>per_nucleosome_DNA_length + nucleosome_linker_length</code> as its physical extent instead of <code>generic_binding_protein_diameter</code>). Default <code>False</code></td>
+</tr>
+<tr>
+<td><code>can_be_displaced_at_TSS_by_RNAP</code></td>
+<td><code>bool</code></td>
+<td>If <code>True</code>, this protein can be displaced (removed) when an RNAP is recruited at a TSS that it is blocking. The RNAP recruitment succeeds and the blocking protein is removed. Default <code>False</code></td>
 </tr>
 </tbody>
 </table>
@@ -1928,7 +1939,7 @@
 <li><code>Lk</code> is initialised to a single element corresponding to the fully relaxed linking number of the complete DNA.</li>
 <li>All RNAPs start absent (<code>x_dict</code> and <code>theta_dict</code> are empty lists per gene).</li>
 <li>Constitutive promoters start <code>ON</code>; non-constitutive promoters start with a random binary state.</li>
-<li>For eukaryotic setups, a nucleosome <code>BindingProtein</code> is automatically created and prepended to <code>binding_proteins</code>. Its <code>total_copy_number</code> is determined by <code>GenomicSetup.get_total_nucleosome_count()</code>, its <code>basal_on_rate</code> is normalised by total DNA length (<code>1.2 / (clamp_right - clamp_left)</code>), and <code>is_steric_barrier_to_RNAPs</code> is set from <code>GenomicSetup.nucleosomes_are_steric_barriers_to_RNAPs</code>. User-supplied binding proteins follow at subsequent indices.</li>
+<li>For eukaryotic setups, a nucleosome <code>BindingProtein</code> is automatically created and prepended to <code>binding_proteins</code>. Its <code>total_copy_number</code> is determined by <code>GenomicSetup.get_total_nucleosome_count()</code>, its <code>basal_on_rate</code> is normalised by total DNA length (<code>1.2 / (clamp_right - clamp_left)</code>), <code>is_steric_barrier_to_RNAPs</code> is set from <code>GenomicSetup.nucleosomes_are_steric_barriers_to_RNAPs</code>, and <code>can_be_displaced_at_TSS_by_RNAP</code> is set from <code>GenomicSetup.nucleosomes_can_be_displaced_at_TSS_by_RNAP</code>. User-supplied binding proteins follow at subsequent indices.</li>
 </ul>
 <div class="admonition warning">
 <p class="admonition-title">Non-constitutive promoters</p>
