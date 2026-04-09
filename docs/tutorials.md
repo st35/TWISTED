@@ -710,7 +710,30 @@ print(f'Bound {my_protein.protein_name} count: {len(model.binding_proteins_posit
 print(f'Positions: {model.binding_proteins_positions[0]}')
 ```
 
-### 8.4 Multiple binding protein types
+### 8.4 Proteins that can be displaced at the TSS
+
+By default, a bound protein with `is_steric_barrier_to_RNAPs=True` blocks
+RNAP recruitment at any TSS within its exclusion distance. Setting
+`can_be_displaced_at_TSS_by_RNAP=True` changes this behaviour: when an RNAP
+is recruited and the only obstacle is a displaceable protein, the recruitment
+**succeeds** and the blocking protein is removed.
+
+```python
+blocker = BindingProtein(
+    protein_name='Displaceable',
+    total_copy_number=10,
+    is_steric_barrier_to_RNAPs=True,
+    is_topological_barrier=False,
+    basal_on_rate=0.001,
+    basal_off_rate=0.01,
+    can_be_displaced_at_TSS_by_RNAP=True,   # RNAP can evict this protein at the TSS
+)
+```
+
+This is useful for modelling proteins that transiently occupy promoter regions
+but can be evicted by the transcription machinery.
+
+### 8.5 Multiple binding protein types
 
 You can define several protein types with different kinetics and pass them all
 to `Model`. Each type is tracked independently — positions for protein type `i`
@@ -920,6 +943,33 @@ absorb positive supercoiling without increasing torque. The width of this
 buffering regime scales with the local nucleosome density $\psi$ (fraction of
 segment length occupied by nucleosomes). As RNAPs displace nucleosomes, $\psi$
 decreases and the buffering capacity shrinks, allowing supercoiling to build up.
+
+### 9.6 Nucleosome displacement at the TSS
+
+By default, a nucleosome near a TSS blocks RNAP recruitment. To allow
+incoming RNAPs to evict blocking nucleosomes at the TSS, pass
+`nucleosomes_can_be_displaced_at_TSS_by_RNAP=True` when creating the
+genomic setup:
+
+```python
+genomic_setup_displace = construct_genomic_setup(
+    'eukaryotic_gene.config',
+    chromatin_type='eukaryotic',
+    nucleosomes_can_be_displaced_at_TSS_by_RNAP=True,
+)
+```
+
+When this flag is set, RNAP recruitment at a TSS blocked by a nucleosome
+will succeed and the blocking nucleosome is removed from the DNA. This
+models the displacement of promoter-proximal nucleosomes during
+transcription initiation in eukaryotic chromatin.
+
+The flag is forwarded to the auto-created nucleosome `BindingProtein`'s
+`can_be_displaced_at_TSS_by_RNAP` attribute (see
+[BindingProtein](api/model-setup.md#bindingprotein)). For custom
+non-nucleosome binding proteins, set `can_be_displaced_at_TSS_by_RNAP=True`
+directly on the `BindingProtein` constructor (see
+[Example 8.4](#84-proteins-that-can-be-displaced-at-the-tss)).
 
 ---
 

@@ -79,35 +79,39 @@ def get_nucleosome_occupied_fraction_per_segment(model: Model, segments_lengths:
 
 	return occupied_length / segments_lengths[segment_index]
 
-def get_TSS_steric_hindrance_status(model: Model, TSS_position: float, RNAP_gene_index: list[int], state_vector: list[float]) -> int: # Check if there is steric hindrance at the TSS position due to existing RNAPs; return 1 if hindered, 0 if not
+def get_TSS_steric_hindrance_status(model: Model, TSS_position: float, RNAP_gene_index: list[int], state_vector: list[float]) -> tuple[int, float, int]: # Check for steric hindrance at the TSS position; return a tuple of (steric_hindrance_status, blocking_entity_position, blocking_entity_id); steric_hindrance_status: 0 for no hindrance, 1 for hindrance; blocking_entity_id: -1 for RNAP, 0 to len(model.binding_proteins) - 1 for bound protein index, len(model.binding_proteins) for bound topoisomerase; blocking_entity_position: position of the entity causing steric hindrance if present, None if no hindrance
 	RNAP_count = len(RNAP_gene_index)
 	for x in state_vector[:RNAP_count]:
 		if abs(x - TSS_position) < model.model_setup.RNAP_diameter:
-			return 1
+			return 1, x, -1
 	
 	if model.model_setup.supercoiling_relaxation_dynamics_mode not in model.model_setup.supercoiling_relaxation_dynamics_modes_with_no_steric_hindrance:	
 		TOPO_positions = [model.topoisomerase_positions[i] for i in range(len(model.topoisomerase_positions)) if model.topoisomerase_status[i] == 1]
 		for topo_pos in TOPO_positions:
 			if abs(topo_pos - TSS_position) < (model.model_setup.RNAP_diameter + model.model_setup.TOPO_diameter) / 2.0:
-				return 1
+				return 1, topo_pos, len(model.binding_proteins)
 	
 	nucl_positions = []
+	nucl_ids = []
 	for i in range(len(model.binding_proteins)):
 		if model.binding_proteins[i].is_a_nucleosome and model.binding_proteins[i].is_steric_barrier_to_RNAPs:
 			nucl_positions = nucl_positions + model.binding_proteins_positions[i]
-	for nucl_pos in nucl_positions:
+			nucl_ids = nucl_ids + [i for _ in model.binding_proteins_positions[i]]
+	for nucl_pos, nucl_id in zip(nucl_positions, nucl_ids):
 		if abs(nucl_pos - TSS_position) < (model.model_setup.RNAP_diameter + model.genomic_setup.per_nucleosome_DNA_length + model.genomic_setup.nucleosome_linker_length) / 2.0:
-			return 1
+			return 1, nucl_pos, nucl_id
 	
 	bound_protein_positions = []
+	bound_protein_ids = []
 	for i in range(len(model.binding_proteins)):
 		if model.binding_proteins[i].is_a_nucleosome is False and model.binding_proteins[i].is_steric_barrier_to_RNAPs:
 			bound_protein_positions = bound_protein_positions + model.binding_proteins_positions[i]
-	for protein_pos in bound_protein_positions:
+			bound_protein_ids = bound_protein_ids + [i for _ in model.binding_proteins_positions[i]]
+	for protein_pos, protein_id in zip(bound_protein_positions, bound_protein_ids):
 		if abs(protein_pos - TSS_position) < (model.model_setup.RNAP_diameter + model.model_setup.generic_binding_protein_diameter) / 2.0:
-			return 1
+			return 1, protein_pos, protein_id
 	
-	return 0
+	return 0, None, None
 
 def is_protein_binding_blocked(model: Model, RNAP_gene_index: list[int], state_vector: list[float], protein_index: int, binding_position: float) -> int:
 	RNAP_count = len(RNAP_gene_index)
@@ -204,6 +208,14 @@ def check_separation_between_nucleosomes_and_RNAPs(model: Model, RNAP_gene_index
 
 def get_steric_hindrance_factor(model:Model, separation: float, steric_hindrance_distance: float) -> float:
 	return (1.0 / 2.0)*(1 + tanh((separation - steric_hindrance_distance) / model.model_setup.steric_hindrance_constraint_parameter))
+
+def find_and_remove_from_list(lst: list[float], value: float, tolerance: float = 1e-6) -> None: # Find the first occurrence of a value in a list within a given tolerance and remove it; raise an error if not found
+	for i in range(len(lst)):
+		if abs(lst[i] - value) < tolerance:
+			lst.pop(i)
+			return
+
+	raise ValueError('Value not found in list within tolerance.')
 
 def select_event_based_on_propensities(rates_vector: list[float], p: float) -> Union[int, None]: # Select an event index based on the given rates vector and random number p in [0, 1)
 	a0 = sum(rates_vector)

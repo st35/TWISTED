@@ -26,7 +26,12 @@ def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupA
 
 		if event_index < events_indices[0]: # RNAP recruitment event
 			event = event_index - 0
-			if get_TSS_steric_hindrance_status(model, model.genomic_setup.TSSes[event], RNAP_gene_index, state_vector) == 1: # Steric hindrance at TSS; recruitment fails
+			TSS_steric_hindrance_status, blocking_entity_position, blocking_entity_id = get_TSS_steric_hindrance_status(model, model.genomic_setup.TSSes[event], RNAP_gene_index, state_vector) # Check for steric hindrance at TSS
+			if TSS_steric_hindrance_status == 1 and blocking_entity_id == -1: # Steric hindrance from another RNAP; recruitment fails
+				pass
+			elif TSS_steric_hindrance_status == 1 and blocking_entity_id == len(model.binding_proteins): # Steric hindrance from a bound topoisomerase; recruitment fails
+				pass
+			elif TSS_steric_hindrance_status == 1 and blocking_entity_id >= 0 and blocking_entity_id < len(model.binding_proteins) and model.binding_proteins[blocking_entity_id].can_be_displaced_at_TSS_by_RNAP is False: # Steric hindrance from a bound protein that cannot be displaced; recruitment fails
 				pass
 			elif simulation_setup_and_state.max_RNAPs_to_recruit is not None and len(simulation_setup_and_state.RNAP_recruitment_times[event]) >= simulation_setup_and_state.max_RNAPs_to_recruit[event]: # Maximum number of RNAPs already recruited for this gene; recruitment fails
 				pass
@@ -36,6 +41,9 @@ def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupA
 				model.theta_dict[event_gene_index].append(0.0)
 				update_Lk_vector_after_RNAP_recruitment(model, event_gene_index, RNAP_gene_index, state_vector, segments_lengths, segments_sigmas) # Update linking number vector after RNAP recruitment
 				simulation_setup_and_state.RNAP_recruitment_times[event_gene_index].append(simulation_setup_and_state.curr_simulation_time)
+				if TSS_steric_hindrance_status == 1:
+					assert blocking_entity_id >= 0 and blocking_entity_id < len(model.binding_proteins) and model.binding_proteins[blocking_entity_id].can_be_displaced_at_TSS_by_RNAP is True, 'There must be a bound protein that can be displaced if steric hindrance is present but recruitment is successful.'
+					find_and_remove_from_list(model.binding_proteins_positions[blocking_entity_id], blocking_entity_position) # Displace the bound protein causing steric hindrance by removing it from the list of bound positions for that protein
 		elif event_index < events_indices[1]: # Model observation event: a dummy event to ensure simulation time progresses even if all biological events rates are zero
 			pass
 		elif event_index < events_indices[2]: # Global supercoiling relaxation event: supercoiling_relaxation_dynamics_mode in ['global_overall', 'global_per_segment']

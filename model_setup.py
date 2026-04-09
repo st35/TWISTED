@@ -54,6 +54,10 @@ class GenomicSetup: # Class to hold genomic setup information
 				if not callable(kwargs['nucleosome_off_rate_func']):
 					raise ValueError('nucleosome_off_rate_func must be a callable function if provided.')
 				self.nucleosome_off_rate_func = kwargs['nucleosome_off_rate_func']
+			if 'nucleosomes_can_be_displaced_at_TSS_by_RNAP' not in kwargs:
+				self.nucleosomes_can_be_displaced_at_TSS_by_RNAP = False
+			else:
+				self.nucleosomes_can_be_displaced_at_TSS_by_RNAP = bool(kwargs['nucleosomes_can_be_displaced_at_TSS_by_RNAP'])
 		
 		self.clamp_left = 0.0 # Left end of DNA is at position 0 nm
 		self.clamp_right = TSSes[0] + gene_lengths[0] + buffer_length if gene_directions[0] == 1 else TSSes[0] + buffer_length # Right end of DNA is at position beyond the last gene plus buffer length
@@ -169,7 +173,7 @@ class ModelSetup: # Class to hold model setup parameters
 		self.supercoiling_relaxation_dynamics_modes_with_no_steric_hindrance = ['global_overall', 'global_per_segment', 'global_by_type', 'per_segment_by_type', 'topoisomerase_approximated'] # List of supercoiling relaxation dynamics modes that do explicitly model topoisomerase binding and unbinding dynamics and therefore do not exert steric hindrance effects on RNAPs
 
 class BindingProtein:
-	def __init__(self, protein_name: str, total_copy_number: int, is_steric_barrier_to_RNAPs: bool, is_topological_barrier: bool, basal_on_rate: float, basal_off_rate: float, on_rate_func: callable = None, off_rate_func: callable = None, is_a_nucleosome: bool = False) -> None:
+	def __init__(self, protein_name: str, total_copy_number: int, is_steric_barrier_to_RNAPs: bool, is_topological_barrier: bool, basal_on_rate: float, basal_off_rate: float, on_rate_func: callable = None, off_rate_func: callable = None, is_a_nucleosome: bool = False, can_be_displaced_at_TSS_by_RNAP: bool = False) -> None:
 		self.protein_name = protein_name
 		self.total_copy_number = total_copy_number
 		self.is_steric_barrier_to_RNAPs = is_steric_barrier_to_RNAPs
@@ -189,6 +193,7 @@ class BindingProtein:
 				raise ValueError('off_rate_func must be a callable function if provided.')
 			self.off_rate_func = lambda segment_length, segment_sigma, *args: off_rate_func(segment_length, segment_sigma, *args)*basal_off_rate
 		self.is_a_nucleosome = is_a_nucleosome
+		self.can_be_displaced_at_TSS_by_RNAP = can_be_displaced_at_TSS_by_RNAP
 
 class Model: # Class to hold the model, including genomic setup, model setup, and dynamic state variables
 	def __init__(self, genomic_setup: GenomicSetup, model_setup: ModelSetup, binding_proteins: list[BindingProtein] = None) -> None:
@@ -211,7 +216,7 @@ class Model: # Class to hold the model, including genomic setup, model setup, an
 		self.binding_proteins = binding_proteins # List of BindingProtein objects representing other DNA-binding proteins in the system
 		if genomic_setup.chromatin_type == 'eukaryotic':
 			nucl_count = genomic_setup.get_total_nucleosome_count()
-			nucleosomes = BindingProtein(protein_name = 'nucleosome', total_copy_number = nucl_count, is_steric_barrier_to_RNAPs = genomic_setup.nucleosomes_are_steric_barriers_to_RNAPs, is_topological_barrier = False, basal_on_rate = 1.2 / (genomic_setup.clamp_right - genomic_setup.clamp_left), basal_off_rate = 0.4, is_a_nucleosome = True, on_rate_func = genomic_setup.nucleosome_on_rate_func, off_rate_func = genomic_setup.nucleosome_off_rate_func)
+			nucleosomes = BindingProtein(protein_name = 'nucleosome', total_copy_number = nucl_count, is_steric_barrier_to_RNAPs = genomic_setup.nucleosomes_are_steric_barriers_to_RNAPs, is_topological_barrier = False, basal_on_rate = 1.2 / (genomic_setup.clamp_right - genomic_setup.clamp_left), basal_off_rate = 0.4, is_a_nucleosome = True, can_be_displaced_at_TSS_by_RNAP = genomic_setup.nucleosomes_can_be_displaced_at_TSS_by_RNAP, on_rate_func = genomic_setup.nucleosome_on_rate_func, off_rate_func = genomic_setup.nucleosome_off_rate_func)
 			self.binding_proteins = [nucleosomes] + self.binding_proteins
 		self.binding_proteins_positions = [[] for _ in self.binding_proteins] # List of lists to hold positions of each bound protein; each sublist corresponds to a binding protein type and contains the positions of all bound proteins of that type
 

@@ -54,6 +54,7 @@ Additional attributes present only when `chromatin_type == 'eukaryotic'`:
 | `explicit_nucleosome_count` | `int or None` | User-specified nucleosome count; if `None`, computed automatically by tiling |
 | `nucleosome_on_rate_func` | `callable or None` | Optional function passed as `on_rate_func` to the auto-created nucleosome `BindingProtein`; default `None` |
 | `nucleosome_off_rate_func` | `callable or None` | Optional function passed as `off_rate_func` to the auto-created nucleosome `BindingProtein`; default `None` |
+| `nucleosomes_can_be_displaced_at_TSS_by_RNAP` | `bool` | Whether nucleosomes can be displaced by an RNAP being recruited at a TSS; forwarded as `can_be_displaced_at_TSS_by_RNAP` to the auto-created nucleosome `BindingProtein`; default `False` |
 
 These can be set via `**kwargs` in the constructor (pass values in **bp** for lengths; they are converted to nm internally).
 
@@ -139,7 +140,8 @@ class BindingProtein:
         basal_off_rate: float,
         on_rate_func: callable = None,
         off_rate_func: callable = None,
-        is_a_nucleosome: bool = False
+        is_a_nucleosome: bool = False,
+        can_be_displaced_at_TSS_by_RNAP: bool = False
     ) -> None
 ```
 
@@ -156,6 +158,7 @@ class BindingProtein:
 | `on_rate_func` | `callable or None` | Optional function `(segment_length, segment_sigma) → float` that multiplies the basal on-rate × segment_length. Defaults to `1.0` (no modulation) |
 | `off_rate_func` | `callable or None` | Optional function `(segment_length, segment_sigma) → float` that multiplies the basal off-rate. Defaults to `1.0` (no modulation) |
 | `is_a_nucleosome` | `bool` | If `True`, this protein is treated as a nucleosome with special steric handling (uses `per_nucleosome_DNA_length + nucleosome_linker_length` as its physical extent instead of `generic_binding_protein_diameter`). Default `False` |
+| `can_be_displaced_at_TSS_by_RNAP` | `bool` | If `True`, this protein can be displaced (removed) when an RNAP is recruited at a TSS that it is blocking. The RNAP recruitment succeeds and the blocking protein is removed. Default `False` |
 
 The effective per-segment on-rate for unbound proteins is:
 
@@ -215,7 +218,7 @@ Additional attributes present only when `supercoiling_relaxation_dynamics_mode =
 - `Lk` is initialised to a single element corresponding to the fully relaxed linking number of the complete DNA.
 - All RNAPs start absent (`x_dict` and `theta_dict` are empty lists per gene).
 - Constitutive promoters start `ON`; non-constitutive promoters start with a random binary state.
-- For eukaryotic setups, a nucleosome `BindingProtein` is automatically created and prepended to `binding_proteins`. Its `total_copy_number` is determined by `GenomicSetup.get_total_nucleosome_count()`, its `basal_on_rate` is normalised by total DNA length (`1.2 / (clamp_right - clamp_left)`), and `is_steric_barrier_to_RNAPs` is set from `GenomicSetup.nucleosomes_are_steric_barriers_to_RNAPs`. User-supplied binding proteins follow at subsequent indices.
+- For eukaryotic setups, a nucleosome `BindingProtein` is automatically created and prepended to `binding_proteins`. Its `total_copy_number` is determined by `GenomicSetup.get_total_nucleosome_count()`, its `basal_on_rate` is normalised by total DNA length (`1.2 / (clamp_right - clamp_left)`), `is_steric_barrier_to_RNAPs` is set from `GenomicSetup.nucleosomes_are_steric_barriers_to_RNAPs`, and `can_be_displaced_at_TSS_by_RNAP` is set from `GenomicSetup.nucleosomes_can_be_displaced_at_TSS_by_RNAP`. User-supplied binding proteins follow at subsequent indices.
 
 !!! warning "Non-constitutive promoters"
     Stochastic promoter toggling is not yet implemented. Non-constitutive promoters retain their initial random state for the entire simulation. Full support is planned for a future release.

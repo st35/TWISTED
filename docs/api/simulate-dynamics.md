@@ -63,11 +63,15 @@ An RNAP recruitment event succeeds only when **all** of the following conditions
 
 1. The TSS is not sterically blocked by another RNAP within `RNAP_diameter` nm.
 2. No bound topoisomerase is within `(RNAP_diameter + TOPO_diameter) / 2` nm of the TSS (in `topoisomerase_based` mode).
-3. No bound nucleosome (with `is_steric_barrier_to_RNAPs=True`) is within `(RNAP_diameter + per_nucleosome_DNA_length + nucleosome_linker_length) / 2` nm of the TSS.
-4. No other bound protein (with `is_steric_barrier_to_RNAPs=True`) is within `(RNAP_diameter + generic_binding_protein_diameter) / 2` nm of the TSS.
+3. No bound nucleosome (with `is_steric_barrier_to_RNAPs=True`) is within `(RNAP_diameter + per_nucleosome_DNA_length + nucleosome_linker_length) / 2` nm of the TSS — **unless** the nucleosome has `can_be_displaced_at_TSS_by_RNAP=True` (see below).
+4. No other bound protein (with `is_steric_barrier_to_RNAPs=True`) is within `(RNAP_diameter + generic_binding_protein_diameter) / 2` nm of the TSS — **unless** the protein has `can_be_displaced_at_TSS_by_RNAP=True` (see below).
 5. The `max_RNAPs_to_recruit` cap for that gene has not been reached.
 
 If recruitment fails, the event iteration is still consumed (time advances).
+
+#### Protein Displacement at TSS
+
+When a binding protein blocks the TSS but has `can_be_displaced_at_TSS_by_RNAP=True`, the RNAP recruitment **succeeds** and the blocking protein is removed from `model.binding_proteins_positions`. This models scenarios where an incoming RNAP can evict an obstacle — for example, nucleosome displacement during transcription initiation in eukaryotic chromatin. The displacement is controlled per protein type via the `can_be_displaced_at_TSS_by_RNAP` attribute on `BindingProtein`, and for auto-created nucleosomes via the `nucleosomes_can_be_displaced_at_TSS_by_RNAP` keyword on `GenomicSetup`.
 
 ### Supercoiling Relaxation Details
 

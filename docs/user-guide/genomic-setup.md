@@ -53,6 +53,7 @@ These keywords are used only when `chromatin_type == 'eukaryotic'`:
 | `nucleosome_count` | `int` | auto | Explicit nucleosome count; if omitted, computed by tiling the domain |
 | `nucleosome_on_rate_func` | `callable or None` | `None` | Optional function `(segment_length, segment_sigma) → float` that modulates the nucleosome binding rate. Passed as `on_rate_func` to the auto-created nucleosome `BindingProtein` (see [BindingProtein](../api/model-setup.md#bindingprotein)) |
 | `nucleosome_off_rate_func` | `callable or None` | `None` | Optional function `(segment_length, segment_sigma) → float` that modulates the nucleosome unbinding rate. Passed as `off_rate_func` to the auto-created nucleosome `BindingProtein` |
+| `nucleosomes_can_be_displaced_at_TSS_by_RNAP` | `bool` | `False` | Whether nucleosomes blocking a TSS can be displaced (removed) by an incoming RNAP. Forwarded as `can_be_displaced_at_TSS_by_RNAP` to the auto-created nucleosome `BindingProtein` |
 
 ---
 

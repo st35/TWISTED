@@ -69,6 +69,7 @@ All eukaryotic keyword arguments accepted by `GenomicSetup` can also be passed t
 | `nucleosome_linker_length` | `float` | 30 (bp) | Linker DNA between nucleosomes (converted to nm internally) |
 | `nucleosomes_are_steric_barriers_to_RNAPs` | `bool` | `True` | Whether nucleosomes block RNAP passage |
 | `nucleosome_count` | `int` | auto | Explicit nucleosome count; if omitted, computed by tiling |
+| `nucleosomes_can_be_displaced_at_TSS_by_RNAP` | `bool` | `False` | Whether nucleosomes blocking a TSS can be displaced by an incoming RNAP |
 
 **Example:**
 ```python
@@ -121,10 +122,14 @@ get_TSS_steric_hindrance_status(
     TSS_position: float,
     RNAP_gene_index: list[int],
     state_vector: list[float]
-) -> int
+) -> tuple[int, float, int]
 ```
 
-Returns `1` if the TSS at `TSS_position` is sterically blocked, `0` otherwise.
+Returns a 3-tuple `(status, position, entity_id)`:
+
+- `status`: `1` if the TSS at `TSS_position` is sterically blocked, `0` otherwise.
+- `position`: the position (nm) of the blocking entity, or `0.0` if unblocked.
+- `entity_id`: identifies the blocking entity type — `-1` for an RNAP, `0` to `len(model.binding_proteins) - 1` for a bound protein (index into `model.binding_proteins`), `len(model.binding_proteins)` for a topoisomerase, or `-1` when unblocked.
 
 Blocking is triggered by:
 
@@ -240,6 +245,22 @@ Computes the soft steric velocity reduction factor:
 $$f(s) = \frac{1}{2}\left(1 + \tanh\!\frac{s - d}{\lambda}\right)$$
 
 where $s$ is `separation`, $d$ is `steric_hindrance_distance`, and $\lambda$ is `model.model_setup.steric_hindrance_constraint_parameter`. Returns a value in $(0, 1)$ that approaches 0 near the exclusion distance and 1 far from it.
+
+---
+
+## List Manipulation
+
+### `find_and_remove_from_list`
+
+```python
+find_and_remove_from_list(
+    lst: list[float],
+    value: float,
+    tolerance: float = 1e-6
+) -> None
+```
+
+Finds the first element in `lst` within `tolerance` of `value` and removes it in-place. Raises `ValueError` if no matching element is found.
 
 ---
 

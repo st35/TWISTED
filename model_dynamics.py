@@ -215,7 +215,6 @@ def get_RNAP_recruitment_rates(model: Model, RNAP_gene_index: list[int], state_v
 	x_vector = state_vector[0:RNAP_count]
 
 	TSS_segments_indices = [get_spot_segment_index(model.genomic_setup.TSSes[i], segments_lengths) for i in range(len(model.genomic_setup.gene_names))] # Get the segment indices for all TSSes
-	# is_TSS_blocked = [get_TSS_steric_hindrance_status(model, model.genomic_setup.TSSes[i], RNAP_gene_index, state_vector) for i in range(len(model.genomic_setup.gene_names))] # Get the steric hindrance status for all TSSes
 
 	RNAP_recruitment_rates = []
 	for i in range(len(model.genomic_setup.gene_names)):
