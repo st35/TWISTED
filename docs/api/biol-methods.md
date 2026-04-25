@@ -126,36 +126,6 @@ Returns the RNAP recruitment rate (s⁻¹) at a given TSS. Returns `0.0` if `pro
 
 ---
 
-## `get_per_TOP1_binding_rate_for_each_segment`
-
-```python
-get_per_TOP1_binding_rate_for_each_segment(
-    model: Model,
-    segments_lengths: list[float],
-    segments_sigmas: list[float]
-) -> list[float]
-```
-
-Returns a list of TOP1 binding rates — one per DNA segment — weighted by segment length:
-
-$$k_{\mathrm{on},j}^{\mathrm{TOP1}} = k_{\mathrm{on}}^{\mathrm{TOP1}} \cdot \frac{L_j}{L_{\mathrm{total}}}$$
-
----
-
-## `get_per_TOP2_binding_rate_for_each_segment`
-
-```python
-get_per_TOP2_binding_rate_for_each_segment(
-    model: Model,
-    segments_lengths: list[float],
-    segments_sigmas: list[float]
-) -> list[float]
-```
-
-Identical structure to `get_per_TOP1_binding_rate_for_each_segment` but uses `topoisomerase_on_off_rates[1][0]` as the base rate.
-
----
-
 ## `get_TOP1_effect_on_Lk_dynamics`
 
 ```python

@@ -51,30 +51,6 @@ def get_RNAP_recruitment_rate(model: Model, TSS_index: int, promoter_status: int
     
     return model.genomic_setup.RNAP_on_rates[TSS_index]
 
-def get_per_TOP1_binding_rate_for_each_segment(model: Model, segments_lengths: float, segments_sigmas: float) -> list[float]: # Get the TOP1 binding rate for a DNA segment based on its length and supercoiling density
-    TOP1_on_rate = model.model_setup.topoisomerase_on_off_rates[0][0] # Note that this is the binding rate for the overall genomic segment, not the per unit length rate
-
-    TOP1_on_rates_per_segment = []
-    for i in range(len(segments_lengths)):
-        segment_length = segments_lengths[i]
-        segment_sigma = segments_sigmas[i]
-
-        TOP1_on_rates_per_segment.append(TOP1_on_rate*(segment_length / (model.genomic_setup.clamp_right - model.genomic_setup.clamp_left)))
-
-    return TOP1_on_rates_per_segment
-
-def get_per_TOP2_binding_rate_for_each_segment(model: Model, segments_lengths: float, segments_sigmas: float) -> list[float]: # Get the TOP2 binding rate for a DNA segment based on its length and supercoiling density
-    TOP2_on_rate = model.model_setup.topoisomerase_on_off_rates[1][0] # Note that this is the binding rate for the overall genomic segment, not the per unit length rate
-
-    TOP2_on_rates_per_segment = []
-    for i in range(len(segments_lengths)):
-        segment_length = segments_lengths[i]
-        segment_sigma = segments_sigmas[i]
-
-        TOP2_on_rates_per_segment.append(TOP2_on_rate*(segment_length / (model.genomic_setup.clamp_right - model.genomic_setup.clamp_left)))
-
-    return TOP2_on_rates_per_segment
-
 def get_TOP1_effect_on_Lk_dynamics(model: Model, segment_length: float, segment_sigma: float, segment_torque: float, segment_writhe_frac: float, bound_TOP1_count: int) -> float: # Get the effect of bound TOP1 enzymes on the rate of change of linking number for a DNA segment
     if segment_writhe_frac > 0.0: # Non-zero writhe; TOP1 cannot act
         return 0.0

@@ -129,12 +129,11 @@ Returns a 3-tuple `(status, position, entity_id)`:
 
 - `status`: `1` if the TSS at `TSS_position` is sterically blocked, `0` otherwise.
 - `position`: the position (nm) of the blocking entity, or `0.0` if unblocked.
-- `entity_id`: identifies the blocking entity type — `-1` for an RNAP, `0` to `len(model.binding_proteins) - 1` for a bound protein (index into `model.binding_proteins`), `len(model.binding_proteins)` for a topoisomerase, or `-1` when unblocked.
+- `entity_id`: identifies the blocking entity type — `-1` for an RNAP, `0` to `len(model.binding_proteins) - 1` for a bound protein (index into `model.binding_proteins`), or `-1` when unblocked.
 
 Blocking is triggered by:
 
 - Any active RNAP within `RNAP_diameter` nm of the TSS.
-- Any bound topoisomerase within `(RNAP_diameter + TOPO_diameter) / 2` nm of the TSS (in `topoisomerase_based` mode only).
 - Any bound nucleosome (with `is_steric_barrier_to_RNAPs=True`) within `(RNAP_diameter + per_nucleosome_DNA_length + nucleosome_linker_length) / 2` nm of the TSS.
 - Any other bound protein (with `is_steric_barrier_to_RNAPs=True`) within `(RNAP_diameter + generic_binding_protein_diameter) / 2` nm of the TSS.
 
@@ -157,21 +156,6 @@ Blocking is triggered by:
 - Any RNAP within `(RNAP_diameter + size) / 2` nm, where `size` is `per_nucleosome_DNA_length + nucleosome_linker_length` for nucleosomes or `generic_binding_protein_diameter` for other proteins.
 - For nucleosomes: any other bound nucleosome within `per_nucleosome_DNA_length + nucleosome_linker_length` nm.
 - For non-nucleosome proteins: any bound protein within `generic_binding_protein_diameter` nm.
-
-### `is_TOPO_binding_blocked`
-
-> *Not yet implemented.* This function is defined but the `topoisomerase_based` mode that uses it is not currently available.
-
-```python
-is_TOPO_binding_blocked(
-    model: Model,
-    RNAP_gene_index: list[int],
-    state_vector: list[float],
-    binding_position: float
-) -> int
-```
-
-Returns `1` if a topoisomerase cannot bind at `binding_position` because an RNAP is within `(RNAP_diameter + TOPO_diameter) / 2` nm, `0` otherwise.
 
 ### `get_nucleosome_occupied_fraction_per_segment`
 

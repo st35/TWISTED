@@ -147,30 +147,6 @@ Returns recruitment rates (s⁻¹) for each gene. A rate of 0 is returned if the
 !!! note
     The function contains a placeholder (`if False`) for additional recruitment-blocking conditions (e.g., supercoiling-dependent recruitment). This is reserved for future implementation and currently has no effect.
 
-### `get_TOPO_binding_rates`
-
-```python
-get_TOPO_binding_rates(
-    model: Model,
-    segments_lengths: list[float],
-    segments_sigmas: list[float]
-) -> list[float]
-```
-
-Returns binding rates for all unbound topoisomerases. Returns an empty list for modes without explicit topoisomerase tracking.
-
-### `get_TOPO_unbinding_rates`
-
-```python
-get_TOPO_unbinding_rates(
-    model: Model,
-    segments_lengths: list[float],
-    segments_sigmas: list[float]
-) -> list[float]
-```
-
-Returns unbinding rates for all bound topoisomerases.
-
 ### `get_mRNA_degradation_rates`
 
 ```python

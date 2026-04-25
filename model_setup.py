@@ -89,7 +89,7 @@ class GenomicSetup: # Class to hold genomic setup information
 		print('=' * 40)
 
 class ModelSetup: # Class to hold model setup parameters
-	def __init__(self, w0: float = 1.85, chi: float = 0.05, eta: float = 0.0005, alpha: float = 1.5, v0: float = 20.0, tau_c: float = 12.0, force: float = 1.0, kBT: float = 4.1, TOP1_k0: float = 11.0, TOP1_theta: float = 0.25, TOP2_V0: float = 2.6, TOP2_k12: float = 2.0, RNAP_diameter: float = 15.0, TOPO_diameter: float = 15.0, generic_binding_protein_diameter: float = 15.0, steric_hindrance_constraint_parameter: float = 2.0, clamps_status: tuple[str, str] = ('clamped', 'clamped'), finite_size_effect_flag: int = 1, supercoiling_relaxation_dynamics_mode: str = 'global_overall', mRNA_dynamics_mode: int = 0, model_observation_event_rate: float = 1.0 / 2.0, **kwargs) -> None:
+	def __init__(self, w0: float = 1.85, chi: float = 0.05, eta: float = 0.0005, alpha: float = 1.5, v0: float = 20.0, tau_c: float = 12.0, force: float = 1.0, kBT: float = 4.1, TOP1_k0: float = 11.0, TOP1_theta: float = 0.25, TOP2_V0: float = 2.6, TOP2_k12: float = 2.0, RNAP_diameter: float = 15.0, generic_binding_protein_diameter: float = 15.0, steric_hindrance_constraint_parameter: float = 2.0, clamps_status: tuple[str, str] = ('clamped', 'clamped'), finite_size_effect_flag: int = 1, supercoiling_relaxation_dynamics_mode: str = 'global_overall', mRNA_dynamics_mode: int = 0, model_observation_event_rate: float = 1.0 / 2.0, **kwargs) -> None:
 		self.w0 = w0 # Default: 1.85 1 / nm
 		self.h_dna = (2.0*3.14) / w0 # From w0*h_dna = 2*pi
 		self.chi = chi # Default: 0.05 pN*nm*s
@@ -104,7 +104,6 @@ class ModelSetup: # Class to hold model setup parameters
 		self.TOP2_V0 = TOP2_V0 # Default: 2.6 1 / s
 		self.TOP2_k12 = TOP2_k12 # Default: 2.0
 		self.RNAP_diameter = RNAP_diameter # Default: 15.0 nm; used for calculating steric hindrance effects involving RNAPs
-		self.TOPO_diameter = TOPO_diameter # Default: 15.0 nm; used for calculating steric hindrance effects involving topoisomerases
 		self.generic_binding_protein_diameter = generic_binding_protein_diameter # Default: 15.0 nm; used for calculating steric hindrance effects involving generic DNA-binding proteins
 		self.steric_hindrance_constraint_parameter = steric_hindrance_constraint_parameter # Default: 2.0; used for calculating steric hindrance effects
 		assert len(clamps_status) == 2, 'clamps_status must be a tuple of two strings representing the status of the left and right clamps, respectively.'
@@ -144,20 +143,8 @@ class ModelSetup: # Class to hold model setup parameters
 				raise ValueError('For supercoiling_relaxation_dynamics_mode "topoisomerase_approximated", "TOP2_effective_relaxation_rate" argument must be provided.')
 			self.TOP1_effective_relaxation_rate = float(kwargs['TOP1_effective_relaxation_rate'])
 			self.TOP2_effective_relaxation_rate = float(kwargs['TOP2_effective_relaxation_rate'])
-		self.topoisomerase_copy_numbers = [0, 0] # Copy numbers for TOP1 and TOP2
-		self.topoisomerase_on_off_rates = [(0.0, 0.0), (0.0, 0.0)] # On and off rates for TOP1 and TOP2
 		if self.supercoiling_relaxation_dynamics_mode == 'topoisomerase_based': # Supercoiling relaxation per segment based on topoisomerase binding and unbinding; requires specifying topoisomerase copy numbers and on/off rates
 			raise NotImplementedError('supercoiling_relaxation_dynamics_mode "topoisomerase_based" is not yet implemented.')
-			if 'topoisomerase_copy_numbers' not in kwargs:
-				raise ValueError('For supercoiling_relaxation_dynamics_mode "topoisomerase_based", "topoisomerase_copy_numbers" argument must be provided.')
-			if len(kwargs['topoisomerase_copy_numbers']) != 2:
-				raise ValueError('"topoisomerase_copy_numbers" must be a list or tuple of two integers: [num_TOP1, num_TOP2].')
-			self.topoisomerase_copy_numbers = [int(num) for num in kwargs['topoisomerase_copy_numbers']]
-			if 'topoisomerase_on_off_rates' not in kwargs:
-				raise ValueError('For supercoiling_relaxation_dynamics_mode "topoisomerase_based", "topoisomerase_on_off_rates" argument must be provided.')
-			if len(kwargs['topoisomerase_on_off_rates']) != 2:
-				raise ValueError('"topoisomerase_on_off_rates" must be a list or tuple of two tuples: [(TOP1_on_rate, TOP1_off_rate), (TOP2_on_rate, TOP2_off_rate)].')
-			self.topoisomerase_on_off_rates = [(float(rates[0]), float(rates[1])) for rates in kwargs['topoisomerase_on_off_rates']]
 
 		self.mRNA_dynamics_mode = mRNA_dynamics_mode # 0: no mRNA degradation; 1: with mRNA degradation
 		assert mRNA_dynamics_mode in [0, 1], 'mRNA_dynamics_mode must be either 0 (no mRNA degradation) or 1 (with mRNA degradation).'
@@ -169,8 +156,6 @@ class ModelSetup: # Class to hold model setup parameters
 		
 		self.model_observation_event_rate = model_observation_event_rate # Rate for model observation events (in 1 / s)
 		assert model_observation_event_rate > 0.0, 'model_observation_event_rate must be a positive float.'
-
-		self.supercoiling_relaxation_dynamics_modes_with_no_steric_hindrance = ['global_overall', 'global_per_segment', 'global_by_type', 'per_segment_by_type', 'topoisomerase_approximated'] # List of supercoiling relaxation dynamics modes that do explicitly model topoisomerase binding and unbinding dynamics and therefore do not exert steric hindrance effects on RNAPs
 
 class BindingProtein:
 	def __init__(self, protein_name: str, total_copy_number: int, is_steric_barrier_to_RNAPs: bool, is_topological_barrier: bool, basal_on_rate: float, basal_off_rate: float, on_rate_func: callable = None, off_rate_func: callable = None, is_a_nucleosome: bool = False, can_be_displaced_at_TSS_by_RNAP: bool = False) -> None:
@@ -204,12 +189,6 @@ class Model: # Class to hold the model, including genomic setup, model setup, an
 		self.Lk = [(genomic_setup.clamp_right - genomic_setup.clamp_left) / model_setup.h_dna] # List to hold linking number of each DNA segment; initially, only one segment spanning the entire DNA
 		self.promoter_status = [1 for _ in genomic_setup.gene_names] if genomic_setup.promoter_mode == 'constitutive' else [floor(uniform_random_in_interval(0.0, 2.0)) for _ in genomic_setup.gene_names] # List to hold promoter status (1: ON, 0: OFF) for each gene
 		self.mRNA_counts = [0 for _ in genomic_setup.gene_names] # List to hold mRNA counts for each gene
-
-		if model_setup.supercoiling_relaxation_dynamics_mode == 'topoisomerase_based': # State variables for topoisomerases
-			self.topoisomerase_type = [0 for _ in range(model_setup.topoisomerase_copy_numbers[0])] + [1 for _ in range(model_setup.topoisomerase_copy_numbers[1])] # 0: TOP1, 1: TOP2
-			self.topoisomerase_positions = [-1.0 for _ in range(model_setup.topoisomerase_copy_numbers[0] + model_setup.topoisomerase_copy_numbers[1])] # Positions of topoisomerases; -1.0 indicates unbound; initially all unbound
-			self.topoisomerase_segment_indices = [-1 for _ in range(model_setup.topoisomerase_copy_numbers[0] + model_setup.topoisomerase_copy_numbers[1])] # Segment indices of bound topoisomerases; -1 indicates unbound; initially all unbound
-			self.topoisomerase_status = [0 for _ in range(model_setup.topoisomerase_copy_numbers[0] + model_setup.topoisomerase_copy_numbers[1])] # Topoisomerase binding status; 0: unbound, 1: bound; initially all unbound
 		
 		if binding_proteins is None:
 			binding_proteins = []

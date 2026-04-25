@@ -79,18 +79,12 @@ def get_nucleosome_occupied_fraction_per_segment(model: Model, segments_lengths:
 
 	return occupied_length / segments_lengths[segment_index]
 
-def get_TSS_steric_hindrance_status(model: Model, TSS_position: float, RNAP_gene_index: list[int], state_vector: list[float]) -> tuple[int, float, int]: # Check for steric hindrance at the TSS position; return a tuple of (steric_hindrance_status, blocking_entity_position, blocking_entity_id); steric_hindrance_status: 0 for no hindrance, 1 for hindrance; blocking_entity_id: -1 for RNAP, 0 to len(model.binding_proteins) - 1 for bound protein index, len(model.binding_proteins) for bound topoisomerase; blocking_entity_position: position of the entity causing steric hindrance if present, None if no hindrance
+def get_TSS_steric_hindrance_status(model: Model, TSS_position: float, RNAP_gene_index: list[int], state_vector: list[float]) -> tuple[int, float, int]: # Check for steric hindrance at the TSS position; return a tuple of (steric_hindrance_status, blocking_entity_position, blocking_entity_id); steric_hindrance_status: 0 for no hindrance, 1 for hindrance; blocking_entity_id: -1 for RNAP, 0 to len(model.binding_proteins) - 1 for bound protein index; blocking_entity_position: position of the entity causing steric hindrance if present, None if no hindrance
 	RNAP_count = len(RNAP_gene_index)
 	for x in state_vector[:RNAP_count]:
 		if abs(x - TSS_position) < model.model_setup.RNAP_diameter:
 			return 1, x, -1
-	
-	if model.model_setup.supercoiling_relaxation_dynamics_mode not in model.model_setup.supercoiling_relaxation_dynamics_modes_with_no_steric_hindrance:	
-		TOPO_positions = [model.topoisomerase_positions[i] for i in range(len(model.topoisomerase_positions)) if model.topoisomerase_status[i] == 1]
-		for topo_pos in TOPO_positions:
-			if abs(topo_pos - TSS_position) < (model.model_setup.RNAP_diameter + model.model_setup.TOPO_diameter) / 2.0:
-				return 1, topo_pos, len(model.binding_proteins)
-	
+		
 	nucl_positions = []
 	nucl_ids = []
 	for i in range(len(model.binding_proteins)):
@@ -140,13 +134,6 @@ def is_protein_binding_blocked(model: Model, RNAP_gene_index: list[int], state_v
 			if abs(protein_pos - binding_position) < model.model_setup.generic_binding_protein_diameter:
 				return 1
 
-	return 0
-
-def is_TOPO_binding_blocked(model: Model, RNAP_gene_index: list[int], state_vector: list[float], binding_position: float) -> int: # Check if TOPO binding is blocked at the given position due to existing RNAPs; return 1 if blocked, 0 if not
-	RNAP_count = len(RNAP_gene_index)
-	for x in state_vector[:RNAP_count]:
-		if abs(x - binding_position) < (model.model_setup.RNAP_diameter + model.model_setup.TOPO_diameter) / 2.0:
-			return 1
 	return 0
 
 def get_ordering_of_RNAPs_and_proteins(model: Model, RNAP_gene_index: list[int], state_vector: list[float]) -> tuple[list[float], list[str]]:

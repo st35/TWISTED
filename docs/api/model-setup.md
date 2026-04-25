@@ -91,7 +91,6 @@ class ModelSetup:
         TOP2_V0: float = 2.6,
         TOP2_k12: float = 2.0,
         RNAP_diameter: float = 15.0,
-        TOPO_diameter: float = 15.0,
         generic_binding_protein_diameter: float = 15.0,
         steric_hindrance_constraint_parameter: float = 2.0,
         clamps_status: tuple[str, str] = ('clamped', 'clamped'),
@@ -116,11 +115,8 @@ See [Model Parameters](../user-guide/model-setup.md) for full parameter descript
 | `local_supercoiling_relaxation_rates` | `[rate_pos, rate_neg]` when mode is `global_by_type` or `per_segment_by_type` |
 | `TOP1_effective_relaxation_rate` | Effective TOP1 rate when mode is `topoisomerase_approximated` |
 | `TOP2_effective_relaxation_rate` | Effective TOP2 rate when mode is `topoisomerase_approximated` |
-| `topoisomerase_copy_numbers` | `[n_TOP1, n_TOP2]` when mode is `topoisomerase_based` |
-| `topoisomerase_on_off_rates` | `[(k_on1, k_off1), (k_on2, k_off2)]` when mode is `topoisomerase_based` |
 | `mRNA_degradation_rate` | mRNA degradation rate (s⁻¹) when `mRNA_dynamics_mode=1` |
 | `finite_size_effect_length` | Length scale for finite-size corrections (nm) |
-| `supercoiling_relaxation_dynamics_modes_with_no_steric_hindrance` | List of mode names that do not model explicit topoisomerase binding |
 
 ---
 
@@ -203,15 +199,6 @@ class Model:
 | `mRNA_counts` | `list[int]` | mRNA copy numbers per gene |
 | `binding_proteins` | `list[BindingProtein]` | List of binding protein types. For eukaryotic setups, a nucleosome `BindingProtein` is automatically prepended at index 0 |
 | `binding_proteins_positions` | `list[list[float]]` | Positions (nm) of bound proteins, indexed `[protein_type][bound_index]` |
-
-Additional attributes present only when `supercoiling_relaxation_dynamics_mode == 'topoisomerase_based'`:
-
-| Attribute | Type | Description |
-|-----------|------|-------------|
-| `topoisomerase_type` | `list[int]` | `0` = TOP1, `1` = TOP2 for each topoisomerase copy |
-| `topoisomerase_positions` | `list[float]` | Current position (nm); `-1.0` if unbound |
-| `topoisomerase_segment_indices` | `list[int]` | DNA segment index occupied; `-1` if unbound |
-| `topoisomerase_status` | `list[int]` | `0` = unbound, `1` = bound |
 
 ### Initial State
 

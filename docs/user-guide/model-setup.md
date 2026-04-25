@@ -13,7 +13,6 @@ ModelSetup(
     TOP1_k0=11.0, TOP1_theta=0.25,
     TOP2_V0=2.6, TOP2_k12=2.0,
     RNAP_diameter=15.0,
-    TOPO_diameter=15.0,
     generic_binding_protein_diameter=15.0,
     steric_hindrance_constraint_parameter=2.0,
     clamps_status=('clamped', 'clamped'),
@@ -85,7 +84,6 @@ Nucleosomes are a special case: their physical extent is `per_nucleosome_DNA_len
 | Parameter | Default | Units | Description |
 |-----------|---------|-------|-------------|
 | `RNAP_diameter` | 15.0 | nm | RNAP physical diameter; used for RNAP–RNAP, RNAP–protein, and RNAP–nucleosome steric checks |
-| `TOPO_diameter` | 15.0 | nm | Topoisomerase physical diameter; used for TSS–TOPO steric checks |
 | `generic_binding_protein_diameter` | 15.0 | nm | Default diameter for non-nucleosome binding proteins; used for RNAP–protein and protein–protein steric checks |
 | `steric_hindrance_constraint_parameter` | 2.0 | nm | Controls the width of the soft steric transition zone in the tanh ramp |
 
@@ -137,19 +135,3 @@ See the dedicated page: [Supercoiling Relaxation Modes](relaxation-modes.md).
 
 ---
 
-## Example: Topoisomerase-based Mode
-
-> **Not yet implemented.** The `topoisomerase_based` mode is planned but not currently available. Use `topoisomerase_approximated` as an alternative.
-
-```python
-model_setup = ModelSetup(
-    v0=20.0,
-    tau_c=12.0,
-    supercoiling_relaxation_dynamics_mode='topoisomerase_based',
-    topoisomerase_copy_numbers=[10, 5],       # 10 × TOP1, 5 × TOP2
-    topoisomerase_on_off_rates=[
-        (0.1, 0.05),   # TOP1: (k_on, k_off) in s⁻¹
-        (0.05, 0.02),  # TOP2: (k_on, k_off) in s⁻¹
-    ],
-)
-```

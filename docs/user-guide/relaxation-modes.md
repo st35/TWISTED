@@ -13,7 +13,7 @@ TWISTED supports six supercoiling relaxation modes controlled by `ModelSetup.sup
 | `global_by_type` | Separate events for +σ and −σ across the whole DNA | `local_supercoiling_relaxation_rates` |
 | `per_segment_by_type` | Separate events per segment, per supercoiling sign | `local_supercoiling_relaxation_rates` |
 | `topoisomerase_approximated` | Effective TOP1/TOP2 rates, segment chosen by length | `TOP1_effective_relaxation_rate`, `TOP2_effective_relaxation_rate` |
-| `topoisomerase_based` | Explicit TOP1/TOP2 binding, unbinding, and catalysis with steric interactions | `topoisomerase_copy_numbers`, `topoisomerase_on_off_rates` |
+| `topoisomerase_based` | Explicit TOP1/TOP2 binding, unbinding, and catalysis with steric interactions | *Not yet implemented* |
 
 ---
 
@@ -93,30 +93,6 @@ ModelSetup(
 ### `topoisomerase_based`
 
 > **Not yet implemented.** This mode is planned but not currently available. Use `topoisomerase_approximated` as an alternative.
-
-The most mechanistically detailed mode. A fixed pool of TOP1 and TOP2 molecules bind and unbind the DNA stochastically and catalyse supercoiling relaxation while bound. This mode also introduces **steric interactions** between bound topoisomerases and transcribing RNAPs.
-
-**Binding:** proportional to segment length (length-weighted probability).
-**Unbinding:** at constant off-rates.
-**Catalysis (TOP1):** continuous Lk relaxation proportional to torque (exponential Kramers-like rate).
-**Catalysis (TOP2):** continuous Lk relaxation proportional to writhe (Michaelis-Menten-like).
-
-```python
-ModelSetup(
-    supercoiling_relaxation_dynamics_mode='topoisomerase_based',
-    topoisomerase_copy_numbers=[10, 5],       # [n_TOP1, n_TOP2]
-    topoisomerase_on_off_rates=[
-        (0.1, 0.05),   # (k_on, k_off) for TOP1 in s⁻¹
-        (0.05, 0.02),  # (k_on, k_off) for TOP2 in s⁻¹
-    ],
-)
-```
-
-#### Steric Interactions in `topoisomerase_based`
-
-- An RNAP within `(RNAP_diameter + TOPO_diameter) / 2` nm of a bound topoisomerase is **stalled**.
-- A topoisomerase cannot bind within `(RNAP_diameter + TOPO_diameter) / 2` nm of any RNAP.
-- These effects are **absent** in all other relaxation modes.
 
 ---
 

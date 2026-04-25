@@ -381,64 +381,7 @@ case.
 
 ## Example 5 — Explicit Topoisomerase Dynamics
 
-The `topoisomerase_based` mode explicitly models individual topoisomerase
-molecules binding and unbinding to DNA segments, with steric interactions between
-topoisomerases and RNAPs.
-
-### 5.1 Set up
-
-```python
-import random
-random.seed(10)
-
-genomic_setup = construct_genomic_setup(
-    'single_gene.config',
-    'prokaryotic',
-    'constitutive',
-    explicit_RNAP_on_rates=[0.083],
-)
-
-# Topoisomerase parameters
-TOP1_count = 5
-TOP2_count = 5
-TOP1_on_rate = 0.083    # 1/s
-TOP1_off_rate = 0.0008  # 1/s
-TOP2_on_rate = 0.083    # 1/s
-TOP2_off_rate = 0.0008  # 1/s
-
-model_setup = ModelSetup(
-    supercoiling_relaxation_dynamics_mode='topoisomerase_based',
-    topoisomerase_copy_numbers=[TOP1_count, TOP2_count],
-    topoisomerase_on_off_rates=[
-        (TOP1_on_rate, TOP1_off_rate),
-        (TOP2_on_rate, TOP2_off_rate),
-    ],
-)
-
-model = Model(genomic_setup, model_setup)
-
-simulation_setup_and_state = SimulationSetupAndState(
-    genomic_setup,
-    simulation_end_mode=1,
-    simulation_end_criterion=[30],
-)
-```
-
-### 5.2 Run
-
-```python
-simulate_dynamics(model, simulation_setup_and_state)
-
-print(f'RNAPs completed: {simulation_setup_and_state.RNAPs_finished_transcription[0]}')
-```
-
-In `topoisomerase_based` mode, each topoisomerase molecule is tracked
-individually. TOP1 relaxes torsional stress on non-plectonemic DNA (writhe
-fraction = 0), while TOP2 relaxes plectonemic supercoiling (writhe fraction
-> 0). Both enzymes act on positive and negative supercoiling, driving $\sigma$
-toward zero. Their binding positions are subject to steric hindrance from
-nearby RNAPs (exclusion distance `(RNAP_diameter + TOPO_diameter) / 2`, default
-15 nm).
+> **Not yet implemented.** The `topoisomerase_based` mode is planned but not currently available. Use `topoisomerase_approximated` (see [Example 3](getting-started.md) and [Supercoiling Relaxation Modes](user-guide/relaxation-modes.md)) as an alternative.
 
 ---
 
@@ -992,7 +935,7 @@ name    TSS_bp    length_bp    direction    RNAP_on_rate
 | `global_by_type` | `local_supercoiling_relaxation_rates` (list of 2 floats) |
 | `per_segment_by_type` | `local_supercoiling_relaxation_rates` (list of 2 floats) |
 | `topoisomerase_approximated` | `TOP1_effective_relaxation_rate`, `TOP2_effective_relaxation_rate` |
-| `topoisomerase_based` | `topoisomerase_copy_numbers`, `topoisomerase_on_off_rates` |
+| `topoisomerase_based` | *Not yet implemented* |
 
 ### Simulation termination
 

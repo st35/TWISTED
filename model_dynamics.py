@@ -192,22 +192,6 @@ def get_segments_Lk_dynamics(model: Model, dx_dt: list[float], dtheta_dt: list[f
 			is_leftmost_segment = False
 		dLk_dt.append(get_segment_Lk_dynamics(model, dx_dt_front, dx_dt_back, dtheta_dt_front, dtheta_dt_back, is_rightmost_segment, is_leftmost_segment))
 	
-	if model.model_setup.supercoiling_relaxation_dynamics_mode == 'topoisomerase_based':
-		segment_TOP1_count = [0 for _ in range(RNAP_count + 1)]
-		segment_TOP2_count = [0 for _ in range(RNAP_count + 1)]
-		for i in range(len(model.topoisomerase_status)):
-			if model.topoisomerase_status[i] == 1:
-				if model.topoisomerase_type[i] == 0: # TOP1
-					segment_TOP1_count[model.topoisomerase_segment_indices[i]] += 1
-				else: # TOP2
-					segment_TOP2_count[model.topoisomerase_segment_indices[i]] += 1
-		
-		for i in range(RNAP_count + 1):
-			if segment_TOP1_count[i] > 0:
-				dLk_dt[i] += get_TOP1_effect_on_Lk_dynamics(model, segments_lengths[i], segments_sigmas[i], segments_torques[i], segments_writhe_fractions[i], segment_TOP1_count[i])
-			if segment_TOP2_count[i] > 0:
-				dLk_dt[i] += get_TOP2_effect_on_Lk_dynamics(model, segments_lengths[i], segments_sigmas[i], segments_torques[i], segments_writhe_fractions[i], segment_TOP2_count[i])
-	
 	return dLk_dt
 
 def get_RNAP_recruitment_rates(model: Model, RNAP_gene_index: list[int], state_vector: list[float], segments_lengths: list[float], segments_sigmas: list[float]) -> list[float]: # Get the RNAP recruitment rates at all TSSes based on the current state_vector and segments attributes
@@ -246,43 +230,6 @@ def are_RNAPs_alive(model: Model, RNAP_gene_index: list[int], state_vector: list
 				RNAPs_alive_status.append(1)
 	
 	return RNAPs_alive_status
-
-def get_TOPO_binding_rates(model: Model, segments_lengths: list[float], segments_sigmas: list[float]) -> list[float]: # Get the binding rates for all topoisomerases based on their type and segment attributes
-	TOP1_on_rates_per_segment = get_per_TOP1_binding_rate_for_each_segment(model, segments_lengths, segments_sigmas)
-	TOP2_on_rates_per_segment = get_per_TOP2_binding_rate_for_each_segment(model, segments_lengths, segments_sigmas)
-	TOPO_binding_rates = []
-
-	if model.model_setup.supercoiling_relaxation_dynamics_mode in model.model_setup.supercoiling_relaxation_dynamics_modes_with_no_steric_hindrance:
-		return TOPO_binding_rates
-
-	for i in range(len(model.topoisomerase_status)):
-		if model.topoisomerase_status[i] == 1:
-			TOPO_binding_rates.append(0.0)
-		else:
-			if model.topoisomerase_type[i] == 0: # TOP1
-				TOPO_binding_rates.append(sum(TOP1_on_rates_per_segment))
-			else:
-				TOPO_binding_rates.append(sum(TOP2_on_rates_per_segment))
-	return TOPO_binding_rates
-
-def get_TOPO_unbinding_rates(model: Model, segments_lengths: list[float], segments_sigmas: list[float]) -> list[float]: # Get the unbinding rates for all topoisomerases based on their type and segment attributes
-	TOP1_off_rate = model.model_setup.topoisomerase_on_off_rates[0][1]
-	TOP2_off_rate = model.model_setup.topoisomerase_on_off_rates[1][1]
-	TOPO_unbinding_rates = []
-
-	if model.model_setup.supercoiling_relaxation_dynamics_mode in model.model_setup.supercoiling_relaxation_dynamics_modes_with_no_steric_hindrance:
-		return TOPO_unbinding_rates
-
-	for i in range(len(model.topoisomerase_status)):
-		if model.topoisomerase_status[i] == 0:
-			TOPO_unbinding_rates.append(0.0)
-		else:
-			if model.topoisomerase_type[i] == 0: # TOP1
-				TOPO_unbinding_rates.append(TOP1_off_rate)
-			else:
-				TOPO_unbinding_rates.append(TOP2_off_rate)
-
-	return TOPO_unbinding_rates
 
 def get_mRNA_degradation_rates(model: Model) -> list[float]: # Get the mRNA degradation rates for all genes based on their current mRNA counts
 	mRNA_degradation_rates = []
@@ -340,11 +287,6 @@ def update_Lk_vector_after_RNAP_recruitment(model: Model, TSS_index: int, RNAP_g
 
 	model.Lk = model.Lk[:TSS_segment_index] + [right_Lk, left_Lk] + model.Lk[TSS_segment_index + 1:]
 
-	RNAP_gene_index, state_vector = get_state_vectors_from_dicts(model)
-	segments_lengths, segments_sigmas, _, _, _, _ = calculate_segments_attributes(model, RNAP_gene_index, state_vector)
-	if model.model_setup.supercoiling_relaxation_dynamics_mode == 'topoisomerase_based':
-		model.topoisomerase_segment_indices = [get_spot_segment_index(model.topoisomerase_positions[i], segments_lengths) for i in range(len(model.topoisomerase_status))]
-
 def update_state_vector_to_remove_dead_RNAPs(model: Model, RNAP_gene_index: list[int], t: float, state_vector: list[float], simulation_setup_and_state: SimulationSetupAndState) -> None: # Update the state_vector and RNAP_gene_index to remove RNAPs that have finished transcription; also update the simulation_setup_and_state with transcription completion data
 	RNAP_count = len(RNAP_gene_index)
 	if RNAP_count == 0: # No RNAPs on the DNA; nothing to update
@@ -392,10 +334,6 @@ def update_state_vector_to_remove_dead_RNAPs(model: Model, RNAP_gene_index: list
 	state_vector[:] = new_x_vector + new_theta_vector + new_Lk_vector + [state_vector[-1]]
 	RNAP_gene_index[:] = new_RNAP_gene_index
 
-	if model.model_setup.supercoiling_relaxation_dynamics_mode == 'topoisomerase_based':
-		segments_lengths, segments_sigmas, _, _, _, _ = calculate_segments_attributes(model, RNAP_gene_index, state_vector)
-		model.topoisomerase_segment_indices = [get_spot_segment_index(model.topoisomerase_positions[i], segments_lengths) for i in range(len(model.topoisomerase_status))]
-
 def get_events_rates(model: Model, RNAP_gene_index: list[int], state_vector: list[float]) -> tuple[list[float], list[int]]: # Get the rates of all possible events and the indices that separate different event types in the rates_vector
 	segments_lengths, segments_sigmas, segments_torques, segments_dna_states, segments_writhe_fractions, segments_plectoneme_thresholds = calculate_segments_attributes(model, RNAP_gene_index, state_vector)
 
@@ -404,13 +342,11 @@ def get_events_rates(model: Model, RNAP_gene_index: list[int], state_vector: lis
 	global_supercoiling_relaxation_rate = [model.model_setup.global_supercoiling_relaxation_rate]
 	local_supercoiling_relaxation_rates = model.model_setup.local_supercoiling_relaxation_rates
 	TOPO_activity_rates = [model.model_setup.TOP1_effective_relaxation_rate, model.model_setup.TOP2_effective_relaxation_rate]
-	TOPO_binding_rates = get_TOPO_binding_rates(model, segments_lengths, segments_sigmas)
-	TOPO_unbinding_rates = get_TOPO_unbinding_rates(model, segments_lengths, segments_sigmas)
 	mRNA_degradation_rates = get_mRNA_degradation_rates(model)
 	binding_proteins_on_rates = [sum(per_protein_on_rates) for per_protein_on_rates in get_binding_proteins_on_rates(model, segments_lengths, segments_sigmas)]
 	binding_proteins_off_rates = [sum(per_protein_off_rates) for per_protein_off_rates in get_binding_proteins_off_rates(model, segments_lengths, segments_sigmas)]
 
-	rates_vector = RNAP_recruitment_rates + model_observation_event_rate + global_supercoiling_relaxation_rate + local_supercoiling_relaxation_rates + TOPO_activity_rates + TOPO_binding_rates + TOPO_unbinding_rates + mRNA_degradation_rates + binding_proteins_on_rates + binding_proteins_off_rates
+	rates_vector = RNAP_recruitment_rates + model_observation_event_rate + global_supercoiling_relaxation_rate + local_supercoiling_relaxation_rates + TOPO_activity_rates + mRNA_degradation_rates + binding_proteins_on_rates + binding_proteins_off_rates
 	assert all(rate >= 0.0 for rate in rates_vector), 'Negative rate encountered in calculating events rates.'
 
 	events_indices = []
@@ -419,8 +355,6 @@ def get_events_rates(model: Model, RNAP_gene_index: list[int], state_vector: lis
 	events_indices.append(events_indices[-1] + len(global_supercoiling_relaxation_rate))
 	events_indices.append(events_indices[-1] + len(local_supercoiling_relaxation_rates))
 	events_indices.append(events_indices[-1] + len(TOPO_activity_rates))
-	events_indices.append(events_indices[-1] + len(TOPO_binding_rates))
-	events_indices.append(events_indices[-1] + len(TOPO_unbinding_rates))
 	events_indices.append(events_indices[-1] + len(mRNA_degradation_rates))
 	events_indices.append(events_indices[-1] + len(binding_proteins_on_rates))
 	events_indices.append(events_indices[-1] + len(binding_proteins_off_rates))

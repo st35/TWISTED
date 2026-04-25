@@ -29,8 +29,6 @@ def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupA
 			TSS_steric_hindrance_status, blocking_entity_position, blocking_entity_id = get_TSS_steric_hindrance_status(model, model.genomic_setup.TSSes[event], RNAP_gene_index, state_vector) # Check for steric hindrance at TSS
 			if TSS_steric_hindrance_status == 1 and blocking_entity_id == -1: # Steric hindrance from another RNAP; recruitment fails
 				pass
-			elif TSS_steric_hindrance_status == 1 and blocking_entity_id == len(model.binding_proteins): # Steric hindrance from a bound topoisomerase; recruitment fails
-				pass
 			elif TSS_steric_hindrance_status == 1 and blocking_entity_id >= 0 and blocking_entity_id < len(model.binding_proteins) and model.binding_proteins[blocking_entity_id].can_be_displaced_at_TSS_by_RNAP is False: # Steric hindrance from a bound protein that cannot be displaced; recruitment fails
 				pass
 			elif simulation_setup_and_state.max_RNAPs_to_recruit is not None and len(simulation_setup_and_state.RNAP_recruitment_times[event]) >= simulation_setup_and_state.max_RNAPs_to_recruit[event]: # Maximum number of RNAPs already recruited for this gene; recruitment fails
@@ -89,50 +87,21 @@ def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupA
 				elif event == 1: # TOP2 activity: relax supercoiling if writhe is present, otherwise TOP2 cannot act
 					if segments_writhe_fractions[chosen_segment_index] > 0.0: # Non-zero writhe; TOP2 can act:
 						model.Lk[chosen_segment_index] = segments_Lk0[chosen_segment_index]*(1.0 + segments_plectoneme_thresholds[chosen_segment_index]) # Relax supercoiling to the threshold beyond which plectonemes form, since TOP2 relaxes supercoiling only until writhe is removed
-		elif event_index < events_indices[5]: # Topoisomerase-mediated supercoiling relaxation: TOP1 / TOP2 binding event
+		elif event_index < events_indices[5]: # mRNA degradation event
 			event = event_index - events_indices[4]
-			if model.topoisomerase_status[event] == 1: # Topoisomerase is already bound; cannot bind again
-				raise ValueError('Binding event selected for already bound topoisomerase.')
-			else:
-				if model.topoisomerase_type[event] == 0:
-					TOP1_on_rates_per_segment = get_per_TOP1_binding_rate_for_each_segment(model, segments_lengths, segments_sigmas)
-					chosen_segment_index = select_event_based_on_propensities(TOP1_on_rates_per_segment, random())
-					binding_position = model.genomic_setup.clamp_left + sum(segments_lengths[chosen_segment_index + 1:]) + (segments_lengths[chosen_segment_index]*uniform_random_in_interval(0.0, 1.0))
-					if is_TOPO_binding_blocked(model, RNAP_gene_index, state_vector, binding_position) == 0:
-						model.topoisomerase_status[event] = 1 # Bind topoisomerase
-						model.topoisomerase_segment_indices[event] = chosen_segment_index
-						model.topoisomerase_positions[event] = binding_position
-				else:
-					TOP2_on_rates_per_segment = get_per_TOP2_binding_rate_for_each_segment(model, segments_lengths, segments_sigmas)
-					chosen_segment_index = select_event_based_on_propensities(TOP2_on_rates_per_segment, random())
-					binding_position = model.genomic_setup.clamp_left + sum(segments_lengths[chosen_segment_index + 1:]) + (segments_lengths[chosen_segment_index]*uniform_random_in_interval(0.0, 1.0))
-					if is_TOPO_binding_blocked(model, RNAP_gene_index, state_vector, binding_position) == 0:
-						model.topoisomerase_status[event] = 1 # Bind topoisomerase
-						model.topoisomerase_segment_indices[event] = chosen_segment_index
-						model.topoisomerase_positions[event] = binding_position
-		elif event_index < events_indices[6]: # Topoisomerase-mediated supercoiling relaxation: TOP1 / TOP2 unbinding event
-			event = event_index - events_indices[5]
-			if model.topoisomerase_status[event] == 0: # Topoisomerase is already unbound; cannot unbind again
-				raise ValueError('Unbinding event selected for already unbound topoisomerase.')
-			else:
-				model.topoisomerase_status[event] = 0 # Unbind topoisomerase
-				model.topoisomerase_segment_indices[event] = -1
-				model.topoisomerase_positions[event] = -1.0
-		elif event_index < events_indices[7]: # mRNA degradation event
-			event = event_index - events_indices[6]
 			if model.mRNA_counts[event] <= 0: # No mRNA to degrade; cannot degrade
 				raise ValueError('mRNA degradation event selected for gene with zero mRNA count.')
 			else:
 				model.mRNA_counts[event] -= 1 # Degrade one mRNA molecule for the gene
-		elif event_index < events_indices[8]: # Binding protein binding event
-			event = event_index - events_indices[7]
+		elif event_index < events_indices[6]: # Binding protein binding event
+			event = event_index - events_indices[5]
 			per_segment_on_rates = get_binding_proteins_on_rates(model, segments_lengths, segments_sigmas)[event]
 			chosen_segment_index = select_event_based_on_propensities(per_segment_on_rates, random())
 			binding_position = model.genomic_setup.clamp_left + sum(segments_lengths[chosen_segment_index + 1:]) + (segments_lengths[chosen_segment_index]*uniform_random_in_interval(0.0, 1.0))
 			if is_protein_binding_blocked(model, RNAP_gene_index, state_vector, event, binding_position) == 0:
 				model.binding_proteins_positions[event].append(binding_position) # Bind the binding protein at the chosen position
-		elif event_index < events_indices[9]: # Binding protein unbinding event
-			event = event_index - events_indices[8]
+		elif event_index < events_indices[7]: # Binding protein unbinding event
+			event = event_index - events_indices[6]
 			binding_proteins_off_rates = get_binding_proteins_off_rates(model, segments_lengths, segments_sigmas)[event]
 			assert len(binding_proteins_off_rates) == len(model.binding_proteins_positions[event]), 'Length of binding proteins off rates does not match number of bound proteins for the event.'
 			chosen_bound_protein_index = select_event_based_on_propensities(binding_proteins_off_rates, random())
