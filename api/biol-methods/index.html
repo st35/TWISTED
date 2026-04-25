@@ -978,28 +978,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#get_per_top1_binding_rate_for_each_segment" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        get_per_TOP1_binding_rate_for_each_segment
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#get_per_top2_binding_rate_for_each_segment" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        get_per_TOP2_binding_rate_for_each_segment
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#get_top1_effect_on_lk_dynamics" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1235,28 +1213,6 @@
     <span class="md-ellipsis">
       
         get_RNAP_recruitment_rate
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#get_per_top1_binding_rate_for_each_segment" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        get_per_TOP1_binding_rate_for_each_segment
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#get_per_top2_binding_rate_for_each_segment" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        get_per_TOP2_binding_rate_for_each_segment
       
     </span>
   </a>
@@ -1511,34 +1467,15 @@
 </code></pre></div>
 <p>Returns the RNAP recruitment rate (s⁻¹) at a given TSS. Returns <code>0.0</code> if <code>promoter_status == 0</code>. Currently returns <code>RNAP_on_rates[TSS_index]</code> when the promoter is ON (supercoiling dependence of recruitment is not yet implemented).</p>
 <hr />
-<h2 id="get_per_top1_binding_rate_for_each_segment"><code>get_per_TOP1_binding_rate_for_each_segment</code><a class="headerlink" href="#get_per_top1_binding_rate_for_each_segment" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">get_per_TOP1_binding_rate_for_each_segment</span><span class="p">(</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="n">segments_lengths</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="n">segments_sigmas</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
-</code></pre></div>
-<p>Returns a list of TOP1 binding rates — one per DNA segment — weighted by segment length:</p>
-<div class="arithmatex">\[k_{\mathrm{on},j}^{\mathrm{TOP1}} = k_{\mathrm{on}}^{\mathrm{TOP1}} \cdot \frac{L_j}{L_{\mathrm{total}}}\]</div>
-<hr />
-<h2 id="get_per_top2_binding_rate_for_each_segment"><code>get_per_TOP2_binding_rate_for_each_segment</code><a class="headerlink" href="#get_per_top2_binding_rate_for_each_segment" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">get_per_TOP2_binding_rate_for_each_segment</span><span class="p">(</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="n">segments_lengths</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="n">segments_sigmas</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
-</code></pre></div>
-<p>Identical structure to <code>get_per_TOP1_binding_rate_for_each_segment</code> but uses <code>topoisomerase_on_off_rates[1][0]</code> as the base rate.</p>
-<hr />
 <h2 id="get_top1_effect_on_lk_dynamics"><code>get_TOP1_effect_on_Lk_dynamics</code><a class="headerlink" href="#get_top1_effect_on_lk_dynamics" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">get_TOP1_effect_on_Lk_dynamics</span><span class="p">(</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    <span class="n">segment_length</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    <span class="n">segment_sigma</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>    <span class="n">segment_torque</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>    <span class="n">segment_writhe_frac</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>    <span class="n">bound_TOP1_count</span><span class="p">:</span> <span class="nb">int</span>
-<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">get_TOP1_effect_on_Lk_dynamics</span><span class="p">(</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="n">segment_length</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="n">segment_sigma</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="n">segment_torque</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>    <span class="n">segment_writhe_frac</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>    <span class="n">bound_TOP1_count</span><span class="p">:</span> <span class="nb">int</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span>
 </code></pre></div>
 <p>Returns the contribution of bound TOP1 molecules to <span class="arithmatex">\(\dot{Lk}\)</span> for a segment. Returns <code>0.0</code> if the writhe fraction is non-zero (TOP1 cannot act on plectonemic DNA).</p>
 <div class="arithmatex">\[\dot{Lk}^{\mathrm{TOP1}} = \begin{cases}
@@ -1547,23 +1484,23 @@
 \end{cases}\]</div>
 <hr />
 <h2 id="get_top2_effect_on_lk_dynamics"><code>get_TOP2_effect_on_Lk_dynamics</code><a class="headerlink" href="#get_top2_effect_on_lk_dynamics" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">get_TOP2_effect_on_Lk_dynamics</span><span class="p">(</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="n">segment_length</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    <span class="n">segment_sigma</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>    <span class="n">segment_torque</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>    <span class="n">segment_writhe_frac</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>    <span class="n">bound_TOP2_count</span><span class="p">:</span> <span class="nb">int</span>
-<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">get_TOP2_effect_on_Lk_dynamics</span><span class="p">(</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="n">segment_length</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="n">segment_sigma</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="n">segment_torque</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>    <span class="n">segment_writhe_frac</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>    <span class="n">bound_TOP2_count</span><span class="p">:</span> <span class="nb">int</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span>
 </code></pre></div>
 <p>Returns the contribution of bound TOP2 molecules to <span class="arithmatex">\(\dot{Lk}\)</span>. Returns <code>0.0</code> if writhe fraction is zero (TOP2 requires plectonemic DNA):</p>
 <div class="arithmatex">\[\dot{Lk}^{\mathrm{TOP2}} = \mp n \, V_0 \frac{Wr}{Wr + k_{12}}, \quad Wr = |\sigma| \Phi_w\]</div>
 <hr />
 <h2 id="get_mrna_degradation_rate"><code>get_mRNA_degradation_rate</code><a class="headerlink" href="#get_mrna_degradation_rate" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">get_mRNA_degradation_rate</span><span class="p">(</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>    <span class="n">mRNA_count</span><span class="p">:</span> <span class="nb">int</span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">get_mRNA_degradation_rate</span><span class="p">(</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    <span class="n">mRNA_count</span><span class="p">:</span> <span class="nb">int</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span>
 </code></pre></div>
 <p>Returns the mRNA degradation rate (s⁻¹) for a single gene given its current mRNA copy number. Used when <code>mRNA_dynamics_mode = 1</code> in <code>ModelSetup</code>.</p>
 <div class="arithmatex">\[r_{\mathrm{deg}} = \delta \cdot n_{\mathrm{mRNA}}\]</div>
@@ -1585,15 +1522,15 @@
 </table>
 <hr />
 <h2 id="get_prokaryotic_torque"><code>get_prokaryotic_torque</code><a class="headerlink" href="#get_prokaryotic_torque" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">get_prokaryotic_torque</span><span class="p">(</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="n">w0</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    <span class="n">force</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    <span class="n">kBT</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>    <span class="n">segment_length</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>    <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>    <span class="n">finite_size_effect_flag</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>    <span class="n">finite_size_effect_length</span><span class="p">:</span> <span class="nb">float</span>
-<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">get_prokaryotic_torque</span><span class="p">(</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>    <span class="n">w0</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="n">force</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    <span class="n">kBT</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>    <span class="n">segment_length</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>    <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>    <span class="n">finite_size_effect_flag</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>    <span class="n">finite_size_effect_length</span><span class="p">:</span> <span class="nb">float</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
 </code></pre></div>
 <p>Calculates torque and DNA state for a prokaryotic DNA segment. Returns a 4-tuple:</p>
 <table>
@@ -1635,14 +1572,14 @@
 <p>See <a href="../../theory/dna-mechanics/">DNA Mechanics</a> for the full torque model derivation.</p>
 <hr />
 <h2 id="get_eukaryotic_torque"><code>get_eukaryotic_torque</code><a class="headerlink" href="#get_eukaryotic_torque" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">get_eukaryotic_torque</span><span class="p">(</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    <span class="n">force</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>    <span class="n">segment_length</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>    <span class="n">psi</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>    <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>    <span class="n">finite_size_effect_flag</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>    <span class="n">finite_size_effect_cutoff</span><span class="p">:</span> <span class="nb">float</span>
-<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">get_eukaryotic_torque</span><span class="p">(</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="n">force</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>    <span class="n">segment_length</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="n">psi</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>    <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>    <span class="n">finite_size_effect_flag</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>    <span class="n">finite_size_effect_cutoff</span><span class="p">:</span> <span class="nb">float</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
 </code></pre></div>
 <p>Calculates torque and chromatin state for a eukaryotic DNA segment as a function of nucleosome density <code>psi</code> and supercoiling density <code>sigma</code>. Returns a 4-tuple:</p>
 <table>

@@ -1401,26 +1401,16 @@
 </tr>
 <tr>
 <td><code>events_indices[4]–events_indices[5]</code></td>
-<td><strong>Topoisomerase binding</strong></td>
-<td>Selects segment and position; binds topoisomerase if not sterically blocked. <em>Not yet implemented.</em></td>
-</tr>
-<tr>
-<td><code>events_indices[5]–events_indices[6]</code></td>
-<td><strong>Topoisomerase unbinding</strong></td>
-<td>Releases bound topoisomerase; resets position and segment index to <code>-1</code>. <em>Not yet implemented.</em></td>
-</tr>
-<tr>
-<td><code>events_indices[6]–events_indices[7]</code></td>
 <td><strong>mRNA degradation</strong></td>
 <td>Decrements <code>model.mRNA_counts</code> for the selected gene by 1. Raises <code>ValueError</code> if the gene has zero mRNA (should not be selected when count is 0, as the rate is 0)</td>
 </tr>
 <tr>
-<td><code>events_indices[7]–events_indices[8]</code></td>
+<td><code>events_indices[5]–events_indices[6]</code></td>
 <td><strong>Binding protein binding</strong></td>
 <td>Selects a segment proportional to per-segment on-rates, places the protein at a random position within that segment, and appends to <code>model.binding_proteins_positions</code></td>
 </tr>
 <tr>
-<td><code>events_indices[8]–events_indices[9]</code></td>
+<td><code>events_indices[6]–events_indices[7]</code></td>
 <td><strong>Binding protein unbinding</strong></td>
 <td>Selects which bound protein to release (proportional to per-molecule off-rates) and removes it from <code>model.binding_proteins_positions</code></td>
 </tr>
@@ -1430,7 +1420,6 @@
 <p>An RNAP recruitment event succeeds only when <strong>all</strong> of the following conditions hold:</p>
 <ol>
 <li>The TSS is not sterically blocked by another RNAP within <code>RNAP_diameter</code> nm.</li>
-<li>No bound topoisomerase is within <code>(RNAP_diameter + TOPO_diameter) / 2</code> nm of the TSS (in <code>topoisomerase_based</code> mode).</li>
 <li>No bound nucleosome (with <code>is_steric_barrier_to_RNAPs=True</code>) is within <code>(RNAP_diameter + per_nucleosome_DNA_length + nucleosome_linker_length) / 2</code> nm of the TSS — <strong>unless</strong> the nucleosome has <code>can_be_displaced_at_TSS_by_RNAP=True</code> (see below).</li>
 <li>No other bound protein (with <code>is_steric_barrier_to_RNAPs=True</code>) is within <code>(RNAP_diameter + generic_binding_protein_diameter) / 2</code> nm of the TSS — <strong>unless</strong> the protein has <code>can_be_displaced_at_TSS_by_RNAP=True</code> (see below).</li>
 <li>The <code>max_RNAPs_to_recruit</code> cap for that gene has not been reached.</li>
@@ -1444,7 +1433,7 @@
 <p><strong><code>global_by_type</code>:</strong> The first rate in <code>local_supercoiling_relaxation_rates</code> governs relaxation of all positively supercoiled segments; the second governs all negatively supercoiled segments. Both happen globally across all segments simultaneously.</p>
 <p><strong><code>per_segment_by_type</code>:</strong> Same as <code>global_by_type</code> but one segment is chosen per event.</p>
 <p><strong><code>topoisomerase_approximated</code>:</strong> A segment is chosen proportional to length. TOP1 resets <code>Lk = Lk₀</code> only if writhe is absent. TOP2 resets <code>Lk = Lk₀(1 + σ_s)</code> only if writhe is present (relaxes to the plectoneme-formation threshold, emulating strand passage).</p>
-<p><strong><code>topoisomerase_based</code>:</strong> <em>Not yet implemented.</em> Topoisomerase binding positions are drawn uniformly within the chosen segment; binding is refused if an RNAP is within <code>(RNAP_diameter + TOPO_diameter) / 2</code> nm.</p>
+<p><strong><code>topoisomerase_based</code>:</strong> <em>Not yet implemented.</em></p>
 <h3 id="termination">Termination<a class="headerlink" href="#termination" title="Permanent link">&para;</a></h3>
 <p><strong>Time-based (<code>simulation_end_mode=0</code>):</strong> Loop exits when <code>curr_simulation_time &gt;= simulation_end_time</code>.</p>
 <p><strong>Event-based (<code>simulation_end_mode=1</code>):</strong> Loop exits when <code>RNAPs_finished_transcription[i] &gt;= simulation_end_event_counts[i]</code> for <strong>all</strong> genes <code>i</code>.</p>

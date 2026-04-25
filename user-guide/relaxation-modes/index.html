@@ -786,23 +786,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="topoisomerase_based">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#steric-interactions-in-topoisomerase_based" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Steric Interactions in topoisomerase_based
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
         
       </ul>
@@ -1268,23 +1251,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="topoisomerase_based">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#steric-interactions-in-topoisomerase_based" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Steric Interactions in topoisomerase_based
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
         
       </ul>
@@ -1364,7 +1330,7 @@
 <tr>
 <td><code>topoisomerase_based</code></td>
 <td>Explicit TOP1/TOP2 binding, unbinding, and catalysis with steric interactions</td>
-<td><code>topoisomerase_copy_numbers</code>, <code>topoisomerase_on_off_rates</code></td>
+<td><em>Not yet implemented</em></td>
 </tr>
 </tbody>
 </table>
@@ -1420,26 +1386,6 @@
 <blockquote>
 <p><strong>Not yet implemented.</strong> This mode is planned but not currently available. Use <code>topoisomerase_approximated</code> as an alternative.</p>
 </blockquote>
-<p>The most mechanistically detailed mode. A fixed pool of TOP1 and TOP2 molecules bind and unbind the DNA stochastically and catalyse supercoiling relaxation while bound. This mode also introduces <strong>steric interactions</strong> between bound topoisomerases and transcribing RNAPs.</p>
-<p><strong>Binding:</strong> proportional to segment length (length-weighted probability).
-<strong>Unbinding:</strong> at constant off-rates.
-<strong>Catalysis (TOP1):</strong> continuous Lk relaxation proportional to torque (exponential Kramers-like rate).
-<strong>Catalysis (TOP2):</strong> continuous Lk relaxation proportional to writhe (Michaelis-Menten-like).</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">ModelSetup</span><span class="p">(</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    <span class="n">supercoiling_relaxation_dynamics_mode</span><span class="o">=</span><span class="s1">&#39;topoisomerase_based&#39;</span><span class="p">,</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="n">topoisomerase_copy_numbers</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>       <span class="c1"># [n_TOP1, n_TOP2]</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="n">topoisomerase_on_off_rates</span><span class="o">=</span><span class="p">[</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>        <span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">),</span>   <span class="c1"># (k_on, k_off) for TOP1 in s⁻¹</span>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>        <span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">),</span>  <span class="c1"># (k_on, k_off) for TOP2 in s⁻¹</span>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>    <span class="p">],</span>
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="p">)</span>
-</code></pre></div>
-<h4 id="steric-interactions-in-topoisomerase_based">Steric Interactions in <code>topoisomerase_based</code><a class="headerlink" href="#steric-interactions-in-topoisomerase_based" title="Permanent link">&para;</a></h4>
-<ul>
-<li>An RNAP within <code>(RNAP_diameter + TOPO_diameter) / 2</code> nm of a bound topoisomerase is <strong>stalled</strong>.</li>
-<li>A topoisomerase cannot bind within <code>(RNAP_diameter + TOPO_diameter) / 2</code> nm of any RNAP.</li>
-<li>These effects are <strong>absent</strong> in all other relaxation modes.</li>
-</ul>
 <hr />
 <h2 id="choosing-a-mode">Choosing a Mode<a class="headerlink" href="#choosing-a-mode" title="Permanent link">&para;</a></h2>
 <table>
