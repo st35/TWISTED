@@ -136,21 +136,30 @@ def is_protein_binding_blocked(model: Model, RNAP_gene_index: list[int], state_v
 
 	return 0
 
-def get_ordering_of_RNAPs_and_proteins(model: Model, RNAP_gene_index: list[int], state_vector: list[float]) -> tuple[list[float], list[str]]:
+def get_ordering_of_RNAPs_and_proteins(model: Model, RNAP_gene_index: list[int], state_vector: list[float], topological_barrier_proteins_only: bool = False) -> tuple[list[float], list[str]]:
 	RNAP_positions = list(state_vector[:len(RNAP_gene_index)])
 	RNAP_ids = ['RNAP_' + str(i) for i in range(len(RNAP_gene_index))]
 
 	bound_protein_positions = []
 	bound_protein_ids = []
 	for i in range(len(model.binding_proteins)):
-		if model.binding_proteins[i].is_steric_barrier_to_RNAPs:
-			bound_protein_positions = bound_protein_positions + model.binding_proteins_positions[i]
-			bound_protein_ids = bound_protein_ids + [str(i) for _ in range(len(model.binding_proteins_positions[i]))]
+		if topological_barrier_proteins_only:
+			if model.binding_proteins[i].is_topological_barrier:
+				bound_protein_positions = bound_protein_positions + model.binding_proteins_positions[i]
+				bound_protein_ids = bound_protein_ids + [str(i) for _ in range(len(model.binding_proteins_positions[i]))]
+				continue
+		else:
+			if model.binding_proteins[i].is_steric_barrier_to_RNAPs:
+				bound_protein_positions = bound_protein_positions + model.binding_proteins_positions[i]
+				bound_protein_ids = bound_protein_ids + [str(i) for _ in range(len(model.binding_proteins_positions[i]))]
 	
 	all_positions = RNAP_positions + bound_protein_positions
 	all_ids = RNAP_ids + bound_protein_ids
 
-	zipped_pairs = sorted(zip(all_positions, all_ids), key = lambda pair: pair[0], reverse = False)
+	if len(all_positions) == 0:
+		return [], []
+
+	zipped_pairs = sorted(zip(all_positions, all_ids), key = lambda pair: pair[0], reverse = False) if topological_barrier_proteins_only is False else sorted(zip(all_positions, all_ids), key = lambda pair: pair[0], reverse = True)
 	sorted_positions, sorted_ids = zip(*zipped_pairs)
 
 	return list(sorted_positions), list(sorted_ids)

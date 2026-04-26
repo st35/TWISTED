@@ -161,8 +161,12 @@ class BindingProtein:
 	def __init__(self, protein_name: str, total_copy_number: int, is_steric_barrier_to_RNAPs: bool, is_topological_barrier: bool, basal_on_rate: float, basal_off_rate: float, on_rate_func: callable = None, off_rate_func: callable = None, is_a_nucleosome: bool = False, can_be_displaced_at_TSS_by_RNAP: bool = False) -> None:
 		self.protein_name = protein_name
 		self.total_copy_number = total_copy_number
+
 		self.is_steric_barrier_to_RNAPs = is_steric_barrier_to_RNAPs
 		self.is_topological_barrier = is_topological_barrier
+		if self.is_topological_barrier and not self.is_steric_barrier_to_RNAPs:
+			raise ValueError('A protein that is a topological barrier must also be a steric barrier to RNAPs.')
+
 		self.basal_on_rate = basal_on_rate
 		self.basal_off_rate = basal_off_rate
 		if on_rate_func is None:
@@ -198,6 +202,16 @@ class Model: # Class to hold the model, including genomic setup, model setup, an
 			nucleosomes = BindingProtein(protein_name = 'nucleosome', total_copy_number = nucl_count, is_steric_barrier_to_RNAPs = genomic_setup.nucleosomes_are_steric_barriers_to_RNAPs, is_topological_barrier = False, basal_on_rate = 1.2 / (genomic_setup.clamp_right - genomic_setup.clamp_left), basal_off_rate = 0.4, is_a_nucleosome = True, can_be_displaced_at_TSS_by_RNAP = genomic_setup.nucleosomes_can_be_displaced_at_TSS_by_RNAP, on_rate_func = genomic_setup.nucleosome_on_rate_func, off_rate_func = genomic_setup.nucleosome_off_rate_func)
 			self.binding_proteins = [nucleosomes] + self.binding_proteins
 		self.binding_proteins_positions = [[] for _ in self.binding_proteins] # List of lists to hold positions of each bound protein; each sublist corresponds to a binding protein type and contains the positions of all bound proteins of that type
+	
+	def print_model_setup(self) -> None: # Utility function to print model setup information
+		self.genomic_setup.print_genomic_setup()
+		print('Genome binding proteins:')
+		print('Name\tTotal copy number\tSteric barrier to RNAPs\tTopological barrier\tIs a nucleosome\tCan be displaced at TSS by RNAP')
+		print('-' * 80)
+		for i in range(len(self.binding_proteins)):
+			protein = self.binding_proteins[i]
+			print(f'{protein.protein_name}\t{protein.total_copy_number}\t{protein.is_steric_barrier_to_RNAPs}\t{protein.is_topological_barrier}\t{protein.is_a_nucleosome}\t{protein.can_be_displaced_at_TSS_by_RNAP}')
+		print('=' * 80)
 
 class SimulationSetupAndState: # Class to hold simulation setup parameters
 	def __init__(self, genomic_setup: GenomicSetup, simulation_end_mode: int, simulation_end_criterion: Union[float, list[int]], integration_method: str = 'RK23', integration_time_resolution: float = 1.0e-1, RNAP_alive_status_check_interval: float = 1.0, max_RNAPs_to_recruit: list[int] = None) -> None:

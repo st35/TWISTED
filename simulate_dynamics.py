@@ -37,7 +37,7 @@ def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupA
 				event_gene_index = event
 				model.x_dict[event_gene_index].append(model.genomic_setup.TSSes[event_gene_index])
 				model.theta_dict[event_gene_index].append(0.0)
-				update_Lk_vector_after_RNAP_recruitment(model, event_gene_index, RNAP_gene_index, state_vector, segments_lengths, segments_sigmas) # Update linking number vector after RNAP recruitment
+				update_Lk_vector_after_RNAP_or_protein_recruitment(model, model.genomic_setup.TSSes[event_gene_index], RNAP_gene_index, state_vector, segments_lengths, segments_sigmas) # Update linking number vector after RNAP recruitment
 				simulation_setup_and_state.RNAP_recruitment_times[event_gene_index].append(simulation_setup_and_state.curr_simulation_time)
 				if TSS_steric_hindrance_status == 1:
 					assert blocking_entity_id >= 0 and blocking_entity_id < len(model.binding_proteins) and model.binding_proteins[blocking_entity_id].can_be_displaced_at_TSS_by_RNAP is True, 'There must be a bound protein that can be displaced if steric hindrance is present but recruitment is successful.'
@@ -99,6 +99,8 @@ def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupA
 			chosen_segment_index = select_event_based_on_propensities(per_segment_on_rates, random())
 			binding_position = model.genomic_setup.clamp_left + sum(segments_lengths[chosen_segment_index + 1:]) + (segments_lengths[chosen_segment_index]*uniform_random_in_interval(0.0, 1.0))
 			if is_protein_binding_blocked(model, RNAP_gene_index, state_vector, event, binding_position) == 0:
+				if model.binding_proteins[event].is_topological_barrier:
+					update_Lk_vector_after_RNAP_or_protein_recruitment(model, binding_position, RNAP_gene_index, state_vector, segments_lengths, segments_sigmas) # Update linking number vector after binding of a topological barrier protein
 				model.binding_proteins_positions[event].append(binding_position) # Bind the binding protein at the chosen position
 		elif event_index < events_indices[7]: # Binding protein unbinding event
 			event = event_index - events_indices[6]
@@ -106,6 +108,8 @@ def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupA
 			assert len(binding_proteins_off_rates) == len(model.binding_proteins_positions[event]), 'Length of binding proteins off rates does not match number of bound proteins for the event.'
 			chosen_bound_protein_index = select_event_based_on_propensities(binding_proteins_off_rates, random())
 			if chosen_bound_protein_index is not None:
+				if model.binding_proteins[event].is_topological_barrier:
+					update_Lk_vector_after_protein_unbinding(model, model.binding_proteins_positions[event][chosen_bound_protein_index], RNAP_gene_index, state_vector, segments_lengths, segments_sigmas) # Update linking number vector after unbinding of a topological barrier protein
 				model.binding_proteins_positions[event].pop(chosen_bound_protein_index) # Unbind the chosen binding protein
 		else:
 			raise ValueError('Event index out of bounds during simulation.')

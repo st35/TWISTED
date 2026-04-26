@@ -36,7 +36,7 @@ def get_RNAP_angular_velocity(model: Model, gene_index: int, x: float, dx_dt: fl
     denom = (chi + eta*(x**alpha))
     return ((w0*dx_dt)*(chi / denom)) + ((tau_f - tau_b) / denom)
 
-def get_segment_Lk_dynamics(model: Model, dx_dt_front: float, dx_dt_back: float, dtheta_dt_front: float, dtheta_dt_back: float, is_rightmost_segment: bool, is_leftmost_segment: bool) -> float: # Get the rate of change of linking number for a DNA segment based on the angular velocities at its front and back
+def get_segment_Lk_dynamics(model: Model, dx_dt_front: float, dx_dt_back: float, dtheta_dt_front: float, dtheta_dt_back: float, left_barrier_type: str, right_barrier_type: str, is_rightmost_segment: bool, is_leftmost_segment: bool) -> float: # Get the rate of change of linking number for a DNA segment based on the angular velocities at its front and back
     if model.model_setup.right_clamp_status == 0 and is_rightmost_segment:
         return (1.0 / (model.model_setup.h_dna))*(-dx_dt_back)
 

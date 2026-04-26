@@ -52,11 +52,18 @@ def calculate_segments_attributes(model: Model, RNAP_gene_index: list[int], stat
 	theta_vector = state_vector[RNAP_count:2*RNAP_count]
 	Lk_vector = state_vector[2*RNAP_count:-1]
 
+	topological_barrier_proteins_positions = []
+	for i in range(len(model.binding_proteins)):
+		if model.binding_proteins[i].is_topological_barrier:
+			topological_barrier_proteins_positions = topological_barrier_proteins_positions + model.binding_proteins_positions[i]
+	x_vector = list(x_vector) + topological_barrier_proteins_positions
+	x_vector = sorted(x_vector, reverse = True)
+
 	segments_lengths = []
-	if RNAP_count == 0: # No RNAPs on the DNA; single segment between clamps
+	if len(x_vector) == 0: # No RNAPs or topological barrier proteins on the DNA; single segment between clamps
 		segments_lengths.append(model.genomic_setup.clamp_right - model.genomic_setup.clamp_left)
 	else:
-		for i in range(RNAP_count):
+		for i in range(len(x_vector)):
 			if i == 0:
 				segments_lengths.append(model.genomic_setup.clamp_right - x_vector[i])
 			else:
@@ -65,6 +72,7 @@ def calculate_segments_attributes(model: Model, RNAP_gene_index: list[int], stat
 	for segment_length in segments_lengths:
 		if segment_length < 0.0:
 			raise ValueError('Negative segment length calculated, which is invalid.')
+	assert len(segments_lengths) == len(x_vector) + 1, 'Number of segments should be one more than the number of boundaries (RNAPs and topological barrier proteins) on the DNA.'
 	
 	segments_LK0 = []
 	for length in segments_lengths:
@@ -98,19 +106,26 @@ def get_RNAP_velocities(model: Model, state_vector: list[float], RNAP_gene_index
 	RNAP_count = len(RNAP_gene_index)
 	if RNAP_count == 0: # No RNAPs on the DNA; return empty list
 		return []
-	
+
+	sorted_positions, sorted_ids = get_ordering_of_RNAPs_and_proteins(model, RNAP_gene_index, state_vector, topological_barrier_proteins_only = True)	
 	RNAP_velocities = []
 	left_segment_length = 0.0
 	right_segment_length = 0.0
 	left_torque = 0.0
 	right_torque = 0.0
-	for i in range(RNAP_count):
+	curr_RNAP_index = 0
+	for i in range(len(sorted_ids)):
+		if 'RNAP' not in sorted_ids[i]:
+			continue
 		left_segment_length = segments_lengths[i + 1]
 		right_segment_length = segments_lengths[i]
 		left_torque = segments_torques[i + 1]
 		right_torque = segments_torques[i]
 
-		RNAP_velocities.append(get_RNAP_velocity(model, RNAP_gene_index[i], left_segment_length, right_segment_length, left_torque, right_torque))
+		RNAP_velocities.append(get_RNAP_velocity(model, RNAP_gene_index[curr_RNAP_index], left_segment_length, right_segment_length, left_torque, right_torque))
+		curr_RNAP_index += 1
+	
+	assert len(RNAP_velocities) == RNAP_count, 'Number of calculated RNAP velocities does not match number of RNAPs on the DNA.'
 	
 	sorted_positions, sorted_ids = get_ordering_of_RNAPs_and_proteins(model, RNAP_gene_index, state_vector)
 	for i in range(RNAP_count):
@@ -144,21 +159,28 @@ def get_RNAP_angular_velocities(model: Model, RNAP_gene_index: list[int], state_
 		return []
 	
 	x_vector = state_vector[0:RNAP_count]
+	sorted_positions, sorted_ids = get_ordering_of_RNAPs_and_proteins(model, RNAP_gene_index, state_vector, topological_barrier_proteins_only = True)	
 	
 	RNAP_angular_velocities = []
 	left_torque = 0.0
 	right_torque = 0.0
-	for i in range(RNAP_count):
+	curr_RNAP_index = 0
+	for i in range(len(sorted_ids)):
+		if 'RNAP' not in sorted_ids[i]:
+			continue
 		left_torque = segments_torques[i + 1]
 		right_torque = segments_torques[i]
 
-		RNAP_angular_velocities.append(get_RNAP_angular_velocity(model, RNAP_gene_index[i], x_vector[i], RNAP_velocities[i], left_torque, right_torque))
+		RNAP_angular_velocities.append(get_RNAP_angular_velocity(model, RNAP_gene_index[curr_RNAP_index], x_vector[curr_RNAP_index], RNAP_velocities[curr_RNAP_index], left_torque, right_torque))
+		curr_RNAP_index += 1
 	
 	return RNAP_angular_velocities
 
-def get_segments_Lk_dynamics(model: Model, dx_dt: list[float], dtheta_dt: list[float], segments_lengths: list[float], segments_sigmas: list[float], segments_torques: list[float], segments_writhe_fractions: list[float]) -> list[float]: # Get the rates of change of linking number for all DNA segments based on the RNAP angular velocities
-	RNAP_count = len(dtheta_dt)
-	if RNAP_count == 0: # No RNAPs on the DNA; there is only one segment between clamps and there is no change in linking number
+def get_segments_Lk_dynamics(model: Model, RNAP_gene_index: list[int], state_vector: list[float], dx_dt: list[float], dtheta_dt: list[float], segments_lengths: list[float], segments_sigmas: list[float], segments_torques: list[float], segments_writhe_fractions: list[float]) -> list[float]: # Get the rates of change of linking number for all DNA segments based on the RNAP angular velocities
+	sorted_positions, sorted_ids = get_ordering_of_RNAPs_and_proteins(model, RNAP_gene_index, state_vector, topological_barrier_proteins_only = True)
+	assert len(segments_lengths) == len(segments_sigmas) == len(segments_torques) == len(segments_writhe_fractions) == len(sorted_positions) + 1, 'Length of segments attributes lists should be one more than the number of boundaries (RNAPs and topological barrier proteins) on the DNA.'
+
+	if len(sorted_positions) == 0: # No RNAPs or topological barrier proteins on the DNA; single segment between clamps
 		return [0.0]
 	
 	dLk_dt = []
@@ -168,29 +190,66 @@ def get_segments_Lk_dynamics(model: Model, dx_dt: list[float], dtheta_dt: list[f
 	dtheta_dt_back = 0.0
 	is_rightmost_segment = False
 	is_leftmost_segment = False
-	for i in range(RNAP_count + 1):
+	curr_RNAP_index = 0
+	left_barrier_type = None
+	right_barrier_type = None
+	for i in range(len(segments_lengths)):
 		if i == 0: # Rightmost segment
-			dx_dt_front = 0.0
-			dx_dt_back = dx_dt[i]
-			dtheta_dt_front = 0.0
-			dtheta_dt_back = dtheta_dt[i]
+			if 'RNAP' in sorted_ids[i]:
+				dx_dt_front = 0.0
+				dx_dt_back = dx_dt[curr_RNAP_index]
+				dtheta_dt_front = 0.0
+				dtheta_dt_back = dtheta_dt[curr_RNAP_index]
+				curr_RNAP_index += 1
+				left_barrier_type = 'RNAP'
+				right_barrier_type = 'clamp'
+			else:
+				dx_dt_front = 0.0
+				dx_dt_back = 0.0
+				dtheta_dt_front = 0.0
+				dtheta_dt_back = 0.0
+				left_barrier_type = sorted_ids[i]
+				right_barrier_type = 'clamp'
 			is_rightmost_segment = True
 			is_leftmost_segment = False
-		elif i == RNAP_count: # Leftmost segment
-			dx_dt_front = dx_dt[i - 1]
-			dx_dt_back = 0.0
-			dtheta_dt_front = dtheta_dt[i - 1]
-			dtheta_dt_back = 0.0
+		elif i == len(segments_lengths) - 1: # Leftmost segment
+			if 'RNAP' in sorted_ids[i - 1]:
+				dx_dt_front = dx_dt[curr_RNAP_index - 1]
+				dx_dt_back = 0.0
+				dtheta_dt_front = dtheta_dt[curr_RNAP_index - 1]
+				dtheta_dt_back = 0.0
+				left_barrier_type = 'clamp'
+				right_barrier_type = 'RNAP'
+			else:
+				dx_dt_front = 0.0
+				dx_dt_back = 0.0
+				dtheta_dt_front = 0.0
+				dtheta_dt_back = 0.0
+				left_barrier_type = 'clamp'
+				right_barrier_type = sorted_ids[i - 1]
 			is_rightmost_segment = False
 			is_leftmost_segment = True
 		else:
-			dx_dt_front = dx_dt[i - 1]
-			dx_dt_back = dx_dt[i]
-			dtheta_dt_front = dtheta_dt[i - 1]
-			dtheta_dt_back = dtheta_dt[i]
+			if 'RNAP' in sorted_ids[i - 1]:
+				dx_dt_front = dx_dt[curr_RNAP_index - 1]
+				dtheta_dt_front = dtheta_dt[curr_RNAP_index - 1]
+				left_barrier_type = 'RNAP'
+			else:
+				dx_dt_front = 0.0
+				dtheta_dt_front = 0.0
+				left_barrier_type = sorted_ids[i - 1]
+			if 'RNAP' in sorted_ids[i]:
+				dx_dt_back = dx_dt[curr_RNAP_index]
+				dtheta_dt_back = dtheta_dt[curr_RNAP_index]
+				curr_RNAP_index += 1
+				right_barrier_type = 'RNAP'
+			else:
+				dx_dt_back = 0.0
+				dtheta_dt_back = 0.0
+				right_barrier_type = sorted_ids[i]
 			is_rightmost_segment = False
 			is_leftmost_segment = False
-		dLk_dt.append(get_segment_Lk_dynamics(model, dx_dt_front, dx_dt_back, dtheta_dt_front, dtheta_dt_back, is_rightmost_segment, is_leftmost_segment))
+		dLk_dt.append(get_segment_Lk_dynamics(model, dx_dt_front, dx_dt_back, dtheta_dt_front, dtheta_dt_back, left_barrier_type, right_barrier_type, is_rightmost_segment, is_leftmost_segment))
 	
 	return dLk_dt
 
@@ -258,34 +317,42 @@ def get_binding_proteins_off_rates(model: Model, segments_lengths: list[float], 
 	
 	return binding_proteins_off_rates
 
-def update_Lk_vector_after_RNAP_recruitment(model: Model, TSS_index: int, RNAP_gene_index: list[int], state_vector: list[float], segments_lengths: list[float], segments_sigmas: list[float]) -> None: # Update the model's Lk vector after an RNAP is recruited at the given TSS_index; Lk for the segments on either side of the TSS are calculated such that the supercoiling density in the segments is the same as in the segment spanning the TSS before recruitment
-	TSS_segment_index = get_spot_segment_index(model.genomic_setup.TSSes[TSS_index], segments_lengths)
-	TSS_sigma = segments_sigmas[TSS_segment_index]
+def update_Lk_vector_after_RNAP_or_protein_recruitment(model: Model, recruitment_position: float, RNAP_gene_index: list[int], state_vector: list[float], segments_lengths: list[float], segments_sigmas: list[float]) -> None: # Update the model's Lk vector after an RNAP or a topological barrier protein is recruited at the given position; Lk for the segments on either side of the recruitment position are calculated such that the supercoiling density in the segments is the same as in the segment spanning the recruitment position before recruitment
+	segment_index = get_spot_segment_index(recruitment_position, segments_lengths)
+	segment_sigma = segments_sigmas[segment_index]
+
+	x_vector = list(state_vector[0:len(RNAP_gene_index)])
+	topological_barrier_proteins_positions = []
+	for i in range(len(model.binding_proteins)):
+		if model.binding_proteins[i].is_topological_barrier:
+			topological_barrier_proteins_positions = topological_barrier_proteins_positions + model.binding_proteins_positions[i]
+	x_vector = x_vector + topological_barrier_proteins_positions
+	x_vector = sorted(x_vector, reverse = True)
 
 	left_segment_boundary = model.genomic_setup.clamp_left
 	right_segment_boundary = model.genomic_setup.clamp_right
 
 	if len(segments_lengths) > 1:
-		if TSS_segment_index == 0:
-			left_segment_boundary = state_vector[0]
-		elif TSS_segment_index == len(segments_lengths) - 1:
-			right_segment_boundary = state_vector[len(RNAP_gene_index) - 1]
+		if segment_index == 0:
+			left_segment_boundary = x_vector[0]
+		elif segment_index == len(segments_lengths) - 1:
+			right_segment_boundary = x_vector[-1]
 		else:
-			left_segment_boundary = state_vector[TSS_segment_index]
-			right_segment_boundary = state_vector[TSS_segment_index - 1]
+			left_segment_boundary = x_vector[segment_index]
+			right_segment_boundary = x_vector[segment_index - 1]
 	
-	left_segment_length = model.genomic_setup.TSSes[TSS_index] - left_segment_boundary
-	right_segment_length = right_segment_boundary - model.genomic_setup.TSSes[TSS_index]
-	assert left_segment_length >= 0.0 and right_segment_length >= 0.0, 'Error in calculating segment lengths to the left and right of the TSS during RNAP recruitment.'
+	left_segment_length = recruitment_position - left_segment_boundary
+	right_segment_length = right_segment_boundary - recruitment_position
+	assert left_segment_length >= 0.0 and right_segment_length >= 0.0, 'Error in calculating segment lengths to the left and right of the RNAP / protein recruitment position.'
 
 	left_Lk0 = left_segment_length / model.model_setup.h_dna
 	right_Lk0 = right_segment_length / model.model_setup.h_dna
 
 	# Based on sigma = (Lk - Lk0) / Lk0 => Lk = Lk0 * (1 + sigma)
-	left_Lk = left_Lk0*(1.0 + TSS_sigma)
-	right_Lk = right_Lk0*(1.0 + TSS_sigma)
+	left_Lk = left_Lk0*(1.0 + segment_sigma)
+	right_Lk = right_Lk0*(1.0 + segment_sigma)
 
-	model.Lk = model.Lk[:TSS_segment_index] + [right_Lk, left_Lk] + model.Lk[TSS_segment_index + 1:]
+	model.Lk = model.Lk[:segment_index] + [right_Lk, left_Lk] + model.Lk[segment_index + 1:]
 
 def update_state_vector_to_remove_dead_RNAPs(model: Model, RNAP_gene_index: list[int], t: float, state_vector: list[float], simulation_setup_and_state: SimulationSetupAndState) -> None: # Update the state_vector and RNAP_gene_index to remove RNAPs that have finished transcription; also update the simulation_setup_and_state with transcription completion data
 	RNAP_count = len(RNAP_gene_index)
@@ -309,30 +376,75 @@ def update_state_vector_to_remove_dead_RNAPs(model: Model, RNAP_gene_index: list
 	new_theta_vector = [theta_vector[i] for i in range(RNAP_count) if RNAPs_alive_status[i] == 1]
 
 	# When an RNAP finishes transcription, the two segments on either side of it merge into one segment; thus, we need to update the Lk_vector accordingly. Lk of the merged segment is the sum of the Lk of the two segments.
+	sorted_positions, sorted_ids = get_ordering_of_RNAPs_and_proteins(model, RNAP_gene_index, state_vector, topological_barrier_proteins_only = True)
 	new_Lk_vector = []
-	RNAP_index = 0
-	while RNAP_index < RNAP_count:
-		Lk_front_segment = Lk_vector[RNAP_index]
-		Lk_back_segment = Lk_vector[RNAP_index + 1]
-		if RNAPs_alive_status[RNAP_index] == 1:
+	curr_barrier_index = 0
+	curr_RNAP_index = 0
+	while curr_barrier_index < len(sorted_ids):
+		Lk_front_segment = Lk_vector[curr_barrier_index]
+		Lk_back_segment = Lk_vector[curr_barrier_index + 1]
+		if 'RNAP' not in sorted_ids[curr_barrier_index]: # Current barrier is a topological barrier protein; just add the Lk of the front segment and move to the next barrier
 			new_Lk_vector.append(Lk_front_segment)
-			RNAP_index += 1
-		else:
-			index_of_next_alive_RNAP = RNAP_index
+			curr_barrier_index += 1
+			continue
+		if RNAPs_alive_status[curr_RNAP_index] == 1: # Current barrier is an alive RNAP; just add the Lk of the front segment and move to the next barrier and RNAP
+			new_Lk_vector.append(Lk_front_segment)
+			curr_barrier_index += 1
+			curr_RNAP_index += 1
+		else: # Current barrier is a dead RNAP; need to merge segments until the next alive RNAP or topological barrier protein and add the total Lk of the merged segment; then move to the next barrier and the next alive RNAP
+			index_of_next_alive_RNAP_or_barrier = curr_barrier_index
+			index_of_next_alive_RNAP = curr_RNAP_index
+			next_alive_is_RNAP = False
 			total_Lk_merged_segment = 0.0
-			while index_of_next_alive_RNAP < RNAP_count and RNAPs_alive_status[index_of_next_alive_RNAP] == 0:
-				Lk_front_segment = Lk_vector[index_of_next_alive_RNAP]
-				Lk_back_segment = Lk_vector[index_of_next_alive_RNAP + 1]
+			while index_of_next_alive_RNAP_or_barrier < len(sorted_ids):
+				if 'RNAP' not in sorted_ids[index_of_next_alive_RNAP_or_barrier]: # Next barrier is a topological barrier protein; stop merging segments
+					next_alive_is_RNAP = False
+					break
+				if RNAPs_alive_status[index_of_next_alive_RNAP] == 1: # Next alive RNAP found; stop merging segments
+					next_alive_is_RNAP = True
+					break
+				Lk_front_segment = Lk_vector[index_of_next_alive_RNAP_or_barrier]
+				Lk_back_segment = Lk_vector[index_of_next_alive_RNAP_or_barrier + 1]
 				total_Lk_merged_segment += Lk_front_segment
-				index_of_next_alive_RNAP += 1
-			total_Lk_merged_segment += Lk_vector[index_of_next_alive_RNAP] # Add the Lk of the segment after the last dead RNAP to the total Lk of the merged segment
+				if 'RNAP' in sorted_ids[index_of_next_alive_RNAP_or_barrier]:
+					index_of_next_alive_RNAP += 1
+				index_of_next_alive_RNAP_or_barrier += 1
+			total_Lk_merged_segment += Lk_vector[index_of_next_alive_RNAP_or_barrier] # Add the Lk of the segment after the last merged segment to the total Lk of the merged segment
 			new_Lk_vector.append(total_Lk_merged_segment)
-			RNAP_index = index_of_next_alive_RNAP + 1
-	if RNAPs_alive_status[-1] == 1:
+			curr_barrier_index = index_of_next_alive_RNAP_or_barrier + 1
+			if next_alive_is_RNAP:
+				curr_RNAP_index = index_of_next_alive_RNAP + 1
+			else:
+				curr_RNAP_index = index_of_next_alive_RNAP
+	if 'RNAP' in sorted_ids[-1] and RNAPs_alive_status[-1] == 1:
+		new_Lk_vector.append(Lk_vector[-1])
+	if 'RNAP' not in sorted_ids[-1]:
 		new_Lk_vector.append(Lk_vector[-1])
 	
 	state_vector[:] = new_x_vector + new_theta_vector + new_Lk_vector + [state_vector[-1]]
 	RNAP_gene_index[:] = new_RNAP_gene_index
+
+def update_Lk_vector_after_protein_unbinding(model: Model, unbinding_position: float, RNAP_gene_index: list[int], state_vector: list[float], segments_lengths: list[float], segments_sigmas: list[float]) -> None:
+	x_vector = list(state_vector[0:len(RNAP_gene_index)])
+	topological_barrier_proteins_positions = []
+	for i in range(len(model.binding_proteins)):
+		if model.binding_proteins[i].is_topological_barrier:
+			topological_barrier_proteins_positions = topological_barrier_proteins_positions + model.binding_proteins_positions[i]
+	x_vector = x_vector + topological_barrier_proteins_positions
+	x_vector = sorted(x_vector, reverse = True)
+	assert len(x_vector) + 1 == len(segments_lengths), 'Error: number of segments should be one more than the number of boundaries (RNAPs and topological barrier proteins) on the DNA.'
+
+	protein_index_in_x_vector = -1
+	for i in range(len(x_vector)):
+		if abs(x_vector[i] - unbinding_position) < 1e-6: # Found the position of the unbinding protein in the x_vector; use this to determine the segment index for updating Lk
+			protein_index_in_x_vector = i
+			break
+	assert protein_index_in_x_vector != -1, 'Error: unbinding position not found in x_vector when updating Lk vector after protein unbinding.'
+
+	right_segment_index = protein_index_in_x_vector
+	left_segment_index = protein_index_in_x_vector + 1
+
+	model.Lk = model.Lk[:right_segment_index] + [model.Lk[right_segment_index] + model.Lk[left_segment_index]] + model.Lk[left_segment_index + 1:]
 
 def get_events_rates(model: Model, RNAP_gene_index: list[int], state_vector: list[float]) -> tuple[list[float], list[int]]: # Get the rates of all possible events and the indices that separate different event types in the rates_vector
 	segments_lengths, segments_sigmas, segments_torques, segments_dna_states, segments_writhe_fractions, segments_plectoneme_thresholds = calculate_segments_attributes(model, RNAP_gene_index, state_vector)
@@ -370,7 +482,7 @@ def model_dynamics(t: float, state_vector: list[float], RNAP_gene_index: list[in
 
 	dx_dt = get_RNAP_velocities(model, state_vector, RNAP_gene_index, segments_lengths, segments_torques)
 	dtheta_dt = get_RNAP_angular_velocities(model, RNAP_gene_index, state_vector, segments_lengths, segments_torques, dx_dt)
-	dLk_dt = get_segments_Lk_dynamics(model, dx_dt, dtheta_dt, segments_lengths, segments_sigmas, segments_torques, segments_writhe_fractions)
+	dLk_dt = get_segments_Lk_dynamics(model, RNAP_gene_index, state_vector, dx_dt, dtheta_dt, segments_lengths, segments_sigmas, segments_torques, segments_writhe_fractions)
 
 	return dx_dt + dtheta_dt + dLk_dt + [sum(rates_vector)]
 
@@ -404,10 +516,10 @@ def integrate(model: Model, simulation_setup_and_state: SimulationSetupAndState,
 		if t_event > 0.0: # Event has occurred within this integration interval
 			state_vector[:] = sol.y[:, t_event_index]
 			update_state_vector_to_remove_dead_RNAPs(model, RNAP_gene_index, t + dt_current, state_vector, simulation_setup_and_state)
-			assert len(state_vector) == len(RNAP_gene_index) + len(RNAP_gene_index) + len(RNAP_gene_index) + 1 + 1, 'State vector length mismatch after integration and removing dead RNAPs (when event occurred during integration).'
+			# assert len(state_vector) == len(RNAP_gene_index) + len(RNAP_gene_index) + len(RNAP_gene_index) + 1 + 1, 'State vector length mismatch after integration and removing dead RNAPs (when event occurred during integration).'
 			return (dt_current, a0)
 		# No event has occurred; update state_vector and continue integration
 		state_vector[:] = sol.y[:, -1]
 		update_state_vector_to_remove_dead_RNAPs(model, RNAP_gene_index, t + dt, state_vector, simulation_setup_and_state)
-		assert len(state_vector) == len(RNAP_gene_index) + len(RNAP_gene_index) + len(RNAP_gene_index) + 1 + 1, 'State vector length mismatch after integration and removing dead RNAPs (when no event occurred during integration).'
+		# assert len(state_vector) == len(RNAP_gene_index) + len(RNAP_gene_index) + len(RNAP_gene_index) + 1 + 1, 'State vector length mismatch after integration and removing dead RNAPs (when no event occurred during integration).'
 		t += dt
