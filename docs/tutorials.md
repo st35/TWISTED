@@ -1,15 +1,8 @@
 # Tutorials
 
-This page provides step-by-step tutorials for running simulations with TWISTED.
-Each example builds on the previous one, progressing from a minimal single-gene
-simulation to more advanced multi-gene setups with output logging and different
-relaxation modes.
+Sixteen worked examples, ordered roughly by complexity. Each section is self-contained and can be copy-pasted into a Python script. Earlier examples introduce idioms (config files, callbacks) that later ones reuse.
 
----
-
-## Prerequisites
-
-Before starting, make sure the TWISTED `code/` directory is on your Python path:
+All examples assume the `code/` directory is importable:
 
 ```python
 import sys
@@ -20,646 +13,434 @@ from model_setup import *
 from simulate_dynamics import *
 ```
 
-All tutorials also assume you have **NumPy** and **SciPy** installed (see
-[Getting Started](getting-started.md)).
+For reproducibility, seed the RNG before each run:
+
+```python
+import random
+random.seed(42)
+```
 
 ---
 
-## Example 1 — Single Gene, Minimal Setup
+## Table of contents
 
-The simplest possible simulation: one constitutive gene with global supercoiling
-relaxation, run until a fixed number of RNAPs finish transcription.
+1. [Single gene, minimal setup](#1-single-gene-minimal-setup)
+2. [Event-based termination](#2-event-based-termination)
+3. [Loading genes from a config file](#3-loading-genes-from-a-config-file)
+4. [Multi-gene tandem](#4-multi-gene-tandem)
+5. [Convergent gene pair](#5-convergent-gene-pair)
+6. [Divergent gene pair](#6-divergent-gene-pair)
+7. [Comparing relaxation modes](#7-comparing-relaxation-modes)
+8. [Topoisomerase-approximated mode in depth](#8-topoisomerase-approximated-mode-in-depth)
+9. [mRNA dynamics](#9-mrna-dynamics)
+10. [Boundary conditions: clamped vs free](#10-boundary-conditions-clamped-vs-free)
+11. [Callbacks and logging](#11-callbacks-and-logging)
+12. [Generic DNA-binding proteins](#12-generic-dna-binding-proteins)
+13. [Displaceable proteins at the TSS](#13-displaceable-proteins-at-the-tss)
+14. [Topological-barrier proteins](#14-topological-barrier-proteins)
+15. [Eukaryotic chromatin with nucleosomes](#15-eukaryotic-chromatin-with-nucleosomes)
+16. [Reproducibility and integrator choice](#16-reproducibility-and-integrator-choice)
 
-### 1.1 Create a gene configuration file
+---
 
-TWISTED reads gene geometry from a **tab-delimited config file** where each line
-specifies one gene with five columns:
+## 1. Single gene, minimal setup
 
-| Column | Description | Units |
-|--------|-------------|-------|
-| 1 | Gene name | — |
-| 2 | TSS position | bp |
-| 3 | Gene length | bp |
-| 4 | Direction (`+1` or `-1`) | — |
-| 5 | RNAP on-rate | 1/s |
-
-Create a file called `single_gene.config`:
-
-```text
-geneA	10000	5300	1	1.0
-```
-
-This places a 5300 bp gene on the positive strand with its TSS at 10 000 bp.
-The RNAP on-rate is 1.0 s⁻¹ (this can be scaled via the `explicit_RNAP_on_rates` argument to `construct_genomic_setup`).
-
-### 1.2 Build the genomic setup
+A single 10 kb gene transcribed for 300 simulated seconds with the simplest relaxation model.
 
 ```python
-chromatin_type = 'prokaryotic'
-promoter_mode = 'constitutive'
+import random
+random.seed(0)
 
-genomic_setup = construct_genomic_setup(
-    'single_gene.config',
-    chromatin_type,
-    promoter_mode,
+genomic_setup = GenomicSetup(
+    chromatin_type='prokaryotic',
+    gene_names=['geneA'],
+    TSSes=[340.0],
+    gene_lengths=[3400.0],
+    gene_directions=[1],
+    RNAP_on_rates=[0.02],
+    promoter_mode='constitutive',
+    buffer_length=3400.0,
 )
-genomic_setup.print_genomic_setup()
-```
 
-`construct_genomic_setup` reads the config file, converts positions from bp to
-nm internally (1 bp = 0.34 nm), and returns a `GenomicSetup` object. Calling
-`print_genomic_setup()` prints a summary table of the loaded genes.
-
-### 1.3 Configure model parameters
-
-```python
 model_setup = ModelSetup(
     supercoiling_relaxation_dynamics_mode='global_overall',
-    global_supercoiling_relaxation_rate=0.008,   # 1/s
+    global_supercoiling_relaxation_rate=0.1,
 )
-```
 
-`'global_overall'` is the simplest relaxation mode: supercoiling density relaxes
-uniformly across the entire DNA at the given rate. The remaining physical
-parameters (`w0`, `chi`, `eta`, `v0`, `tau_c`, etc.) use their defaults,
-which are appropriate for a standard prokaryotic system.
-
-### 1.4 Create the model and simulation state
-
-```python
 model = Model(genomic_setup, model_setup)
-
-# Event-based termination: stop after 50 RNAPs finish transcription on geneA
-simulation_setup_and_state = SimulationSetupAndState(
+sim = SimulationSetupAndState(
     genomic_setup,
-    simulation_end_mode=1,        # 1 = event-based
-    simulation_end_criterion=[50], # 50 completed transcriptions for geneA
+    simulation_end_mode=0,
+    simulation_end_criterion=300.0,
 )
+simulate_dynamics(model, sim)
+
+print('Completed transcripts:', sim.RNAPs_finished_transcription)
 ```
 
-### 1.5 Run the simulation
-
-```python
-simulate_dynamics(model, simulation_setup_and_state)
-```
-
-After the simulation completes, you can inspect the results:
-
-```python
-# Transcription rates (bp/s) for each RNAP that completed transcription
-transcription_rates = simulation_setup_and_state.calculate_RNAP_transcription_rates(model)
-
-avg_rate = (
-    sum(transcription_rates[0]) / len(transcription_rates[0])
-    if transcription_rates[0] else 'N/A'
-)
-print(f'Average transcription rate for geneA: {avg_rate} bp/s')
-print(f'Total RNAPs finished: {simulation_setup_and_state.RNAPs_finished_transcription[0]}')
-```
+`'global_overall'` resets *every* DNA segment's `Lk` to its relaxed value `Lk₀` whenever a single Poisson event fires (rate `global_supercoiling_relaxation_rate`). It is the simplest mechanism for preventing supercoiling from accumulating without bound.
 
 ---
 
-## Example 2 — Convergent Gene Pair with Supercoiling Logging
+## 2. Event-based termination
 
-Two convergent genes on opposite strands, with callback functions that log
-supercoiling density to files at each integration step.
-
-### 2.1 Config file
-
-Create `convergent_pair.config`:
-
-```text
-gene_R	25300	5300	-1	1.0
-gene_F	10000	5300	1	1.0
-```
-
-`gene_F` is on the positive strand (direction = `+1`), `gene_R` is on the
-reverse strand (direction = `-1`). Their 3′ ends face each other, making this a
-**convergent** pair.
-
-!!! note
-    The first gene listed in the config file determines the right boundary of
-    the DNA (`clamp_right`). List the gene that defines the rightmost extent
-    first, or increase `buffer_length` to cover all genes.
-
-### 2.2 Set up the model
+Stop the simulation when each gene has produced a target number of completed transcripts:
 
 ```python
-import random
-random.seed(42)  # For reproducibility
+sim = SimulationSetupAndState(
+    genomic_setup,
+    simulation_end_mode=1,
+    simulation_end_criterion=[50],   # one entry per gene
+)
+```
 
-from typing import TextIO
+In this mode `sim.curr_simulation_time` records the time at which the last gene crosses the threshold. To additionally limit the *total* number of recruitment attempts, supply `max_RNAPs_to_recruit`:
 
-chromatin_type = 'prokaryotic'
-promoter_mode = 'constitutive'
+```python
+sim = SimulationSetupAndState(
+    genomic_setup,
+    simulation_end_mode=1,
+    simulation_end_criterion=[50],
+    max_RNAPs_to_recruit=[50],       # never recruit more than 50 on gene 0
+)
+```
 
+The constructor enforces `max_RNAPs_to_recruit[i] >= simulation_end_criterion[i]` so that the run can in principle complete.
+
+---
+
+## 3. Loading genes from a config file
+
+Specifying `TSSes`, `gene_lengths`, and so on by hand becomes cumbersome for more than a few genes. The helper `construct_genomic_setup` reads a tab-delimited file:
+
+```text
+# columns:  name   TSS_bp   length_bp   direction   RNAP_on_rate(1/s)
+geneA       10000  5300     1           1.0
+```
+
+Note that **positions and lengths in the file are in bp** — the loader multiplies by `0.34` to convert to nm.
+
+```python
 genomic_setup = construct_genomic_setup(
-    'convergent_pair.config',
-    chromatin_type,
-    promoter_mode,
-    explicit_RNAP_on_rates=[0.083, 0.083],  # ~5 RNAPs/min each
+    'single_gene.config',
+    chromatin_type='prokaryotic',
+    promoter_mode='constitutive',
 )
 genomic_setup.print_genomic_setup()
-
-model_setup = ModelSetup(
-    supercoiling_relaxation_dynamics_mode='topoisomerase_approximated',
-    TOP1_effective_relaxation_rate=0.004,  # 1/s
-    TOP2_effective_relaxation_rate=0.004,  # 1/s
-)
-
-model = Model(genomic_setup, model_setup)
-
-# Event-based: stop after 20 RNAPs finish on each gene
-simulation_setup_and_state = SimulationSetupAndState(
-    genomic_setup,
-    simulation_end_mode=1,
-    simulation_end_criterion=[20, 20],
-)
 ```
 
-### 2.3 Define logging callbacks
-
-TWISTED provides three callback hooks in `simulate_dynamics`:
-
-| Callback | Signature | Called when |
-|----------|-----------|------------|
-| `print_at_each_integration_step` | `(model, simulation_setup_and_state, t, state_vector)` | Start of each integration interval (approximately every `RNAP_alive_status_check_interval` seconds) |
-| `print_at_each_simulation_step` | `(model, simulation_setup_and_state)` | Every Gillespie step (before event selection) |
-| `print_at_end_of_simulation` | `(model, simulation_setup_and_state)` | Simulation ends |
-
-Here is a callback that logs RNAP positions and supercoiling densities:
-
-!!! note
-    The `state_vector` passed to the callback reflects the current ODE solver
-    state. We extract `RNAP_gene_index` from the model to identify which gene
-    each RNAP belongs to, but use the passed `state_vector` for positions and
-    segment calculations.
+The optional `explicit_RNAP_on_rates` keyword multiplies the per-gene rate read from the file:
 
 ```python
-def log_integration_step(
-    x_file: TextIO,
-    sigma_file: TextIO,
-    model: Model,
-    simulation_setup_and_state: SimulationSetupAndState,
-    t: float,
-    state_vector: list[float],
-) -> None:
-    RNAP_gene_index, _ = get_state_vectors_from_dicts(model)
-    RNAP_count = len(RNAP_gene_index)
-    segments_lengths, segments_sigmas, segments_torques, _, _, _ = (
-        calculate_segments_attributes(model, RNAP_gene_index, state_vector)
-    )
-
-    # Write RNAP positions
-    x_file.write(str(t))
-    for i in range(RNAP_count):
-        x_file.write('\t' + str(state_vector[i]))
-    x_file.write('\n')
-
-    # Write supercoiling densities per segment
-    sigma_file.write(str(t))
-    for sigma in segments_sigmas:
-        sigma_file.write('\t' + str(sigma))
-    sigma_file.write('\n')
-```
-
-### 2.4 Run with logging
-
-```python
-with (
-    open('rnap_positions.log', 'w') as x_file,
-    open('sigma_values.log', 'w') as sigma_file,
-):
-    simulate_dynamics(
-        model,
-        simulation_setup_and_state,
-        print_at_each_integration_step=lambda model, ss, t, sv: (
-            log_integration_step(x_file, sigma_file, model, ss, t, sv)
-        ),
-    )
-```
-
-After the simulation, `rnap_positions.log` contains tab-separated RNAP
-positions at each time point and `sigma_values.log` contains supercoiling density
-per segment. These can be loaded for plotting:
-
-```python
-import numpy as np
-
-sigma_data = np.loadtxt('sigma_values.log')
-time = sigma_data[:, 0]
-sigmas = sigma_data[:, 1:]
-```
-
----
-
-## Example 3 — Three Genes with mRNA Degradation
-
-A setup with three genes, mRNA degradation dynamics, and the
-`topoisomerase_approximated` relaxation mode.
-
-### 3.1 Config file
-
-Create `three_genes.config`:
-
-```text
-geneC	35300	5300	-1	1.0
-geneB	20000	5300	1	1.0
-geneA	10000	5300	1	1.0
-```
-
-### 3.2 Set up and run
-
-```python
-import random
-random.seed(2)
-
-chromatin_type = 'prokaryotic'
-promoter_mode = 'constitutive'
-
 genomic_setup = construct_genomic_setup(
-    'three_genes.config',
-    chromatin_type,
-    promoter_mode,
-    explicit_RNAP_on_rates=[0.083, 0.083, 0.083],
-)
-
-model_setup = ModelSetup(
-    supercoiling_relaxation_dynamics_mode='topoisomerase_approximated',
-    TOP1_effective_relaxation_rate=0.008,
-    TOP2_effective_relaxation_rate=0.008,
-    mRNA_dynamics_mode=1,             # Enable mRNA degradation
-    mRNA_degradation_rate=0.05,       # 1/s
-)
-
-model = Model(genomic_setup, model_setup)
-
-# Event-based: stop after 50 transcriptions completed per gene
-simulation_setup_and_state = SimulationSetupAndState(
-    genomic_setup,
-    simulation_end_mode=1,
-    simulation_end_criterion=[50, 50, 50],
+    'single_gene.config',
+    chromatin_type='prokaryotic',
+    promoter_mode='constitutive',
+    explicit_RNAP_on_rates=[0.05],   # final rate = file_rate × 0.05
 )
 ```
 
-To track mRNA counts during the simulation, add a Gillespie-step callback:
-
-```python
-def log_gillespie_step(model, simulation_setup_and_state):
-    t = simulation_setup_and_state.curr_simulation_time
-    counts = model.mRNA_counts
-    print(f't={t:.2f}s  mRNA counts: {counts}')
-
-simulate_dynamics(
-    model,
-    simulation_setup_and_state,
-    print_at_each_simulation_step=log_gillespie_step,
-)
-```
-
-After completion, inspect per-gene results:
-
-```python
-transcription_rates = simulation_setup_and_state.calculate_RNAP_transcription_rates(model)
-for i, name in enumerate(model.genomic_setup.gene_names):
-    rates = transcription_rates[i]
-    avg = sum(rates) / len(rates) if rates else 0
-    print(f'{name}: {len(rates)} RNAPs completed, avg rate = {avg:.1f} bp/s')
-print(f'Final mRNA counts: {model.mRNA_counts}')
-```
+This is useful for parameter sweeps in which the relative ranking between genes is fixed in the file but the absolute scale is varied.
 
 ---
 
-## Example 4 — Time-Based Termination with Free Boundary Conditions
+## 4. Multi-gene tandem
 
-Simulate for a fixed duration (180 seconds) with free (unclamped) DNA ends
-instead of the default clamped boundaries.
-
-### 4.1 Set up
+Two co-directional genes on the same DNA. Inter-RNAP steric exclusion is enforced automatically by a soft tanh ramp on each RNAP's velocity (see [Theory → RNAP velocity](theory/dna-mechanics.md#4-rnap-velocity)).
 
 ```python
 import random
 random.seed(1)
 
-genomic_setup = construct_genomic_setup(
-    'single_gene.config',   # Reuse the config from Example 1
-    'prokaryotic',
-    'constitutive',
+genomic_setup = GenomicSetup(
+    chromatin_type='prokaryotic',
+    gene_names=['geneA', 'geneB'],
+    TSSes=[340.0, 4420.0],          # B starts ~12 kb after A
+    gene_lengths=[3400.0, 3400.0],
+    gene_directions=[1, 1],
+    RNAP_on_rates=[0.02, 0.02],
+    promoter_mode='constitutive',
+    buffer_length=4420.0,           # extends past the rightmost gene end
 )
 
 model_setup = ModelSetup(
-    supercoiling_relaxation_dynamics_mode='topoisomerase_approximated',
-    TOP1_effective_relaxation_rate=0.008,
-    TOP2_effective_relaxation_rate=0.008,
-    clamps_status=('free', 'free'),   # Both DNA ends are free
+    supercoiling_relaxation_dynamics_mode='global_overall',
+    global_supercoiling_relaxation_rate=0.1,
 )
 
 model = Model(genomic_setup, model_setup)
-
-# Time-based termination: run for 180 seconds
-simulation_setup_and_state = SimulationSetupAndState(
-    genomic_setup,
-    simulation_end_mode=0,       # 0 = time-based
-    simulation_end_criterion=180.0,  # seconds
-)
+sim = SimulationSetupAndState(genomic_setup, 1, [40, 40])
+simulate_dynamics(model, sim)
 ```
 
-### 4.2 Run and inspect
-
-```python
-simulate_dynamics(model, simulation_setup_and_state)
-
-print(f'Simulation ended at t = {simulation_setup_and_state.curr_simulation_time:.2f} s')
-print(f'RNAPs completed: {simulation_setup_and_state.RNAPs_finished_transcription}')
-```
-
-With free boundary conditions, supercoiling can dissipate at the DNA ends, so
-you will typically observe higher transcription rates compared to the clamped
-case.
+!!! warning "`clamp_right` is computed from gene 0 only"
+    `clamp_right = TSSes[0] + gene_lengths[0] + buffer_length` (or `TSSes[0] + buffer_length` if gene 0 is on the − strand). When simulating multiple genes, either list the rightmost one first or select a `buffer_length` large enough to cover all genes.
 
 ---
 
-## Example 5 — Explicit Topoisomerase Dynamics
+## 5. Convergent gene pair
 
-> **Not yet implemented.** The `topoisomerase_based` mode is planned but not currently available. Use `topoisomerase_approximated` (see [Example 3](getting-started.md) and [Supercoiling Relaxation Modes](user-guide/relaxation-modes.md)) as an alternative.
+Two genes on opposite strands whose 3′ ends face each other. Positive supercoiling accumulates between them as both RNAPs push twist into the shared region.
 
----
-
-## Example 6 — Comparing Relaxation Modes
-
-This example demonstrates how to sweep across different supercoiling relaxation
-modes and compare transcription rates.
+```text
+# convergent_pair.config
+gene_R      25300   5300    -1   1.0
+gene_F      10000   5300     1   1.0
+```
 
 ```python
 import random
+random.seed(42)
 
-results = {}
-
-# --- Mode 1: global_overall ---
-random.seed(7)
-genomic_setup = construct_genomic_setup('single_gene.config', 'prokaryotic', 'constitutive')
-model_setup = ModelSetup(
-    supercoiling_relaxation_dynamics_mode='global_overall',
-    global_supercoiling_relaxation_rate=0.008,
+genomic_setup = construct_genomic_setup(
+    'convergent_pair.config',
+    chromatin_type='prokaryotic',
+    promoter_mode='constitutive',
+    explicit_RNAP_on_rates=[0.083, 0.083],   # ≈ 5 RNAPs/min each
 )
-model = Model(genomic_setup, model_setup)
-ss = SimulationSetupAndState(genomic_setup, 1, [30])
-simulate_dynamics(model, ss)
-rates = ss.calculate_RNAP_transcription_rates(model)[0]
-results['global_overall'] = sum(rates) / len(rates) if rates else 0
 
-# --- Mode 2: global_by_type ---
-random.seed(7)
-genomic_setup = construct_genomic_setup('single_gene.config', 'prokaryotic', 'constitutive')
-model_setup = ModelSetup(
-    supercoiling_relaxation_dynamics_mode='global_by_type',
-    local_supercoiling_relaxation_rates=[0.004, 0.004],  # [positive, negative]
-)
-model = Model(genomic_setup, model_setup)
-ss = SimulationSetupAndState(genomic_setup, 1, [30])
-simulate_dynamics(model, ss)
-rates = ss.calculate_RNAP_transcription_rates(model)[0]
-results['global_by_type'] = sum(rates) / len(rates) if rates else 0
-
-# --- Mode 3: topoisomerase_approximated ---
-random.seed(7)
-genomic_setup = construct_genomic_setup('single_gene.config', 'prokaryotic', 'constitutive')
 model_setup = ModelSetup(
     supercoiling_relaxation_dynamics_mode='topoisomerase_approximated',
     TOP1_effective_relaxation_rate=0.004,
     TOP2_effective_relaxation_rate=0.004,
 )
-model = Model(genomic_setup, model_setup)
-ss = SimulationSetupAndState(genomic_setup, 1, [30])
-simulate_dynamics(model, ss)
-rates = ss.calculate_RNAP_transcription_rates(model)[0]
-results['topoisomerase_approximated'] = sum(rates) / len(rates) if rates else 0
 
-# --- Print comparison ---
-print(f"{'Mode':<30} {'Avg transcription rate (bp/s)':>30}")
-print('-' * 62)
-for mode, avg_rate in results.items():
-    print(f'{mode:<30} {avg_rate:>30.2f}')
+model = Model(genomic_setup, model_setup)
+sim = SimulationSetupAndState(genomic_setup, 1, [20, 20])
+simulate_dynamics(model, sim)
 ```
+
+`gene_R` is listed first so that `clamp_right` is large enough to cover it. The `topoisomerase_approximated` mode is more realistic here than `global_overall` because TOP2 — which can resolve plectonemes — is the only enzyme that can rescue the highly positively supercoiled segment between the two converging RNAPs.
 
 ---
 
-## Example 7 — Full Logging to Files
+## 6. Divergent gene pair
 
-A complete example with logging of RNAP positions, supercoiling densities, and
-mRNA counts to separate files, combined with time-based termination.
+Two genes on opposite strands whose 5′ ends face each other. Negative supercoiling builds up between them.
 
-### 7.1 Set up
+```text
+# divergent_pair.config
+gene_R      15300   5300    -1   1.0
+gene_F      20000   5300     1   1.0
+```
 
 ```python
-import sys
-sys.path.append('/path/to/TWISTED/code')
-
 import random
-random.seed(1)
-
-from typing import TextIO
-
-from utilities import *
-from model_setup import *
-from simulate_dynamics import *
-
-chromatin_type = 'prokaryotic'
-promoter_mode = 'constitutive'
+random.seed(7)
 
 genomic_setup = construct_genomic_setup(
-    'convergent_pair.config',  # Two genes
-    chromatin_type,
-    promoter_mode,
+    'divergent_pair.config',
+    chromatin_type='prokaryotic',
+    promoter_mode='constitutive',
+    explicit_RNAP_on_rates=[0.05, 0.05],
 )
-genomic_setup.print_genomic_setup()
-
-TOP1_rate = 8.33  # High topoisomerase activity (1/s)
-TOP2_rate = 8.33
 
 model_setup = ModelSetup(
     supercoiling_relaxation_dynamics_mode='topoisomerase_approximated',
-    TOP1_effective_relaxation_rate=TOP1_rate,
-    TOP2_effective_relaxation_rate=TOP2_rate,
-    mRNA_dynamics_mode=1,
-    mRNA_degradation_rate=0.05,
+    TOP1_effective_relaxation_rate=0.01,
+    TOP2_effective_relaxation_rate=0.001,    # TOP2 less important when σ is negative
 )
-
 model = Model(genomic_setup, model_setup)
-
-simulation_setup_and_state = SimulationSetupAndState(
-    genomic_setup,
-    simulation_end_mode=0,          # Time-based
-    simulation_end_criterion=180.0, # 180 seconds
-)
+sim = SimulationSetupAndState(genomic_setup, 0, 300.0)
+simulate_dynamics(model, sim)
 ```
 
-### 7.2 Define callbacks
-
-```python
-def log_integration(
-    x_file: TextIO,
-    sigma_file: TextIO,
-    mRNA_file: TextIO,
-    model: Model,
-    simulation_setup_and_state: SimulationSetupAndState,
-    t: float,
-    state_vector: list[float],
-) -> None:
-    RNAP_gene_index, _ = get_state_vectors_from_dicts(model)
-    RNAP_count = len(RNAP_gene_index)
-    segments_lengths, segments_sigmas, _, _, _, _ = calculate_segments_attributes(
-        model, RNAP_gene_index, state_vector
-    )
-
-    # RNAP positions
-    x_file.write(str(t))
-    for i in range(RNAP_count):
-        x_file.write('\t' + str(state_vector[i]))
-    x_file.write('\n')
-
-    # Supercoiling densities
-    sigma_file.write(str(t))
-    for sigma in segments_sigmas:
-        sigma_file.write('\t' + str(sigma))
-    sigma_file.write('\n')
-
-    # mRNA counts
-    mRNA_file.write(str(t) + '\t')
-    mRNA_file.write('\t'.join(str(c) for c in model.mRNA_counts))
-    mRNA_file.write('\n')
-
-
-def log_gillespie(model, simulation_setup_and_state):
-    t = simulation_setup_and_state.curr_simulation_time
-    rnap_counts = [len(model.x_dict[g]) for g in range(len(model.genomic_setup.gene_names))]
-    finished = simulation_setup_and_state.RNAPs_finished_transcription
-    print(f't={t:.2f}s  active RNAPs={rnap_counts}  finished={finished}')
-
-
-def log_end(model, simulation_setup_and_state):
-    rates = simulation_setup_and_state.calculate_RNAP_transcription_rates(model)
-    for i, name in enumerate(model.genomic_setup.gene_names):
-        avg = sum(rates[i]) / len(rates[i]) if rates[i] else 'N/A'
-        print(f'{name}: avg transcription rate = {avg} bp/s')
-```
-
-### 7.3 Run
-
-```python
-with (
-    open('x_values.log', 'w') as x_file,
-    open('sigma_values.log', 'w') as sigma_file,
-    open('mRNA_counts.log', 'w') as mRNA_file,
-):
-    simulate_dynamics(
-        model,
-        simulation_setup_and_state,
-        print_at_each_integration_step=lambda model, ss, t, sv: (
-            log_integration(x_file, sigma_file, mRNA_file, model, ss, t, sv)
-        ),
-        print_at_each_simulation_step=log_gillespie,
-        print_at_end_of_simulation=log_end,
-    )
-```
-
-The output files can then be loaded and plotted with any standard tool
-(matplotlib, MATLAB, etc.).
+Compare the steady-state supercoiling profile from this run with the convergent case in Tutorial 5 by enabling logging (Tutorial 11).
 
 ---
 
-## Example 8 — DNA-Binding Proteins
+## 7. Comparing relaxation modes
 
-TWISTED can model additional DNA-binding proteins that stochastically bind and
-unbind from DNA segments. Each protein type is defined as a `BindingProtein`
-object and passed to the `Model` constructor.
-
-### 8.1 Define a binding protein
+The five implemented modes are summarised in [User Guide → Relaxation modes](user-guide/relaxation-modes.md). The example below sweeps through all of them on the same single-gene setup.
 
 ```python
-from model_setup import BindingProtein
+import random
 
-# A hypothetical protein with 10 copies, binding at 0.001 / (s * nm)
-# and unbinding at 0.01 / s
+results = {}
+configs = [
+    ('global_overall',
+        {'global_supercoiling_relaxation_rate': 0.008}),
+    ('global_per_segment',
+        {'global_supercoiling_relaxation_rate': 0.008}),
+    ('global_by_type',
+        {'local_supercoiling_relaxation_rates': [0.004, 0.004]}),
+    ('per_segment_by_type',
+        {'local_supercoiling_relaxation_rates': [0.004, 0.004]}),
+    ('topoisomerase_approximated',
+        {'TOP1_effective_relaxation_rate': 0.004,
+         'TOP2_effective_relaxation_rate': 0.004}),
+]
+
+for mode, kw in configs:
+    random.seed(0)
+    genomic_setup = construct_genomic_setup('single_gene.config', 'prokaryotic', 'constitutive')
+    model_setup = ModelSetup(supercoiling_relaxation_dynamics_mode=mode, **kw)
+    model = Model(genomic_setup, model_setup)
+    sim = SimulationSetupAndState(genomic_setup, 1, [30])
+    simulate_dynamics(model, sim)
+    rates = sim.calculate_RNAP_transcription_rates(model)[0]
+    results[mode] = sum(rates) / len(rates) if rates else 0.0
+
+print(f'{"Mode":<30}{"Mean transcription rate (bp/s)":>32}')
+for mode, r in results.items():
+    print(f'{mode:<30}{r:>32.2f}')
+```
+
+Down the list, the model becomes progressively more spatially resolved and biologically motivated, and progressively slower per simulation step. Exploratory work should generally start at the top.
+
+---
+
+## 8. Topoisomerase-approximated mode in depth
+
+The `topoisomerase_approximated` mode introduces *two* independent Poisson event types with rates `TOP1_effective_relaxation_rate` and `TOP2_effective_relaxation_rate`:
+
+- **TOP1 event** — pick one segment with probability proportional to its length. If the segment has **no writhe** (`writhe_fraction == 0`), set its `Lk` to `Lk₀`. Otherwise the event has no effect (TOP1 cannot act on plectonemic DNA).
+- **TOP2 event** — pick one segment with probability proportional to its length. If the segment **has writhe** (`writhe_fraction > 0`), set its `Lk` to `Lk₀ × (1 + σ_s)`, where `σ_s` is the plectoneme-formation threshold (TOP2 reduces writhe but does not over-relax).
+
+TOP1 therefore relieves *twist*, TOP2 relieves *plectonemes*, and the writhe state of each segment determines which enzyme can act on it. Reproducing in-vivo behaviour usually requires both rates to be non-zero. A typical exploratory pair is
+
+```python
+ModelSetup(
+    supercoiling_relaxation_dynamics_mode='topoisomerase_approximated',
+    TOP1_effective_relaxation_rate=0.01,
+    TOP2_effective_relaxation_rate=0.005,
+)
+```
+
+The fully explicit `'topoisomerase_based'` mode (binding/unbinding of individual enzyme molecules with steric interactions) is **not yet implemented**; see [User Guide → Not yet implemented](user-guide/not-yet-implemented.md).
+
+---
+
+## 9. mRNA dynamics
+
+By default, mRNA counts are monotonically non-decreasing: every time an RNAP completes transcription, `model.mRNA_counts[gene_index]` is incremented. To add first-order degradation, enable `mRNA_dynamics_mode`:
+
+```python
+model_setup = ModelSetup(
+    supercoiling_relaxation_dynamics_mode='topoisomerase_approximated',
+    TOP1_effective_relaxation_rate=0.008,
+    TOP2_effective_relaxation_rate=0.008,
+    mRNA_dynamics_mode=1,
+    mRNA_degradation_rate=0.05,         # 1/s, per molecule
+)
+```
+
+The Gillespie loop now includes a per-gene degradation event with rate `mRNA_degradation_rate × mRNA_counts[i]`. To monitor the count over time:
+
+```python
+def log_step(model, sim):
+    print(f't={sim.curr_simulation_time:7.2f}  mRNA={model.mRNA_counts}')
+
+simulate_dynamics(model, sim, print_at_each_simulation_step=log_step)
+```
+
+---
+
+## 10. Boundary conditions: clamped vs free
+
+By default, both ends of the DNA are torsionally clamped, so no twist can escape. Setting one or both to `'free'` allows twist to dissipate at the boundary; the corresponding boundary segment then has its `Lk` driven by RNAP *displacement* rather than by angular-velocity transfer (see [Theory](theory/dna-mechanics.md#6-linking-number-dynamics)).
+
+```python
+model_setup = ModelSetup(
+    supercoiling_relaxation_dynamics_mode='topoisomerase_approximated',
+    TOP1_effective_relaxation_rate=0.008,
+    TOP2_effective_relaxation_rate=0.008,
+    clamps_status=('free', 'free'),
+)
+```
+
+Transcription rates are typically higher under free boundary conditions because torsional stress is no longer accumulated against a hard wall.
+
+---
+
+## 11. Callbacks and logging
+
+`simulate_dynamics` accepts three optional callables:
+
+| Argument | Signature | Fired when |
+|----------|----------|------------|
+| `print_at_each_integration_step` | `(model, sim, t, state_vector)` | once at the start of every ODE integration window of length `RNAP_alive_status_check_interval` |
+| `print_at_each_simulation_step` | `(model, sim)` | once at the top of each iteration of the main Gillespie loop |
+| `print_at_end_of_simulation` | `(model, sim)` | once when the loop exits |
+
+The integration callback is appropriate for logging time series of RNAP positions and supercoiling densities, since the `state_vector` it receives is exactly the integrator state (RNAP positions, RNAP angles, segment `Lk`, and the cumulative propensity).
+
+```python
+from typing import TextIO
+
+def log_integration(x_file: TextIO, sigma_file: TextIO,
+                    model, sim, t: float, state_vector: list):
+    RNAP_gene_index, _ = get_state_vectors_from_dicts(model)
+    n = len(RNAP_gene_index)
+    seg_lengths, seg_sigmas, *_ = calculate_segments_attributes(model, RNAP_gene_index, state_vector)
+
+    x_file.write(str(t) + '\t' + '\t'.join(str(state_vector[i]) for i in range(n)) + '\n')
+    sigma_file.write(str(t) + '\t' + '\t'.join(str(s) for s in seg_sigmas) + '\n')
+
+with open('x.log', 'w') as xf, open('sigma.log', 'w') as sf:
+    simulate_dynamics(
+        model, sim,
+        print_at_each_integration_step=lambda m, s, t, sv: log_integration(xf, sf, m, s, t, sv),
+    )
+```
+
+The number of segments changes whenever an RNAP is recruited or finishes. For a fixed-width file suitable for plotting, post-process the log rather than attempting to align columns at write time.
+
+For more detailed per-event introspection (which event fired, propensities, etc.), see [User Guide → Events and propensities](user-guide/events-and-propensities.md).
+
+---
+
+## 12. Generic DNA-binding proteins
+
+Beyond RNAPs and (in eukaryotic mode) nucleosomes, additional generic DNA-binding protein species can be supplied via the `binding_proteins` argument of `Model`.
+
+```python
 my_protein = BindingProtein(
     protein_name='ProteinX',
     total_copy_number=10,
     is_steric_barrier_to_RNAPs=False,
     is_topological_barrier=False,
-    basal_on_rate=0.001,                 # s⁻¹ nm⁻¹
-    basal_off_rate=0.01,                 # s⁻¹
+    basal_on_rate=0.001,    # per (s · nm)
+    basal_off_rate=0.01,    # per s
 )
+
+model = Model(genomic_setup, model_setup, binding_proteins=[my_protein])
 ```
 
-The effective per-segment on-rate is `basal_on_rate × segment_length × n_unbound`,
-so longer segments attract more binding. The off-rate is constant per bound
-molecule.
+The basal on-rate is multiplied by segment length and number of unbound copies, so the **per-segment** binding propensity is
 
-### 8.2 Custom rate functions
+```
+n_unbound × basal_on_rate × segment_length
+```
 
-You can supply optional `on_rate_func` and `off_rate_func` callables that
-modulate the basal rates based on segment length and supercoiling density:
+and the off propensity for each bound molecule is `basal_off_rate`. After binding, the position within the chosen segment is sampled uniformly.
+
+Either rate may be modulated by a function of `(segment_length, segment_sigma)`:
 
 ```python
-# Protein that binds faster on negatively supercoiled DNA
-def enhanced_binding(segment_length, segment_sigma):
+def enhanced_on(segment_length, segment_sigma):
     return 5.0 if segment_sigma < -0.02 else 1.0
 
-my_protein = BindingProtein(
+sc_sensor = BindingProtein(
     protein_name='SC_sensor',
     total_copy_number=20,
     is_steric_barrier_to_RNAPs=False,
     is_topological_barrier=False,
     basal_on_rate=0.0005,
     basal_off_rate=0.02,
-    on_rate_func=enhanced_binding,  # Multiplies basal_on_rate × segment_length
+    on_rate_func=enhanced_on,
 )
 ```
 
-The effective on-rate becomes
-`n_unbound × basal_on_rate × segment_length × on_rate_func(L, σ)`.
+The user function multiplies the basal rate; the wrapping by `× segment_length × n_unbound` (for binding) or by `n_bound` (for unbinding) is added by `BindingProtein` automatically. After the run, bound positions for protein `i` are stored in `model.binding_proteins_positions[i]`.
 
-### 8.3 Run a simulation with binding proteins
+---
 
-```python
-import random
-random.seed(3)
+## 13. Displaceable proteins at the TSS
 
-genomic_setup = construct_genomic_setup(
-    'single_gene.config',
-    'prokaryotic',
-    'constitutive',
-)
+When an RNAP is recruited at a TSS, the simulator first checks whether anything is in the way (another RNAP, a nucleosome, or a generic protein). By default, any obstacle blocks recruitment.
 
-model_setup = ModelSetup(
-    supercoiling_relaxation_dynamics_mode='topoisomerase_approximated',
-    TOP1_effective_relaxation_rate=0.004,
-    TOP2_effective_relaxation_rate=0.004,
-)
-
-# Pass binding proteins to the Model constructor
-model = Model(genomic_setup, model_setup, binding_proteins=[my_protein])
-
-simulation_setup_and_state = SimulationSetupAndState(
-    genomic_setup,
-    simulation_end_mode=1,
-    simulation_end_criterion=[30],
-)
-
-simulate_dynamics(model, simulation_setup_and_state)
-
-# Inspect bound protein positions after the simulation
-print(f'Bound {my_protein.protein_name} count: {len(model.binding_proteins_positions[0])}')
-print(f'Positions: {model.binding_proteins_positions[0]}')
-```
-
-### 8.4 Proteins that can be displaced at the TSS
-
-By default, a bound protein with `is_steric_barrier_to_RNAPs=True` blocks
-RNAP recruitment at any TSS within its exclusion distance. Setting
-`can_be_displaced_at_TSS_by_RNAP=True` changes this behaviour: when an RNAP
-is recruited and the only obstacle is a displaceable protein, the recruitment
-**succeeds** and the blocking protein is removed.
+Setting `can_be_displaced_at_TSS_by_RNAP=True` on a `BindingProtein` modifies this behaviour: if the *only* obstacle is a displaceable protein, recruitment **succeeds** and the blocking protein is removed from `model.binding_proteins_positions`.
 
 ```python
 blocker = BindingProtein(
@@ -669,290 +450,92 @@ blocker = BindingProtein(
     is_topological_barrier=False,
     basal_on_rate=0.001,
     basal_off_rate=0.01,
-    can_be_displaced_at_TSS_by_RNAP=True,   # RNAP can evict this protein at the TSS
+    can_be_displaced_at_TSS_by_RNAP=True,
 )
 ```
 
-This is useful for modelling proteins that transiently occupy promoter regions
-but can be evicted by the transcription machinery.
-
-### 8.5 Multiple binding protein types
-
-You can define several protein types with different kinetics and pass them all
-to `Model`. Each type is tracked independently — positions for protein type `i`
-are stored in `model.binding_proteins_positions[i]`.
-
-```python
-import random
-random.seed(5)
-
-# Fast-binding, fast-unbinding protein (high turnover)
-transient_binder = BindingProtein(
-    protein_name='Transient',
-    total_copy_number=50,
-    is_steric_barrier_to_RNAPs=False,
-    is_topological_barrier=False,
-    basal_on_rate=0.005,    # s⁻¹ nm⁻¹
-    basal_off_rate=0.5,     # s⁻¹ (short residence time)
-)
-
-# Slow-binding, slow-unbinding protein (long-lived occupancy)
-stable_binder = BindingProtein(
-    protein_name='Stable',
-    total_copy_number=5,
-    is_steric_barrier_to_RNAPs=False,
-    is_topological_barrier=False,
-    basal_on_rate=0.0002,   # s⁻¹ nm⁻¹
-    basal_off_rate=0.005,   # s⁻¹ (long residence time)
-)
-
-# Supercoiling-sensitive protein that unbinds faster under positive supercoiling
-def sc_dependent_off(segment_length, segment_sigma):
-    return 10.0 if segment_sigma > 0.02 else 1.0
-
-sc_sensor = BindingProtein(
-    protein_name='SC_sensor',
-    total_copy_number=15,
-    is_steric_barrier_to_RNAPs=False,
-    is_topological_barrier=False,
-    basal_on_rate=0.001,
-    basal_off_rate=0.01,
-    off_rate_func=sc_dependent_off,  # 10× faster unbinding on positively supercoiled DNA
-)
-
-# Set up and run
-genomic_setup = construct_genomic_setup(
-    'single_gene.config',
-    'prokaryotic',
-    'constitutive',
-)
-
-model_setup = ModelSetup(
-    supercoiling_relaxation_dynamics_mode='topoisomerase_approximated',
-    TOP1_effective_relaxation_rate=0.004,
-    TOP2_effective_relaxation_rate=0.004,
-)
-
-model = Model(
-    genomic_setup,
-    model_setup,
-    binding_proteins=[transient_binder, stable_binder, sc_sensor],
-)
-
-simulation_setup_and_state = SimulationSetupAndState(
-    genomic_setup,
-    simulation_end_mode=0,
-    simulation_end_criterion=120.0,  # 120 seconds
-)
-
-simulate_dynamics(model, simulation_setup_and_state)
-
-# Report bound counts for each protein type
-for i, protein in enumerate(model.binding_proteins):
-    n_bound = len(model.binding_proteins_positions[i])
-    print(f'{protein.protein_name}: {n_bound} / {protein.total_copy_number} bound')
-```
+This is appropriate for promoter-proximal repressors that can be evicted by initiating polymerase. The same flag exists for nucleosomes; see Tutorial 15.
 
 ---
 
-## Example 9 — Eukaryotic Simulation with Nucleosomes
+## 14. Topological-barrier proteins
 
-TWISTED supports eukaryotic chromatin simulations where nucleosomes dynamically
-bind and unbind from DNA, modulating the torque–supercoiling relationship through
-a density-dependent buffering mechanism.
+Some DNA-binding proteins are believed to act as **topological barriers**: they not only physically obstruct RNAPs but also pin the underlying DNA so that supercoiling cannot diffuse past them. In TWISTED, setting `is_topological_barrier=True` adds the protein to the list of segment boundaries — every bound molecule splits one DNA segment into two with independent linking numbers.
 
-### 9.1 Config file
+```python
+boundary = BindingProtein(
+    protein_name='Boundary',
+    total_copy_number=4,
+    is_steric_barrier_to_RNAPs=True,    # required: must also be a steric barrier
+    is_topological_barrier=True,
+    basal_on_rate=0.0005,
+    basal_off_rate=0.001,               # long residence time
+)
 
-Create `eukaryotic_gene.config`:
-
-```text
-geneA	10000	5300	1	1.0
+model = Model(genomic_setup, model_setup, binding_proteins=[boundary])
 ```
 
-### 9.2 Set up a eukaryotic genomic setup
+`is_topological_barrier=True` implies `is_steric_barrier_to_RNAPs=True`; the `BindingProtein` constructor raises an error otherwise. When a topological-barrier protein binds, the local supercoiling density is preserved on both new sub-segments. When it unbinds, the two adjacent segments are merged and their linking numbers are added.
 
-To use eukaryotic mode, set `chromatin_type='eukaryotic'` and optionally
-provide nucleosome-related keyword arguments:
+---
+
+## 15. Eukaryotic chromatin with nucleosomes
+
+Switching `chromatin_type` to `'eukaryotic'` does two things:
+
+1. The torque law switches to the chromatin-specific piecewise function (see [Theory → Eukaryotic torque](theory/dna-mechanics.md#3-eukaryotic-torque-law)). The "buffering" plateau in this law widens with nucleosome density `ψ`, modelling the absorption of positive supercoiling by chromatin.
+2. A `BindingProtein` named `'nucleosome'` is **automatically added as `model.binding_proteins[0]`**. Its copy number is computed by tiling the DNA with `per_nucleosome_DNA_length + nucleosome_linker_length` spacing.
 
 ```python
 import random
 random.seed(42)
 
-from utilities import *
-from model_setup import *
-from simulate_dynamics import *
-
 genomic_setup = construct_genomic_setup(
-    'eukaryotic_gene.config',
+    'single_gene.config',
     chromatin_type='eukaryotic',
-    per_nucleosome_DNA_length=147,       # bp (converted to nm internally)
-    nucleosome_linker_length=30,         # bp (converted to nm internally)
+    per_nucleosome_DNA_length=147,            # bp; converted to nm internally
+    nucleosome_linker_length=30,              # bp; converted to nm internally
     nucleosomes_are_steric_barriers_to_RNAPs=True,
 )
-genomic_setup.print_genomic_setup()
-print(f'Total nucleosomes: {genomic_setup.get_total_nucleosome_count()}')
-```
+print('Nucleosomes tiled:', genomic_setup.get_total_nucleosome_count())
 
-The nucleosome count is automatically computed by tiling the domain with
-nucleosomes spaced by `per_nucleosome_DNA_length + nucleosome_linker_length`.
-You can override this with an explicit count:
-
-```python
-# Or specify an explicit nucleosome count
-genomic_setup_explicit = construct_genomic_setup(
-    'eukaryotic_gene.config',
-    chromatin_type='eukaryotic',
-    nucleosome_count=50,  # Override automatic tiling
-)
-```
-
-You can also provide custom rate functions that modulate nucleosome
-binding and unbinding as a function of segment length and supercoiling density:
-
-```python
-# Custom nucleosome rate functions
-def nucleosome_on_rate_modifier(segment_length, segment_sigma):
-    # Suppress binding on highly negatively supercoiled segments
-    return max(0.0, 1.0 + 10.0 * segment_sigma)
-
-def nucleosome_off_rate_modifier(segment_length, segment_sigma):
-    # Enhance unbinding on highly negatively supercoiled segments
-    return max(1.0, 1.0 - 10.0 * segment_sigma)
-
-genomic_setup_custom = construct_genomic_setup(
-    'eukaryotic_gene.config',
-    chromatin_type='eukaryotic',
-    nucleosome_on_rate_func=nucleosome_on_rate_modifier,
-    nucleosome_off_rate_func=nucleosome_off_rate_modifier,
-)
-```
-
-These functions multiply the basal on/off rates (see
-[BindingProtein](api/model-setup.md#bindingprotein) for details).
-
-### 9.3 Configure model parameters
-
-```python
 model_setup = ModelSetup(
     supercoiling_relaxation_dynamics_mode='topoisomerase_approximated',
     TOP1_effective_relaxation_rate=0.004,
     TOP2_effective_relaxation_rate=0.004,
 )
-```
-
-### 9.4 Create the model
-
-When you create a `Model` with a eukaryotic `GenomicSetup`, nucleosomes are
-automatically added as the first entry in `model.binding_proteins`:
-
-```python
 model = Model(genomic_setup, model_setup)
-
-# The nucleosome BindingProtein is at index 0
-nucleosome_protein = model.binding_proteins[0]
-print(f'Nucleosome protein: {nucleosome_protein.protein_name}')
-print(f'Total copies: {nucleosome_protein.total_copy_number}')
-print(f'Is nucleosome: {nucleosome_protein.is_a_nucleosome}')
-print(f'Steric barrier to RNAPs: {nucleosome_protein.is_steric_barrier_to_RNAPs}')
+print('Auto-created nucleosome protein:', model.binding_proteins[0].protein_name)
 ```
 
-!!! note
-    Any additional binding proteins you pass to `Model(... binding_proteins=[...])` will
-    appear at indices 1, 2, … after the auto-created nucleosome entry.
+The auto-tiled copy number can be overridden with `nucleosome_count=...`, the binding kinetics customised with `nucleosome_on_rate_func` / `nucleosome_off_rate_func`, and incoming RNAPs may be allowed to evict promoter-proximal nucleosomes with `nucleosomes_can_be_displaced_at_TSS_by_RNAP=True`. All eukaryotic-specific keyword arguments are listed in [User Guide → Genomic setup](user-guide/genomic-setup.md#eukaryotic-keyword-arguments).
 
-### 9.5 Run the simulation
-
-```python
-simulation_setup_and_state = SimulationSetupAndState(
-    genomic_setup,
-    simulation_end_mode=1,
-    simulation_end_criterion=[20],
-)
-
-simulate_dynamics(model, simulation_setup_and_state)
-
-# Inspect results
-transcription_rates = simulation_setup_and_state.calculate_RNAP_transcription_rates(model)
-avg_rate = (
-    sum(transcription_rates[0]) / len(transcription_rates[0])
-    if transcription_rates[0] else 'N/A'
-)
-print(f'Average transcription rate: {avg_rate} bp/s')
-print(f'Bound nucleosomes at end: {len(model.binding_proteins_positions[0])}')
-```
-
-The eukaryotic torque model features a **buffering regime** where nucleosomes
-absorb positive supercoiling without increasing torque. The width of this
-buffering regime scales with the local nucleosome density $\psi$ (fraction of
-segment length occupied by nucleosomes). As RNAPs displace nucleosomes, $\psi$
-decreases and the buffering capacity shrinks, allowing supercoiling to build up.
-
-### 9.6 Nucleosome displacement at the TSS
-
-By default, a nucleosome near a TSS blocks RNAP recruitment. To allow
-incoming RNAPs to evict blocking nucleosomes at the TSS, pass
-`nucleosomes_can_be_displaced_at_TSS_by_RNAP=True` when creating the
-genomic setup:
-
-```python
-genomic_setup_displace = construct_genomic_setup(
-    'eukaryotic_gene.config',
-    chromatin_type='eukaryotic',
-    nucleosomes_can_be_displaced_at_TSS_by_RNAP=True,
-)
-```
-
-When this flag is set, RNAP recruitment at a TSS blocked by a nucleosome
-will succeed and the blocking nucleosome is removed from the DNA. This
-models the displacement of promoter-proximal nucleosomes during
-transcription initiation in eukaryotic chromatin.
-
-The flag is forwarded to the auto-created nucleosome `BindingProtein`'s
-`can_be_displaced_at_TSS_by_RNAP` attribute (see
-[BindingProtein](api/model-setup.md#bindingprotein)). For custom
-non-nucleosome binding proteins, set `can_be_displaced_at_TSS_by_RNAP=True`
-directly on the `BindingProtein` constructor (see
-[Example 8.4](#84-proteins-that-can-be-displaced-at-the-tss)).
+Any additional `BindingProtein` objects passed to `Model` appear at indices `1, 2, …` after the auto-created nucleosome entry; index by name rather than by hard-coded position.
 
 ---
 
-## Quick Reference
+## 16. Reproducibility and integrator choice
 
-### Config file format
-
-Tab-delimited, one gene per line:
-
-```
-name    TSS_bp    length_bp    direction    RNAP_on_rate
-```
-
-### Relaxation modes
-
-| Mode | Required keyword arguments |
-|------|---------------------------|
-| `global_overall` | `global_supercoiling_relaxation_rate` |
-| `global_per_segment` | `global_supercoiling_relaxation_rate` |
-| `global_by_type` | `local_supercoiling_relaxation_rates` (list of 2 floats) |
-| `per_segment_by_type` | `local_supercoiling_relaxation_rates` (list of 2 floats) |
-| `topoisomerase_approximated` | `TOP1_effective_relaxation_rate`, `TOP2_effective_relaxation_rate` |
-| `topoisomerase_based` | *Not yet implemented* |
-
-### Simulation termination
-
-| `simulation_end_mode` | `simulation_end_criterion` | Description |
-|-----------------------|---------------------------|-------------|
-| `0` | `float` (seconds) | Stop after a fixed time |
-| `1` | `list[int]` (one per gene) | Stop after N RNAPs finish per gene |
-
-### Callback signatures
+TWISTED uses Python's `random` module throughout: for event-time sampling, event selection, segment selection, and binding positions. Seeding it once at the top of a script makes a run fully reproducible (modulo SciPy's deterministic adaptive stepping):
 
 ```python
-# Called at the start of each integration interval (~every RNAP_alive_status_check_interval seconds)
-def on_integration_step(model, simulation_setup_and_state, t, state_vector): ...
-
-# Called at every Gillespie step (before event selection)
-def on_gillespie_step(model, simulation_setup_and_state): ...
-
-# Called once when the simulation ends
-def on_end(model, simulation_setup_and_state): ...
+import random
+random.seed(2026)
 ```
+
+The integrator can be selected via `SimulationSetupAndState`:
+
+```python
+sim = SimulationSetupAndState(
+    genomic_setup,
+    simulation_end_mode=0,
+    simulation_end_criterion=300.0,
+    integration_method='RK23',           # default; recommended
+    integration_time_resolution=0.05,    # finer t_eval for higher-resolution logging
+    RNAP_alive_status_check_interval=0.5,
+)
+```
+
+`'RK23'` is the default. Selecting any other method (`'RK45'`, `'DOP853'`, `'Radau'`, `'BDF'`, `'LSODA'`) emits a `UserWarning` because higher-order solvers can take steps that produce non-physical intermediate states (RNAPs overlapping, segments shorter than allowed by steric constraints) and crash the simulation. RK23 should be retained unless there is a specific reason to switch and the result has been validated.
+
+`integration_time_resolution` controls only the spacing of `t_eval` points within an integration window; reducing it does **not** change the dynamics, only the temporal resolution at which the integration callback (Tutorial 11) observes the state. `RNAP_alive_status_check_interval` does affect the dynamics indirectly: it bounds the duration the integrator runs before re-checking which RNAPs have finished and re-computing event rates. Smaller values are safer but slower.

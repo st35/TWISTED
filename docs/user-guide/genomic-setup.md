@@ -1,6 +1,21 @@
-# Genomic Setup
+# Genomic setup
 
-`GenomicSetup` stores the static geometric and biological properties of the DNA construct being simulated. It is the first object you create when setting up a simulation.
+`GenomicSetup` describes the *static* geometry of the DNA construct: total length, gene count, TSS positions, transcription direction per gene, and (in eukaryotic mode) the nucleosome geometry. It is the first object constructed in a typical workflow.
+
+```python
+from model_setup import GenomicSetup
+
+genomic_setup = GenomicSetup(
+    chromatin_type='prokaryotic',
+    gene_names=['geneA'],
+    TSSes=[340.0],
+    gene_lengths=[3400.0],
+    gene_directions=[1],
+    RNAP_on_rates=[0.02],
+    promoter_mode='constitutive',
+    buffer_length=3400.0,
+)
+```
 
 ---
 
@@ -16,124 +31,109 @@ GenomicSetup(
     RNAP_on_rates: list[float],
     promoter_mode: str,
     buffer_length: float,
-    **kwargs
+    **kwargs,
 )
 ```
 
-### Parameters
+### Required positional/keyword arguments
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `chromatin_type` | `str` | `'prokaryotic'` or `'eukaryotic'` |
-| `gene_names` | `list[str]` | Identifier strings for each gene |
-| `TSSes` | `list[float]` | Transcription start site positions in **nm** |
-| `gene_lengths` | `list[float]` | Length of each gene in **nm** — RNAP exits when it has traveled this distance from the TSS |
-| `gene_directions` | `list[int]` | `+1` for the positive (left→right) strand; `-1` for the negative (right→left) strand |
-| `RNAP_on_rates` | `list[float]` | Basal RNAP recruitment rate for each gene in s⁻¹ |
-| `promoter_mode` | `str` | `'constitutive'` or `'non-constitutive'` |
-| `buffer_length` | `float` | Extra DNA added beyond the last gene end (nm); extends the right clamp position |
+| Name | Type | Meaning |
+|------|------|--------|
+| `chromatin_type` | `'prokaryotic' \| 'eukaryotic'` | Selects the torque law and (for eukaryotic) auto-populates a nucleosome `BindingProtein` |
+| `gene_names` | `list[str]` | Identifier strings, one per gene |
+| `TSSes` | `list[float]` | Transcription start sites in **nm** (not bp) |
+| `gene_lengths` | `list[float]` | Distance an RNAP must travel from the TSS in order to count as completed (nm) |
+| `gene_directions` | `list[int]` | `+1` (transcribed left → right) or `−1` (transcribed right → left); other values raise |
+| `RNAP_on_rates` | `list[float]` | Recruitment rate (s⁻¹) used when the promoter is ON |
+| `promoter_mode` | `'constitutive' \| 'non-constitutive'` | See [Promoter modes](#promoter-modes) below. Only `'constitutive'` is currently supported |
+| `buffer_length` | `float` | Extra DNA past the gene on the right end (nm); contributes to `clamp_right` |
 
-All list parameters must have the same length.
+All five list arguments must have the same length, equal to the number of genes.
 
-### Keyword Arguments
+### Eukaryotic keyword arguments
 
-| Keyword | Required when | Type | Description |
-|---------|--------------|------|-------------|
-| `TF_on_off_rates` | `promoter_mode == 'non-constitutive'` | `list[tuple[float, float]]` | List of `(k_on, k_off)` pairs for each gene's transcription factor |
+These keywords are accepted only when `chromatin_type == 'eukaryotic'`. All inputs in **bp** are converted to nm internally by `× 0.34`.
 
-### Eukaryotic Keyword Arguments
+| Name | Default | Meaning |
+|------|--------|--------|
+| `per_nucleosome_DNA_length` | 147 bp | DNA wrapped per nucleosome |
+| `nucleosome_linker_length` | 30 bp | Linker DNA between adjacent nucleosomes |
+| `nucleosomes_are_steric_barriers_to_RNAPs` | `True` | If `True`, nucleosomes block RNAP elongation through the soft tanh ramp |
+| `nucleosome_count` | auto | Override the auto-tiled count returned by `get_total_nucleosome_count()` |
+| `nucleosome_on_rate_func` | `None` | Optional callable `(L, σ) → float` multiplying the basal nucleosome on-rate |
+| `nucleosome_off_rate_func` | `None` | Optional callable `(L, σ) → float` multiplying the basal nucleosome off-rate |
+| `nucleosomes_can_be_displaced_at_TSS_by_RNAP` | `False` | If `True`, an incoming RNAP can evict a blocking nucleosome at a TSS |
 
-These keywords are used only when `chromatin_type == 'eukaryotic'`:
-
-| Keyword | Type | Default | Description |
-|---------|------|---------|-------------|
-| `per_nucleosome_DNA_length` | `float` | 147 (bp) | DNA wrapped per nucleosome (passed in bp; converted to nm internally) |
-| `nucleosome_linker_length` | `float` | 30 (bp) | Linker DNA between nucleosomes (passed in bp; converted to nm internally) |
-| `nucleosomes_are_steric_barriers_to_RNAPs` | `bool` | `True` | Whether nucleosomes block RNAP passage |
-| `nucleosome_count` | `int` | auto | Explicit nucleosome count; if omitted, computed by tiling the domain |
-| `nucleosome_on_rate_func` | `callable or None` | `None` | Optional function `(segment_length, segment_sigma) → float` that modulates the nucleosome binding rate. Passed as `on_rate_func` to the auto-created nucleosome `BindingProtein` (see [BindingProtein](../api/model-setup.md#bindingprotein)) |
-| `nucleosome_off_rate_func` | `callable or None` | `None` | Optional function `(segment_length, segment_sigma) → float` that modulates the nucleosome unbinding rate. Passed as `off_rate_func` to the auto-created nucleosome `BindingProtein` |
-| `nucleosomes_can_be_displaced_at_TSS_by_RNAP` | `bool` | `False` | Whether nucleosomes blocking a TSS can be displaced (removed) by an incoming RNAP. Forwarded as `can_be_displaced_at_TSS_by_RNAP` to the auto-created nucleosome `BindingProtein` |
+These values are forwarded to the auto-created nucleosome `BindingProtein` (which lives at `model.binding_proteins[0]` after `Model` is constructed).
 
 ---
 
-## Unit Conventions
+## Unit conventions
 
-**All spatial quantities are in nanometres (nm).** The conversion is:
-
-```
-1 bp = 0.34 nm
-```
-
-When reading gene coordinates from experimental data (usually in base pairs), multiply by `0.34` before passing to `GenomicSetup`. The helper function `read_genes_information` (see [utilities](../api/utilities.md)) performs this conversion automatically when reading from a file.
+All spatial quantities passed to `GenomicSetup` are in **nm**. Conversion is `1 bp = 0.34 nm`. To work in bp, multiply explicitly or use the [`construct_genomic_setup`](../api/utilities.md#construct_genomic_setup) helper, which reads a tab-delimited bp-denominated config file and converts on input.
 
 ---
 
-## DNA Boundaries
+## DNA boundaries
 
-The simulated DNA runs from `clamp_left = 0.0 nm` to a `clamp_right` position computed automatically:
+The DNA spans from `clamp_left = 0.0` (always) to `clamp_right`, which is computed at construction from gene 0 only:
 
-- For a positive-strand gene: `clamp_right = TSS + gene_length + buffer_length`
-- For a negative-strand gene: `clamp_right = TSS + buffer_length`
+| Direction of gene 0 | Formula |
+|---------------------|---------|
+| `+1` | `clamp_right = TSSes[0] + gene_lengths[0] + buffer_length` |
+| `−1` | `clamp_right = TSSes[0] + buffer_length` |
 
-The torsional boundary condition at each end is set by `ModelSetup.clamps_status`. A `'clamped'` end fixes the DNA angle (no twist can escape past the boundary). A `'free'` end allows twist to dissipate, so $\dot{Lk}$ for the terminal segment is driven by RNAP displacement rather than angular velocity transfer — see [`get_segment_Lk_dynamics`](../api/biol-methods.md#get_segment_lk_dynamics).
+Other genes are not consulted. **For multi-gene setups, list the rightmost gene first**, or pad `buffer_length` such that `clamp_right` extends past every gene.
+
+The torsional boundary condition at each end is set on `ModelSetup` via `clamps_status` (`'clamped'` vs `'free'`), not on `GenomicSetup`.
 
 ---
 
-## Promoter Modes
+## Promoter modes
 
 ### Constitutive
 
-All promoters start in the `ON` state (`promoter_status = 1`) and remain there. RNAP recruitment proceeds at rate `RNAP_on_rates[i]` whenever the TSS is unoccupied.
+Every promoter is initialised to ON (`promoter_status[i] = 1`) and stays ON for the entire run. RNAP recruitment proceeds at `RNAP_on_rates[i]` whenever the TSS is unoccupied.
 
 ### Non-constitutive
 
 !!! warning "Not yet implemented"
-    The non-constitutive promoter mode is defined in `GenomicSetup` but stochastic promoter toggling is not yet implemented in the simulation loop. Promoters initialised in the `OFF` state will remain `OFF` for the entire simulation, and vice versa. Full support will be added in a future release.
-
-When implemented, promoter state will toggle stochastically between `ON` (1) and `OFF` (0) with rates provided by `TF_on_off_rates`. RNAP will be recruited only when the promoter is `ON`.
-
-```python
-genomic_setup = GenomicSetup(
-    chromatin_type='prokaryotic',
-    gene_names=['geneA'],
-    TSSes=[340.0],
-    gene_lengths=[3400.0],
-    gene_directions=[1],
-    RNAP_on_rates=[0.05],
-    promoter_mode='non-constitutive',
-    buffer_length=3400.0,
-    TF_on_off_rates=[(0.1, 0.05)],   # (k_on, k_off) in s⁻¹
-)
-```
+    Passing `promoter_mode='non-constitutive'` raises `NotImplementedError` from both `GenomicSetup` and the helper `construct_genomic_setup`. See [Not yet implemented](not-yet-implemented.md).
 
 ---
 
-## Multi-gene Example
+## Multi-gene constraints (recap)
 
 ```python
 genomic_setup = GenomicSetup(
     chromatin_type='prokaryotic',
     gene_names=['geneA', 'geneB'],
-    TSSes=[340.0, 4420.0],           # gene B starts 12,000 bp after gene A's TSS
-    gene_lengths=[3400.0, 3400.0],   # both 10,000 bp
+    TSSes=[340.0, 4420.0],
+    gene_lengths=[3400.0, 3400.0],
     gene_directions=[1, 1],
     RNAP_on_rates=[0.02, 0.02],
     promoter_mode='constitutive',
-    buffer_length=4420.0,            # must extend beyond all genes
+    buffer_length=4420.0,         # makes clamp_right cover both genes
 )
 ```
 
-!!! warning "Multi-gene constraints"
-    The right boundary (`clamp_right`) is computed from the first gene listed only. When simulating multiple genes, either list the gene that defines the rightmost extent of the DNA first, or increase `buffer_length` so that `clamp_right` extends beyond all genes.
+| Rule | Reason |
+|------|--------|
+| All list arguments must have the same length | enforced by `assert` |
+| `gene_directions[i]` must be `+1` or `−1` | enforced by `assert` |
+| `clamp_right` derives from gene 0 only | list the rightmost gene first or increase `buffer_length` |
 
 ---
 
-## Utility Method
+## Helper methods
 
-### `print_genomic_setup()`
+### `get_total_nucleosome_count() -> int`
 
-Prints a formatted table of all gene properties to stdout. Useful for verifying setup before long simulations.
+For prokaryotic setups, returns 0. For eukaryotic setups, returns either the explicit `nucleosome_count` if supplied, or the count obtained by tiling the DNA from `clamp_left + linker_length/2` rightward in steps of `per_nucleosome_DNA_length + nucleosome_linker_length` until the next nucleosome would overhang `clamp_right`.
+
+### `print_genomic_setup() -> None`
+
+Prints a formatted summary table to stdout. Useful for sanity-checking prior to long runs.
 
 ```
 Chromatin type: Prokaryotic
@@ -147,22 +147,24 @@ geneA   340.0       3400.0         1            0.02
 
 ---
 
-## Loading from File
+## Loading from a tab-delimited file
 
-Use `utilities.construct_genomic_setup` to build a `GenomicSetup` from a tab-delimited gene file:
+The companion helper [`construct_genomic_setup`](../api/utilities.md#construct_genomic_setup) reads a bp-denominated five-column file and forwards everything else to the `GenomicSetup` constructor:
 
-```
-# gene_file.tsv (columns: name, TSS_bp, length_bp, direction, RNAP_on_rate)
-geneA   1000    10000   1   0.02
+```text
+# columns:  name   TSS_bp   length_bp   direction   RNAP_on_rate(1/s)
+geneA       10000  5300     1           1.0
 ```
 
 ```python
 from utilities import construct_genomic_setup
 
 genomic_setup = construct_genomic_setup(
-    filename='gene_file.tsv',
+    'genes.config',
     chromatin_type='prokaryotic',
+    promoter_mode='constitutive',
+    explicit_RNAP_on_rates=[0.05],   # multiplies file rate, optional
 )
 ```
 
-See [utilities API](../api/utilities.md) for full details.
+Any further keyword arguments (e.g. `per_nucleosome_DNA_length`, `nucleosomes_can_be_displaced_at_TSS_by_RNAP`) are forwarded as-is.

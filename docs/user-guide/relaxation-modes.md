@@ -1,27 +1,29 @@
-# Supercoiling Relaxation Modes
+# Supercoiling relaxation modes
 
-TWISTED supports six supercoiling relaxation modes controlled by `ModelSetup.supercoiling_relaxation_dynamics_mode`. The choice determines both the physical model of relaxation and whether topoisomerase molecules are explicitly simulated.
+`ModelSetup.supercoiling_relaxation_dynamics_mode` selects the mechanism by which supercoiling is relaxed by topoisomerase-like activity. Six values are accepted; **five are implemented** and one is currently a stub.
 
----
+| Mode | Status | Per-event behaviour | Required `**kwargs` |
+|------|--------|---------------------|--------------------|
+| `'global_overall'` | implemented | Reset every segment's `Lk` to `Lk₀` | `global_supercoiling_relaxation_rate` |
+| `'global_per_segment'` | implemented | Reset one randomly chosen segment's `Lk` to `Lk₀` (length-weighted) | `global_supercoiling_relaxation_rate` |
+| `'global_by_type'` | implemented | One event resets all segments with `σ > 0`; another resets all with `σ < 0` | `local_supercoiling_relaxation_rates` (`[rate_pos, rate_neg]`) |
+| `'per_segment_by_type'` | implemented | Pick one segment of the right sign (length-weighted) and reset its `Lk` | `local_supercoiling_relaxation_rates` |
+| `'topoisomerase_approximated'` | implemented | One TOP1 event clears twist on a writhe-free segment; one TOP2 event clears writhe on a plectonemic segment | `TOP1_effective_relaxation_rate`, `TOP2_effective_relaxation_rate` |
+| `'topoisomerase_based'` | **not implemented** | (planned: explicit TOP1/TOP2 binding/unbinding/catalysis with steric interactions) | `NotImplementedError` raised at `ModelSetup` construction |
 
-## Quick Reference
-
-| Mode | Physical interpretation | Requires |
-|------|------------------------|---------|
-| `global_overall` | One event relaxes the **entire** DNA | `global_supercoiling_relaxation_rate` |
-| `global_per_segment` | One event relaxes **one** randomly chosen segment | `global_supercoiling_relaxation_rate` |
-| `global_by_type` | Separate events for +σ and −σ across the whole DNA | `local_supercoiling_relaxation_rates` |
-| `per_segment_by_type` | Separate events per segment, per supercoiling sign | `local_supercoiling_relaxation_rates` |
-| `topoisomerase_approximated` | Effective TOP1/TOP2 rates, segment chosen by length | `TOP1_effective_relaxation_rate`, `TOP2_effective_relaxation_rate` |
-| `topoisomerase_based` | Explicit TOP1/TOP2 binding, unbinding, and catalysis with steric interactions | *Not yet implemented* |
+Across all modes, the rates are interpreted as **Poisson rates per simulation** (not per segment). No segment-length weighting is applied to the rate itself; length weighting only enters in the selection of *which segment* is affected when an event fires.
 
 ---
 
-## Mode Details
+## `'global_overall'`
 
-### `global_overall`
+A single Poisson event at rate `global_supercoiling_relaxation_rate`. When it fires, **every** segment's linking number is set to its relaxed value:
 
-A single Poisson event at rate `global_supercoiling_relaxation_rate` (s⁻¹) resets the linking number of **every** segment to its relaxed value (`Lk = Lk₀`). This is the simplest model and is appropriate when the identity of the relaxing enzyme is not important.
+```
+model.Lk[j] = segment_lengths[j] / h_dna   for all j
+```
+
+This is the simplest mode and an appropriate initial choice for parameter sweeps that require only that `σ` remain bounded. There is no spatial structure.
 
 ```python
 ModelSetup(
@@ -32,9 +34,16 @@ ModelSetup(
 
 ---
 
-### `global_per_segment`
+## `'global_per_segment'`
 
-Same rate as `global_overall`, but each event relaxes a single segment chosen with probability proportional to its fractional length. This captures the length-dependence of topoisomerase accessibility without explicit enzyme tracking.
+A single Poisson event at the same rate. When it fires, **one** segment is picked with probability proportional to its length, and only that segment's `Lk` is reset:
+
+```
+chosen ~ length-weighted
+model.Lk[chosen] = segment_lengths[chosen] / h_dna
+```
+
+This adds spatial structure (long segments are relaxed more often) without distinguishing positive from negative supercoiling.
 
 ```python
 ModelSetup(
@@ -45,9 +54,14 @@ ModelSetup(
 
 ---
 
-### `global_by_type`
+## `'global_by_type'`
 
-Two independent Poisson events: one relaxes all positively supercoiled segments (σ > 0) simultaneously, the other relaxes all negatively supercoiled segments (σ < 0). Rates are specified as a two-element list `[rate_positive, rate_negative]`.
+Two independent Poisson events with rates `local_supercoiling_relaxation_rates = [rate_pos, rate_neg]`:
+
+- Event 0 fires at rate `rate_pos` and resets every segment with `σ > 0`.
+- Event 1 fires at rate `rate_neg` and resets every segment with `σ < 0`.
+
+This mode is appropriate when positive and negative supercoiling should be assigned different bulk relaxation rates, for instance as a coarse stand-in for gyrase versus TOP1 activity.
 
 ```python
 ModelSetup(
@@ -56,13 +70,18 @@ ModelSetup(
 )
 ```
 
-This mode is useful when positive and negative supercoiling are relaxed by enzymes with different activities (e.g., gyrase vs. TOP1 approximations).
-
 ---
 
-### `per_segment_by_type`
+## `'per_segment_by_type'`
 
-Like `global_by_type`, but each event picks a single segment with probability proportional to its length before relaxing. Combines the length-weighting of `global_per_segment` with the sign-specificity of `global_by_type`.
+Two independent Poisson events with the same rates as above, but each event picks **one** segment of the appropriate sign with length weighting and resets only that segment:
+
+```
+event 0: pick a length-weighted segment with σ > 0 ; reset it
+event 1: pick a length-weighted segment with σ < 0 ; reset it
+```
+
+This combines length weighting with sign specificity. It is the most physically motivated of the four non-topoisomerase modes.
 
 ```python
 ModelSetup(
@@ -73,12 +92,14 @@ ModelSetup(
 
 ---
 
-### `topoisomerase_approximated`
+## `'topoisomerase_approximated'`
 
-Models the *net* effect of topoisomerases as effective relaxation events without tracking individual enzyme copies. Each event:
+Two independent Poisson events that approximate TOP1 and TOP2 activity without tracking individual enzyme molecules:
 
-- **TOP1 event** (rate `TOP1_effective_relaxation_rate`): resets a randomly chosen segment to `Lk = Lk₀` — but **only if** that segment has no writhe (TOP1 cannot act on plectonemic DNA).
-- **TOP2 event** (rate `TOP2_effective_relaxation_rate`): resets a plectonemic segment to the plectoneme-formation threshold `Lk = Lk₀(1 + σ_s)` — **only if** that segment has writhe.
+- **TOP1 event** at rate `TOP1_effective_relaxation_rate`. Picks a length-weighted segment. **If that segment has no writhe**, set its `Lk` to `Lk₀`. Otherwise the event has no effect (TOP1 cannot resolve plectonemes).
+- **TOP2 event** at rate `TOP2_effective_relaxation_rate`. Picks a length-weighted segment. **If that segment has writhe**, set its `Lk` to `Lk₀ × (1 + σ_s)`, where `σ_s` is the plectoneme-formation threshold of that segment (TOP2 reduces writhe but does not over-relax: it stops at the threshold beyond which plectonemes start to form).
+
+The writhe and plectoneme threshold come from the torque-state classification done by [`get_prokaryotic_torque`](../api/biol-methods.md#get_prokaryotic_torque) or [`get_eukaryotic_torque`](../api/biol-methods.md#get_eukaryotic_torque).
 
 ```python
 ModelSetup(
@@ -88,22 +109,30 @@ ModelSetup(
 )
 ```
 
----
-
-### `topoisomerase_based`
-
-> **Not yet implemented.** This mode is planned but not currently available. Use `topoisomerase_approximated` as an alternative.
+This is the recommended starting point for biologically motivated runs: the TOP1/TOP2 distinction is preserved without the cost of explicit enzyme tracking.
 
 ---
 
-## Choosing a Mode
+## `'topoisomerase_based'`: not yet implemented
 
-| Scenario | Recommended mode |
-|----------|-----------------|
-| Quick parameter sweeps, minimal complexity | `global_overall` |
-| Spatially resolved relaxation, no enzyme tracking | `global_per_segment` or `per_segment_by_type` |
-| Biologically motivated TOP1/TOP2 distinction | `topoisomerase_approximated` |
-| Full topoisomerase kinetics and steric effects | `topoisomerase_based` |
+The `ModelSetup` constructor raises `NotImplementedError` when this mode is selected. The intended semantics are:
 
-!!! note "Computational cost"
-    `topoisomerase_based` is significantly more expensive per simulation step due to the extra state variables and continuous Lk integration for each bound enzyme. For exploratory work, start with `global_overall` or `topoisomerase_approximated`.
+- A discrete copy number of TOP1 and TOP2 molecules.
+- Each enzyme binds and unbinds segments stochastically.
+- While bound, each enzyme contributes a continuous `dLk/dt` term to its host segment given by the per-molecule rate equations [`get_TOP1_effect_on_Lk_dynamics`](../api/biol-methods.md#get_top1_effect_on_lk_dynamics) and [`get_TOP2_effect_on_Lk_dynamics`](../api/biol-methods.md#get_top2_effect_on_lk_dynamics).
+- Steric interactions between bound enzymes and other DNA-bound species are honoured.
+
+See [Not yet implemented](not-yet-implemented.md). Use `'topoisomerase_approximated'` as a substitute.
+
+---
+
+## Choosing a mode
+
+| Requirement | Suggested mode |
+|-------------|---------------|
+| Simplest possible relaxation; quick parameter sweep | `'global_overall'` |
+| Spatial structure without enzyme distinction | `'global_per_segment'` |
+| Distinguish positive vs negative supercoiling at the bulk level | `'global_by_type'` |
+| Distinguish positive vs negative supercoiling per segment | `'per_segment_by_type'` |
+| Distinguish twist (TOP1) vs writhe (TOP2); recommended physical default | `'topoisomerase_approximated'` |
+| Full enzyme kinetics with binding sterics | (not yet available) |

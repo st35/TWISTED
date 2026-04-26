@@ -1,262 +1,170 @@
-# `model_setup` — Core Data Classes
+# `model_setup`
 
-**File:** `model_setup.py`
-**Imports:** `utilities`
-
-This module defines the four principal data classes used throughout TWISTED.
+Data classes the user constructs.
 
 ---
 
-## `GenomicSetup`
-
-Holds the static genomic and geometric properties of the simulated DNA construct.
+## class `GenomicSetup`
 
 ```python
-class GenomicSetup:
-    def __init__(
-        self,
-        chromatin_type: str,
-        gene_names: list[str],
-        TSSes: list[float],
-        gene_lengths: list[float],
-        gene_directions: list[int],
-        RNAP_on_rates: list[float],
-        promoter_mode: str,
-        buffer_length: float,
-        **kwargs
-    ) -> None
+GenomicSetup(
+    chromatin_type: str,
+    gene_names: list[str],
+    TSSes: list[float],
+    gene_lengths: list[float],
+    gene_directions: list[int],
+    RNAP_on_rates: list[float],
+    promoter_mode: str,
+    buffer_length: float,
+    **kwargs,
+)
 ```
 
-See [Genomic Setup](../user-guide/genomic-setup.md) for full parameter descriptions and examples.
+Holds the genomic layout: chromatin type, gene table, promoter mode, and DNA extents. The right-hand clamp position is computed automatically as `TSSes[0] + gene_lengths[0] + buffer_length` for a `+1` first gene, or `TSSes[0] + buffer_length` for a `−1` first gene.
 
-### Attributes
+`chromatin_type` ∈ `{'prokaryotic', 'eukaryotic'}`. `promoter_mode` ∈ `{'constitutive', 'non-constitutive'}`; the latter raises `NotImplementedError` (see [Not yet implemented](../user-guide/not-yet-implemented.md)).
 
-| Attribute | Type | Description |
-|-----------|------|-------------|
-| `chromatin_type` | `str` | `'prokaryotic'` or `'eukaryotic'` |
-| `gene_names` | `list[str]` | Gene identifiers |
-| `TSSes` | `list[float]` | TSS positions (nm) |
-| `gene_lengths` | `list[float]` | Gene lengths (nm) |
-| `gene_directions` | `list[int]` | `+1` or `-1` per gene |
-| `RNAP_on_rates` | `list[float]` | Basal recruitment rates (s⁻¹) |
-| `promoter_mode` | `str` | `'constitutive'` or `'non-constitutive'` |
-| `TF_on_off_rates` | `list[tuple[float,float]]` | TF toggle rates (non-constitutive only) |
-| `clamp_left` | `float` | Left DNA boundary (always 0.0 nm) |
-| `clamp_right` | `float` | Right DNA boundary (nm) |
+Eukaryotic kwargs: `per_nucleosome_DNA_length` (bp, default 147), `nucleosome_linker_length` (bp, default 30), `nucleosomes_are_steric_barriers_to_RNAPs` (bool, default `True`), `nucleosomes_can_be_displaced_at_TSS_by_RNAP` (bool, default `False`), `nucleosome_count` (int, override the auto-computed count), `nucleosome_on_rate_func`, `nucleosome_off_rate_func` (callables `(L, σ) → factor`).
 
-Additional attributes present only when `chromatin_type == 'eukaryotic'`:
+### `get_total_nucleosome_count() -> int`
 
-| Attribute | Type | Description |
-|-----------|------|-------------|
-| `per_nucleosome_DNA_length` | `float` | DNA wrapped per nucleosome (nm); default 147 bp × 0.34 = 49.98 nm |
-| `nucleosome_linker_length` | `float` | Linker DNA between nucleosomes (nm); default 30 bp × 0.34 = 10.2 nm |
-| `nucleosomes_are_steric_barriers_to_RNAPs` | `bool` | Whether nucleosomes block RNAP passage; default `True` |
-| `explicit_nucleosome_count` | `int or None` | User-specified nucleosome count; if `None`, computed automatically by tiling |
-| `nucleosome_on_rate_func` | `callable or None` | Optional function passed as `on_rate_func` to the auto-created nucleosome `BindingProtein`; default `None` |
-| `nucleosome_off_rate_func` | `callable or None` | Optional function passed as `off_rate_func` to the auto-created nucleosome `BindingProtein`; default `None` |
-| `nucleosomes_can_be_displaced_at_TSS_by_RNAP` | `bool` | Whether nucleosomes can be displaced by an RNAP being recruited at a TSS; forwarded as `can_be_displaced_at_TSS_by_RNAP` to the auto-created nucleosome `BindingProtein`; default `False` |
+Returns 0 for prokaryotic, otherwise either the user-supplied `nucleosome_count` or the count obtained by densely tiling `clamp_left → clamp_right` with `per_nucleosome_DNA_length + nucleosome_linker_length`.
 
-These can be set via `**kwargs` in the constructor (pass values in **bp** for lengths; they are converted to nm internally).
+### `print_genomic_setup() -> None`
 
-### Methods
+Pretty-print the gene table.
 
-#### `get_total_nucleosome_count() → int`
-
-Returns the total number of nucleosomes for the construct. Returns `0` for prokaryotic setups. If `explicit_nucleosome_count` is set, returns that value. Otherwise, tiles nucleosomes across the domain starting from `clamp_left + linker/2`, placing one nucleosome per `per_nucleosome_DNA_length + nucleosome_linker_length` interval.
-
-#### `print_genomic_setup() → None`
-
-Prints a formatted summary table of gene properties to stdout.
+See also: [User guide → Genomic setup](../user-guide/genomic-setup.md).
 
 ---
 
-## `ModelSetup`
-
-Holds all tunable physical and biological parameters.
+## class `ModelSetup`
 
 ```python
-class ModelSetup:
-    def __init__(
-        self,
-        w0: float = 1.85,
-        chi: float = 0.05,
-        eta: float = 0.0005,
-        alpha: float = 1.5,
-        v0: float = 20.0,
-        tau_c: float = 12.0,
-        force: float = 1.0,
-        kBT: float = 4.1,
-        TOP1_k0: float = 11.0,
-        TOP1_theta: float = 0.25,
-        TOP2_V0: float = 2.6,
-        TOP2_k12: float = 2.0,
-        RNAP_diameter: float = 15.0,
-        generic_binding_protein_diameter: float = 15.0,
-        steric_hindrance_constraint_parameter: float = 2.0,
-        clamps_status: tuple[str, str] = ('clamped', 'clamped'),
-        finite_size_effect_flag: int = 1,
-        supercoiling_relaxation_dynamics_mode: str = 'global_overall',
-        mRNA_dynamics_mode: int = 0,
-        model_observation_event_rate: float = 0.5,
-        **kwargs
-    ) -> None
+ModelSetup(
+    w0: float = 1.85,
+    chi: float = 0.05,
+    eta: float = 0.0005,
+    alpha: float = 1.5,
+    v0: float = 20.0,
+    tau_c: float = 12.0,
+    force: float = 1.0,
+    kBT: float = 4.1,
+    TOP1_k0: float = 11.0,
+    TOP1_theta: float = 0.25,
+    TOP2_V0: float = 2.6,
+    TOP2_k12: float = 2.0,
+    RNAP_diameter: float = 15.0,
+    generic_binding_protein_diameter: float = 15.0,
+    steric_hindrance_constraint_parameter: float = 2.0,
+    clamps_status: tuple[str, str] = ('clamped', 'clamped'),
+    finite_size_effect_flag: int = 1,
+    supercoiling_relaxation_dynamics_mode: str = 'global_overall',
+    mRNA_dynamics_mode: int = 0,
+    model_observation_event_rate: float = 0.5,
+    **kwargs,
+)
 ```
 
-See [Model Parameters](../user-guide/model-setup.md) for full parameter descriptions.
+Holds DNA mechanics constants, RNAP coupling constants, topoisomerase rate constants, geometric constants, boundary-condition flags, and the global "what kind of supercoiling relaxation" switch.
 
-### Key Derived Attributes
+`h_dna = 2π / w0` is computed in the constructor.
 
-| Attribute | Description |
-|-----------|-------------|
-| `h_dna` | Helical repeat `= 2π / w0` (nm/turn) |
-| `left_clamp_status` | `1` = torsionally clamped, `0` = free (derived from `clamps_status[0]`) |
-| `right_clamp_status` | `1` = torsionally clamped, `0` = free (derived from `clamps_status[1]`) |
-| `global_supercoiling_relaxation_rate` | Set from `**kwargs` when mode is `global_overall` or `global_per_segment` |
-| `local_supercoiling_relaxation_rates` | `[rate_pos, rate_neg]` when mode is `global_by_type` or `per_segment_by_type` |
-| `TOP1_effective_relaxation_rate` | Effective TOP1 rate when mode is `topoisomerase_approximated` |
-| `TOP2_effective_relaxation_rate` | Effective TOP2 rate when mode is `topoisomerase_approximated` |
-| `mRNA_degradation_rate` | mRNA degradation rate (s⁻¹) when `mRNA_dynamics_mode=1` |
-| `finite_size_effect_length` | Length scale for finite-size corrections (nm) |
+Required kwargs depending on mode:
+
+| Selected mode | Required kwargs |
+|--------------|----------------|
+| `'global_overall'`, `'global_per_segment'` | `global_supercoiling_relaxation_rate` |
+| `'global_by_type'`, `'per_segment_by_type'` | `local_supercoiling_relaxation_rates` (list `[pos, neg]`) |
+| `'topoisomerase_approximated'` | `TOP1_effective_relaxation_rate`, `TOP2_effective_relaxation_rate` |
+| `'topoisomerase_based'` | raises `NotImplementedError` |
+
+If `mRNA_dynamics_mode == 1`, `mRNA_degradation_rate` is required. If `finite_size_effect_flag == 1`, `finite_size_effect_length` defaults to 340 nm.
+
+See also: [User guide → Model parameters](../user-guide/model-setup.md).
 
 ---
 
-## `BindingProtein`
-
-Represents a type of DNA-binding protein that can bind and unbind from DNA segments during the simulation.
+## class `BindingProtein`
 
 ```python
-class BindingProtein:
-    def __init__(
-        self,
-        protein_name: str,
-        total_copy_number: int,
-        is_steric_barrier_to_RNAPs: bool,
-        is_topological_barrier: bool,
-        basal_on_rate: float,
-        basal_off_rate: float,
-        on_rate_func: callable = None,
-        off_rate_func: callable = None,
-        is_a_nucleosome: bool = False,
-        can_be_displaced_at_TSS_by_RNAP: bool = False
-    ) -> None
+BindingProtein(
+    protein_name: str,
+    total_copy_number: int,
+    is_steric_barrier_to_RNAPs: bool,
+    is_topological_barrier: bool,
+    basal_on_rate: float,
+    basal_off_rate: float,
+    on_rate_func: callable = None,
+    off_rate_func: callable = None,
+    is_a_nucleosome: bool = False,
+    can_be_displaced_at_TSS_by_RNAP: bool = False,
+)
 ```
 
-### Parameters
+Description of one DNA-binding species. The aggregated per-segment on-rate is
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `protein_name` | `str` | Identifier for this protein type |
-| `total_copy_number` | `int` | Total number of molecules of this protein |
-| `is_steric_barrier_to_RNAPs` | `bool` | Whether bound proteins block RNAP passage |
-| `is_topological_barrier` | `bool` | Whether bound proteins act as barriers to supercoiling diffusion (not yet implemented) |
-| `basal_on_rate` | `float` | Basal binding rate (s⁻¹ nm⁻¹); the per-segment on-rate is `basal_on_rate × segment_length` |
-| `basal_off_rate` | `float` | Basal unbinding rate (s⁻¹) |
-| `on_rate_func` | `callable or None` | Optional function `(segment_length, segment_sigma) → float` that multiplies the basal on-rate × segment_length. Defaults to `1.0` (no modulation) |
-| `off_rate_func` | `callable or None` | Optional function `(segment_length, segment_sigma) → float` that multiplies the basal off-rate. Defaults to `1.0` (no modulation) |
-| `is_a_nucleosome` | `bool` | If `True`, this protein is treated as a nucleosome with special steric handling (uses `per_nucleosome_DNA_length + nucleosome_linker_length` as its physical extent instead of `generic_binding_protein_diameter`). Default `False` |
-| `can_be_displaced_at_TSS_by_RNAP` | `bool` | If `True`, this protein can be displaced (removed) when an RNAP is recruited at a TSS that it is blocking. The RNAP recruitment succeeds and the blocking protein is removed. Default `False` |
+```
+n_unbound × basal_on_rate × segment_length × on_rate_func(L, σ)
+```
 
-The effective per-segment on-rate for unbound proteins is:
+(if `on_rate_func` is `None`, it defaults to the constant `1`, giving the documented `basal_on_rate × L` form).
 
-$$r_{\text{on}} = n_{\text{unbound}} \times \texttt{basal\_on\_rate} \times L_{\text{segment}} \times f_{\text{on}}(L, \sigma)$$
+The aggregated per-molecule off-rate is
 
-The effective off-rate for a bound protein on a given segment is:
+```
+basal_off_rate × off_rate_func(L, σ)
+```
 
-$$r_{\text{off}} = \texttt{basal\_off\_rate} \times f_{\text{off}}(L, \sigma)$$
+A `is_topological_barrier=True` species must also be `is_steric_barrier_to_RNAPs=True` (enforced at construction).
 
-!!! note "Steric barriers"
-    `is_steric_barrier_to_RNAPs` is enforced: bound proteins with this flag set to `True` will stall nearby RNAPs and block RNAP recruitment at nearby TSSes. Nucleosomes (`is_a_nucleosome=True`) use `per_nucleosome_DNA_length + nucleosome_linker_length` as their physical extent for steric checks; other proteins use `generic_binding_protein_diameter`.
-
-!!! warning "Not yet implemented"
-    `is_topological_barrier` is stored but not yet enforced during the simulation. Support will be added in a future release.
+See also: [User guide → Binding proteins](../user-guide/binding-proteins.md).
 
 ---
 
-## `Model`
-
-Container for the complete dynamic state of a simulation.
+## class `Model`
 
 ```python
-class Model:
-    def __init__(
-        self,
-        genomic_setup: GenomicSetup,
-        model_setup: ModelSetup,
-        binding_proteins: list[BindingProtein] = None
-    ) -> None
+Model(
+    genomic_setup: GenomicSetup,
+    model_setup: ModelSetup,
+    binding_proteins: list[BindingProtein] = None,
+)
 ```
 
-### Attributes
+Combines `GenomicSetup` and `ModelSetup` and initialises mutable state: `x_dict`, `theta_dict`, `Lk` (single segment spanning the whole DNA), `promoter_status`, `mRNA_counts`, `binding_proteins`, `binding_proteins_positions`. Eukaryotic models have a synthetic `nucleosome` `BindingProtein` prepended automatically.
 
-| Attribute | Type | Description |
-|-----------|------|-------------|
-| `genomic_setup` | `GenomicSetup` | Reference to the genomic setup |
-| `model_setup` | `ModelSetup` | Reference to the model setup |
-| `x_dict` | `list[list[float]]` | RNAP positions per gene (nm). Index: `[gene_index][rnap_index]` |
-| `theta_dict` | `list[list[float]]` | RNAP angular positions per gene (rad). Same indexing as `x_dict` |
-| `Lk` | `list[float]` | Linking number of each DNA segment (length = n_RNAPs + 1). Ordered right-to-left |
-| `promoter_status` | `list[int]` | `1` (ON) or `0` (OFF) per gene |
-| `mRNA_counts` | `list[int]` | mRNA copy numbers per gene |
-| `binding_proteins` | `list[BindingProtein]` | List of binding protein types. For eukaryotic setups, a nucleosome `BindingProtein` is automatically prepended at index 0 |
-| `binding_proteins_positions` | `list[list[float]]` | Positions (nm) of bound proteins, indexed `[protein_type][bound_index]` |
+### `print_model_setup() -> None`
 
-### Initial State
-
-- `Lk` is initialised to a single element corresponding to the fully relaxed linking number of the complete DNA.
-- All RNAPs start absent (`x_dict` and `theta_dict` are empty lists per gene).
-- Constitutive promoters start `ON`; non-constitutive promoters start with a random binary state.
-- For eukaryotic setups, a nucleosome `BindingProtein` is automatically created and prepended to `binding_proteins`. Its `total_copy_number` is determined by `GenomicSetup.get_total_nucleosome_count()`, its `basal_on_rate` is normalised by total DNA length (`1.2 / (clamp_right - clamp_left)`), `is_steric_barrier_to_RNAPs` is set from `GenomicSetup.nucleosomes_are_steric_barriers_to_RNAPs`, and `can_be_displaced_at_TSS_by_RNAP` is set from `GenomicSetup.nucleosomes_can_be_displaced_at_TSS_by_RNAP`. User-supplied binding proteins follow at subsequent indices.
-
-!!! warning "Non-constitutive promoters"
-    Stochastic promoter toggling is not yet implemented. Non-constitutive promoters retain their initial random state for the entire simulation. Full support is planned for a future release.
+Print the genomic setup followed by the binding-protein table.
 
 ---
 
-## `SimulationSetupAndState`
-
-Controls simulation termination and accumulates results.
+## class `SimulationSetupAndState`
 
 ```python
-class SimulationSetupAndState:
-    def __init__(
-        self,
-        genomic_setup: GenomicSetup,
-        simulation_end_mode: int,
-        simulation_end_criterion: Union[float, list[int]],
-        integration_method: str = 'RK23',
-        integration_time_resolution: float = 0.1,
-        RNAP_alive_status_check_interval: float = 1.0,
-        max_RNAPs_to_recruit: list[int] = None
-    ) -> None
+SimulationSetupAndState(
+    genomic_setup: GenomicSetup,
+    simulation_end_mode: int,
+    simulation_end_criterion: float | list[int],
+    integration_method: str = 'RK23',
+    integration_time_resolution: float = 0.1,
+    RNAP_alive_status_check_interval: float = 1.0,
+    max_RNAPs_to_recruit: list[int] = None,
+)
 ```
 
-### Attributes
+Termination policy + integrator settings + result accumulators in one object.
 
-| Attribute | Type | Description |
-|-----------|------|-------------|
-| `simulation_end_mode` | `int` | `0` = time-based; `1` = event-based |
-| `simulation_end_time` | `float` | Target simulation time (mode 0 only) |
-| `simulation_end_event_counts` | `list[int]` | Per-gene RNAP completion targets (mode 1 only) |
-| `integration_method` | `str` | ODE solver method passed to `solve_ivp`. One of `RK23`, `RK45`, `DOP853`, `Radau`, `BDF`, `LSODA`. Solvers other than `RK23` may crash due to non-physical intermediate states violating steric constraints |
-| `integration_time_resolution` | `float` | ODE evaluation time step (s) |
-| `RNAP_alive_status_check_interval` | `float` | RNAP status check interval (s) |
-| `max_RNAPs_to_recruit` | `list[int] or None` | Cap on total recruits per gene |
-| `RNAPs_finished_transcription` | `list[int]` | Count of completed RNAPs per gene |
-| `RNAPs_exit_positions` | `list[list[float]]` | Exit positions (nm) per gene |
-| `RNAP_recruitment_times` | `list[list[float]]` | Recruitment times (s) per gene |
-| `RNAP_exit_times` | `list[list[float]]` | Completion times (s) per gene |
-| `curr_simulation_time` | `float` | Current simulation clock (s) |
-| `simulation_completed` | `bool` | True when termination criterion is met |
+State attributes (filled during `simulate_dynamics`):
 
-### Methods
+- `RNAPs_finished_transcription[i]`: int
+- `RNAP_recruitment_times[i]`, `RNAP_exit_times[i]`, `RNAPs_exit_positions[i]`: lists
+- `curr_simulation_time`: float
+- `simulation_completed`: bool
 
-#### `calculate_RNAP_transcription_rates(model: Model) → list[list[float]]`
+### `calculate_RNAP_transcription_rates(model) -> list[list[float]]`
 
-Returns the effective transcription rate in **bp/s** for each RNAP that completed transcription, grouped by gene.
+Per-gene per-RNAP transcription rate (bp/s), computed only for RNAPs that completed transcription. Asserts that the distance covered is at least `gene_length`.
 
-```python
-rates = sim.calculate_RNAP_transcription_rates(model)
-# rates[gene_index][rnap_index] → float (bp/s)
-```
-
-The rate is computed as the distance from the TSS to the exit position (converted to bp) divided by the elapsed time from recruitment to exit.
+See also: [User guide → Running simulations](../user-guide/simulation.md).

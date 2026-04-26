@@ -1,137 +1,192 @@
-# Model Parameters
+# Model parameters
 
-`ModelSetup` holds all tunable physical and biological parameters. Default values correspond to well-characterised prokaryotic transcription parameters from the literature.
-
----
-
-## Constructor Signature
+`ModelSetup` carries every tunable physical and biological constant. The defaults are reasonable for a prokaryotic transcription system; only parameters that differ from the defaults need be overridden, together with a [supercoiling-relaxation mode](relaxation-modes.md).
 
 ```python
-ModelSetup(
-    w0=1.85, chi=0.05, eta=0.0005, alpha=1.5,
-    v0=20.0, tau_c=12.0, force=1.0, kBT=4.1,
-    TOP1_k0=11.0, TOP1_theta=0.25,
-    TOP2_V0=2.6, TOP2_k12=2.0,
-    RNAP_diameter=15.0,
-    generic_binding_protein_diameter=15.0,
-    steric_hindrance_constraint_parameter=2.0,
-    clamps_status=('clamped', 'clamped'),
-    finite_size_effect_flag=1,
+from model_setup import ModelSetup
+
+model_setup = ModelSetup(
     supercoiling_relaxation_dynamics_mode='global_overall',
-    mRNA_dynamics_mode=0,
-    model_observation_event_rate=0.5,
-    **kwargs
+    global_supercoiling_relaxation_rate=0.1,
 )
 ```
 
 ---
 
-## DNA Parameters
+## Constructor
 
-| Parameter | Default | Units | Description |
-|-----------|---------|-------|-------------|
-| `w0` | 1.85 | rad/nm | Intrinsic DNA twist rate (relaxed DNA); related to helical pitch `h = 2π/w0 ≈ 3.4 nm/turn` |
-| `chi` | 0.05 | pN·nm·s | Rotational drag coefficient of RNAP body |
-| `eta` | 0.0005 | pN·nm^(1−α)·s | Pre-factor for distance-dependent drag term |
-| `alpha` | 1.5 | — | Exponent for distance-dependent drag |
-| `force` | 1.0 | pN | Applied stretching force on DNA |
-| `kBT` | 4.1 | pN·nm | Thermal energy at room temperature (~298 K) |
-
-The effective rotational drag experienced by an RNAP at distance `x` from its TSS is:
-
-$$\gamma(x) = \chi + \eta \, x^\alpha$$
-
----
-
-## RNAP Parameters
-
-| Parameter | Default | Units | Description |
-|-----------|---------|-------|-------------|
-| `v0` | 20.0 | nm/s | Maximum RNAP elongation velocity (≈ 59 bp/s) |
-| `tau_c` | 12.0 | pN·nm | Torque sensitivity constant — sets the scale for torque-dependent velocity reduction |
-
-RNAP velocity is:
-
-$$v = \frac{v_0}{2}\left(1 - \tanh\!\frac{\tau_f - \tau_b}{\tau_c}\right)$$
-
-where $\tau_f$ and $\tau_b$ are the torques in front of and behind the RNAP (see [DNA Mechanics](../theory/dna-mechanics.md)).
+```python
+ModelSetup(
+    w0: float = 1.85,
+    chi: float = 0.05,
+    eta: float = 0.0005,
+    alpha: float = 1.5,
+    v0: float = 20.0,
+    tau_c: float = 12.0,
+    force: float = 1.0,
+    kBT: float = 4.1,
+    TOP1_k0: float = 11.0,
+    TOP1_theta: float = 0.25,
+    TOP2_V0: float = 2.6,
+    TOP2_k12: float = 2.0,
+    RNAP_diameter: float = 15.0,
+    generic_binding_protein_diameter: float = 15.0,
+    steric_hindrance_constraint_parameter: float = 2.0,
+    clamps_status: tuple[str, str] = ('clamped', 'clamped'),
+    finite_size_effect_flag: int = 1,
+    supercoiling_relaxation_dynamics_mode: str = 'global_overall',
+    mRNA_dynamics_mode: int = 0,
+    model_observation_event_rate: float = 0.5,
+    **kwargs,
+)
+```
 
 ---
 
-## Topoisomerase Parameters
+## DNA elastic parameters
 
-These parameters govern the action of Type I (TOP1) and Type II (TOP2) topoisomerases.
+| Parameter | Default | Units | Role |
+|-----------|--------|------|------|
+| `w0` | 1.85 | rad/nm | Intrinsic DNA twist rate; `h_dna = 2π/w0 ≈ 3.4 nm/turn` is computed from this |
+| `force` | 1.0 | pN | Applied stretching force entering the torque law |
+| `kBT` | 4.1 | pN·nm | Thermal energy at room temperature |
 
-| Parameter | Default | Units | Description |
-|-----------|---------|-------|-------------|
+---
+
+## RNAP rotational drag
+
+The effective rotational drag on RNAP at distance `x` from its TSS is `γ(x) = chi + eta · x^alpha`.
+
+| Parameter | Default | Units |
+|-----------|--------|------|
+| `chi` | 0.05 | pN·nm·s |
+| `eta` | 0.0005 | pN·nm^(1−α)·s |
+| `alpha` | 1.5 | — |
+
+---
+
+## RNAP elongation
+
+RNAP elongation velocity is the torque-responsive law
+
+$$v = \tfrac{v_0}{2}\bigl(1 - \tanh\tfrac{\tau_f - \tau_b}{\tau_c}\bigr).$$
+
+| Parameter | Default | Units | Role |
+|-----------|--------|------|------|
+| `v0` | 20.0 | nm/s | Maximum elongation velocity (≈ 59 bp/s) |
+| `tau_c` | 12.0 | pN·nm | Sets the half-width of the velocity ramp |
+
+The sign is flipped for `−1`-strand genes. See [Theory → RNAP velocity](../theory/dna-mechanics.md#4-rnap-velocity).
+
+---
+
+## Topoisomerase rate constants
+
+These constants enter the per-molecule TOP1/TOP2 rate equations defined in [`get_TOP1_effect_on_Lk_dynamics`](../api/biol-methods.md#get_top1_effect_on_lk_dynamics) and [`get_TOP2_effect_on_Lk_dynamics`](../api/biol-methods.md#get_top2_effect_on_lk_dynamics). They are used by the not-yet-implemented `'topoisomerase_based'` mode; the simpler `'topoisomerase_approximated'` mode does **not** use them and uses `TOP1_effective_relaxation_rate` / `TOP2_effective_relaxation_rate` instead.
+
+| Parameter | Default | Units | Role |
+|-----------|--------|------|------|
 | `TOP1_k0` | 11.0 | s⁻¹ | Intrinsic TOP1 nick-close rate |
-| `TOP1_theta` | 0.25 | — | Fraction of the twist-relaxation step done while the DNA is in the energy well |
+| `TOP1_theta` | 0.25 | — | Fraction of the twist-relaxation step that occurs in the energy well |
 | `TOP2_V0` | 2.6 | s⁻¹ | Maximum TOP2 strand-passage rate |
 | `TOP2_k12` | 2.0 | — | Michaelis-like constant for TOP2 writhe dependence |
 
 ---
 
-## Steric Interaction Parameters
+## Steric interactions
 
-Steric interactions between molecular species are modelled as a **soft constraint**. Rather than zeroing an RNAP's velocity at a hard exclusion distance, the velocity is continuously reduced by a smooth factor:
+Steric exclusion between RNAPs, nucleosomes and other binding proteins is implemented as a **soft tanh ramp** on RNAP velocity:
 
-$$f(s) = \frac{1}{2}\left(1 + \tanh\!\frac{s - d}{\lambda}\right)$$
+$$f(s) = \tfrac{1}{2}\bigl(1 + \tanh\tfrac{s - d}{\lambda}\bigr),$$
 
-where $s$ is the centre-to-centre separation, $d$ is the exclusion distance `(d1 + d2) / 2`, and $\lambda$ is the `steric_hindrance_constraint_parameter`. The factor approaches 0 when the obstacle is very close ($s \ll d$) and 1 when far away ($s \gg d$). The transition spans approximately $\pm 2\lambda$ around $d$.
+where `s` is the centre-to-centre separation, `d` is the half-sum of the two diameters (or `(RNAP_diameter + per_nucleosome_DNA_length + nucleosome_linker_length)/2` for nucleosomes), and `λ = steric_hindrance_constraint_parameter`.
 
-Nucleosomes are a special case: their physical extent is `per_nucleosome_DNA_length + nucleosome_linker_length` (from `GenomicSetup`).
+| Parameter | Default | Units |
+|-----------|--------|------|
+| `RNAP_diameter` | 15.0 | nm |
+| `generic_binding_protein_diameter` | 15.0 | nm |
+| `steric_hindrance_constraint_parameter` | 2.0 | nm |
 
-| Parameter | Default | Units | Description |
-|-----------|---------|-------|-------------|
-| `RNAP_diameter` | 15.0 | nm | RNAP physical diameter; used for RNAP–RNAP, RNAP–protein, and RNAP–nucleosome steric checks |
-| `generic_binding_protein_diameter` | 15.0 | nm | Default diameter for non-nucleosome binding proteins; used for RNAP–protein and protein–protein steric checks |
-| `steric_hindrance_constraint_parameter` | 2.0 | nm | Controls the width of the soft steric transition zone in the tanh ramp |
-
----
-
-## Boundary Conditions
-
-| Parameter | Default | Values | Description |
-|-----------|---------|--------|-------------|
-| `clamps_status` | `('clamped', 'clamped')` | `('clamped'` or `'free', 'clamped'` or `'free')` | Whether the left and right ends of the DNA are torsionally clamped or free. Free ends do not resist torsional stress. Internally stored as `left_clamp_status` and `right_clamp_status` (1 = clamped, 0 = free) |
+The same diameters are used by the **TSS steric-hindrance check** when an RNAP recruitment event fires; if anything is within the relevant exclusion distance of the TSS, recruitment fails (unless the obstacle is a displaceable protein; see [Binding proteins](binding-proteins.md)).
 
 ---
 
-## Finite-size Effects
+## Boundary conditions
 
-| Parameter | Default | Values | Description |
-|-----------|---------|--------|-------------|
-| `finite_size_effect_flag` | `1` | `0` or `1` | Enable (`1`) or disable (`0`) finite-size corrections to the plectoneme formation threshold |
-| `finite_size_effect_length` | 340 nm | nm (float) | Length scale for the finite-size correction (default: 1000 bp = 340 nm). Only relevant when flag is `1`. Pass via `**kwargs` |
+| Parameter | Default | Allowed | Role |
+|-----------|--------|---------|------|
+| `clamps_status` | `('clamped', 'clamped')` | each entry `'clamped'` or `'free'` | Torsional boundary conditions at left and right ends |
 
-The finite-size correction raises the plectoneme threshold $\sigma_s$ for short DNA segments, reflecting the fact that very short segments cannot form plectonemes as readily:
-
-$$\sigma_s^{\text{eff}} = \sigma_s \left(1 + \left(\frac{L_0}{L}\right)^2\right)$$
-
-where $L_0$ is `finite_size_effect_length` and $L$ is the segment length.
+Internally stored as `left_clamp_status` and `right_clamp_status` (1 = clamped, 0 = free). A free end allows twist to escape, so the `Lk` of the boundary segment is driven by RNAP *displacement* rather than by angular-velocity transfer; see [`get_segment_Lk_dynamics`](../api/biol-methods.md#get_segment_lk_dynamics).
 
 ---
 
-## Supercoiling Relaxation Mode
+## Finite-size correction
 
-See the dedicated page: [Supercoiling Relaxation Modes](relaxation-modes.md).
+| Parameter | Default | Allowed | Role |
+|-----------|--------|---------|------|
+| `finite_size_effect_flag` | `1` | `0` or `1` | Toggle the correction |
+| `finite_size_effect_length` | 340 nm (= 1000 bp) | float, passed via `**kwargs` | Length scale of the correction; only used when the flag is on |
 
----
+For short segments the plectoneme-formation threshold `σ_s` is raised by
 
-## mRNA Dynamics
+$$\sigma_s^{\text{eff}} = \sigma_s\left(1 + (L_0/L)^2\right),$$
 
-| Parameter | Default | Values | Description |
-|-----------|---------|--------|-------------|
-| `mRNA_dynamics_mode` | `0` | `0` or `1` | `0`: mRNAs accumulate without degradation; `1`: mRNAs degrade at rate `mRNA_degradation_rate` |
-| `mRNA_degradation_rate` | — | s⁻¹ | Required when `mRNA_dynamics_mode=1`; pass via `**kwargs` |
-
----
-
-## Observation Event Rate
-
-| Parameter | Default | Units | Description |
-|-----------|---------|-------|-------------|
-| `model_observation_event_rate` | 0.5 | s⁻¹ | Rate of dummy "observation" events. These events do not change the model state but ensure the simulation clock advances even when all biological event rates are zero. Must be > 0 |
+reflecting the difficulty of forming plectonemes in short loops. In eukaryotic mode the same correction is applied to the positive-twist cutoff of the chromatin torque law.
 
 ---
 
+## Supercoiling relaxation mode
+
+```python
+ModelSetup(supercoiling_relaxation_dynamics_mode=mode, **mode_kwargs)
+```
+
+Allowed values for `mode` and the keyword arguments each one demands:
+
+| Mode | Required `**kwargs` |
+|------|--------------------|
+| `'global_overall'` | `global_supercoiling_relaxation_rate` |
+| `'global_per_segment'` | `global_supercoiling_relaxation_rate` |
+| `'global_by_type'` | `local_supercoiling_relaxation_rates` (list of two floats) |
+| `'per_segment_by_type'` | `local_supercoiling_relaxation_rates` (list of two floats) |
+| `'topoisomerase_approximated'` | `TOP1_effective_relaxation_rate`, `TOP2_effective_relaxation_rate` |
+| `'topoisomerase_based'` | *(raises `NotImplementedError`)* |
+
+See [Relaxation modes](relaxation-modes.md) for full semantics.
+
+---
+
+## mRNA dynamics
+
+| Parameter | Default | Allowed | Role |
+|-----------|--------|--------|------|
+| `mRNA_dynamics_mode` | `0` | `0` or `1` | `0` = mRNA only accumulates; `1` = first-order degradation enabled |
+| `mRNA_degradation_rate` | required if mode = 1 | float, via `**kwargs` | per-molecule degradation rate (s⁻¹) |
+
+In `mRNA_dynamics_mode == 1` the Gillespie loop adds a per-gene event with rate `mRNA_degradation_rate × mRNA_counts[i]`. The same field exists on `Model` (`model.mRNA_counts`).
+
+---
+
+## Observation event
+
+| Parameter | Default | Units | Role |
+|-----------|--------|------|------|
+| `model_observation_event_rate` | 0.5 | s⁻¹ | Rate of a dummy "observation" event that does not modify model state |
+
+The observation event ensures that the simulation clock continues to advance even when every biological event rate is zero (e.g. a system with no RNAPs, no proteins, and no relaxation). It must be strictly positive; the constructor asserts this.
+
+---
+
+## Reading parameters back
+
+After construction, every argument is available as a like-named attribute on the instance, along with several derived attributes:
+
+| Attribute | Definition |
+|-----------|-----------|
+| `model_setup.h_dna` | `2π / w0`, the helical repeat in nm/turn |
+| `model_setup.left_clamp_status`, `model_setup.right_clamp_status` | 1 (clamped) or 0 (free) |
+| `model_setup.global_supercoiling_relaxation_rate` | rate set if mode is `'global_overall'` or `'global_per_segment'`, else 0 |
+| `model_setup.local_supercoiling_relaxation_rates` | `[rate_pos, rate_neg]` if mode is `'global_by_type'` or `'per_segment_by_type'`, else `[0.0, 0.0]` |
+| `model_setup.TOP1_effective_relaxation_rate`, `model_setup.TOP2_effective_relaxation_rate` | rates set if mode is `'topoisomerase_approximated'`, else 0 |
+| `model_setup.mRNA_degradation_rate` | rate set if mode = 1, else 0 |

@@ -32,11 +32,7 @@ def construct_genomic_setup(filename: str, chromatin_type: str, promoter_mode: s
 		RNAP_on_rates = [RNAP_on_rates[i]*explicit_RNAP_on_rates[i] for i in range(len(gene_names))]
 
 	if promoter_mode == 'non-constitutive':
-		if 'TF_on_off_rates' not in kwargs:
-			raise ValueError('For promoter_mode "non-constitutive", "TF_on_off_rates" argument must be provided.')
-		TF_on_off_rates = kwargs['TF_on_off_rates']
-		if len(TF_on_off_rates) != len(gene_names):
-			raise ValueError('Length of TF_on_off_rates must match number of genes.')
+		raise NotImplementedError('Promoter mode "non-constitutive" is not yet implemented.')
 
 	return GenomicSetup(chromatin_type, gene_names, TSSes, gene_lengths, gene_directions, RNAP_on_rates, promoter_mode, buffer_length, **kwargs)
 	

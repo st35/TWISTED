@@ -61,8 +61,11 @@ nav:
     - Overview: user-guide/overview.md
     - Genomic Setup: user-guide/genomic-setup.md
     - Model Parameters: user-guide/model-setup.md
+    - Binding Proteins: user-guide/binding-proteins.md
     - Running Simulations: user-guide/simulation.md
     - Supercoiling Relaxation Modes: user-guide/relaxation-modes.md
+    - Events and Propensities: user-guide/events-and-propensities.md
+    - Not Yet Implemented: user-guide/not-yet-implemented.md
   - Theory:
     - DNA Mechanics: theory/dna-mechanics.md
   - API Reference:
@@ -72,3 +75,4 @@ nav:
     - model_dynamics: api/model-dynamics.md
     - simulate_dynamics: api/simulate-dynamics.md
     - utilities: api/utilities.md
+  - How to cite: citations.md

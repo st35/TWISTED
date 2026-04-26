@@ -1,184 +1,190 @@
-# Running Simulations
+# Running simulations
 
-This page explains how to assemble the simulation objects, configure termination conditions, extract results, and add optional progress callbacks.
-
----
-
-## Object Assembly
-
-A complete simulation requires four objects:
-
-```
-GenomicSetup  +  ModelSetup
-        │               │
-        └───────┬───────┘
-                ▼
-             Model
-                │
-                ▼
-    SimulationSetupAndState
-                │
-                ▼
-       simulate_dynamics()
-```
-
----
-
-## `Model`
-
-`Model` bundles a `GenomicSetup` and a `ModelSetup` and initialises all dynamic state variables.
+This page documents `SimulationSetupAndState`, the object that controls **how** the simulator runs and **collects all results**, together with the three callbacks accepted by `simulate_dynamics`.
 
 ```python
-model = Model(genomic_setup, model_setup)
+from model_setup import SimulationSetupAndState
+from simulate_dynamics import simulate_dynamics
+
+sim = SimulationSetupAndState(genomic_setup, simulation_end_mode=0, simulation_end_criterion=300.0)
+simulate_dynamics(model, sim)
 ```
-
-After construction, `model` holds:
-
-| Attribute | Description |
-|-----------|-------------|
-| `model.x_dict` | `list[list[float]]` — RNAP positions per gene (nm) |
-| `model.theta_dict` | `list[list[float]]` — RNAP angular positions per gene (rad) |
-| `model.Lk` | `list[float]` — linking numbers of all DNA segments |
-| `model.promoter_status` | `list[int]` — `1` (ON) or `0` (OFF) per gene |
-| `model.mRNA_counts` | `list[int]` — mRNA copy numbers per gene |
-| `model.binding_proteins` | `list[BindingProtein]` — binding protein types (auto-includes nucleosomes for eukaryotic) |
-| `model.binding_proteins_positions` | `list[list[float]]` — positions (nm) of bound proteins per type |
-| `model.topoisomerase_*` | Topoisomerase state (only when `mode == 'topoisomerase_based'`) |
-
-**Do not modify these attributes directly** during a simulation; use the provided functions in `model_dynamics.py`.
 
 ---
 
-## `SimulationSetupAndState`
+## Constructor
 
 ```python
 SimulationSetupAndState(
-    genomic_setup,
-    simulation_end_mode,
-    simulation_end_criterion,
-    integration_method='RK23',
-    integration_time_resolution=0.1,
-    RNAP_alive_status_check_interval=1.0,
-    max_RNAPs_to_recruit=None,
+    genomic_setup: GenomicSetup,
+    simulation_end_mode: int,
+    simulation_end_criterion: float | list[int],
+    integration_method: str = 'RK23',
+    integration_time_resolution: float = 0.1,
+    RNAP_alive_status_check_interval: float = 1.0,
+    max_RNAPs_to_recruit: list[int] | None = None,
 )
 ```
 
-### Termination Modes
+| Argument | Meaning |
+|----------|--------|
+| `genomic_setup` | The same `GenomicSetup` passed to `Model`; used to size internal lists |
+| `simulation_end_mode` | `0` for time-based, `1` for event-count based |
+| `simulation_end_criterion` | `float` (seconds) if mode = 0; `list[int]` per gene if mode = 1 |
+| `integration_method` | One of `'RK23'`, `'RK45'`, `'DOP853'`, `'Radau'`, `'BDF'`, `'LSODA'` |
+| `integration_time_resolution` | spacing of `t_eval` points within an integration window (s) |
+| `RNAP_alive_status_check_interval` | how often the integrator pauses to remove finished RNAPs and check for events (s) |
+| `max_RNAPs_to_recruit` | optional list capping recruitment per gene |
 
-#### Time-based (`simulation_end_mode=0`)
+---
+
+## Termination modes
+
+### Time-based (`simulation_end_mode = 0`)
 
 ```python
 sim = SimulationSetupAndState(
     genomic_setup,
     simulation_end_mode=0,
-    simulation_end_criterion=1000.0,   # stop after 1000 s
+    simulation_end_criterion=300.0,   # seconds
 )
 ```
 
-#### Event-based (`simulation_end_mode=1`)
+The loop exits as soon as `sim.curr_simulation_time >= simulation_end_criterion`.
+
+### Event-count based (`simulation_end_mode = 1`)
 
 ```python
 sim = SimulationSetupAndState(
     genomic_setup,
     simulation_end_mode=1,
-    simulation_end_criterion=[100, 50],  # per-gene RNAP completion counts
+    simulation_end_criterion=[100, 50],   # one entry per gene
 )
 ```
 
-The simulation stops when **all** genes have reached their respective target.
+The loop exits as soon as **every** gene has produced at least its target number of completed transcripts. `sim.curr_simulation_time` ends at whatever value satisfies that condition.
 
-### Limiting RNAP Recruitment
+The list length must equal the number of genes; this is enforced by the constructor.
+
+### Limiting recruitment
 
 ```python
 sim = SimulationSetupAndState(
     genomic_setup,
     simulation_end_mode=1,
     simulation_end_criterion=[50],
-    max_RNAPs_to_recruit=[50],   # recruit at most 50 RNAPs
+    max_RNAPs_to_recruit=[50],
 )
 ```
 
-`max_RNAPs_to_recruit[i]` must be ≥ `simulation_end_criterion[i]` in event-based mode.
-
-### Integration Parameters
-
-| Parameter | Default | Description |
-|-----------|---------|-------------|
-| `integration_time_resolution` | 0.1 s | Time step used for `t_eval` points within each ODE integration interval |
-| `RNAP_alive_status_check_interval` | 1.0 s | Interval at which RNAP completion status is checked during integration |
-
-Decrease `integration_time_resolution` for higher temporal resolution in output or to detect fast events more accurately. Smaller values increase computation time.
+Once `len(sim.RNAP_recruitment_times[i]) >= max_RNAPs_to_recruit[i]`, further recruitment events on gene `i` silently fail (the Gillespie event still fires, but no RNAP is added). When event-count mode is selected, `max_RNAPs_to_recruit[i]` must be `>=` `simulation_end_event_counts[i]`; otherwise the run could never complete, and the constructor refuses to construct.
 
 ---
 
-## Running the Simulation
+## Integrator settings
 
-```python
-from simulate_dynamics import simulate_dynamics
-
-simulate_dynamics(
-    model,
-    simulation_setup_and_state,
-    print_at_each_integration_step=None,
-    print_at_each_simulation_step=None,
-    print_at_end_of_simulation=None,
-)
-```
-
-All three `print_*` arguments accept an optional callable with signature:
-
-```python
-def my_callback(model: Model, sim: SimulationSetupAndState) -> None:
-    ...
-```
-
-(The `print_at_each_integration_step` callback also receives `t: float` and `state_vector: list[float]` arguments.)
-
-### Example: Progress Logging
-
-```python
-def log_progress(model, sim):
-    print(f't={sim.curr_simulation_time:.1f}s  '
-          f'finished={sim.RNAPs_finished_transcription}')
-
-simulate_dynamics(model, sim, print_at_each_simulation_step=log_progress)
-```
+| Setting | Default | Effect |
+|---------|--------|-------|
+| `integration_method` | `'RK23'` | The SciPy `solve_ivp` method to use. Other methods emit a `UserWarning` because higher-order solvers can produce non-physical intermediate states (e.g. RNAPs overlapping) and crash the run. |
+| `integration_time_resolution` | `0.1` s | Spacing of `t_eval` points within each integration window. Affects only the temporal resolution at which `print_at_each_integration_step` observes the state; the dynamics are unchanged. |
+| `RNAP_alive_status_check_interval` | `1.0` s | The integrator advances in chunks of this size, then removes RNAPs that finished and re-evaluates whether the cumulative propensity has crossed the event threshold. Smaller values are safer (fewer mis-detections of fast events) but slower. |
 
 ---
 
-## Extracting Results
+## Reading results
 
-After the simulation completes, results are stored in `SimulationSetupAndState`:
+### Counts and timing
 
-| Attribute | Type | Description |
-|-----------|------|-------------|
-| `sim.RNAPs_finished_transcription` | `list[int]` | Number of RNAPs that completed transcription per gene |
-| `sim.RNAP_recruitment_times` | `list[list[float]]` | Recruitment time of each RNAP per gene (s) |
-| `sim.RNAP_exit_times` | `list[list[float]]` | Transcription completion time per RNAP per gene (s) |
-| `sim.RNAPs_exit_positions` | `list[list[float]]` | Position where each RNAP exited the gene (nm) |
-| `sim.curr_simulation_time` | `float` | Final simulation time (s) |
-| `sim.simulation_completed` | `bool` | `True` if termination criterion was met |
+| Attribute | Type | Meaning |
+|----------|------|--------|
+| `sim.RNAPs_finished_transcription` | `list[int]` | Number of RNAPs that completed transcription, per gene |
+| `sim.RNAP_recruitment_times[i]` | `list[float]` | Times (s) at which each RNAP on gene `i` was recruited |
+| `sim.RNAP_exit_times[i]` | `list[float]` | Times (s) at which each completed RNAP on gene `i` exited |
+| `sim.RNAPs_exit_positions[i]` | `list[float]` | Positions (nm) at which each completed RNAP on gene `i` exited |
+| `sim.curr_simulation_time` | `float` | Total simulated seconds |
+| `sim.simulation_completed` | `bool` | `True` iff the loop exited because the criterion was met |
 
-### Transcription Rates
+For an alive RNAP at the end of a time-based run, only `RNAP_recruitment_times[i]` will contain its entry; no exit time or exit position is recorded.
+
+### Transcription rates
 
 ```python
-# Returns list[list[float]] — transcription rate in bp/s for each RNAP per gene
 rates = sim.calculate_RNAP_transcription_rates(model)
 ```
 
-### Inter-RNAP Intervals
+Returns `list[list[float]]`: for each gene, the per-RNAP mean transcription rate in **bp/s**. Computed only for RNAPs that completed transcription:
+
+```
+rate = (exit_position − TSS) × sign / 0.34 / (exit_time − recruitment_time)        # bp/s
+```
+
+This method asserts that the distance covered is at least `gene_length`, so a non-empty list always corresponds to genuinely completed transcripts.
+
+### Inter-recruitment intervals
 
 ```python
 import numpy as np
-
-# Recruitment intervals (s) for gene 0
 intervals = np.diff(sim.RNAP_recruitment_times[0])
-mean_interval = np.mean(intervals)
+mean_interval = float(intervals.mean())
 ```
 
 ---
 
-## Complete Example with Two Genes
+## Callbacks
+
+`simulate_dynamics` accepts three optional callables:
+
+```python
+simulate_dynamics(
+    model,
+    sim,
+    print_at_each_integration_step=None,   # (model, sim, t, state_vector)
+    print_at_each_simulation_step=None,    # (model, sim)
+    print_at_end_of_simulation=None,       # (model, sim)
+)
+```
+
+| Callback | Signature | Fires |
+|----------|----------|------|
+| `print_at_each_integration_step` | `(model, sim, t, state_vector)` | Once at the start of every integration window of length `RNAP_alive_status_check_interval`. The `state_vector` is the live integrator state (RNAP positions, angles, segment `Lk`, cumulative propensity). |
+| `print_at_each_simulation_step` | `(model, sim)` | Once at the top of each iteration of the outer Gillespie loop, **before** event selection. |
+| `print_at_end_of_simulation` | `(model, sim)` | Once when the loop exits. |
+
+The integration callback is suitable for logging time series of RNAP positions and supercoiling densities. The Gillespie callback is suitable for logging per-event quantities (mRNA counts, recruitment-success rates). The end callback is suitable for summary output.
+
+### Worked logging snippet
+
+```python
+from typing import TextIO
+
+def log_step(x_file: TextIO, sigma_file: TextIO,
+             model, sim, t: float, state_vector: list[float]):
+    RNAP_gene_index, _ = get_state_vectors_from_dicts(model)
+    n = len(RNAP_gene_index)
+    seg_lengths, seg_sigmas, *_ = calculate_segments_attributes(model, RNAP_gene_index, state_vector)
+
+    x_file.write(str(t))
+    for i in range(n):
+        x_file.write('\t' + str(state_vector[i]))
+    x_file.write('\n')
+
+    sigma_file.write(str(t))
+    for s in seg_sigmas:
+        sigma_file.write('\t' + str(s))
+    sigma_file.write('\n')
+
+with open('x.log', 'w') as xf, open('sigma.log', 'w') as sf:
+    simulate_dynamics(
+        model, sim,
+        print_at_each_integration_step=lambda m, s, t, sv: log_step(xf, sf, m, s, t, sv),
+    )
+```
+
+The number of segments changes whenever an RNAP is recruited or exits, so the per-row width of `sigma.log` varies. Either pad on read, or post-process by joining `t` to the segment boundaries reconstructed from `x.log`.
+
+---
+
+## Complete example
 
 ```python
 from model_setup import GenomicSetup, ModelSetup, Model, SimulationSetupAndState
@@ -195,12 +201,11 @@ genomic_setup = GenomicSetup(
     promoter_mode='constitutive',
     buffer_length=4420.0,
 )
-
 model_setup = ModelSetup(
-    supercoiling_relaxation_dynamics_mode='global_overall',
-    global_supercoiling_relaxation_rate=0.1,
+    supercoiling_relaxation_dynamics_mode='topoisomerase_approximated',
+    TOP1_effective_relaxation_rate=0.01,
+    TOP2_effective_relaxation_rate=0.005,
 )
-
 model = Model(genomic_setup, model_setup)
 sim = SimulationSetupAndState(
     genomic_setup,
@@ -213,5 +218,7 @@ simulate_dynamics(model, sim)
 
 for i, name in enumerate(genomic_setup.gene_names):
     rates = sim.calculate_RNAP_transcription_rates(model)[i]
-    print(f'{name}: mean transcription rate = {np.mean(rates):.1f} bp/s')
+    print(f'{name}: mean transcription rate = {np.mean(rates):.1f} bp/s '
+          f'over {len(rates)} completed transcripts')
+print(f'Total simulated time: {sim.curr_simulation_time:.1f} s')
 ```

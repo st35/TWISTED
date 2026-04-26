@@ -1,44 +1,41 @@
-# API Reference Overview
+# API reference
 
-The TWISTED codebase is organized into five modules. Each module is documented on its own page.
+TWISTED is laid out as a small flat package with one file per architectural layer. This page is the entry point to the function-by-function reference.
 
-| Module | File | Description |
-|--------|------|-------------|
-| [`model_setup`](model-setup.md) | `model_setup.py` | Core data classes |
-| [`biol_methods`](biol-methods.md) | `biol_methods.py` | Biophysical equations |
-| [`model_dynamics`](model-dynamics.md) | `model_dynamics.py` | ODE integration and state management |
-| [`simulate_dynamics`](simulate-dynamics.md) | `simulate_dynamics.py` | Main simulation loop |
-| [`utilities`](utilities.md) | `utilities.py` | I/O, stochastic helpers, geometry |
+## Module map
 
----
+| Module | Role |
+|--------|------|
+| [`model_setup`](model-setup.md) | Data classes the user constructs: `GenomicSetup`, `ModelSetup`, `BindingProtein`, `Model`, `SimulationSetupAndState` |
+| [`biol_methods`](biol-methods.md) | Pure scalar physics/biology functions: torque laws, single-RNAP velocity, Lk dynamics, recruitment rate |
+| [`model_dynamics`](model-dynamics.md) | Vectorised dynamics over the whole DNA: state vector ↔ dict conversions, segment attributes, ODE right-hand side, integration window |
+| [`simulate_dynamics`](simulate-dynamics.md) | Outer Gillespie loop with full event dispatch |
+| [`utilities`](utilities.md) | Pure helpers: gene-file IO, segment/spot lookup, steric checks, sampling helpers |
 
-## Dependency Graph
+## Dependency graph
 
 ```
-utilities.py ←──────────────────────────┐
-    └── model_setup.py                  │
-            ├── biol_methods.py          │
-            └── model_dynamics.py ───────┤
-                    └── simulate_dynamics.py
+utilities  ──►  model_setup ──►  biol_methods ──►  model_dynamics ──►  simulate_dynamics
+                                                            ▲
+                                                            └─── utilities
 ```
 
-All modules use `from <module> import *`. The primary chain is `utilities → model_setup → biol_methods → model_dynamics → simulate_dynamics`. In addition, `model_dynamics` and `simulate_dynamics` import directly from `utilities`, and `utilities` imports from `model_setup` (circular).
+Cycles are avoided: `biol_methods` depends only on `model_setup`; `model_dynamics` consumes both; `simulate_dynamics` orchestrates the whole.
 
----
+## Unit conventions
 
-## Type Conventions
+| Quantity | Unit | Notes |
+|----------|------|------|
+| Length | nanometres (nm) | `1 bp = 0.34 nm` |
+| Time | seconds (s) | |
+| Rates | s⁻¹ | |
+| Force | piconewtons (pN) | |
+| Energy | pN·nm | `kBT ≈ 4.114 pN·nm` at 300 K |
+| Torque | pN·nm | |
+| Linking number | dimensionless | `h_dna = 2π / w₀ ≈ 10.5 bp/turn → 3.57 nm/turn` |
 
-All physical quantities use the following units unless otherwise noted:
+## Conventions for callable arguments
 
-| Quantity | Unit |
-|----------|------|
-| Position | nm |
-| Length | nm |
-| Time | s |
-| Rate | s⁻¹ |
-| Torque | pN·nm |
-| Force | pN |
-| Velocity | nm/s |
-| Angular velocity | rad/s |
-| Linking number | dimensionless (turns) |
-| Supercoiling density σ | dimensionless |
+- All public dynamics functions take a `Model` plus arrays it does not own. The arrays live in either the user's calling code or the integrator state vector.
+- Segments are always indexed **right to left** along the DNA. RNAPs are stored in the same order.
+- The "state vector" handed to the SciPy ODE solver concatenates `[x_RNAPs, theta_RNAPs, Lk_segments, A]`, where `A` is the cumulative event propensity.

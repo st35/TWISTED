@@ -19,11 +19,8 @@ class GenomicSetup: # Class to hold genomic setup information
 
 		self.promoter_mode = promoter_mode
 		assert promoter_mode in ['constitutive', 'non-constitutive'], 'promoter_mode must be either "constitutive" or "non-constitutive".'
-		self.TF_on_off_rates = [(0.0, 0.0) for _ in self.gene_names]
-		if self.promoter_mode == 'non-constitutive': # Non-constitutive promoters
-			if 'TF_on_off_rates' not in kwargs:
-				raise ValueError("For promoter_mode 'non-constitutive', 'TF_on_off_rates' argument must be provided.")
-			self.TF_on_off_rates = [(rates[0], rates[1]) for rates in kwargs['TF_on_off_rates']]
+		if promoter_mode == 'non-constitutive':
+			raise NotImplementedError('Promoter mode "non-constitutive" is not yet implemented.')
 		
 		if self.chromatin_type == 'eukaryotic':
 			if 'per_nucleosome_DNA_length' not in kwargs:
