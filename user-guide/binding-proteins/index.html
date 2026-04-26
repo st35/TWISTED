@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://st35.github.io/TWISTED/user-guide/model-setup/">
+        <link rel="canonical" href="https://st35.github.io/TWISTED/user-guide/binding-proteins/">
       
       
-        <link rel="prev" href="../genomic-setup/">
+        <link rel="prev" href="../model-setup/">
       
       
-        <link rel="next" href="../binding-proteins/">
+        <link rel="next" href="../simulation/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Model Parameters - TWISTED</title>
+        <title>Binding Proteins - TWISTED</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#model-parameters" class="md-skip">
+        <a href="#binding-proteins" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Model Parameters
+              Binding Proteins
             
           </span>
         </div>
@@ -600,6 +600,34 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../model-setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Model Parameters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -619,7 +647,7 @@
   <span class="md-ellipsis">
     
   
-    Model Parameters
+    Binding Proteins
   
 
     
@@ -637,7 +665,7 @@
   <span class="md-ellipsis">
     
   
-    Model Parameters
+    Binding Proteins
   
 
     
@@ -674,10 +702,60 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#dna-elastic-parameters" class="md-nav__link">
+  <a href="#rate-semantics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        DNA elastic parameters
+        Rate semantics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Rate semantics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#per-segment-on-propensity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Per-segment on-propensity
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#per-bound-molecule-off-propensity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Per-bound-molecule off-propensity
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#total-propensities-reported-to-the-gillespie-loop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Total propensities reported to the Gillespie loop
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#custom-sensitive-kinetics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Custom σ-sensitive kinetics
       
     </span>
   </a>
@@ -685,10 +763,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#rnap-rotational-drag" class="md-nav__link">
+  <a href="#steric-barrier-behaviour" class="md-nav__link">
     <span class="md-ellipsis">
       
-        RNAP rotational drag
+        Steric-barrier behaviour
       
     </span>
   </a>
@@ -696,10 +774,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#rnap-elongation" class="md-nav__link">
+  <a href="#topological-barriers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        RNAP elongation
+        Topological barriers
       
     </span>
   </a>
@@ -707,10 +785,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#topoisomerase-rate-constants" class="md-nav__link">
+  <a href="#nucleosomes-eukaryotic-mode" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Topoisomerase rate constants
+        Nucleosomes (eukaryotic mode)
       
     </span>
   </a>
@@ -718,76 +796,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#steric-interactions" class="md-nav__link">
+  <a href="#inspecting-bound-state" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Steric interactions
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#boundary-conditions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Boundary conditions
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#finite-size-correction" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Finite-size correction
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#supercoiling-relaxation-mode" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Supercoiling relaxation mode
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#mrna-dynamics" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        mRNA dynamics
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#observation-event" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Observation event
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#reading-parameters-back" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Reading parameters back
+        Inspecting bound state
       
     </span>
   </a>
@@ -798,34 +810,6 @@
   
 </nav>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../binding-proteins/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Binding Proteins
-  
-
-    
-  </span>
-  
-  
-
-      </a>
     </li>
   
 
@@ -1333,10 +1317,60 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#dna-elastic-parameters" class="md-nav__link">
+  <a href="#rate-semantics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        DNA elastic parameters
+        Rate semantics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Rate semantics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#per-segment-on-propensity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Per-segment on-propensity
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#per-bound-molecule-off-propensity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Per-bound-molecule off-propensity
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#total-propensities-reported-to-the-gillespie-loop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Total propensities reported to the Gillespie loop
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#custom-sensitive-kinetics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Custom σ-sensitive kinetics
       
     </span>
   </a>
@@ -1344,10 +1378,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#rnap-rotational-drag" class="md-nav__link">
+  <a href="#steric-barrier-behaviour" class="md-nav__link">
     <span class="md-ellipsis">
       
-        RNAP rotational drag
+        Steric-barrier behaviour
       
     </span>
   </a>
@@ -1355,10 +1389,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#rnap-elongation" class="md-nav__link">
+  <a href="#topological-barriers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        RNAP elongation
+        Topological barriers
       
     </span>
   </a>
@@ -1366,10 +1400,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#topoisomerase-rate-constants" class="md-nav__link">
+  <a href="#nucleosomes-eukaryotic-mode" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Topoisomerase rate constants
+        Nucleosomes (eukaryotic mode)
       
     </span>
   </a>
@@ -1377,76 +1411,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#steric-interactions" class="md-nav__link">
+  <a href="#inspecting-bound-state" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Steric interactions
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#boundary-conditions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Boundary conditions
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#finite-size-correction" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Finite-size correction
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#supercoiling-relaxation-mode" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Supercoiling relaxation mode
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#mrna-dynamics" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        mRNA dynamics
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#observation-event" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Observation event
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#reading-parameters-back" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Reading parameters back
+        Inspecting bound state
       
     </span>
   </a>
@@ -1473,377 +1441,174 @@
   
 
 
-<h1 id="model-parameters">Model parameters<a class="headerlink" href="#model-parameters" title="Permanent link">&para;</a></h1>
-<p><code>ModelSetup</code> carries every tunable physical and biological constant. The defaults are reasonable for a prokaryotic transcription system; only parameters that differ from the defaults need be overridden, together with a <a href="../relaxation-modes/">supercoiling-relaxation mode</a>.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">model_setup</span><span class="w"> </span><span class="kn">import</span> <span class="n">ModelSetup</span>
+<h1 id="binding-proteins">Binding proteins<a class="headerlink" href="#binding-proteins" title="Permanent link">&para;</a></h1>
+<p><code>BindingProtein</code> describes any DNA-binding protein species other than RNAP. The same class powers nucleosomes (auto-created in eukaryotic mode) and arbitrary user-defined species (passed to the <code>Model</code> constructor via <code>binding_proteins=[...]</code>).</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">model_setup</span><span class="w"> </span><span class="kn">import</span> <span class="n">BindingProtein</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">model_setup</span> <span class="o">=</span> <span class="n">ModelSetup</span><span class="p">(</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">supercoiling_relaxation_dynamics_mode</span><span class="o">=</span><span class="s1">&#39;global_overall&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">global_supercoiling_relaxation_rate</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="p">)</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">protein</span> <span class="o">=</span> <span class="n">BindingProtein</span><span class="p">(</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">protein_name</span><span class="o">=</span><span class="s1">&#39;ProteinX&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">total_copy_number</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n">is_steric_barrier_to_RNAPs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n">is_topological_barrier</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n">basal_on_rate</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span>    <span class="c1"># per (s · nm)</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="n">basal_off_rate</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>    <span class="c1"># per s</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="p">)</span>
 </code></pre></div>
 <hr />
 <h2 id="constructor">Constructor<a class="headerlink" href="#constructor" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">ModelSetup</span><span class="p">(</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">w0</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.85</span><span class="p">,</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="n">chi</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="n">eta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0005</span><span class="p">,</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="n">alpha</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.5</span><span class="p">,</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="n">v0</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">20.0</span><span class="p">,</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="n">tau_c</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">12.0</span><span class="p">,</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="n">force</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    <span class="n">kBT</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">4.1</span><span class="p">,</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    <span class="n">TOP1_k0</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">11.0</span><span class="p">,</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>    <span class="n">TOP1_theta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.25</span><span class="p">,</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>    <span class="n">TOP2_V0</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.6</span><span class="p">,</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>    <span class="n">TOP2_k12</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>    <span class="n">RNAP_diameter</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">15.0</span><span class="p">,</span>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>    <span class="n">generic_binding_protein_diameter</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">15.0</span><span class="p">,</span>
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>    <span class="n">steric_hindrance_constraint_parameter</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span>
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>    <span class="n">clamps_status</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;clamped&#39;</span><span class="p">,</span> <span class="s1">&#39;clamped&#39;</span><span class="p">),</span>
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>    <span class="n">finite_size_effect_flag</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>    <span class="n">supercoiling_relaxation_dynamics_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;global_overall&#39;</span><span class="p">,</span>
-<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>    <span class="n">mRNA_dynamics_mode</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>    <span class="n">model_observation_event_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
-<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">BindingProtein</span><span class="p">(</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">protein_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="n">total_copy_number</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="n">is_steric_barrier_to_RNAPs</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="n">is_topological_barrier</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="n">basal_on_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="n">basal_off_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="n">on_rate_func</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    <span class="n">off_rate_func</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    <span class="n">is_a_nucleosome</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>    <span class="n">can_be_displaced_at_TSS_by_RNAP</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="p">)</span>
 </code></pre></div>
-<hr />
-<h2 id="dna-elastic-parameters">DNA elastic parameters<a class="headerlink" href="#dna-elastic-parameters" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Parameter</th>
-<th>Default</th>
-<th>Units</th>
-<th>Role</th>
+<th>Argument</th>
+<th>Meaning</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>w0</code></td>
-<td>1.85</td>
-<td>rad/nm</td>
-<td>Intrinsic DNA twist rate; <code>h_dna = 2π/w0 ≈ 3.4 nm/turn</code> is computed from this</td>
+<td><code>protein_name</code></td>
+<td>Identifier string</td>
 </tr>
 <tr>
-<td><code>force</code></td>
-<td>1.0</td>
-<td>pN</td>
-<td>Applied stretching force entering the torque law</td>
+<td><code>total_copy_number</code></td>
+<td>Total number of molecules of this species (bound + unbound)</td>
 </tr>
 <tr>
-<td><code>kBT</code></td>
-<td>4.1</td>
-<td>pN·nm</td>
-<td>Thermal energy at room temperature</td>
+<td><code>is_steric_barrier_to_RNAPs</code></td>
+<td>If <code>True</code>, this protein blocks RNAP elongation through the soft tanh ramp and contributes to the TSS steric-hindrance check during recruitment</td>
+</tr>
+<tr>
+<td><code>is_topological_barrier</code></td>
+<td>If <code>True</code>, each bound molecule splits one DNA segment into two with independent linking numbers. <strong>Implies <code>is_steric_barrier_to_RNAPs=True</code></strong>; the constructor raises otherwise</td>
+</tr>
+<tr>
+<td><code>basal_on_rate</code></td>
+<td>Per-(s·nm) intrinsic on-rate (see semantics below)</td>
+</tr>
+<tr>
+<td><code>basal_off_rate</code></td>
+<td>Per-(s) intrinsic off-rate, per bound molecule</td>
+</tr>
+<tr>
+<td><code>on_rate_func</code></td>
+<td>Optional <code>(segment_length, segment_sigma) → float</code> multiplier on the basal on-rate</td>
+</tr>
+<tr>
+<td><code>off_rate_func</code></td>
+<td>Optional <code>(segment_length, segment_sigma) → float</code> multiplier on the basal off-rate</td>
+</tr>
+<tr>
+<td><code>is_a_nucleosome</code></td>
+<td>Set <code>True</code> only by the framework when auto-creating the nucleosome species in eukaryotic mode; nucleosomes use a different exclusion distance in steric checks</td>
+</tr>
+<tr>
+<td><code>can_be_displaced_at_TSS_by_RNAP</code></td>
+<td>If <code>True</code>, an incoming RNAP can evict a bound molecule of this species at the TSS even though it is otherwise a steric barrier</td>
 </tr>
 </tbody>
 </table>
 <hr />
-<h2 id="rnap-rotational-drag">RNAP rotational drag<a class="headerlink" href="#rnap-rotational-drag" title="Permanent link">&para;</a></h2>
-<p>The effective rotational drag on RNAP at distance <code>x</code> from its TSS is <code>γ(x) = chi + eta · x^alpha</code>.</p>
-<table>
-<thead>
-<tr>
-<th>Parameter</th>
-<th>Default</th>
-<th>Units</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>chi</code></td>
-<td>0.05</td>
-<td>pN·nm·s</td>
-</tr>
-<tr>
-<td><code>eta</code></td>
-<td>0.0005</td>
-<td>pN·nm^(1−α)·s</td>
-</tr>
-<tr>
-<td><code>alpha</code></td>
-<td>1.5</td>
-<td>—</td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h2 id="rnap-elongation">RNAP elongation<a class="headerlink" href="#rnap-elongation" title="Permanent link">&para;</a></h2>
-<p>RNAP elongation velocity is the torque-responsive law</p>
-<div class="arithmatex">\[v = \tfrac{v_0}{2}\bigl(1 - \tanh\tfrac{\tau_f - \tau_b}{\tau_c}\bigr).\]</div>
-<table>
-<thead>
-<tr>
-<th>Parameter</th>
-<th>Default</th>
-<th>Units</th>
-<th>Role</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>v0</code></td>
-<td>20.0</td>
-<td>nm/s</td>
-<td>Maximum elongation velocity (≈ 59 bp/s)</td>
-</tr>
-<tr>
-<td><code>tau_c</code></td>
-<td>12.0</td>
-<td>pN·nm</td>
-<td>Sets the half-width of the velocity ramp</td>
-</tr>
-</tbody>
-</table>
-<p>The sign is flipped for <code>−1</code>-strand genes. See <a href="../../theory/dna-mechanics/#4-rnap-velocity">Theory → RNAP velocity</a>.</p>
-<hr />
-<h2 id="topoisomerase-rate-constants">Topoisomerase rate constants<a class="headerlink" href="#topoisomerase-rate-constants" title="Permanent link">&para;</a></h2>
-<p>These constants enter the per-molecule TOP1/TOP2 rate equations defined in <a href="../../api/biol-methods/#get_top1_effect_on_lk_dynamics"><code>get_TOP1_effect_on_Lk_dynamics</code></a> and <a href="../../api/biol-methods/#get_top2_effect_on_lk_dynamics"><code>get_TOP2_effect_on_Lk_dynamics</code></a>. They are used by the not-yet-implemented <code>'topoisomerase_based'</code> mode; the simpler <code>'topoisomerase_approximated'</code> mode does <strong>not</strong> use them and uses <code>TOP1_effective_relaxation_rate</code> / <code>TOP2_effective_relaxation_rate</code> instead.</p>
-<table>
-<thead>
-<tr>
-<th>Parameter</th>
-<th>Default</th>
-<th>Units</th>
-<th>Role</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>TOP1_k0</code></td>
-<td>11.0</td>
-<td>s⁻¹</td>
-<td>Intrinsic TOP1 nick-close rate</td>
-</tr>
-<tr>
-<td><code>TOP1_theta</code></td>
-<td>0.25</td>
-<td>—</td>
-<td>Fraction of the twist-relaxation step that occurs in the energy well</td>
-</tr>
-<tr>
-<td><code>TOP2_V0</code></td>
-<td>2.6</td>
-<td>s⁻¹</td>
-<td>Maximum TOP2 strand-passage rate</td>
-</tr>
-<tr>
-<td><code>TOP2_k12</code></td>
-<td>2.0</td>
-<td>—</td>
-<td>Michaelis-like constant for TOP2 writhe dependence</td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h2 id="steric-interactions">Steric interactions<a class="headerlink" href="#steric-interactions" title="Permanent link">&para;</a></h2>
-<p>Steric exclusion between RNAPs, nucleosomes and other binding proteins is implemented as a <strong>soft tanh ramp</strong> on RNAP velocity:</p>
-<div class="arithmatex">\[f(s) = \tfrac{1}{2}\bigl(1 + \tanh\tfrac{s - d}{\lambda}\bigr),\]</div>
-<p>where <code>s</code> is the centre-to-centre separation, <code>d</code> is the half-sum of the two diameters (or <code>(RNAP_diameter + per_nucleosome_DNA_length + nucleosome_linker_length)/2</code> for nucleosomes), and <code>λ = steric_hindrance_constraint_parameter</code>.</p>
-<table>
-<thead>
-<tr>
-<th>Parameter</th>
-<th>Default</th>
-<th>Units</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>RNAP_diameter</code></td>
-<td>15.0</td>
-<td>nm</td>
-</tr>
-<tr>
-<td><code>generic_binding_protein_diameter</code></td>
-<td>15.0</td>
-<td>nm</td>
-</tr>
-<tr>
-<td><code>steric_hindrance_constraint_parameter</code></td>
-<td>2.0</td>
-<td>nm</td>
-</tr>
-</tbody>
-</table>
-<p>The same diameters are used by the <strong>TSS steric-hindrance check</strong> when an RNAP recruitment event fires; if anything is within the relevant exclusion distance of the TSS, recruitment fails (unless the obstacle is a displaceable protein; see <a href="../binding-proteins/">Binding proteins</a>).</p>
-<hr />
-<h2 id="boundary-conditions">Boundary conditions<a class="headerlink" href="#boundary-conditions" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Parameter</th>
-<th>Default</th>
-<th>Allowed</th>
-<th>Role</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>clamps_status</code></td>
-<td><code>('clamped', 'clamped')</code></td>
-<td>each entry <code>'clamped'</code> or <code>'free'</code></td>
-<td>Torsional boundary conditions at left and right ends</td>
-</tr>
-</tbody>
-</table>
-<p>Internally stored as <code>left_clamp_status</code> and <code>right_clamp_status</code> (1 = clamped, 0 = free). A free end allows twist to escape, so the <code>Lk</code> of the boundary segment is driven by RNAP <em>displacement</em> rather than by angular-velocity transfer; see <a href="../../api/biol-methods/#get_segment_lk_dynamics"><code>get_segment_Lk_dynamics</code></a>.</p>
-<hr />
-<h2 id="finite-size-correction">Finite-size correction<a class="headerlink" href="#finite-size-correction" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Parameter</th>
-<th>Default</th>
-<th>Allowed</th>
-<th>Role</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>finite_size_effect_flag</code></td>
-<td><code>1</code></td>
-<td><code>0</code> or <code>1</code></td>
-<td>Toggle the correction</td>
-</tr>
-<tr>
-<td><code>finite_size_effect_length</code></td>
-<td>340 nm (= 1000 bp)</td>
-<td>float, passed via <code>**kwargs</code></td>
-<td>Length scale of the correction; only used when the flag is on</td>
-</tr>
-</tbody>
-</table>
-<p>For short segments the plectoneme-formation threshold <code>σ_s</code> is raised by</p>
-<div class="arithmatex">\[\sigma_s^{\text{eff}} = \sigma_s\left(1 + (L_0/L)^2\right),\]</div>
-<p>reflecting the difficulty of forming plectonemes in short loops. In eukaryotic mode the same correction is applied to the positive-twist cutoff of the chromatin torque law.</p>
-<hr />
-<h2 id="supercoiling-relaxation-mode">Supercoiling relaxation mode<a class="headerlink" href="#supercoiling-relaxation-mode" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">ModelSetup</span><span class="p">(</span><span class="n">supercoiling_relaxation_dynamics_mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span> <span class="o">**</span><span class="n">mode_kwargs</span><span class="p">)</span>
+<h2 id="rate-semantics">Rate semantics<a class="headerlink" href="#rate-semantics" title="Permanent link">&para;</a></h2>
+<p>The wrapping that turns the basal rate into a Gillespie propensity is added by the constructor itself. The actual per-segment expressions used inside the simulator are:</p>
+<h3 id="per-segment-on-propensity">Per-segment on-propensity<a class="headerlink" href="#per-segment-on-propensity" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>n_unbound × basal_on_rate × segment_length × user_on_rate_func(L, σ)
 </code></pre></div>
-<p>Allowed values for <code>mode</code> and the keyword arguments each one demands:</p>
-<table>
-<thead>
-<tr>
-<th>Mode</th>
-<th>Required <code>**kwargs</code></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>'global_overall'</code></td>
-<td><code>global_supercoiling_relaxation_rate</code></td>
-</tr>
-<tr>
-<td><code>'global_per_segment'</code></td>
-<td><code>global_supercoiling_relaxation_rate</code></td>
-</tr>
-<tr>
-<td><code>'global_by_type'</code></td>
-<td><code>local_supercoiling_relaxation_rates</code> (list of two floats)</td>
-</tr>
-<tr>
-<td><code>'per_segment_by_type'</code></td>
-<td><code>local_supercoiling_relaxation_rates</code> (list of two floats)</td>
-</tr>
-<tr>
-<td><code>'topoisomerase_approximated'</code></td>
-<td><code>TOP1_effective_relaxation_rate</code>, <code>TOP2_effective_relaxation_rate</code></td>
-</tr>
-<tr>
-<td><code>'topoisomerase_based'</code></td>
-<td><em>(raises <code>NotImplementedError</code>)</em></td>
-</tr>
-</tbody>
-</table>
-<p>See <a href="../relaxation-modes/">Relaxation modes</a> for full semantics.</p>
+<ul>
+<li><code>n_unbound = total_copy_number − sum(len(positions))</code>.</li>
+<li><code>user_on_rate_func</code> defaults to <code>1</code> when not supplied.</li>
+<li>The <code>× segment_length</code> factor causes longer segments to attract proportionally more binding, so <code>basal_on_rate</code> is denominated in <strong>per (s · nm)</strong>.</li>
+<li>The chosen segment is sampled with weight equal to its on-propensity. Within the chosen segment, the position is sampled uniformly.</li>
+</ul>
+<h3 id="per-bound-molecule-off-propensity">Per-bound-molecule off-propensity<a class="headerlink" href="#per-bound-molecule-off-propensity" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>basal_off_rate × user_off_rate_func(L, σ)
+</code></pre></div>
+<ul>
+<li><code>L</code> and <code>σ</code> are the length and supercoiling density of the segment in which the molecule is bound.</li>
+<li>The constructor wraps any user-supplied <code>off_rate_func</code> so that it multiplies <code>basal_off_rate</code>. When unset, the off-rate equals <code>basal_off_rate</code> per bound molecule.</li>
+</ul>
+<h3 id="total-propensities-reported-to-the-gillespie-loop">Total propensities reported to the Gillespie loop<a class="headerlink" href="#total-propensities-reported-to-the-gillespie-loop" title="Permanent link">&para;</a></h3>
+<p>The simulator sums these per-segment on-rates and per-bound off-rates and exposes a single <em>aggregated</em> propensity per species per direction (one for binding, one for unbinding). When the species is selected, segment selection (for binding) and per-molecule selection (for unbinding) is performed by a second random draw weighted by the per-segment / per-molecule propensities.</p>
 <hr />
-<h2 id="mrna-dynamics">mRNA dynamics<a class="headerlink" href="#mrna-dynamics" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Parameter</th>
-<th>Default</th>
-<th>Allowed</th>
-<th>Role</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>mRNA_dynamics_mode</code></td>
-<td><code>0</code></td>
-<td><code>0</code> or <code>1</code></td>
-<td><code>0</code> = mRNA only accumulates; <code>1</code> = first-order degradation enabled</td>
-</tr>
-<tr>
-<td><code>mRNA_degradation_rate</code></td>
-<td>required if mode = 1</td>
-<td>float, via <code>**kwargs</code></td>
-<td>per-molecule degradation rate (s⁻¹)</td>
-</tr>
-</tbody>
-</table>
-<p>In <code>mRNA_dynamics_mode == 1</code> the Gillespie loop adds a per-gene event with rate <code>mRNA_degradation_rate × mRNA_counts[i]</code>. The same field exists on <code>Model</code> (<code>model.mRNA_counts</code>).</p>
+<h2 id="custom-sensitive-kinetics">Custom σ-sensitive kinetics<a class="headerlink" href="#custom-sensitive-kinetics" title="Permanent link">&para;</a></h2>
+<p>A common use case is biasing binding toward negatively supercoiled regions, or accelerating unbinding under positive torque:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">fast_on_when_negative</span><span class="p">(</span><span class="n">segment_length</span><span class="p">,</span> <span class="n">segment_sigma</span><span class="p">):</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="k">return</span> <span class="mf">5.0</span> <span class="k">if</span> <span class="n">segment_sigma</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">0.02</span> <span class="k">else</span> <span class="mf">1.0</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="k">def</span><span class="w"> </span><span class="nf">fast_off_when_positive</span><span class="p">(</span><span class="n">segment_length</span><span class="p">,</span> <span class="n">segment_sigma</span><span class="p">):</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="k">return</span> <span class="mf">10.0</span> <span class="k">if</span> <span class="n">segment_sigma</span> <span class="o">&gt;</span> <span class="mf">0.02</span> <span class="k">else</span> <span class="mf">1.0</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="n">sc_sensor</span> <span class="o">=</span> <span class="n">BindingProtein</span><span class="p">(</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>    <span class="n">protein_name</span><span class="o">=</span><span class="s1">&#39;SC_sensor&#39;</span><span class="p">,</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>    <span class="n">total_copy_number</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>    <span class="n">is_steric_barrier_to_RNAPs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>    <span class="n">is_topological_barrier</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>    <span class="n">basal_on_rate</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span>
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>    <span class="n">basal_off_rate</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>    <span class="n">on_rate_func</span><span class="o">=</span><span class="n">fast_on_when_negative</span><span class="p">,</span>
+<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>    <span class="n">off_rate_func</span><span class="o">=</span><span class="n">fast_off_when_positive</span><span class="p">,</span>
+<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="p">)</span>
+</code></pre></div>
+<p>Both user functions receive <code>(segment_length, segment_sigma)</code>; the underlying call site does not pass any additional arguments.</p>
 <hr />
-<h2 id="observation-event">Observation event<a class="headerlink" href="#observation-event" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Parameter</th>
-<th>Default</th>
-<th>Units</th>
-<th>Role</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>model_observation_event_rate</code></td>
-<td>0.5</td>
-<td>s⁻¹</td>
-<td>Rate of a dummy "observation" event that does not modify model state</td>
-</tr>
-</tbody>
-</table>
-<p>The observation event ensures that the simulation clock continues to advance even when every biological event rate is zero (e.g. a system with no RNAPs, no proteins, and no relaxation). It must be strictly positive; the constructor asserts this.</p>
+<h2 id="steric-barrier-behaviour">Steric-barrier behaviour<a class="headerlink" href="#steric-barrier-behaviour" title="Permanent link">&para;</a></h2>
+<p>When <code>is_steric_barrier_to_RNAPs=True</code>, the protein contributes to two distinct steric checks:</p>
+<ol>
+<li><strong>Elongation steric ramp</strong>: for any approaching RNAP, the velocity is multiplied by the soft tanh factor with exclusion distance</li>
+<li><code>(RNAP_diameter + per_nucleosome_DNA_length + nucleosome_linker_length) / 2</code> if the protein is a nucleosome,</li>
+<li><code>(RNAP_diameter + generic_binding_protein_diameter) / 2</code> otherwise.</li>
+<li><strong>TSS recruitment block</strong>: when an RNAP recruitment event fires at a TSS, the simulator iterates over all active RNAPs, then over all bound nucleosomes (steric-barrier ones), then over all bound generic steric-barrier proteins. If anything is within the relevant exclusion distance of the TSS, recruitment is blocked. If the <em>only</em> obstacle is a protein with <code>can_be_displaceable_at_TSS_by_RNAP=True</code>, recruitment succeeds and that protein is removed from <code>model.binding_proteins_positions</code>.</li>
+</ol>
+<p>A protein with <code>is_steric_barrier_to_RNAPs=False</code> is invisible to RNAPs in both senses; it can still bind, unbind, and act as a topological barrier.</p>
 <hr />
-<h2 id="reading-parameters-back">Reading parameters back<a class="headerlink" href="#reading-parameters-back" title="Permanent link">&para;</a></h2>
-<p>After construction, every argument is available as a like-named attribute on the instance, along with several derived attributes:</p>
-<table>
-<thead>
-<tr>
-<th>Attribute</th>
-<th>Definition</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>model_setup.h_dna</code></td>
-<td><code>2π / w0</code>, the helical repeat in nm/turn</td>
-</tr>
-<tr>
-<td><code>model_setup.left_clamp_status</code>, <code>model_setup.right_clamp_status</code></td>
-<td>1 (clamped) or 0 (free)</td>
-</tr>
-<tr>
-<td><code>model_setup.global_supercoiling_relaxation_rate</code></td>
-<td>rate set if mode is <code>'global_overall'</code> or <code>'global_per_segment'</code>, else 0</td>
-</tr>
-<tr>
-<td><code>model_setup.local_supercoiling_relaxation_rates</code></td>
-<td><code>[rate_pos, rate_neg]</code> if mode is <code>'global_by_type'</code> or <code>'per_segment_by_type'</code>, else <code>[0.0, 0.0]</code></td>
-</tr>
-<tr>
-<td><code>model_setup.TOP1_effective_relaxation_rate</code>, <code>model_setup.TOP2_effective_relaxation_rate</code></td>
-<td>rates set if mode is <code>'topoisomerase_approximated'</code>, else 0</td>
-</tr>
-<tr>
-<td><code>model_setup.mRNA_degradation_rate</code></td>
-<td>rate set if mode = 1, else 0</td>
-</tr>
-</tbody>
-</table>
+<h2 id="topological-barriers">Topological barriers<a class="headerlink" href="#topological-barriers" title="Permanent link">&para;</a></h2>
+<p><code>is_topological_barrier=True</code> causes each bound molecule to act as an independent boundary in the segmentation of the DNA, on top of the boundaries created by RNAPs. Concretely:</p>
+<ul>
+<li>When the protein <strong>binds</strong>, the simulator inserts a boundary at the binding position. The two new sub-segments inherit the supercoiling density of the parent segment (i.e. their <code>Lk</code> are set so that <code>σ</code> is preserved on both sides).</li>
+<li>When the protein <strong>unbinds</strong>, the two adjacent segments are merged and their linking numbers are added.</li>
+<li>The bookkeeping is implemented by <a href="../../api/model-dynamics/#update_lk_vector_after_rnap_or_protein_recruitment"><code>update_Lk_vector_after_RNAP_or_protein_recruitment</code></a> and <a href="../../api/model-dynamics/#update_lk_vector_after_protein_unbinding"><code>update_Lk_vector_after_protein_unbinding</code></a>.</li>
+</ul>
+<p>The constructor enforces <code>is_topological_barrier ⇒ is_steric_barrier_to_RNAPs</code>. A topological barrier that did not also block RNAPs would be inconsistent with the segmentation algorithm.</p>
+<hr />
+<h2 id="nucleosomes-eukaryotic-mode">Nucleosomes (eukaryotic mode)<a class="headerlink" href="#nucleosomes-eukaryotic-mode" title="Permanent link">&para;</a></h2>
+<p>When <code>chromatin_type == 'eukaryotic'</code>, <code>Model.__init__</code> automatically constructs a nucleosome <code>BindingProtein</code> with:</p>
+<ul>
+<li><code>protein_name='nucleosome'</code></li>
+<li><code>total_copy_number = genomic_setup.get_total_nucleosome_count()</code></li>
+<li><code>is_a_nucleosome=True</code></li>
+<li><code>is_steric_barrier_to_RNAPs = genomic_setup.nucleosomes_are_steric_barriers_to_RNAPs</code></li>
+<li><code>is_topological_barrier=False</code></li>
+<li><code>basal_on_rate = 1.2 / (clamp_right − clamp_left)</code></li>
+<li><code>basal_off_rate = 0.4</code></li>
+<li><code>on_rate_func = genomic_setup.nucleosome_on_rate_func</code></li>
+<li><code>off_rate_func = genomic_setup.nucleosome_off_rate_func</code></li>
+<li><code>can_be_displaced_at_TSS_by_RNAP = genomic_setup.nucleosomes_can_be_displaced_at_TSS_by_RNAP</code></li>
+</ul>
+<p>This species is inserted at index 0 of <code>model.binding_proteins</code>, <strong>before</strong> any user-supplied species. The eukaryotic indexing pattern is therefore:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">genomic_setup</span><span class="p">,</span> <span class="n">model_setup</span><span class="p">,</span> <span class="n">binding_proteins</span><span class="o">=</span><span class="p">[</span><span class="n">my_protein</span><span class="p">])</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="c1"># model.binding_proteins[0]  -&gt; auto-created nucleosome</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="c1"># model.binding_proteins[1]  -&gt; my_protein</span>
+</code></pre></div>
+<p>To skip the auto-created nucleosomes entirely, set <code>chromatin_type='prokaryotic'</code> and supply a nucleosome-like <code>BindingProtein</code> explicitly.</p>
+<hr />
+<h2 id="inspecting-bound-state">Inspecting bound state<a class="headerlink" href="#inspecting-bound-state" title="Permanent link">&para;</a></h2>
+<p>After (or during) a run, the bound positions are accessible at:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">model</span><span class="o">.</span><span class="n">binding_proteins_positions</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>    <span class="c1"># list of nm positions for species k</span>
+</code></pre></div>
+<p>The list of <code>BindingProtein</code> objects is at <code>model.binding_proteins[k]</code>. To pretty-print all species:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">model</span><span class="o">.</span><span class="n">print_model_setup</span><span class="p">()</span>
+</code></pre></div>
 
 
 

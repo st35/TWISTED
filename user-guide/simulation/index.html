@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://st35.github.io/TWISTED/user-guide/simulation/">
       
       
-        <link rel="prev" href="../model-setup/">
+        <link rel="prev" href="../binding-proteins/">
       
       
         <link rel="next" href="../relaxation-modes/">
@@ -338,6 +338,25 @@
   
 
       
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../citations/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  How to cite
+
+      </a>
+    </li>
+  
+
+      
     </ul>
   </div>
 </nav>
@@ -609,6 +628,34 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../binding-proteins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Binding Proteins
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -672,10 +719,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#object-assembly" class="md-nav__link">
+  <a href="#constructor" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Object Assembly
+        Constructor
       
     </span>
   </a>
@@ -683,45 +730,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#model" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Model
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#simulationsetupandstate" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        SimulationSetupAndState
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="SimulationSetupAndState">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
   <a href="#termination-modes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Termination Modes
+        Termination modes
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Termination Modes">
+    <nav class="md-nav" aria-label="Termination modes">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#time-based-simulation_end_mode0" class="md-nav__link">
+  <a href="#time-based-simulation_end_mode-0" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Time-based (simulation_end_mode=0)
+        Time-based (simulation_end_mode = 0)
       
     </span>
   </a>
@@ -729,26 +753,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#event-based-simulation_end_mode1" class="md-nav__link">
+  <a href="#event-count-based-simulation_end_mode-1" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Event-based (simulation_end_mode=1)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#limiting-rnap-recruitment" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Limiting RNAP Recruitment
+        Event-count based (simulation_end_mode = 1)
       
     </span>
   </a>
@@ -756,10 +764,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#integration-parameters" class="md-nav__link">
+  <a href="#limiting-recruitment" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Integration Parameters
+        Limiting recruitment
       
     </span>
   </a>
@@ -772,50 +780,44 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#running-the-simulation" class="md-nav__link">
+  <a href="#integrator-settings" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Running the Simulation
+        Integrator settings
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Running the Simulation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#example-progress-logging" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Example: Progress Logging
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#extracting-results" class="md-nav__link">
+  <a href="#reading-results" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Extracting Results
+        Reading results
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Extracting Results">
+    <nav class="md-nav" aria-label="Reading results">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#counts-and-timing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Counts and timing
+      
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#transcription-rates" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Transcription Rates
+        Transcription rates
       
     </span>
   </a>
@@ -823,10 +825,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#inter-rnap-intervals" class="md-nav__link">
+  <a href="#inter-recruitment-intervals" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Inter-RNAP Intervals
+        Inter-recruitment intervals
       
     </span>
   </a>
@@ -839,10 +841,38 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#complete-example-with-two-genes" class="md-nav__link">
+  <a href="#callbacks" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Complete Example with Two Genes
+        Callbacks
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Callbacks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#worked-logging-snippet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Worked logging snippet
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#complete-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Complete example
       
     </span>
   </a>
@@ -873,6 +903,62 @@
     
   
     Supercoiling Relaxation Modes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../events-and-propensities/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events and Propensities
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../not-yet-implemented/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Not Yet Implemented
   
 
     
@@ -1211,6 +1297,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../citations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How to cite
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1238,10 +1351,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#object-assembly" class="md-nav__link">
+  <a href="#constructor" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Object Assembly
+        Constructor
       
     </span>
   </a>
@@ -1249,45 +1362,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#model" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Model
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#simulationsetupandstate" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        SimulationSetupAndState
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="SimulationSetupAndState">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
   <a href="#termination-modes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Termination Modes
+        Termination modes
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Termination Modes">
+    <nav class="md-nav" aria-label="Termination modes">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#time-based-simulation_end_mode0" class="md-nav__link">
+  <a href="#time-based-simulation_end_mode-0" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Time-based (simulation_end_mode=0)
+        Time-based (simulation_end_mode = 0)
       
     </span>
   </a>
@@ -1295,26 +1385,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#event-based-simulation_end_mode1" class="md-nav__link">
+  <a href="#event-count-based-simulation_end_mode-1" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Event-based (simulation_end_mode=1)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#limiting-rnap-recruitment" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Limiting RNAP Recruitment
+        Event-count based (simulation_end_mode = 1)
       
     </span>
   </a>
@@ -1322,10 +1396,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#integration-parameters" class="md-nav__link">
+  <a href="#limiting-recruitment" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Integration Parameters
+        Limiting recruitment
       
     </span>
   </a>
@@ -1338,50 +1412,44 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#running-the-simulation" class="md-nav__link">
+  <a href="#integrator-settings" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Running the Simulation
+        Integrator settings
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Running the Simulation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#example-progress-logging" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Example: Progress Logging
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#extracting-results" class="md-nav__link">
+  <a href="#reading-results" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Extracting Results
+        Reading results
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Extracting Results">
+    <nav class="md-nav" aria-label="Reading results">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#counts-and-timing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Counts and timing
+      
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#transcription-rates" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Transcription Rates
+        Transcription rates
       
     </span>
   </a>
@@ -1389,10 +1457,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#inter-rnap-intervals" class="md-nav__link">
+  <a href="#inter-recruitment-intervals" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Inter-RNAP Intervals
+        Inter-recruitment intervals
       
     </span>
   </a>
@@ -1405,10 +1473,38 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#complete-example-with-two-genes" class="md-nav__link">
+  <a href="#callbacks" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Complete Example with Two Genes
+        Callbacks
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Callbacks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#worked-logging-snippet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Worked logging snippet
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#complete-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Complete example
       
     </span>
   </a>
@@ -1435,246 +1531,277 @@
   
 
 
-<h1 id="running-simulations">Running Simulations<a class="headerlink" href="#running-simulations" title="Permanent link">&para;</a></h1>
-<p>This page explains how to assemble the simulation objects, configure termination conditions, extract results, and add optional progress callbacks.</p>
-<hr />
-<h2 id="object-assembly">Object Assembly<a class="headerlink" href="#object-assembly" title="Permanent link">&para;</a></h2>
-<p>A complete simulation requires four objects:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>GenomicSetup  +  ModelSetup
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>        │               │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>        └───────┬───────┘
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>                ▼
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>             Model
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>                │
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>                ▼
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    SimulationSetupAndState
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>                │
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>                ▼
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>       simulate_dynamics()
+<h1 id="running-simulations">Running simulations<a class="headerlink" href="#running-simulations" title="Permanent link">&para;</a></h1>
+<p>This page documents <code>SimulationSetupAndState</code>, the object that controls <strong>how</strong> the simulator runs and <strong>collects all results</strong>, together with the three callbacks accepted by <code>simulate_dynamics</code>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">model_setup</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimulationSetupAndState</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">simulate_dynamics</span><span class="w"> </span><span class="kn">import</span> <span class="n">simulate_dynamics</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">sim</span> <span class="o">=</span> <span class="n">SimulationSetupAndState</span><span class="p">(</span><span class="n">genomic_setup</span><span class="p">,</span> <span class="n">simulation_end_mode</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">simulation_end_criterion</span><span class="o">=</span><span class="mf">300.0</span><span class="p">)</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">simulate_dynamics</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">sim</span><span class="p">)</span>
 </code></pre></div>
 <hr />
-<h2 id="model"><code>Model</code><a class="headerlink" href="#model" title="Permanent link">&para;</a></h2>
-<p><code>Model</code> bundles a <code>GenomicSetup</code> and a <code>ModelSetup</code> and initialises all dynamic state variables.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">genomic_setup</span><span class="p">,</span> <span class="n">model_setup</span><span class="p">)</span>
+<h2 id="constructor">Constructor<a class="headerlink" href="#constructor" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">SimulationSetupAndState</span><span class="p">(</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">genomic_setup</span><span class="p">:</span> <span class="n">GenomicSetup</span><span class="p">,</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="n">simulation_end_mode</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="n">simulation_end_criterion</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="n">integration_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;RK23&#39;</span><span class="p">,</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="n">integration_time_resolution</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="n">RNAP_alive_status_check_interval</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="n">max_RNAPs_to_recruit</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="p">)</span>
 </code></pre></div>
-<p>After construction, <code>model</code> holds:</p>
 <table>
 <thead>
 <tr>
-<th>Attribute</th>
-<th>Description</th>
+<th>Argument</th>
+<th>Meaning</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>model.x_dict</code></td>
-<td><code>list[list[float]]</code> — RNAP positions per gene (nm)</td>
+<td><code>genomic_setup</code></td>
+<td>The same <code>GenomicSetup</code> passed to <code>Model</code>; used to size internal lists</td>
 </tr>
 <tr>
-<td><code>model.theta_dict</code></td>
-<td><code>list[list[float]]</code> — RNAP angular positions per gene (rad)</td>
+<td><code>simulation_end_mode</code></td>
+<td><code>0</code> for time-based, <code>1</code> for event-count based</td>
 </tr>
 <tr>
-<td><code>model.Lk</code></td>
-<td><code>list[float]</code> — linking numbers of all DNA segments</td>
+<td><code>simulation_end_criterion</code></td>
+<td><code>float</code> (seconds) if mode = 0; <code>list[int]</code> per gene if mode = 1</td>
 </tr>
 <tr>
-<td><code>model.promoter_status</code></td>
-<td><code>list[int]</code> — <code>1</code> (ON) or <code>0</code> (OFF) per gene</td>
+<td><code>integration_method</code></td>
+<td>One of <code>'RK23'</code>, <code>'RK45'</code>, <code>'DOP853'</code>, <code>'Radau'</code>, <code>'BDF'</code>, <code>'LSODA'</code></td>
 </tr>
-<tr>
-<td><code>model.mRNA_counts</code></td>
-<td><code>list[int]</code> — mRNA copy numbers per gene</td>
-</tr>
-<tr>
-<td><code>model.binding_proteins</code></td>
-<td><code>list[BindingProtein]</code> — binding protein types (auto-includes nucleosomes for eukaryotic)</td>
-</tr>
-<tr>
-<td><code>model.binding_proteins_positions</code></td>
-<td><code>list[list[float]]</code> — positions (nm) of bound proteins per type</td>
-</tr>
-<tr>
-<td><code>model.topoisomerase_*</code></td>
-<td>Topoisomerase state (only when <code>mode == 'topoisomerase_based'</code>)</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Do not modify these attributes directly</strong> during a simulation; use the provided functions in <code>model_dynamics.py</code>.</p>
-<hr />
-<h2 id="simulationsetupandstate"><code>SimulationSetupAndState</code><a class="headerlink" href="#simulationsetupandstate" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">SimulationSetupAndState</span><span class="p">(</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="n">genomic_setup</span><span class="p">,</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="n">simulation_end_mode</span><span class="p">,</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="n">simulation_end_criterion</span><span class="p">,</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="n">integration_method</span><span class="o">=</span><span class="s1">&#39;RK23&#39;</span><span class="p">,</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="n">integration_time_resolution</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="n">RNAP_alive_status_check_interval</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    <span class="n">max_RNAPs_to_recruit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="p">)</span>
-</code></pre></div>
-<h3 id="termination-modes">Termination Modes<a class="headerlink" href="#termination-modes" title="Permanent link">&para;</a></h3>
-<h4 id="time-based-simulation_end_mode0">Time-based (<code>simulation_end_mode=0</code>)<a class="headerlink" href="#time-based-simulation_end_mode0" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">sim</span> <span class="o">=</span> <span class="n">SimulationSetupAndState</span><span class="p">(</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="n">genomic_setup</span><span class="p">,</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="n">simulation_end_mode</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">simulation_end_criterion</span><span class="o">=</span><span class="mf">1000.0</span><span class="p">,</span>   <span class="c1"># stop after 1000 s</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="p">)</span>
-</code></pre></div>
-<h4 id="event-based-simulation_end_mode1">Event-based (<code>simulation_end_mode=1</code>)<a class="headerlink" href="#event-based-simulation_end_mode1" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">sim</span> <span class="o">=</span> <span class="n">SimulationSetupAndState</span><span class="p">(</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="n">genomic_setup</span><span class="p">,</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="n">simulation_end_mode</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="n">simulation_end_criterion</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">50</span><span class="p">],</span>  <span class="c1"># per-gene RNAP completion counts</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="p">)</span>
-</code></pre></div>
-<p>The simulation stops when <strong>all</strong> genes have reached their respective target.</p>
-<h3 id="limiting-rnap-recruitment">Limiting RNAP Recruitment<a class="headerlink" href="#limiting-rnap-recruitment" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">sim</span> <span class="o">=</span> <span class="n">SimulationSetupAndState</span><span class="p">(</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    <span class="n">genomic_setup</span><span class="p">,</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="n">simulation_end_mode</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="n">simulation_end_criterion</span><span class="o">=</span><span class="p">[</span><span class="mi">50</span><span class="p">],</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="n">max_RNAPs_to_recruit</span><span class="o">=</span><span class="p">[</span><span class="mi">50</span><span class="p">],</span>   <span class="c1"># recruit at most 50 RNAPs</span>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="p">)</span>
-</code></pre></div>
-<p><code>max_RNAPs_to_recruit[i]</code> must be ≥ <code>simulation_end_criterion[i]</code> in event-based mode.</p>
-<h3 id="integration-parameters">Integration Parameters<a class="headerlink" href="#integration-parameters" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>Parameter</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
 <tr>
 <td><code>integration_time_resolution</code></td>
-<td>0.1 s</td>
-<td>Time step used for <code>t_eval</code> points within each ODE integration interval</td>
+<td>spacing of <code>t_eval</code> points within an integration window (s)</td>
 </tr>
 <tr>
 <td><code>RNAP_alive_status_check_interval</code></td>
-<td>1.0 s</td>
-<td>Interval at which RNAP completion status is checked during integration</td>
+<td>how often the integrator pauses to remove finished RNAPs and check for events (s)</td>
+</tr>
+<tr>
+<td><code>max_RNAPs_to_recruit</code></td>
+<td>optional list capping recruitment per gene</td>
 </tr>
 </tbody>
 </table>
-<p>Decrease <code>integration_time_resolution</code> for higher temporal resolution in output or to detect fast events more accurately. Smaller values increase computation time.</p>
 <hr />
-<h2 id="running-the-simulation">Running the Simulation<a class="headerlink" href="#running-the-simulation" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">simulate_dynamics</span><span class="w"> </span><span class="kn">import</span> <span class="n">simulate_dynamics</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="n">simulate_dynamics</span><span class="p">(</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    <span class="n">model</span><span class="p">,</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>    <span class="n">simulation_setup_and_state</span><span class="p">,</span>
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>    <span class="n">print_at_each_integration_step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>    <span class="n">print_at_each_simulation_step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>    <span class="n">print_at_end_of_simulation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="p">)</span>
+<h2 id="termination-modes">Termination modes<a class="headerlink" href="#termination-modes" title="Permanent link">&para;</a></h2>
+<h3 id="time-based-simulation_end_mode-0">Time-based (<code>simulation_end_mode = 0</code>)<a class="headerlink" href="#time-based-simulation_end_mode-0" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">sim</span> <span class="o">=</span> <span class="n">SimulationSetupAndState</span><span class="p">(</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="n">genomic_setup</span><span class="p">,</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="n">simulation_end_mode</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="n">simulation_end_criterion</span><span class="o">=</span><span class="mf">300.0</span><span class="p">,</span>   <span class="c1"># seconds</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="p">)</span>
 </code></pre></div>
-<p>All three <code>print_*</code> arguments accept an optional callable with signature:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">my_callback</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span> <span class="n">sim</span><span class="p">:</span> <span class="n">SimulationSetupAndState</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>    <span class="o">...</span>
+<p>The loop exits as soon as <code>sim.curr_simulation_time &gt;= simulation_end_criterion</code>.</p>
+<h3 id="event-count-based-simulation_end_mode-1">Event-count based (<code>simulation_end_mode = 1</code>)<a class="headerlink" href="#event-count-based-simulation_end_mode-1" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">sim</span> <span class="o">=</span> <span class="n">SimulationSetupAndState</span><span class="p">(</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="n">genomic_setup</span><span class="p">,</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="n">simulation_end_mode</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">simulation_end_criterion</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">50</span><span class="p">],</span>   <span class="c1"># one entry per gene</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="p">)</span>
 </code></pre></div>
-<p>(The <code>print_at_each_integration_step</code> callback also receives <code>t: float</code> and <code>state_vector: list[float]</code> arguments.)</p>
-<h3 id="example-progress-logging">Example: Progress Logging<a class="headerlink" href="#example-progress-logging" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">log_progress</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">sim</span><span class="p">):</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;t=</span><span class="si">{</span><span class="n">sim</span><span class="o">.</span><span class="n">curr_simulation_time</span><span class="si">:</span><span class="s1">.1f</span><span class="si">}</span><span class="s1">s  &#39;</span>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>          <span class="sa">f</span><span class="s1">&#39;finished=</span><span class="si">{</span><span class="n">sim</span><span class="o">.</span><span class="n">RNAPs_finished_transcription</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="n">simulate_dynamics</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">sim</span><span class="p">,</span> <span class="n">print_at_each_simulation_step</span><span class="o">=</span><span class="n">log_progress</span><span class="p">)</span>
+<p>The loop exits as soon as <strong>every</strong> gene has produced at least its target number of completed transcripts. <code>sim.curr_simulation_time</code> ends at whatever value satisfies that condition.</p>
+<p>The list length must equal the number of genes; this is enforced by the constructor.</p>
+<h3 id="limiting-recruitment">Limiting recruitment<a class="headerlink" href="#limiting-recruitment" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">sim</span> <span class="o">=</span> <span class="n">SimulationSetupAndState</span><span class="p">(</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="n">genomic_setup</span><span class="p">,</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="n">simulation_end_mode</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="n">simulation_end_criterion</span><span class="o">=</span><span class="p">[</span><span class="mi">50</span><span class="p">],</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="n">max_RNAPs_to_recruit</span><span class="o">=</span><span class="p">[</span><span class="mi">50</span><span class="p">],</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="p">)</span>
 </code></pre></div>
+<p>Once <code>len(sim.RNAP_recruitment_times[i]) &gt;= max_RNAPs_to_recruit[i]</code>, further recruitment events on gene <code>i</code> silently fail (the Gillespie event still fires, but no RNAP is added). When event-count mode is selected, <code>max_RNAPs_to_recruit[i]</code> must be <code>&gt;=</code> <code>simulation_end_event_counts[i]</code>; otherwise the run could never complete, and the constructor refuses to construct.</p>
 <hr />
-<h2 id="extracting-results">Extracting Results<a class="headerlink" href="#extracting-results" title="Permanent link">&para;</a></h2>
-<p>After the simulation completes, results are stored in <code>SimulationSetupAndState</code>:</p>
+<h2 id="integrator-settings">Integrator settings<a class="headerlink" href="#integrator-settings" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Default</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>integration_method</code></td>
+<td><code>'RK23'</code></td>
+<td>The SciPy <code>solve_ivp</code> method to use. Other methods emit a <code>UserWarning</code> because higher-order solvers can produce non-physical intermediate states (e.g. RNAPs overlapping) and crash the run.</td>
+</tr>
+<tr>
+<td><code>integration_time_resolution</code></td>
+<td><code>0.1</code> s</td>
+<td>Spacing of <code>t_eval</code> points within each integration window. Affects only the temporal resolution at which <code>print_at_each_integration_step</code> observes the state; the dynamics are unchanged.</td>
+</tr>
+<tr>
+<td><code>RNAP_alive_status_check_interval</code></td>
+<td><code>1.0</code> s</td>
+<td>The integrator advances in chunks of this size, then removes RNAPs that finished and re-evaluates whether the cumulative propensity has crossed the event threshold. Smaller values are safer (fewer mis-detections of fast events) but slower.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="reading-results">Reading results<a class="headerlink" href="#reading-results" title="Permanent link">&para;</a></h2>
+<h3 id="counts-and-timing">Counts and timing<a class="headerlink" href="#counts-and-timing" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
 <th>Attribute</th>
 <th>Type</th>
-<th>Description</th>
+<th>Meaning</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>sim.RNAPs_finished_transcription</code></td>
 <td><code>list[int]</code></td>
-<td>Number of RNAPs that completed transcription per gene</td>
+<td>Number of RNAPs that completed transcription, per gene</td>
 </tr>
 <tr>
-<td><code>sim.RNAP_recruitment_times</code></td>
-<td><code>list[list[float]]</code></td>
-<td>Recruitment time of each RNAP per gene (s)</td>
+<td><code>sim.RNAP_recruitment_times[i]</code></td>
+<td><code>list[float]</code></td>
+<td>Times (s) at which each RNAP on gene <code>i</code> was recruited</td>
 </tr>
 <tr>
-<td><code>sim.RNAP_exit_times</code></td>
-<td><code>list[list[float]]</code></td>
-<td>Transcription completion time per RNAP per gene (s)</td>
+<td><code>sim.RNAP_exit_times[i]</code></td>
+<td><code>list[float]</code></td>
+<td>Times (s) at which each completed RNAP on gene <code>i</code> exited</td>
 </tr>
 <tr>
-<td><code>sim.RNAPs_exit_positions</code></td>
-<td><code>list[list[float]]</code></td>
-<td>Position where each RNAP exited the gene (nm)</td>
+<td><code>sim.RNAPs_exit_positions[i]</code></td>
+<td><code>list[float]</code></td>
+<td>Positions (nm) at which each completed RNAP on gene <code>i</code> exited</td>
 </tr>
 <tr>
 <td><code>sim.curr_simulation_time</code></td>
 <td><code>float</code></td>
-<td>Final simulation time (s)</td>
+<td>Total simulated seconds</td>
 </tr>
 <tr>
 <td><code>sim.simulation_completed</code></td>
 <td><code>bool</code></td>
-<td><code>True</code> if termination criterion was met</td>
+<td><code>True</code> iff the loop exited because the criterion was met</td>
 </tr>
 </tbody>
 </table>
-<h3 id="transcription-rates">Transcription Rates<a class="headerlink" href="#transcription-rates" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># Returns list[list[float]] — transcription rate in bp/s for each RNAP per gene</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="n">rates</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">calculate_RNAP_transcription_rates</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+<p>For an alive RNAP at the end of a time-based run, only <code>RNAP_recruitment_times[i]</code> will contain its entry; no exit time or exit position is recorded.</p>
+<h3 id="transcription-rates">Transcription rates<a class="headerlink" href="#transcription-rates" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">rates</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">calculate_RNAP_transcription_rates</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
 </code></pre></div>
-<h3 id="inter-rnap-intervals">Inter-RNAP Intervals<a class="headerlink" href="#inter-rnap-intervals" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="c1"># Recruitment intervals (s) for gene 0</span>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="n">intervals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">sim</span><span class="o">.</span><span class="n">RNAP_recruitment_times</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="n">mean_interval</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">intervals</span><span class="p">)</span>
+<p>Returns <code>list[list[float]]</code>: for each gene, the per-RNAP mean transcription rate in <strong>bp/s</strong>. Computed only for RNAPs that completed transcription:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>rate = (exit_position − TSS) × sign / 0.34 / (exit_time − recruitment_time)        # bp/s
+</code></pre></div>
+<p>This method asserts that the distance covered is at least <code>gene_length</code>, so a non-empty list always corresponds to genuinely completed transcripts.</p>
+<h3 id="inter-recruitment-intervals">Inter-recruitment intervals<a class="headerlink" href="#inter-recruitment-intervals" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">intervals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">sim</span><span class="o">.</span><span class="n">RNAP_recruitment_times</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="n">mean_interval</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">intervals</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
 </code></pre></div>
 <hr />
-<h2 id="complete-example-with-two-genes">Complete Example with Two Genes<a class="headerlink" href="#complete-example-with-two-genes" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">model_setup</span><span class="w"> </span><span class="kn">import</span> <span class="n">GenomicSetup</span><span class="p">,</span> <span class="n">ModelSetup</span><span class="p">,</span> <span class="n">Model</span><span class="p">,</span> <span class="n">SimulationSetupAndState</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">simulate_dynamics</span><span class="w"> </span><span class="kn">import</span> <span class="n">simulate_dynamics</span>
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>
-<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="n">genomic_setup</span> <span class="o">=</span> <span class="n">GenomicSetup</span><span class="p">(</span>
-<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>    <span class="n">chromatin_type</span><span class="o">=</span><span class="s1">&#39;prokaryotic&#39;</span><span class="p">,</span>
-<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>    <span class="n">gene_names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;geneA&#39;</span><span class="p">,</span> <span class="s1">&#39;geneB&#39;</span><span class="p">],</span>
-<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>    <span class="n">TSSes</span><span class="o">=</span><span class="p">[</span><span class="mf">340.0</span><span class="p">,</span> <span class="mf">4420.0</span><span class="p">],</span>
-<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>    <span class="n">gene_lengths</span><span class="o">=</span><span class="p">[</span><span class="mf">3400.0</span><span class="p">,</span> <span class="mf">3400.0</span><span class="p">],</span>
-<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>    <span class="n">gene_directions</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>    <span class="n">RNAP_on_rates</span><span class="o">=</span><span class="p">[</span><span class="mf">0.02</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">],</span>
-<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>    <span class="n">promoter_mode</span><span class="o">=</span><span class="s1">&#39;constitutive&#39;</span><span class="p">,</span>
-<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a>    <span class="n">buffer_length</span><span class="o">=</span><span class="mf">4420.0</span><span class="p">,</span>
-<a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a><span class="p">)</span>
-<a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a>
-<a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a><span class="n">model_setup</span> <span class="o">=</span> <span class="n">ModelSetup</span><span class="p">(</span>
-<a id="__codelineno-11-17" name="__codelineno-11-17" href="#__codelineno-11-17"></a>    <span class="n">supercoiling_relaxation_dynamics_mode</span><span class="o">=</span><span class="s1">&#39;global_overall&#39;</span><span class="p">,</span>
-<a id="__codelineno-11-18" name="__codelineno-11-18" href="#__codelineno-11-18"></a>    <span class="n">global_supercoiling_relaxation_rate</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
-<a id="__codelineno-11-19" name="__codelineno-11-19" href="#__codelineno-11-19"></a><span class="p">)</span>
-<a id="__codelineno-11-20" name="__codelineno-11-20" href="#__codelineno-11-20"></a>
-<a id="__codelineno-11-21" name="__codelineno-11-21" href="#__codelineno-11-21"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">genomic_setup</span><span class="p">,</span> <span class="n">model_setup</span><span class="p">)</span>
-<a id="__codelineno-11-22" name="__codelineno-11-22" href="#__codelineno-11-22"></a><span class="n">sim</span> <span class="o">=</span> <span class="n">SimulationSetupAndState</span><span class="p">(</span>
-<a id="__codelineno-11-23" name="__codelineno-11-23" href="#__codelineno-11-23"></a>    <span class="n">genomic_setup</span><span class="p">,</span>
-<a id="__codelineno-11-24" name="__codelineno-11-24" href="#__codelineno-11-24"></a>    <span class="n">simulation_end_mode</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-<a id="__codelineno-11-25" name="__codelineno-11-25" href="#__codelineno-11-25"></a>    <span class="n">simulation_end_criterion</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>
-<a id="__codelineno-11-26" name="__codelineno-11-26" href="#__codelineno-11-26"></a>    <span class="n">max_RNAPs_to_recruit</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>
-<a id="__codelineno-11-27" name="__codelineno-11-27" href="#__codelineno-11-27"></a><span class="p">)</span>
-<a id="__codelineno-11-28" name="__codelineno-11-28" href="#__codelineno-11-28"></a>
-<a id="__codelineno-11-29" name="__codelineno-11-29" href="#__codelineno-11-29"></a><span class="n">simulate_dynamics</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">sim</span><span class="p">)</span>
-<a id="__codelineno-11-30" name="__codelineno-11-30" href="#__codelineno-11-30"></a>
-<a id="__codelineno-11-31" name="__codelineno-11-31" href="#__codelineno-11-31"></a><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">genomic_setup</span><span class="o">.</span><span class="n">gene_names</span><span class="p">):</span>
-<a id="__codelineno-11-32" name="__codelineno-11-32" href="#__codelineno-11-32"></a>    <span class="n">rates</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">calculate_RNAP_transcription_rates</span><span class="p">(</span><span class="n">model</span><span class="p">)[</span><span class="n">i</span><span class="p">]</span>
-<a id="__codelineno-11-33" name="__codelineno-11-33" href="#__codelineno-11-33"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">: mean transcription rate = </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">rates</span><span class="p">)</span><span class="si">:</span><span class="s1">.1f</span><span class="si">}</span><span class="s1"> bp/s&#39;</span><span class="p">)</span>
+<h2 id="callbacks">Callbacks<a class="headerlink" href="#callbacks" title="Permanent link">&para;</a></h2>
+<p><code>simulate_dynamics</code> accepts three optional callables:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">simulate_dynamics</span><span class="p">(</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="n">model</span><span class="p">,</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>    <span class="n">sim</span><span class="p">,</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="n">print_at_each_integration_step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>   <span class="c1"># (model, sim, t, state_vector)</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>    <span class="n">print_at_each_simulation_step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>    <span class="c1"># (model, sim)</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>    <span class="n">print_at_end_of_simulation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>       <span class="c1"># (model, sim)</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="p">)</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Callback</th>
+<th>Signature</th>
+<th>Fires</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>print_at_each_integration_step</code></td>
+<td><code>(model, sim, t, state_vector)</code></td>
+<td>Once at the start of every integration window of length <code>RNAP_alive_status_check_interval</code>. The <code>state_vector</code> is the live integrator state (RNAP positions, angles, segment <code>Lk</code>, cumulative propensity).</td>
+</tr>
+<tr>
+<td><code>print_at_each_simulation_step</code></td>
+<td><code>(model, sim)</code></td>
+<td>Once at the top of each iteration of the outer Gillespie loop, <strong>before</strong> event selection.</td>
+</tr>
+<tr>
+<td><code>print_at_end_of_simulation</code></td>
+<td><code>(model, sim)</code></td>
+<td>Once when the loop exits.</td>
+</tr>
+</tbody>
+</table>
+<p>The integration callback is suitable for logging time series of RNAP positions and supercoiling densities. The Gillespie callback is suitable for logging per-event quantities (mRNA counts, recruitment-success rates). The end callback is suitable for summary output.</p>
+<h3 id="worked-logging-snippet">Worked logging snippet<a class="headerlink" href="#worked-logging-snippet" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TextIO</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">log_step</span><span class="p">(</span><span class="n">x_file</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">sigma_file</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>             <span class="n">model</span><span class="p">,</span> <span class="n">sim</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">state_vector</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]):</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>    <span class="n">RNAP_gene_index</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">get_state_vectors_from_dicts</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">RNAP_gene_index</span><span class="p">)</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>    <span class="n">seg_lengths</span><span class="p">,</span> <span class="n">seg_sigmas</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">calculate_segments_attributes</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">RNAP_gene_index</span><span class="p">,</span> <span class="n">state_vector</span><span class="p">)</span>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>    <span class="n">x_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>        <span class="n">x_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">state_vector</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>    <span class="n">x_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a>
+<a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a>    <span class="n">sigma_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
+<a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a>    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">seg_sigmas</span><span class="p">:</span>
+<a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a>        <span class="n">sigma_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>
+<a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a>    <span class="n">sigma_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a>
+<a id="__codelineno-9-19" name="__codelineno-9-19" href="#__codelineno-9-19"></a><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;x.log&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">xf</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;sigma.log&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">sf</span><span class="p">:</span>
+<a id="__codelineno-9-20" name="__codelineno-9-20" href="#__codelineno-9-20"></a>    <span class="n">simulate_dynamics</span><span class="p">(</span>
+<a id="__codelineno-9-21" name="__codelineno-9-21" href="#__codelineno-9-21"></a>        <span class="n">model</span><span class="p">,</span> <span class="n">sim</span><span class="p">,</span>
+<a id="__codelineno-9-22" name="__codelineno-9-22" href="#__codelineno-9-22"></a>        <span class="n">print_at_each_integration_step</span><span class="o">=</span><span class="k">lambda</span> <span class="n">m</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">sv</span><span class="p">:</span> <span class="n">log_step</span><span class="p">(</span><span class="n">xf</span><span class="p">,</span> <span class="n">sf</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">sv</span><span class="p">),</span>
+<a id="__codelineno-9-23" name="__codelineno-9-23" href="#__codelineno-9-23"></a>    <span class="p">)</span>
+</code></pre></div>
+<p>The number of segments changes whenever an RNAP is recruited or exits, so the per-row width of <code>sigma.log</code> varies. Either pad on read, or post-process by joining <code>t</code> to the segment boundaries reconstructed from <code>x.log</code>.</p>
+<hr />
+<h2 id="complete-example">Complete example<a class="headerlink" href="#complete-example" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">model_setup</span><span class="w"> </span><span class="kn">import</span> <span class="n">GenomicSetup</span><span class="p">,</span> <span class="n">ModelSetup</span><span class="p">,</span> <span class="n">Model</span><span class="p">,</span> <span class="n">SimulationSetupAndState</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">simulate_dynamics</span><span class="w"> </span><span class="kn">import</span> <span class="n">simulate_dynamics</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="n">genomic_setup</span> <span class="o">=</span> <span class="n">GenomicSetup</span><span class="p">(</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>    <span class="n">chromatin_type</span><span class="o">=</span><span class="s1">&#39;prokaryotic&#39;</span><span class="p">,</span>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>    <span class="n">gene_names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;geneA&#39;</span><span class="p">,</span> <span class="s1">&#39;geneB&#39;</span><span class="p">],</span>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>    <span class="n">TSSes</span><span class="o">=</span><span class="p">[</span><span class="mf">340.0</span><span class="p">,</span> <span class="mf">4420.0</span><span class="p">],</span>
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>    <span class="n">gene_lengths</span><span class="o">=</span><span class="p">[</span><span class="mf">3400.0</span><span class="p">,</span> <span class="mf">3400.0</span><span class="p">],</span>
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>    <span class="n">gene_directions</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>    <span class="n">RNAP_on_rates</span><span class="o">=</span><span class="p">[</span><span class="mf">0.02</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">],</span>
+<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>    <span class="n">promoter_mode</span><span class="o">=</span><span class="s1">&#39;constitutive&#39;</span><span class="p">,</span>
+<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a>    <span class="n">buffer_length</span><span class="o">=</span><span class="mf">4420.0</span><span class="p">,</span>
+<a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a><span class="p">)</span>
+<a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a><span class="n">model_setup</span> <span class="o">=</span> <span class="n">ModelSetup</span><span class="p">(</span>
+<a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a>    <span class="n">supercoiling_relaxation_dynamics_mode</span><span class="o">=</span><span class="s1">&#39;topoisomerase_approximated&#39;</span><span class="p">,</span>
+<a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a>    <span class="n">TOP1_effective_relaxation_rate</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+<a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a>    <span class="n">TOP2_effective_relaxation_rate</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span>
+<a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a><span class="p">)</span>
+<a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">genomic_setup</span><span class="p">,</span> <span class="n">model_setup</span><span class="p">)</span>
+<a id="__codelineno-10-21" name="__codelineno-10-21" href="#__codelineno-10-21"></a><span class="n">sim</span> <span class="o">=</span> <span class="n">SimulationSetupAndState</span><span class="p">(</span>
+<a id="__codelineno-10-22" name="__codelineno-10-22" href="#__codelineno-10-22"></a>    <span class="n">genomic_setup</span><span class="p">,</span>
+<a id="__codelineno-10-23" name="__codelineno-10-23" href="#__codelineno-10-23"></a>    <span class="n">simulation_end_mode</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<a id="__codelineno-10-24" name="__codelineno-10-24" href="#__codelineno-10-24"></a>    <span class="n">simulation_end_criterion</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>
+<a id="__codelineno-10-25" name="__codelineno-10-25" href="#__codelineno-10-25"></a>    <span class="n">max_RNAPs_to_recruit</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>
+<a id="__codelineno-10-26" name="__codelineno-10-26" href="#__codelineno-10-26"></a><span class="p">)</span>
+<a id="__codelineno-10-27" name="__codelineno-10-27" href="#__codelineno-10-27"></a>
+<a id="__codelineno-10-28" name="__codelineno-10-28" href="#__codelineno-10-28"></a><span class="n">simulate_dynamics</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">sim</span><span class="p">)</span>
+<a id="__codelineno-10-29" name="__codelineno-10-29" href="#__codelineno-10-29"></a>
+<a id="__codelineno-10-30" name="__codelineno-10-30" href="#__codelineno-10-30"></a><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">genomic_setup</span><span class="o">.</span><span class="n">gene_names</span><span class="p">):</span>
+<a id="__codelineno-10-31" name="__codelineno-10-31" href="#__codelineno-10-31"></a>    <span class="n">rates</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">calculate_RNAP_transcription_rates</span><span class="p">(</span><span class="n">model</span><span class="p">)[</span><span class="n">i</span><span class="p">]</span>
+<a id="__codelineno-10-32" name="__codelineno-10-32" href="#__codelineno-10-32"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">: mean transcription rate = </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">rates</span><span class="p">)</span><span class="si">:</span><span class="s1">.1f</span><span class="si">}</span><span class="s1"> bp/s &#39;</span>
+<a id="__codelineno-10-33" name="__codelineno-10-33" href="#__codelineno-10-33"></a>          <span class="sa">f</span><span class="s1">&#39;over </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">rates</span><span class="p">)</span><span class="si">}</span><span class="s1"> completed transcripts&#39;</span><span class="p">)</span>
+<a id="__codelineno-10-34" name="__codelineno-10-34" href="#__codelineno-10-34"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Total simulated time: </span><span class="si">{</span><span class="n">sim</span><span class="o">.</span><span class="n">curr_simulation_time</span><span class="si">:</span><span class="s1">.1f</span><span class="si">}</span><span class="s1"> s&#39;</span><span class="p">)</span>
 </code></pre></div>
 
 

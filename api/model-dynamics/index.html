@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#model_dynamics-integration-and-state-management" class="md-skip">
+        <a href="#model_dynamics" class="md-skip">
           Skip to content
         </a>
       
@@ -335,6 +335,25 @@
         </a>
       </li>
     
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../citations/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  How to cite
+
+      </a>
+    </li>
   
 
       
@@ -609,6 +628,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../user-guide/binding-proteins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Binding Proteins
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../user-guide/simulation/" class="md-nav__link">
         
   
@@ -645,6 +692,62 @@
     
   
     Supercoiling Relaxation Modes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/events-and-propensities/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events and Propensities
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/not-yet-implemented/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Not Yet Implemented
   
 
     
@@ -962,26 +1065,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#state-vector-conventions" class="md-nav__link">
+  <a href="#state-vector-helpers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        State Vector Conventions
+        State-vector helpers
       
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#state-vector-access" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        State Vector Access
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="State Vector Access">
+    <nav class="md-nav" aria-label="State-vector helpers">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1015,12 +1107,12 @@
   <a href="#segment-attributes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Segment Attributes
+        Segment attributes
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Segment Attributes">
+    <nav class="md-nav" aria-label="Segment attributes">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1040,15 +1132,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#velocity-calculations" class="md-nav__link">
+  <a href="#velocities-and-rates" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Velocity Calculations
+        Velocities and rates
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Velocity Calculations">
+    <nav class="md-nav" aria-label="Velocities and rates">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1083,23 +1175,6 @@
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#event-rate-calculations" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Event Rate Calculations
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Event Rate Calculations">
-      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#get_rnap_recruitment_rates" class="md-nav__link">
@@ -1145,6 +1220,101 @@
   
 </li>
         
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rnap-lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RNAP lifecycle
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RNAP lifecycle">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#are_rnaps_alive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        are_RNAPs_alive
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#update_state_vector_to_remove_dead_rnaps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        update_state_vector_to_remove_dead_RNAPs
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lk-bookkeeping-for-discrete-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lk bookkeeping for discrete events
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Lk bookkeeping for discrete events">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#update_lk_vector_after_rnap_or_protein_recruitment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        update_Lk_vector_after_RNAP_or_protein_recruitment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#update_lk_vector_after_protein_unbinding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        update_Lk_vector_after_protein_unbinding
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#event-rate-vector" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Event rate vector
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Event rate vector">
+      <ul class="md-nav__list">
+        
           <li class="md-nav__item">
   <a href="#get_events_rates" class="md-nav__link">
     <span class="md-ellipsis">
@@ -1165,16 +1335,16 @@
   <a href="#ode-right-hand-side" class="md-nav__link">
     <span class="md-ellipsis">
       
-        ODE Right-Hand Side
+        ODE right-hand side
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="ODE Right-Hand Side">
+    <nav class="md-nav" aria-label="ODE right-hand side">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#model_dynamics" class="md-nav__link">
+  <a href="#model_dynamics_1" class="md-nav__link">
     <span class="md-ellipsis">
       
         model_dynamics
@@ -1190,15 +1360,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#integration" class="md-nav__link">
+  <a href="#integration-window" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Integration
+        Integration window
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Integration">
+    <nav class="md-nav" aria-label="Integration window">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1206,56 +1376,6 @@
     <span class="md-ellipsis">
       
         integrate
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#state-update-utilities" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        State Update Utilities
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="State Update Utilities">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#update_lk_vector_after_rnap_recruitment" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        update_Lk_vector_after_RNAP_recruitment
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#update_state_vector_to_remove_dead_rnaps" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        update_state_vector_to_remove_dead_RNAPs
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#are_rnaps_alive" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        are_RNAPs_alive
       
     </span>
   </a>
@@ -1339,6 +1459,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../citations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How to cite
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1366,26 +1513,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#state-vector-conventions" class="md-nav__link">
+  <a href="#state-vector-helpers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        State Vector Conventions
+        State-vector helpers
       
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#state-vector-access" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        State Vector Access
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="State Vector Access">
+    <nav class="md-nav" aria-label="State-vector helpers">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1419,12 +1555,12 @@
   <a href="#segment-attributes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Segment Attributes
+        Segment attributes
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Segment Attributes">
+    <nav class="md-nav" aria-label="Segment attributes">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1444,15 +1580,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#velocity-calculations" class="md-nav__link">
+  <a href="#velocities-and-rates" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Velocity Calculations
+        Velocities and rates
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Velocity Calculations">
+    <nav class="md-nav" aria-label="Velocities and rates">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1487,23 +1623,6 @@
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#event-rate-calculations" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Event Rate Calculations
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Event Rate Calculations">
-      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#get_rnap_recruitment_rates" class="md-nav__link">
@@ -1549,6 +1668,101 @@
   
 </li>
         
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rnap-lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RNAP lifecycle
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RNAP lifecycle">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#are_rnaps_alive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        are_RNAPs_alive
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#update_state_vector_to_remove_dead_rnaps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        update_state_vector_to_remove_dead_RNAPs
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lk-bookkeeping-for-discrete-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lk bookkeeping for discrete events
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Lk bookkeeping for discrete events">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#update_lk_vector_after_rnap_or_protein_recruitment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        update_Lk_vector_after_RNAP_or_protein_recruitment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#update_lk_vector_after_protein_unbinding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        update_Lk_vector_after_protein_unbinding
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#event-rate-vector" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Event rate vector
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Event rate vector">
+      <ul class="md-nav__list">
+        
           <li class="md-nav__item">
   <a href="#get_events_rates" class="md-nav__link">
     <span class="md-ellipsis">
@@ -1569,16 +1783,16 @@
   <a href="#ode-right-hand-side" class="md-nav__link">
     <span class="md-ellipsis">
       
-        ODE Right-Hand Side
+        ODE right-hand side
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="ODE Right-Hand Side">
+    <nav class="md-nav" aria-label="ODE right-hand side">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#model_dynamics" class="md-nav__link">
+  <a href="#model_dynamics_1" class="md-nav__link">
     <span class="md-ellipsis">
       
         model_dynamics
@@ -1594,15 +1808,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#integration" class="md-nav__link">
+  <a href="#integration-window" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Integration
+        Integration window
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Integration">
+    <nav class="md-nav" aria-label="Integration window">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1610,56 +1824,6 @@
     <span class="md-ellipsis">
       
         integrate
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#state-update-utilities" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        State Update Utilities
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="State Update Utilities">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#update_lk_vector_after_rnap_recruitment" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        update_Lk_vector_after_RNAP_recruitment
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#update_state_vector_to_remove_dead_rnaps" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        update_state_vector_to_remove_dead_RNAPs
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#are_rnaps_alive" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        are_RNAPs_alive
       
     </span>
   </a>
@@ -1691,212 +1855,95 @@
   
 
 
-<h1 id="model_dynamics-integration-and-state-management"><code>model_dynamics</code> — Integration and State Management<a class="headerlink" href="#model_dynamics-integration-and-state-management" title="Permanent link">&para;</a></h1>
-<p><strong>File:</strong> <code>model_dynamics.py</code>
-<strong>Imports:</strong> <code>model_setup</code>, <code>biol_methods</code>, <code>utilities</code>, <code>scipy</code>, <code>numpy</code></p>
-<p>This module manages the state vector, computes the ODE right-hand side, calculates event rates, and integrates the system forward in time.</p>
+<h1 id="model_dynamics"><code>model_dynamics</code><a class="headerlink" href="#model_dynamics" title="Permanent link">&para;</a></h1>
+<p>Vectorised dynamics over the whole DNA. These functions assemble the segment-level inputs, call the per-segment <code>biol_methods</code>, and produce the time derivatives that drive <code>solve_ivp</code>.</p>
 <hr />
-<h2 id="state-vector-conventions">State Vector Conventions<a class="headerlink" href="#state-vector-conventions" title="Permanent link">&para;</a></h2>
-<p>RNAPs are ordered <strong>right-to-left</strong> in the state vector (descending x position). DNA segments are indexed from right to left: segment 0 is between the right clamp and the rightmost RNAP; segment <code>n</code> (last) is between the leftmost RNAP and the left clamp.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>state_vector = [x₁, …, xₙ,          # positions (nm), right-to-left
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>                θ₁, …, θₙ,          # angular positions (rad)
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>                Lk₀, …, Lkₙ,       # linking numbers (n+1 segments)
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>                A]                   # cumulative propensity (dimensionless)
-</code></pre></div>
-<hr />
-<h2 id="state-vector-access">State Vector Access<a class="headerlink" href="#state-vector-access" title="Permanent link">&para;</a></h2>
+<h2 id="state-vector-helpers">State-vector helpers<a class="headerlink" href="#state-vector-helpers" title="Permanent link">&para;</a></h2>
 <h3 id="get_state_vectors_from_dicts"><code>get_state_vectors_from_dicts</code><a class="headerlink" href="#get_state_vectors_from_dicts" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">get_state_vectors_from_dicts</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">get_state_vectors_from_dicts</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span>
 </code></pre></div>
-<p>Converts the per-gene <code>x_dict</code>/<code>theta_dict</code> dictionaries and <code>Lk</code> list into a flat state vector suitable for ODE integration. Returns <code>(RNAP_gene_index, state_vector)</code>.</p>
-<p><code>RNAP_gene_index[i]</code> is the gene index of the i-th RNAP in the state vector.</p>
+<p>Flatten <code>model.x_dict</code>, <code>model.theta_dict</code>, <code>model.Lk</code> into the integrator state vector. Returns <code>(RNAP_gene_index, state_vector)</code>. RNAPs are ordered <strong>right to left</strong> along the DNA.</p>
 <h3 id="update_dicts_from_state_vector"><code>update_dicts_from_state_vector</code><a class="headerlink" href="#update_dicts_from_state_vector" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">update_dicts_from_state_vector</span><span class="p">(</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="n">RNAP_gene_index</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="n">state_vector</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">update_dicts_from_state_vector</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">RNAP_gene_index</span><span class="p">,</span> <span class="n">state_vector</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </code></pre></div>
-<p>Writes the state vector back into the model's <code>x_dict</code>, <code>theta_dict</code>, and <code>Lk</code>. Reverses the ordering for negative-strand genes.</p>
+<p>Inverse of the above. Writes the integrator output back into <code>model.x_dict</code>, <code>model.theta_dict</code>, <code>model.Lk</code>.</p>
 <hr />
-<h2 id="segment-attributes">Segment Attributes<a class="headerlink" href="#segment-attributes" title="Permanent link">&para;</a></h2>
+<h2 id="segment-attributes">Segment attributes<a class="headerlink" href="#segment-attributes" title="Permanent link">&para;</a></h2>
 <h3 id="calculate_segments_attributes"><code>calculate_segments_attributes</code><a class="headerlink" href="#calculate_segments_attributes" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">calculate_segments_attributes</span><span class="p">(</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="n">RNAP_gene_index</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">state_vector</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>  <span class="c1"># lengths (nm)</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>  <span class="c1"># sigmas</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>    <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>  <span class="c1"># torques (pN·nm)</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>    <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>    <span class="c1"># DNA states</span>
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>    <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>  <span class="c1"># writhe fractions</span>
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>    <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>  <span class="c1"># plectoneme thresholds</span>
-<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="p">]</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">calculate_segments_attributes</span><span class="p">(</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="n">model</span><span class="p">,</span> <span class="n">RNAP_gene_index</span><span class="p">,</span> <span class="n">state_vector</span><span class="p">,</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span>
 </code></pre></div>
-<p>Computes the geometric and mechanical properties of all DNA segments given the current state vector. Calls <code>get_prokaryotic_torque</code> for prokaryotic setups or <code>get_eukaryotic_torque</code> for eukaryotic setups.</p>
-<p>For eukaryotic chromatin, this function also computes per-segment nucleosome counts and nucleosome densities (<span class="arithmatex">\(\psi\)</span>), which are passed to <code>get_eukaryotic_torque</code>. An <code>AssertionError</code> is raised if any segment's nucleosome density falls outside the range [0.0, 1.0].</p>
+<p>Returns <code>(segments_lengths, segments_sigmas, segments_torques, segments_dna_states, segments_writhe_fractions, segments_plectoneme_thresholds)</code>. For eukaryotic models, the per-segment nucleosome occupancy fraction is computed via <a href="../utilities/#get_nucleosome_occupied_fraction_per_segment"><code>get_nucleosome_occupied_fraction_per_segment</code></a> and passed into the eukaryotic torque law.</p>
 <hr />
-<h2 id="velocity-calculations">Velocity Calculations<a class="headerlink" href="#velocity-calculations" title="Permanent link">&para;</a></h2>
+<h2 id="velocities-and-rates">Velocities and rates<a class="headerlink" href="#velocities-and-rates" title="Permanent link">&para;</a></h2>
 <h3 id="get_rnap_velocities"><code>get_RNAP_velocities</code><a class="headerlink" href="#get_rnap_velocities" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">get_RNAP_velocities</span><span class="p">(</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="n">state_vector</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="n">RNAP_gene_index</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="n">segments_lengths</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>    <span class="n">segments_torques</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">get_RNAP_velocities</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">state_vector</span><span class="p">,</span> <span class="n">RNAP_gene_index</span><span class="p">,</span> <span class="n">segments_lengths</span><span class="p">,</span> <span class="n">segments_torques</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
 </code></pre></div>
-<p>Returns linear velocities (nm/s) for all RNAPs. After computing each RNAP's torque-dependent velocity, applies a soft steric hindrance factor for each RNAP's nearest obstacle in its direction of travel:</p>
-<div class="arithmatex">\[v_i \to v_i \cdot \frac{1}{2}\left(1 + \tanh\!\frac{s - d}{\lambda}\right)\]</div>
-<p>where <span class="arithmatex">\(s\)</span> is the centre-to-centre separation, <span class="arithmatex">\(d\)</span> is the exclusion distance, and <span class="arithmatex">\(\lambda\)</span> is <code>steric_hindrance_constraint_parameter</code>. Obstacles considered:</p>
-<ul>
-<li>Other RNAPs within <code>RNAP_diameter</code> nm</li>
-<li>Bound nucleosomes within <code>(RNAP_diameter + per_nucleosome_DNA_length + nucleosome_linker_length) / 2</code> nm (when <code>is_steric_barrier_to_RNAPs</code> is set)</li>
-<li>Other bound proteins within <code>(RNAP_diameter + generic_binding_protein_diameter) / 2</code> nm (when <code>is_steric_barrier_to_RNAPs</code> is set)</li>
-</ul>
+<p>Per-RNAP linear velocity (nm/s) including the steric-hindrance soft ramp against the nearest obstacle in the direction of travel.</p>
 <h3 id="get_rnap_angular_velocities"><code>get_RNAP_angular_velocities</code><a class="headerlink" href="#get_rnap_angular_velocities" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">get_RNAP_angular_velocities</span><span class="p">(</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="n">RNAP_gene_index</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="n">state_vector</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="n">segments_lengths</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>    <span class="n">segments_torques</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>    <span class="n">RNAP_velocities</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">get_RNAP_angular_velocities</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">RNAP_gene_index</span><span class="p">,</span> <span class="n">state_vector</span><span class="p">,</span> <span class="n">segments_lengths</span><span class="p">,</span> <span class="n">segments_torques</span><span class="p">,</span> <span class="n">RNAP_velocities</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
 </code></pre></div>
-<p>Returns angular velocities (rad/s) for all RNAPs using the distances from their respective TSSes.</p>
+<p>Per-RNAP angular velocity (rad/s).</p>
 <h3 id="get_segments_lk_dynamics"><code>get_segments_Lk_dynamics</code><a class="headerlink" href="#get_segments_lk_dynamics" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">get_segments_Lk_dynamics</span><span class="p">(</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    <span class="n">dx_dt</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    <span class="n">dtheta_dt</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>    <span class="n">segments_lengths</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>    <span class="n">segments_sigmas</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>    <span class="n">segments_torques</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
-<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>    <span class="n">segments_writhe_fractions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
-<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">get_segments_Lk_dynamics</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">RNAP_gene_index</span><span class="p">,</span> <span class="n">state_vector</span><span class="p">,</span> <span class="n">dx_dt</span><span class="p">,</span> <span class="n">dtheta_dt</span><span class="p">,</span> <span class="n">segments_lengths</span><span class="p">,</span> <span class="n">segments_sigmas</span><span class="p">,</span> <span class="n">segments_torques</span><span class="p">,</span> <span class="n">segments_writhe_fractions</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
 </code></pre></div>
-<p>Returns <span class="arithmatex">\(\dot{Lk}\)</span> (turns/s) for all segments. In <code>topoisomerase_based</code> mode, adds topoisomerase-driven contributions from <code>get_TOP1_effect_on_Lk_dynamics</code> and <code>get_TOP2_effect_on_Lk_dynamics</code>.</p>
-<hr />
-<h2 id="event-rate-calculations">Event Rate Calculations<a class="headerlink" href="#event-rate-calculations" title="Permanent link">&para;</a></h2>
+<p>Per-segment <code>dLk/dt</code>. Iterates over segments right-to-left, dispatches by left/right barrier type and clamp status.</p>
 <h3 id="get_rnap_recruitment_rates"><code>get_RNAP_recruitment_rates</code><a class="headerlink" href="#get_rnap_recruitment_rates" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">get_RNAP_recruitment_rates</span><span class="p">(</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="n">RNAP_gene_index</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    <span class="n">state_vector</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>    <span class="n">segments_lengths</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>    <span class="n">segments_sigmas</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">get_RNAP_recruitment_rates</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">RNAP_gene_index</span><span class="p">,</span> <span class="n">state_vector</span><span class="p">,</span> <span class="n">segments_lengths</span><span class="p">,</span> <span class="n">segments_sigmas</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
 </code></pre></div>
-<p>Returns recruitment rates (s⁻¹) for each gene. A rate of 0 is returned if the promoter is OFF. Note that steric hindrance at the TSS is checked at event dispatch time in <code>simulate_dynamics</code>, not in this function.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The function contains a placeholder (<code>if False</code>) for additional recruitment-blocking conditions (e.g., supercoiling-dependent recruitment). This is reserved for future implementation and currently has no effect.</p>
-</div>
+<p>Per-gene recruitment rate. Currently ignores <code>TSS_sigma</code>.</p>
 <h3 id="get_mrna_degradation_rates"><code>get_mRNA_degradation_rates</code><a class="headerlink" href="#get_mrna_degradation_rates" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">get_mRNA_degradation_rates</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">get_mRNA_degradation_rates</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
 </code></pre></div>
-<p>Returns a list of mRNA degradation rates (s⁻¹), one per gene. Each rate equals <code>mRNA_degradation_rate × mRNA_counts[i]</code>. When <code>mRNA_dynamics_mode = 0</code>, <code>ModelSetup</code> sets <code>mRNA_degradation_rate = 0.0</code>, so all rates are zero regardless of current counts.</p>
+<p>Per-gene mRNA degradation rate.</p>
 <h3 id="get_binding_proteins_on_rates"><code>get_binding_proteins_on_rates</code><a class="headerlink" href="#get_binding_proteins_on_rates" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">get_binding_proteins_on_rates</span><span class="p">(</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    <span class="n">segments_lengths</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    <span class="n">segments_sigmas</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">get_binding_proteins_on_rates</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">segments_lengths</span><span class="p">,</span> <span class="n">segments_sigmas</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span>
 </code></pre></div>
-<p>Returns a nested list of binding rates, indexed <code>[protein_type][segment_index]</code>. For each protein type, the per-segment rate is <code>n_unbound × on_rate_func(segment_length, segment_sigma)</code> where <code>on_rate_func</code> incorporates <code>basal_on_rate × segment_length</code> (and optional modulation). Empty list per type when no binding proteins are defined.</p>
+<p>Per-species per-segment on-rates. Each species' total on-rate is <code>sum(per_segment[k])</code>.</p>
 <h3 id="get_binding_proteins_off_rates"><code>get_binding_proteins_off_rates</code><a class="headerlink" href="#get_binding_proteins_off_rates" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">get_binding_proteins_off_rates</span><span class="p">(</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>    <span class="n">segments_lengths</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>    <span class="n">segments_sigmas</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">get_binding_proteins_off_rates</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">segments_lengths</span><span class="p">,</span> <span class="n">segments_sigmas</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span>
 </code></pre></div>
-<p>Returns a nested list of unbinding rates, indexed <code>[protein_type][bound_molecule_index]</code>. For each bound protein, the rate is <code>off_rate_func(segment_length, segment_sigma)</code> evaluated for the segment the protein occupies. The off-rate function incorporates <code>basal_off_rate</code> (and optional modulation). Empty list per type when no proteins are bound.</p>
-<h3 id="get_events_rates"><code>get_events_rates</code><a class="headerlink" href="#get_events_rates" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">get_events_rates</span><span class="p">(</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span>
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>    <span class="n">RNAP_gene_index</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
-<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>    <span class="n">state_vector</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
-<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span>
-</code></pre></div>
-<p>Assembles the complete rates vector and returns <code>(rates_vector, events_indices)</code>. The rates vector layout:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>[RNAP_recruitment_rates...]        # indices 0 to events_indices[0]-1
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>[model_observation_rate]           # index events_indices[0]
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>[global_relaxation_rate]           # index events_indices[1]
-<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>[local_relaxation_rates...]        # indices events_indices[2] to events_indices[3]-1
-<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>[TOPO_activity_rates...]           # indices events_indices[3] to events_indices[4]-1
-<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>[TOPO_binding_rates...]            # indices events_indices[4] to events_indices[5]-1
-<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>[TOPO_unbinding_rates...]          # indices events_indices[5] to events_indices[6]-1
-<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>[mRNA_degradation_rates...]        # indices events_indices[6] to events_indices[7]-1
-<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>[binding_proteins_on_rates...]     # indices events_indices[7] to events_indices[8]-1
-<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>[binding_proteins_off_rates...]    # indices events_indices[8] to events_indices[9]-1
-</code></pre></div>
-<p><code>events_indices</code> is a 10-element list of cumulative boundary indices.</p>
+<p>Per-species per-molecule off-rates. Each species' total off-rate is <code>sum(per_molecule[k])</code>.</p>
 <hr />
-<h2 id="ode-right-hand-side">ODE Right-Hand Side<a class="headerlink" href="#ode-right-hand-side" title="Permanent link">&para;</a></h2>
-<h3 id="model_dynamics"><code>model_dynamics</code><a class="headerlink" href="#model_dynamics" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">model_dynamics</span><span class="p">(</span>
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>    <span class="n">t</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>    <span class="n">state_vector</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
-<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>    <span class="n">RNAP_gene_index</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
-<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span>
-<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>    <span class="n">simulation_setup_and_state</span><span class="p">:</span> <span class="n">SimulationSetupAndState</span>
-<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
-</code></pre></div>
-<p>The scipy-compatible ODE function. Returns the time derivative of the full state vector:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>d/dt(state_vector) = [dx/dt..., dθ/dt..., dLk/dt..., da0/dt]
-</code></pre></div>
-<p>where <code>da0/dt = Σ rates_i(t)</code> is the instantaneous total propensity (used to track cumulative propensity for Gillespie timing).</p>
-<hr />
-<h2 id="integration">Integration<a class="headerlink" href="#integration" title="Permanent link">&para;</a></h2>
-<h3 id="integrate"><code>integrate</code><a class="headerlink" href="#integrate" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">integrate</span><span class="p">(</span>
-<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span>
-<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>    <span class="n">simulation_setup_and_state</span><span class="p">:</span> <span class="n">SimulationSetupAndState</span><span class="p">,</span>
-<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>    <span class="n">t_start</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>    <span class="n">state_vector</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
-<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>    <span class="n">RNAP_gene_index</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
-<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>    <span class="n">p0</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>    <span class="n">print_at_each_integration_step</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">|</span> <span class="kc">None</span>
-<a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
-</code></pre></div>
-<p>Integrates the ODE from <code>t_start</code> until the cumulative propensity increment satisfies:</p>
-<div class="arithmatex">\[\int_{t_{\mathrm{start}}}^{t_{\mathrm{event}}} a_0(t')\,dt' \geq \ln(1/p_0)\]</div>
-<p>Uses <code>scipy.integrate.solve_ivp</code> with the method specified by <code>simulation_setup_and_state.integration_method</code> (default <code>'RK23'</code>). Calls <code>update_state_vector_to_remove_dead_RNAPs</code> at each ODE output time point.</p>
-<p>Returns <code>(dt, cumulative_propensity_at_event)</code> where <code>dt = t_event - t_start</code>.</p>
-<hr />
-<h2 id="state-update-utilities">State Update Utilities<a class="headerlink" href="#state-update-utilities" title="Permanent link">&para;</a></h2>
-<h3 id="update_lk_vector_after_rnap_recruitment"><code>update_Lk_vector_after_RNAP_recruitment</code><a class="headerlink" href="#update_lk_vector_after_rnap_recruitment" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="n">update_Lk_vector_after_RNAP_recruitment</span><span class="p">(</span>
-<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span>
-<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>    <span class="n">TSS_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>    <span class="n">RNAP_gene_index</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
-<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>    <span class="n">state_vector</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
-<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>    <span class="n">segments_lengths</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
-<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>    <span class="n">segments_sigmas</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
-<a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
-</code></pre></div>
-<p>Splits the DNA segment containing the TSS into two segments and assigns linking numbers such that the supercoiling density is conserved. Updates <code>model.Lk</code> in-place.</p>
-<h3 id="update_state_vector_to_remove_dead_rnaps"><code>update_state_vector_to_remove_dead_RNAPs</code><a class="headerlink" href="#update_state_vector_to_remove_dead_rnaps" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="n">update_state_vector_to_remove_dead_RNAPs</span><span class="p">(</span>
-<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span>
-<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>    <span class="n">RNAP_gene_index</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
-<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>    <span class="n">t</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>    <span class="n">state_vector</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
-<a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>    <span class="n">simulation_setup_and_state</span><span class="p">:</span> <span class="n">SimulationSetupAndState</span>
-<a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
-</code></pre></div>
-<p>Removes RNAPs that have passed the end of their gene. The linking numbers of the segments flanking a departing RNAP are summed into a single merged segment. For each departing RNAP, increments <code>model.mRNA_counts</code> for the corresponding gene (one new mRNA produced) and records exit times, positions, and completion counts in <code>simulation_setup_and_state</code>. Modifies <code>RNAP_gene_index</code> and <code>state_vector</code> in-place.</p>
+<h2 id="rnap-lifecycle">RNAP lifecycle<a class="headerlink" href="#rnap-lifecycle" title="Permanent link">&para;</a></h2>
 <h3 id="are_rnaps_alive"><code>are_RNAPs_alive</code><a class="headerlink" href="#are_rnaps_alive" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="n">are_RNAPs_alive</span><span class="p">(</span>
-<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span>
-<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>    <span class="n">RNAP_gene_index</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
-<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>    <span class="n">state_vector</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
-<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">are_RNAPs_alive</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">RNAP_gene_index</span><span class="p">,</span> <span class="n">state_vector</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
 </code></pre></div>
-<p>Returns a list of binary flags (<code>1</code> = active, <code>0</code> = finished) for all RNAPs. An RNAP is considered finished when it has moved beyond <code>TSS + gene_length</code> (positive strand) or below <code>TSS - gene_length</code> (negative strand).</p>
+<p>Per-RNAP boolean (1 alive, 0 finished). An RNAP is dead when its position has moved past <code>TSS + gene_length</code> (<code>+1</code> strand) or before <code>TSS − gene_length</code> (<code>−1</code> strand), modulo direction.</p>
+<h3 id="update_state_vector_to_remove_dead_rnaps"><code>update_state_vector_to_remove_dead_RNAPs</code><a class="headerlink" href="#update_state_vector_to_remove_dead_rnaps" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">update_state_vector_to_remove_dead_RNAPs</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">RNAP_gene_index</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">state_vector</span><span class="p">,</span> <span class="n">simulation_setup_and_state</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</code></pre></div>
+<p>Removes finished RNAPs from <code>state_vector</code> and <code>RNAP_gene_index</code>, merges the two adjacent segments' linking numbers, increments the finished-transcription counters, and (if <code>mRNA_dynamics_mode == 1</code>) increments the mRNA count.</p>
+<hr />
+<h2 id="lk-bookkeeping-for-discrete-events">Lk bookkeeping for discrete events<a class="headerlink" href="#lk-bookkeeping-for-discrete-events" title="Permanent link">&para;</a></h2>
+<h3 id="update_lk_vector_after_rnap_or_protein_recruitment"><code>update_Lk_vector_after_RNAP_or_protein_recruitment</code><a class="headerlink" href="#update_lk_vector_after_rnap_or_protein_recruitment" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">update_Lk_vector_after_RNAP_or_protein_recruitment</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">recruitment_position</span><span class="p">,</span> <span class="n">RNAP_gene_index</span><span class="p">,</span> <span class="n">state_vector</span><span class="p">,</span> <span class="n">segments_lengths</span><span class="p">,</span> <span class="n">segments_sigmas</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</code></pre></div>
+<p>Splits the segment that contains <code>recruitment_position</code> into two new sub-segments and partitions the parent <code>Lk</code> so that both sub-segments share the parent's <code>σ</code>.</p>
+<h3 id="update_lk_vector_after_protein_unbinding"><code>update_Lk_vector_after_protein_unbinding</code><a class="headerlink" href="#update_lk_vector_after_protein_unbinding" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">update_Lk_vector_after_protein_unbinding</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">unbinding_position</span><span class="p">,</span> <span class="n">RNAP_gene_index</span><span class="p">,</span> <span class="n">state_vector</span><span class="p">,</span> <span class="n">segments_lengths</span><span class="p">,</span> <span class="n">segments_sigmas</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</code></pre></div>
+<p>For a topological-barrier protein leaving: merges the segments on either side and adds their linking numbers.</p>
+<hr />
+<h2 id="event-rate-vector">Event rate vector<a class="headerlink" href="#event-rate-vector" title="Permanent link">&para;</a></h2>
+<h3 id="get_events_rates"><code>get_events_rates</code><a class="headerlink" href="#get_events_rates" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">get_events_rates</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">RNAP_gene_index</span><span class="p">,</span> <span class="n">state_vector</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span>
+</code></pre></div>
+<p>Returns <code>(rates_vector, events_indices)</code>. <code>events_indices</code> is a list of cumulative split points marking the boundaries between event blocks. See <a href="../../user-guide/events-and-propensities/">Events and propensities</a> for the block layout.</p>
+<hr />
+<h2 id="ode-right-hand-side">ODE right-hand side<a class="headerlink" href="#ode-right-hand-side" title="Permanent link">&para;</a></h2>
+<h3 id="model_dynamics_1"><code>model_dynamics</code><a class="headerlink" href="#model_dynamics_1" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">model_dynamics</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">state_vector</span><span class="p">,</span> <span class="n">RNAP_gene_index</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">simulation_setup_and_state</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+</code></pre></div>
+<p>The function handed to <code>scipy.integrate.solve_ivp</code>. Returns the time derivatives of <code>state_vector</code>, where the last component is <code>dA/dt = sum(rates)</code>.</p>
+<hr />
+<h2 id="integration-window">Integration window<a class="headerlink" href="#integration-window" title="Permanent link">&para;</a></h2>
+<h3 id="integrate"><code>integrate</code><a class="headerlink" href="#integrate" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="n">integrate</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">simulation_setup_and_state</span><span class="p">,</span> <span class="n">t_start</span><span class="p">,</span> <span class="n">state_vector</span><span class="p">,</span> <span class="n">RNAP_gene_index</span><span class="p">,</span> <span class="n">p0</span><span class="p">,</span> <span class="n">print_at_each_integration_step</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
+</code></pre></div>
+<p>Advances the ODE integrator until the cumulative propensity <code>A(t)</code> exceeds the event threshold <code>ln(1/p0)</code>, removing dead RNAPs in between chunks. Returns <code>(dt, a0)</code> — the elapsed time to the event and the propensity total at the event time.</p>
+<p>See <a href="../../theory/dna-mechanics/#10-coupling-continuous-and-discrete-dynamics">Theory → Coupling continuous and discrete dynamics</a>.</p>
 
 
 

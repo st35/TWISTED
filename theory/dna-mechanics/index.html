@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://st35.github.io/TWISTED/theory/dna-mechanics/">
       
       
-        <link rel="prev" href="../../user-guide/relaxation-modes/">
+        <link rel="prev" href="../../user-guide/not-yet-implemented/">
       
       
         <link rel="next" href="../../api/">
@@ -338,6 +338,25 @@
   
 
       
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../citations/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  How to cite
+
+      </a>
+    </li>
+  
+
+      
     </ul>
   </div>
 </nav>
@@ -609,6 +628,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../user-guide/binding-proteins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Binding Proteins
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../user-guide/simulation/" class="md-nav__link">
         
   
@@ -645,6 +692,62 @@
     
   
     Supercoiling Relaxation Modes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/events-and-propensities/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events and Propensities
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/not-yet-implemented/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Not Yet Implemented
   
 
     
@@ -789,10 +892,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#coordinate-system" class="md-nav__link">
+  <a href="#1-geometry-and-notation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Coordinate System
+        1. Geometry and notation
       
     </span>
   </a>
@@ -800,88 +903,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#supercoiling-density" class="md-nav__link">
+  <a href="#2-prokaryotic-torque-law-five-state-model" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Supercoiling Density
+        2. Prokaryotic torque law (five-state model)
       
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#prokaryotic-torquetwist-relation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Prokaryotic Torque–Twist Relation
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#rnap-velocity" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        RNAP Velocity
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#rnap-angular-velocity" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        RNAP Angular Velocity
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#linking-number-dynamics" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Linking Number Dynamics
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#topoisomerase-activity-topoisomerase_based-mode" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Topoisomerase Activity (topoisomerase_based mode)
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Topoisomerase Activity (topoisomerase_based mode)">
+    <nav class="md-nav" aria-label="2. Prokaryotic torque law (five-state model)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#type-i-topoisomerase-top1" class="md-nav__link">
+  <a href="#finite-size-correction" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Type I Topoisomerase (TOP1)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#type-ii-topoisomerase-top2" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Type II Topoisomerase (TOP2)
+        Finite-size correction
       
     </span>
   </a>
@@ -894,10 +931,182 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#gillespie-event-selection" class="md-nav__link">
+  <a href="#3-eukaryotic-torque-law" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Gillespie Event Selection
+        3. Eukaryotic torque law
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-rnap-velocity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. RNAP velocity
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. RNAP velocity">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#soft-steric-ramp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Soft steric ramp
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-rnap-angular-velocity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. RNAP angular velocity
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-linking-number-dynamics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Linking-number dynamics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Linking-number dynamics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#free-vs-clamped-boundaries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Free vs clamped boundaries
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#segment-merging-when-an-rnap-exits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Segment merging when an RNAP exits
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lk-update-on-recruitment-topological-barrier-unbinding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lk update on recruitment / topological-barrier (un)binding
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-topoisomerase-rate-equations-used-by-the-not-yet-implemented-topoisomerase_based-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Topoisomerase rate equations (used by the not-yet-implemented 'topoisomerase_based' mode)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Topoisomerase rate equations (used by the not-yet-implemented &#39;topoisomerase_based&#39; mode)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#top1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TOP1
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#top2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TOP2
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-rnap-recruitment-rate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. RNAP recruitment rate
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-mrna-degradation-rate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. mRNA degradation rate
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-coupling-continuous-and-discrete-dynamics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Coupling continuous and discrete dynamics
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-summary-of-the-dynamic-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Summary of the dynamic state
       
     </span>
   </a>
@@ -1149,6 +1358,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../citations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How to cite
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1176,10 +1412,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#coordinate-system" class="md-nav__link">
+  <a href="#1-geometry-and-notation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Coordinate System
+        1. Geometry and notation
       
     </span>
   </a>
@@ -1187,88 +1423,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#supercoiling-density" class="md-nav__link">
+  <a href="#2-prokaryotic-torque-law-five-state-model" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Supercoiling Density
+        2. Prokaryotic torque law (five-state model)
       
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#prokaryotic-torquetwist-relation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Prokaryotic Torque–Twist Relation
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#rnap-velocity" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        RNAP Velocity
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#rnap-angular-velocity" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        RNAP Angular Velocity
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#linking-number-dynamics" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Linking Number Dynamics
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#topoisomerase-activity-topoisomerase_based-mode" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Topoisomerase Activity (topoisomerase_based mode)
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Topoisomerase Activity (topoisomerase_based mode)">
+    <nav class="md-nav" aria-label="2. Prokaryotic torque law (five-state model)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#type-i-topoisomerase-top1" class="md-nav__link">
+  <a href="#finite-size-correction" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Type I Topoisomerase (TOP1)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#type-ii-topoisomerase-top2" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Type II Topoisomerase (TOP2)
+        Finite-size correction
       
     </span>
   </a>
@@ -1281,10 +1451,182 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#gillespie-event-selection" class="md-nav__link">
+  <a href="#3-eukaryotic-torque-law" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Gillespie Event Selection
+        3. Eukaryotic torque law
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-rnap-velocity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. RNAP velocity
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. RNAP velocity">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#soft-steric-ramp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Soft steric ramp
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-rnap-angular-velocity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. RNAP angular velocity
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-linking-number-dynamics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Linking-number dynamics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Linking-number dynamics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#free-vs-clamped-boundaries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Free vs clamped boundaries
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#segment-merging-when-an-rnap-exits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Segment merging when an RNAP exits
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lk-update-on-recruitment-topological-barrier-unbinding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lk update on recruitment / topological-barrier (un)binding
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-topoisomerase-rate-equations-used-by-the-not-yet-implemented-topoisomerase_based-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Topoisomerase rate equations (used by the not-yet-implemented 'topoisomerase_based' mode)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Topoisomerase rate equations (used by the not-yet-implemented &#39;topoisomerase_based&#39; mode)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#top1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TOP1
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#top2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TOP2
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-rnap-recruitment-rate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. RNAP recruitment rate
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-mrna-degradation-rate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. mRNA degradation rate
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-coupling-continuous-and-discrete-dynamics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Coupling continuous and discrete dynamics
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-summary-of-the-dynamic-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Summary of the dynamic state
       
     </span>
   </a>
@@ -1311,26 +1653,80 @@
   
 
 
-<h1 id="dna-mechanics">DNA Mechanics<a class="headerlink" href="#dna-mechanics" title="Permanent link">&para;</a></h1>
-<p>This page describes the physical model underlying TWISTED: supercoiling mechanics, torque-twist relations, RNAP velocity, and topoisomerase activity.</p>
+<h1 id="dna-mechanics">DNA mechanics<a class="headerlink" href="#dna-mechanics" title="Permanent link">&para;</a></h1>
+<p>This page is the theoretical reference for everything happening <strong>inside the ODE</strong> that TWISTED integrates: how <code>Lk</code> translates into torque, how torque slows the polymerase, how the angle dynamics couple translation to twist injection, how the boundary conditions enter, and how the discrete event clock is coupled to the continuous integration.</p>
+<p>Equations follow the conventions in <code>biol_methods.py</code> and <code>model_dynamics.py</code>. Symbols match the source variable names where practical.</p>
 <hr />
-<h2 id="coordinate-system">Coordinate System<a class="headerlink" href="#coordinate-system" title="Permanent link">&para;</a></h2>
-<p>The DNA is modelled as a one-dimensional elastic rod spanning positions <span class="arithmatex">\([0, L]\)</span> nm. RNA polymerases (RNAPs) divide the molecule into segments. Each segment has its own linking number <span class="arithmatex">\(Lk\)</span>, supercoiling density <span class="arithmatex">\(\sigma\)</span>, and torque <span class="arithmatex">\(\tau\)</span>.</p>
-<p>Positions increase left-to-right; RNAPs on the positive strand move in the <span class="arithmatex">\(+x\)</span> direction, and those on the negative strand move in the <span class="arithmatex">\(-x\)</span> direction.</p>
+<h2 id="1-geometry-and-notation">1. Geometry and notation<a class="headerlink" href="#1-geometry-and-notation" title="Permanent link">&para;</a></h2>
+<p>The DNA is a one-dimensional rod from <code>clamp_left = 0</code> (always) to <code>clamp_right</code> (in nm), set by <code>GenomicSetup</code> from gene 0 and the buffer length. Positions increase left → right. RNAPs on the <code>+1</code> strand move in the <code>+x</code> direction; RNAPs on the <code>−1</code> strand move in the <code>−x</code> direction.</p>
+<p>RNAPs and topological-barrier proteins partition the molecule into ordered segments, indexed <strong>right to left</strong> in the state vector. For a segment of length <code>L_seg</code>:</p>
+<ul>
+<li>relaxed linking number: <code>Lk₀ = L_seg / h_dna</code>, where <code>h_dna = 2π / w₀</code>;</li>
+<li>supercoiling density: <code>σ = (Lk − Lk₀) / Lk₀</code>;</li>
+<li>torque <code>τ</code>, DNA state, writhe fraction, and plectoneme threshold <code>σ_s</code> are all functions of <code>(L_seg, σ, force, kBT, …)</code> returned by <a href="../../api/biol-methods/#get_prokaryotic_torque"><code>get_prokaryotic_torque</code></a> or <a href="../../api/biol-methods/#get_eukaryotic_torque"><code>get_eukaryotic_torque</code></a>.</li>
+</ul>
+<p><code>Lk &gt; Lk₀</code> ⇒ <code>σ &gt; 0</code> ⇒ overwound (positively supercoiled) DNA. <code>Lk &lt; Lk₀</code> ⇒ <code>σ &lt; 0</code> ⇒ underwound.</p>
 <hr />
-<h2 id="supercoiling-density">Supercoiling Density<a class="headerlink" href="#supercoiling-density" title="Permanent link">&para;</a></h2>
-<p>For a segment of length <span class="arithmatex">\(L_{\text{seg}}\)</span> with relaxed linking number <span class="arithmatex">\(Lk_0 = L_{\text{seg}} / h_{\text{dna}}\)</span> where <span class="arithmatex">\(h_{\text{dna}} = 2\pi / \omega_0\)</span> is the helical repeat:</p>
-<div class="arithmatex">\[\sigma = \frac{Lk - Lk_0}{Lk_0}\]</div>
-<p>Positive <span class="arithmatex">\(\sigma\)</span> corresponds to overwound (positively supercoiled) DNA; negative <span class="arithmatex">\(\sigma\)</span> to underwound (negatively supercoiled) DNA.</p>
-<hr />
-<h2 id="prokaryotic-torquetwist-relation">Prokaryotic Torque–Twist Relation<a class="headerlink" href="#prokaryotic-torquetwist-relation" title="Permanent link">&para;</a></h2>
-<p>TWISTED implements the <strong>five-state torque model</strong> for prokaryotic DNA (Marko 2007; Brutzer et al. 2010; Sevier &amp; Levine 2017). The DNA can be in one of five states depending on <span class="arithmatex">\(\sigma\)</span>:</p>
+<h2 id="2-prokaryotic-torque-law-five-state-model">2. Prokaryotic torque law (five-state model)<a class="headerlink" href="#2-prokaryotic-torque-law-five-state-model" title="Permanent link">&para;</a></h2>
+<p>Implemented in <a href="../../api/biol-methods/#get_prokaryotic_torque"><code>get_prokaryotic_torque</code></a>. Material constants (fixed inside the function):</p>
 <table>
 <thead>
 <tr>
-<th>State</th>
+<th>Symbol</th>
+<th>Value</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>A</code></td>
+<td>50 nm</td>
+<td>Bending persistence length</td>
+</tr>
+<tr>
+<td><code>C</code></td>
+<td>95 nm</td>
+<td>Twist persistence length</td>
+</tr>
+<tr>
+<td><code>P</code></td>
+<td>24 nm</td>
+<td>Plectoneme supercoil pitch</td>
+</tr>
+<tr>
+<td><code>A_m</code></td>
+<td>4 nm</td>
+<td>Bending persistence length, melted DNA</td>
+</tr>
+<tr>
+<td><code>C_m</code></td>
+<td>1.75 nm</td>
+<td>Twist persistence length, melted DNA</td>
+</tr>
+<tr>
+<td><code>e_m</code></td>
+<td><code>6 kBT</code></td>
+<td>Denaturation free energy per base</td>
+</tr>
+<tr>
+<td><code>σ₀</code></td>
+<td>−1</td>
+<td>Reference supercoiling for melting</td>
+</tr>
+</tbody>
+</table>
+<p>Effective stiffnesses and the plectoneme thresholds:</p>
+<div class="arithmatex">\[c_s = c\left(1 - \frac{C}{4A}\sqrt{\frac{k_BT}{AF}}\right), \qquad c = k_BT \cdot C \cdot \omega_0^2,\]</div>
+<div class="arithmatex">\[g = F - \sqrt{k_BT F / A}, \qquad p = k_BT \cdot P \cdot \omega_0^2,\]</div>
+<div class="arithmatex">\[\sigma_s = \frac{1}{c_s}\sqrt{\frac{2 p g}{1 - p/c_s}}, \qquad \sigma_p = \frac{1}{p}\sqrt{\frac{2 p g}{1 - p/c_s}}.\]</div>
+<p>Two melting cutoffs use the melted-DNA constants and <code>g_m = 1.2 (F − √(k_BT F / A_m))</code>, and follow the closed-form expressions in the source.</p>
+<p>The torque is then piecewise linear/constant in five regimes:</p>
+<table>
+<thead>
+<tr>
+<th>Regime</th>
 <th>Code</th>
-<th>Condition</th>
+<th>Range of <code>σ</code></th>
 <th>Torque</th>
 </tr>
 </thead>
@@ -1338,134 +1734,275 @@
 <tr>
 <td>Twisted–melted</td>
 <td>0</td>
-<td><span class="arithmatex">\(\sigma \leq \sigma_m\)</span></td>
-<td><span class="arithmatex">\(\tau = (c_m / \omega_0)(\sigma - \sigma_0)\)</span></td>
+<td><code>σ ≤ σ_m</code></td>
+<td><code>(c_m / w₀)(σ − σ₀)</code></td>
 </tr>
 <tr>
 <td>Melted</td>
 <td>1</td>
-<td><span class="arithmatex">\(\sigma_m &lt; \sigma \leq \sigma_{sm}\)</span></td>
-<td><span class="arithmatex">\(\tau = (c_m / \omega_0)(\sigma_m - \sigma_0)\)</span></td>
+<td><code>σ_m &lt; σ ≤ σ_sm</code></td>
+<td><code>(c_m / w₀)(σ_m − σ₀)</code> (plateau)</td>
 </tr>
 <tr>
 <td>Twisted</td>
 <td>2</td>
-<td><span class="arithmatex">\(\sigma_{sm} &lt; \sigma \leq \sigma_s\)</span></td>
-<td><span class="arithmatex">\(\tau = (c_s / \omega_0)\sigma\)</span></td>
+<td><code>σ_sm &lt; σ ≤ σ_s</code></td>
+<td><code>(c_s / w₀) · σ</code></td>
 </tr>
 <tr>
 <td>Positive plectoneme</td>
 <td>5</td>
-<td><span class="arithmatex">\(\sigma_s &lt; \sigma \leq \sigma_p\)</span></td>
-<td><span class="arithmatex">\(\tau = \tau_{\max}\)</span> (torque plateau)</td>
+<td><code>σ_s &lt; σ ≤ σ_p</code></td>
+<td><code>√(2pg / (1 − p/c_s)) / w₀</code> (plateau)</td>
 </tr>
 <tr>
 <td>Twisted plectoneme</td>
 <td>6</td>
-<td><span class="arithmatex">\(\sigma &gt; \sigma_p\)</span></td>
-<td><span class="arithmatex">\(\tau = (p / \omega_0)\sigma\)</span> (capped at 40 pN·nm)</td>
+<td><code>σ &gt; σ_p</code></td>
+<td><code>(p / w₀) · σ</code>, hard-capped at 40 pN·nm</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Material parameters</strong> (fixed):</p>
+<p>The function also reports a writhe fraction:</p>
+<ul>
+<li>0 in regimes 0–2,</li>
+<li><code>(σ − σ_s) / (σ_p − σ_s)</code> in regime 5 (linear ramp from 0 to 1 across the plectoneme plateau),</li>
+<li>1 in regime 6.</li>
+</ul>
+<p>The plectoneme threshold <code>σ_s</code> is what TOP2 (in <code>'topoisomerase_approximated'</code> mode) relaxes to.</p>
+<h3 id="finite-size-correction">Finite-size correction<a class="headerlink" href="#finite-size-correction" title="Permanent link">&para;</a></h3>
+<p>When <code>finite_size_effect_flag = 1</code>, <code>σ_s</code> is rescaled per segment:</p>
+<div class="arithmatex">\[\sigma_s^{\text{eff}} = \sigma_s \left(1 + \left(\frac{L_0}{L_{\text{seg}}}\right)^2\right),\]</div>
+<p>with <code>L₀ = finite_size_effect_length</code> (default 340 nm = 1000 bp). Short segments resist plectoneme formation more strongly.</p>
+<hr />
+<h2 id="3-eukaryotic-torque-law">3. Eukaryotic torque law<a class="headerlink" href="#3-eukaryotic-torque-law" title="Permanent link">&para;</a></h2>
+<p>Implemented in <a href="../../api/biol-methods/#get_eukaryotic_torque"><code>get_eukaryotic_torque</code></a>. The chromatin torque law has six regimes parameterised by the local nucleosome density <code>ψ</code> (the fraction of segment length occupied by nucleosomes; computed by <a href="../../api/utilities/#get_nucleosome_occupied_fraction_per_segment"><code>get_nucleosome_occupied_fraction_per_segment</code></a>).</p>
+<p>Constants (fixed inside the function):</p>
 <table>
 <thead>
 <tr>
 <th>Symbol</th>
 <th>Value</th>
-<th>Description</th>
+<th>Meaning</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><span class="arithmatex">\(A\)</span></td>
-<td>50 nm</td>
-<td>Bending persistence length</td>
+<td><code>melted_cutoff</code></td>
+<td>−0.013</td>
+<td>σ at the melted/twisted boundary</td>
 </tr>
 <tr>
-<td><span class="arithmatex">\(C\)</span></td>
-<td>95 nm</td>
-<td>Twist persistence length</td>
+<td><code>twisted_cutoff</code></td>
+<td>0.001</td>
+<td>σ at the twisted/buffering boundary</td>
 </tr>
 <tr>
-<td><span class="arithmatex">\(P\)</span></td>
-<td>24 nm</td>
-<td>Plectoneme supercoil pitch</td>
+<td><code>melted_torque</code></td>
+<td>−10.0026 pN·nm</td>
+<td>torque on the melted plateau</td>
 </tr>
 <tr>
-<td><span class="arithmatex">\(A_m\)</span></td>
-<td>4 nm</td>
-<td>Bending persistence length (melted)</td>
+<td><code>twisted_slope</code></td>
+<td>763.064 pN·nm</td>
+<td>slope of the twisted regime</td>
 </tr>
 <tr>
-<td><span class="arithmatex">\(C_m\)</span></td>
-<td>1.75 nm</td>
-<td>Twist persistence length (melted)</td>
+<td><code>pos_twisted_slope</code></td>
+<td>753.3442 pN·nm</td>
+<td>slope of the positive-twisted regime</td>
 </tr>
 <tr>
-<td><span class="arithmatex">\(e_m\)</span></td>
-<td><span class="arithmatex">\(6\,k_BT\)</span></td>
-<td>Denaturation free energy per base</td>
-</tr>
-<tr>
-<td><span class="arithmatex">\(\sigma_0\)</span></td>
-<td>−1</td>
-<td>Reference supercoiling for melting</td>
+<td><code>plectoneme_cutoff</code></td>
+<td>0.0772</td>
+<td>σ at the positive plectoneme onset</td>
 </tr>
 </tbody>
 </table>
-<p>The effective twist stiffness at force <span class="arithmatex">\(F\)</span>:</p>
-<div class="arithmatex">\[c_s = c \left(1 - \frac{C}{4A}\sqrt{\frac{k_BT}{AF}}\right), \quad c = k_BT C \omega_0^2\]</div>
-<p>The plectoneme-formation threshold:</p>
-<div class="arithmatex">\[\sigma_s = \frac{\sqrt{2pg/(1 - p/c_s)}}{c_s}, \quad g = F - \sqrt{k_BT F / A}\]</div>
-<p><strong>Finite-size correction</strong> (enabled by default for short segments):</p>
-<div class="arithmatex">\[\sigma_s^{\text{eff}} = \sigma_s \left(1 + \left(\frac{L_0}{L_{\text{seg}}}\right)^2\right)\]</div>
-<p>where <span class="arithmatex">\(L_0 = 340\,\text{nm}\)</span> (1000 bp) by default.</p>
+<p>The two <strong>ψ-dependent</strong> cutoffs widen the buffering plateau as nucleosome density grows:</p>
+<table>
+<thead>
+<tr>
+<th>Cutoff</th>
+<th>Expression</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>buffering_cutoff</code></td>
+<td><code>0.0576 ψ + 0.0013</code></td>
+</tr>
+<tr>
+<td><code>pos_twisted_cutoff</code></td>
+<td><code>0.0578 ψ + 0.0205</code></td>
+</tr>
+</tbody>
+</table>
+<p>The <code>pos_twisted_cutoff</code> plays the role of <code>σ_s</code> in the prokaryotic law and is rescaled by the same finite-size correction when the flag is on. The slope of the twisted-plectoneme regime is a quartic polynomial in <code>ψ</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>twisted_plectoneme_slope = 1110.5 ψ⁴ − 1373.6 ψ³ + 770.67 ψ² + 37.0125 ψ + 187.22
+</code></pre></div>
+<p>The piecewise torque is:</p>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Regime</th>
+<th><code>σ</code> range</th>
+<th>Torque</th>
+<th>Writhe</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>melted</td>
+<td><code>σ &lt; melted_cutoff</code></td>
+<td><code>melted_torque</code></td>
+<td>0</td>
+</tr>
+<tr>
+<td>2</td>
+<td>twisted</td>
+<td><code>melted_cutoff ≤ σ &lt; twisted_cutoff</code></td>
+<td><code>melted_torque + (σ − melted_cutoff) × twisted_slope</code></td>
+<td>0</td>
+</tr>
+<tr>
+<td>3</td>
+<td>buffering</td>
+<td><code>twisted_cutoff ≤ σ &lt; buffering_cutoff</code></td>
+<td>constant <code>buffering_torque</code></td>
+<td>0</td>
+</tr>
+<tr>
+<td>4</td>
+<td>pos. twisted</td>
+<td><code>buffering_cutoff ≤ σ &lt; pos_twisted_cutoff</code></td>
+<td>linear with slope <code>pos_twisted_slope</code></td>
+<td>0</td>
+</tr>
+<tr>
+<td>5</td>
+<td>pos. plectoneme</td>
+<td><code>pos_twisted_cutoff ≤ σ &lt; plectoneme_cutoff</code></td>
+<td>constant <code>plectoneme_torque</code></td>
+<td>linear ramp 0 → 1</td>
+</tr>
+<tr>
+<td>6</td>
+<td>twisted plectoneme</td>
+<td><code>σ ≥ plectoneme_cutoff</code></td>
+<td>linear with slope <code>twisted_plectoneme_slope</code>, capped at 40 pN·nm</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>The buffering plateau (regime 3) is the physically interesting feature: it absorbs <em>positive</em> supercoiling without raising the torque. Its width is <code>buffering_cutoff − twisted_cutoff = 0.0576 ψ</code>, so as RNAPs displace nucleosomes (lowering <code>ψ</code>) the buffering capacity shrinks and torque begins to build.</p>
 <hr />
-<h2 id="rnap-velocity">RNAP Velocity<a class="headerlink" href="#rnap-velocity" title="Permanent link">&para;</a></h2>
-<p>Translational velocity of RNAP <span class="arithmatex">\(i\)</span> (on a positive-strand gene):</p>
-<div class="arithmatex">\[v_i = \frac{v_0}{2}\left(1 - \tanh\!\frac{\tau_f - \tau_b}{\tau_c}\right)\]</div>
-<p>where <span class="arithmatex">\(\tau_f\)</span> is the torque in the segment ahead (right) and <span class="arithmatex">\(\tau_b\)</span> behind (left). For negative-strand genes the sign is flipped.</p>
-<p><strong>Steric hindrance:</strong></p>
-<p>Rather than a hard wall (<span class="arithmatex">\(v = 0\)</span>), steric interactions are modelled as a smooth reduction via a tanh ramp. For an RNAP approaching an obstacle in its direction of travel:</p>
-<div class="arithmatex">\[v_i \to v_i \cdot \frac{1}{2}\left(1 + \tanh\!\frac{s - d}{\lambda}\right)\]</div>
-<p>where <span class="arithmatex">\(s\)</span> is the centre-to-centre separation, <span class="arithmatex">\(d\)</span> is the exclusion distance <code>(d1 + d2) / 2</code>, and <span class="arithmatex">\(\lambda\)</span> is <code>steric_hindrance_constraint_parameter</code> (default 2.0 nm). The factor approaches 0 as the RNAP reaches the exclusion distance and 1 far from it.</p>
-<p>Obstacles that trigger steric hindrance:</p>
+<h2 id="4-rnap-velocity">4. RNAP velocity<a class="headerlink" href="#4-rnap-velocity" title="Permanent link">&para;</a></h2>
+<p>For RNAP <code>i</code> on a <code>+1</code>-strand gene, with torques <code>τ_b</code> behind (left) and <code>τ_f</code> ahead (right) from segments computed at the current state:</p>
+<div class="arithmatex">\[v_i \;=\; \frac{v_0}{2}\,\Bigl(1 - \tanh\frac{\tau_f - \tau_b}{\tau_c}\Bigr).\]</div>
+<p>For a <code>−1</code>-strand gene the sign is flipped (<code>v_i</code> becomes negative) and <code>τ_f</code>, <code>τ_b</code> are taken from the segments to the <strong>left</strong> and <strong>right</strong> of the RNAP respectively. Implemented in <a href="../../api/biol-methods/#get_rnap_velocity"><code>get_RNAP_velocity</code></a>.</p>
+<h3 id="soft-steric-ramp">Soft steric ramp<a class="headerlink" href="#soft-steric-ramp" title="Permanent link">&para;</a></h3>
+<p>The bare velocity is multiplied by a tanh ramp to represent steric hindrance from the nearest obstacle in the RNAP's direction of travel:</p>
+<div class="arithmatex">\[v_i \to v_i \cdot \tfrac{1}{2}\Bigl(1 + \tanh\tfrac{s - d}{\lambda}\Bigr),\]</div>
+<p>where <code>s</code> is the centre-to-centre separation, <code>d</code> is the half-sum of the two diameters (or the larger nucleosome formula), and <code>λ = steric_hindrance_constraint_parameter</code> (default 2 nm). Implemented in <a href="../../api/utilities/#get_steric_hindrance_factor"><code>get_steric_hindrance_factor</code></a> and applied in <a href="../../api/model-dynamics/#get_rnap_velocities"><code>get_RNAP_velocities</code></a>.</p>
+<p>The exclusion distances are:</p>
+<table>
+<thead>
+<tr>
+<th>Obstacle</th>
+<th>Exclusion distance <code>d</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Another RNAP</td>
+<td><code>RNAP_diameter</code></td>
+</tr>
+<tr>
+<td>Nucleosome (steric-barrier)</td>
+<td><code>(RNAP_diameter + per_nucleosome_DNA_length + nucleosome_linker_length) / 2</code></td>
+</tr>
+<tr>
+<td>Generic protein (steric-barrier)</td>
+<td><code>(RNAP_diameter + generic_binding_protein_diameter) / 2</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="5-rnap-angular-velocity">5. RNAP angular velocity<a class="headerlink" href="#5-rnap-angular-velocity" title="Permanent link">&para;</a></h2>
+<p>The rotational degree of freedom is what couples translation to supercoiling injection. For RNAP <code>i</code> at distance <code>x = |x_i − TSS_i|</code> from its TSS:</p>
+<div class="arithmatex">\[\dot\theta_i \;=\; \frac{\omega_0\,\dot x_i \cdot \chi}{\chi + \eta\,x^\alpha} \;+\; \frac{\tau_f - \tau_b}{\chi + \eta\,x^\alpha}.\]</div>
+<p>The first term is the rotation that <em>would</em> be required to track the translational helical motion at full coupling; the prefactor <code>χ / (χ + η x^α)</code> discounts that contribution as the (growing) transcript adds drag. The second term is torsional relaxation driven by the torque imbalance across the RNAP.</p>
+<p>Here <code>τ_f</code> and <code>τ_b</code> are the front and back <strong>with respect to segment geometry</strong>: i.e. the right and left segment torques respectively, with no sign flip for <code>−1</code>-strand genes. Implemented in <a href="../../api/biol-methods/#get_rnap_angular_velocity"><code>get_RNAP_angular_velocity</code></a>.</p>
+<hr />
+<h2 id="6-linking-number-dynamics">6. Linking-number dynamics<a class="headerlink" href="#6-linking-number-dynamics" title="Permanent link">&para;</a></h2>
+<p>For an interior segment between two RNAPs, the rate of change of <code>Lk</code> is the difference between the angular velocities of the RNAPs at its two ends, divided by <code>2π</code>:</p>
+<div class="arithmatex">\[\dot{Lk}_j \;=\; \frac{1}{2\pi}\,\bigl(\dot\theta_{\text{front}} - \dot\theta_{\text{back}}\bigr),\]</div>
+<p>where "front" and "back" refer to the right and left ends of the segment (under the right-to-left segment ordering, <code>front</code> is the rightward neighbour of the segment and <code>back</code> is the leftward one).</p>
+<p>A topological-barrier protein at one end of a segment contributes 0 (it is pinned; its angle does not change).</p>
+<h3 id="free-vs-clamped-boundaries">Free vs clamped boundaries<a class="headerlink" href="#free-vs-clamped-boundaries" title="Permanent link">&para;</a></h3>
+<p>The leftmost and rightmost segments touch the clamps. The boundary condition flips the dynamics:</p>
 <ul>
-<li>Other RNAPs, with exclusion distance <code>RNAP_diameter</code>.</li>
-<li>Bound nucleosomes (with <code>is_steric_barrier_to_RNAPs=True</code>), with exclusion distance <code>(RNAP_diameter + per_nucleosome_DNA_length + nucleosome_linker_length) / 2</code> nm.</li>
-<li>Other bound proteins (with <code>is_steric_barrier_to_RNAPs=True</code>), with exclusion distance <code>(RNAP_diameter + generic_binding_protein_diameter) / 2</code> nm.</li>
+<li><strong>Clamped end</strong> (<code>clamps_status = 'clamped'</code>): the missing neighbour contributes 0, so the formula above applies with one term zero.</li>
+<li><strong>Free end</strong> (<code>clamps_status = 'free'</code>): twist escapes through the boundary. The <code>Lk</code> of the boundary segment is then driven by the <em>displacement</em> of the only RNAP at its non-clamp end, not by angular velocity transfer:</li>
+<li>rightmost free segment: <code>dLk/dt = (1 / h_dna) · (− dx/dt of leftmost RNAP of that segment)</code>,</li>
+<li>leftmost free segment: <code>dLk/dt = (1 / h_dna) · (dx/dt of rightmost RNAP of that segment)</code>.</li>
 </ul>
+<p>Implemented in <a href="../../api/biol-methods/#get_segment_lk_dynamics"><code>get_segment_Lk_dynamics</code></a>.</p>
+<h3 id="segment-merging-when-an-rnap-exits">Segment merging when an RNAP exits<a class="headerlink" href="#segment-merging-when-an-rnap-exits" title="Permanent link">&para;</a></h3>
+<p>When integration takes an RNAP past its gene end, that RNAP is removed by <a href="../../api/model-dynamics/#update_state_vector_to_remove_dead_rnaps"><code>update_state_vector_to_remove_dead_RNAPs</code></a>. The two segments adjacent to the departing RNAP are merged into one and their linking numbers are added; supercoiling is conserved across the merge.</p>
+<h3 id="lk-update-on-recruitment-topological-barrier-unbinding">Lk update on recruitment / topological-barrier (un)binding<a class="headerlink" href="#lk-update-on-recruitment-topological-barrier-unbinding" title="Permanent link">&para;</a></h3>
+<p>When a new RNAP or topological-barrier protein appears, the local segment is split; both new sub-segments inherit the parent <code>σ</code>, so <code>Lk</code> is partitioned in proportion to the new sub-segment lengths (<a href="../../api/model-dynamics/#update_lk_vector_after_rnap_or_protein_recruitment"><code>update_Lk_vector_after_RNAP_or_protein_recruitment</code></a>). When a topological barrier unbinds, the two adjacent segments are merged and their linking numbers added (<a href="../../api/model-dynamics/#update_lk_vector_after_protein_unbinding"><code>update_Lk_vector_after_protein_unbinding</code></a>).</p>
 <hr />
-<h2 id="rnap-angular-velocity">RNAP Angular Velocity<a class="headerlink" href="#rnap-angular-velocity" title="Permanent link">&para;</a></h2>
-<p>The rotational degree of freedom couples supercoiling injection to translational motion. For RNAP <span class="arithmatex">\(i\)</span> at distance <span class="arithmatex">\(x_i\)</span> from its TSS:</p>
-<div class="arithmatex">\[\dot{\theta}_i = \frac{\omega_0 \dot{x}_i \chi}{\chi + \eta x_i^\alpha} + \frac{\tau_f - \tau_b}{\chi + \eta x_i^\alpha}\]</div>
-<p>The first term reflects the natural rotation imposed by helical translation; the second is the torsional relaxation driven by the torque imbalance.</p>
-<hr />
-<h2 id="linking-number-dynamics">Linking Number Dynamics<a class="headerlink" href="#linking-number-dynamics" title="Permanent link">&para;</a></h2>
-<p>The rate of change of linking number for segment <span class="arithmatex">\(j\)</span> between two consecutive RNAPs:</p>
-<div class="arithmatex">\[\dot{Lk}_j = \frac{1}{2\pi}\left(\dot{\theta}_{j-1} - \dot{\theta}_j\right)\]</div>
-<p>where <span class="arithmatex">\(\dot{\theta}_{j-1}\)</span> is the angular velocity of the RNAP on the right (front) side and <span class="arithmatex">\(\dot{\theta}_j\)</span> is that of the RNAP on the left (back) side. For the rightmost and leftmost segments the boundary terms are zero (clamped ends).</p>
-<hr />
-<h2 id="topoisomerase-activity-topoisomerase_based-mode">Topoisomerase Activity (<code>topoisomerase_based</code> mode)<a class="headerlink" href="#topoisomerase-activity-topoisomerase_based-mode" title="Permanent link">&para;</a></h2>
-<h3 id="type-i-topoisomerase-top1">Type I Topoisomerase (TOP1)<a class="headerlink" href="#type-i-topoisomerase-top1" title="Permanent link">&para;</a></h3>
-<p>TOP1 relaxes torsional stress without changing writhe (plectoneme fraction <span class="arithmatex">\(\Phi_w = 0\)</span> required). The Lk relaxation rate contributed by <span class="arithmatex">\(n_1\)</span> bound TOP1 molecules on a segment:</p>
-<div class="arithmatex">\[\dot{Lk}^{\mathrm{TOP1}} = \begin{cases}
--n_1 \, k_0 \, e^{\theta \beta \tau}(1 - e^{-2\pi\beta\tau}) &amp; \sigma &gt; 0 \\
-+n_1 \, k_0 \, e^{-\theta \beta \tau}(1 - e^{-2\pi\beta\tau}) &amp; \sigma &lt; 0
+<h2 id="7-topoisomerase-rate-equations-used-by-the-not-yet-implemented-topoisomerase_based-mode">7. Topoisomerase rate equations (used by the not-yet-implemented <code>'topoisomerase_based'</code> mode)<a class="headerlink" href="#7-topoisomerase-rate-equations-used-by-the-not-yet-implemented-topoisomerase_based-mode" title="Permanent link">&para;</a></h2>
+<p>For completeness, the per-molecule continuous rate equations contributed by TOP1 and TOP2 to <code>dLk/dt</code> in the planned <code>'topoisomerase_based'</code> mode are already implemented in <code>biol_methods.py</code>.</p>
+<h3 id="top1">TOP1<a class="headerlink" href="#top1" title="Permanent link">&para;</a></h3>
+<p>TOP1 acts only when the segment writhe fraction is zero. With <code>n_1</code> bound TOP1 molecules, <code>β = 1/k_BT</code>, <code>θ = TOP1_theta</code>, <code>k_0 = TOP1_k0</code>, and <code>τ</code> the segment torque magnitude:</p>
+<div class="arithmatex">\[\dot{Lk}_{\text{TOP1}} \;=\;
+\begin{cases}
+- n_1 k_0 \exp(\theta\beta\tau)\,\bigl(1 - \exp(-2\pi\beta\tau)\bigr) &amp; \sigma &gt; 0,\\[4pt]
++ n_1 k_0 \exp(-\theta\beta\tau)\,\bigl(1 - \exp(-2\pi\beta\tau)\bigr) &amp; \sigma &lt; 0.
 \end{cases}\]</div>
-<p>where <span class="arithmatex">\(\beta = 1/k_BT\)</span> and the sign convention ensures relaxation toward <span class="arithmatex">\(\sigma = 0\)</span>.</p>
-<h3 id="type-ii-topoisomerase-top2">Type II Topoisomerase (TOP2)<a class="headerlink" href="#type-ii-topoisomerase-top2" title="Permanent link">&para;</a></h3>
-<p>TOP2 relaxes plectonemic supercoiling (segment writhe <span class="arithmatex">\(\Phi_w &gt; 0\)</span>) by passing one DNA double helix through another, acting on both positive and negative <span class="arithmatex">\(\sigma\)</span> to drive it toward zero:</p>
-<div class="arithmatex">\[\dot{Lk}^{\mathrm{TOP2}} = \mp n_2 \, V_0 \frac{Wr}{Wr + k_{12}}\]</div>
-<p>where <span class="arithmatex">\(Wr = |\sigma| \Phi_w\)</span> is the writhe and the sign matches the sign of <span class="arithmatex">\(\sigma\)</span>.</p>
+<p>The sign drives <code>Lk</code> toward <code>Lk₀</code>. Implemented in <a href="../../api/biol-methods/#get_top1_effect_on_lk_dynamics"><code>get_TOP1_effect_on_Lk_dynamics</code></a>.</p>
+<h3 id="top2">TOP2<a class="headerlink" href="#top2" title="Permanent link">&para;</a></h3>
+<p>TOP2 acts only when the segment writhe fraction is positive. With writhe <code>Wr = |σ| · writhe_fraction</code>, <code>V_0 = TOP2_V0</code>, <code>k_{12} = TOP2_k12</code>:</p>
+<div class="arithmatex">\[\dot{Lk}_{\text{TOP2}} \;=\; \mp \, n_2 V_0 \,\frac{Wr}{Wr + k_{12}},\]</div>
+<p>with the sign matching the sign of <code>σ</code>. Implemented in <a href="../../api/biol-methods/#get_top2_effect_on_lk_dynamics"><code>get_TOP2_effect_on_Lk_dynamics</code></a>.</p>
+<p>In the implemented <code>'topoisomerase_approximated'</code> mode these per-molecule rates are <em>not</em> used; instead, a length-weighted Poisson event with a global effective rate fires and snaps <code>Lk</code> to either <code>Lk₀</code> (TOP1) or <code>Lk₀ × (1 + σ_s)</code> (TOP2). See <a href="../../user-guide/relaxation-modes/#topoisomerase_approximated">Relaxation modes</a>.</p>
 <hr />
-<h2 id="gillespie-event-selection">Gillespie Event Selection<a class="headerlink" href="#gillespie-event-selection" title="Permanent link">&para;</a></h2>
-<p>Between ODE integration intervals, one discrete event is selected. The waiting time <span class="arithmatex">\(\Delta t\)</span> until the next event satisfies:</p>
-<div class="arithmatex">\[\int_{t}^{t + \Delta t} a_0(t') \, dt' = \ln(1/p_0), \quad p_0 \sim \mathcal{U}(0,1)\]</div>
-<p>where <span class="arithmatex">\(a_0(t') = \sum_i r_i(t')\)</span> is the total propensity. This integral is tracked via the auxiliary state variable (last element of the state vector) that is accumulated during ODE integration.</p>
-<p>The event type <span class="arithmatex">\(\mu\)</span> is then selected from the normalised rates:</p>
-<div class="arithmatex">\[P(\text{event} = \mu) = \frac{r_\mu}{a_0}\]</div>
+<h2 id="8-rnap-recruitment-rate">8. RNAP recruitment rate<a class="headerlink" href="#8-rnap-recruitment-rate" title="Permanent link">&para;</a></h2>
+<p>Implemented in <a href="../../api/biol-methods/#get_rnap_recruitment_rate"><code>get_RNAP_recruitment_rate</code></a>. For TSS <code>i</code>:</p>
+<div class="arithmatex">\[r_i \;=\; \begin{cases} \texttt{RNAP\_on\_rates}[i] &amp; \texttt{promoter\_status}[i] = 1,\\ 0 &amp; \texttt{promoter\_status}[i] = 0. \end{cases}\]</div>
+<p>Note that the function takes the local TSS supercoiling density <code>TSS_sigma</code> as an argument <strong>but does not currently use it</strong>. There is no σ-dependent or torque-dependent modulation of recruitment rate at present. Possible workarounds include scaling <code>RNAP_on_rates[i]</code> externally according to σ values measured in a pilot run, or modifying <code>get_RNAP_recruitment_rate</code> directly.</p>
+<p>The TSS steric check that gates whether a recruitment event <em>succeeds</em> is separate (and σ-independent); see <a href="../../user-guide/events-and-propensities/#block-0-rnap-recruitment">Events and propensities</a>.</p>
+<hr />
+<h2 id="9-mrna-degradation-rate">9. mRNA degradation rate<a class="headerlink" href="#9-mrna-degradation-rate" title="Permanent link">&para;</a></h2>
+<p>Implemented in <a href="../../api/biol-methods/#get_mrna_degradation_rate"><code>get_mRNA_degradation_rate</code></a>. Per gene:</p>
+<div class="arithmatex">\[r_i \;=\; \texttt{mRNA\_degradation\_rate} \times \texttt{mRNA\_counts}[i].\]</div>
+<p>Active only when <code>mRNA_dynamics_mode == 1</code>.</p>
+<hr />
+<h2 id="10-coupling-continuous-and-discrete-dynamics">10. Coupling continuous and discrete dynamics<a class="headerlink" href="#10-coupling-continuous-and-discrete-dynamics" title="Permanent link">&para;</a></h2>
+<p>The state vector handed to the ODE solver carries one extra component <code>A</code> beyond the physical degrees of freedom: the cumulative propensity since the start of the integration window.</p>
+<div class="arithmatex">\[\frac{dA}{dt} = a_0(t) = \sum_\mu r_\mu(t).\]</div>
+<p>Before each integration window, the solver is given <code>A(t_start) = 0</code>. A uniform <code>p₀ ~ U(0, 1)</code> is sampled and the threshold</p>
+<div class="arithmatex">\[T = \ln(1/p_0)\]</div>
+<p>is computed. The integrator advances in chunks of <code>RNAP_alive_status_check_interval</code>. After each chunk, the solver output is searched for the first <code>t_eval</code> point at which <code>A(t) &gt; T</code>. If found, that becomes the event time; the event index is then drawn from the <em>current</em> propensities <code>{r_µ}</code> with probabilities <code>r_µ / a₀</code>. If not found in the current chunk, dead RNAPs are removed and the integrator continues.</p>
+<p>This is a Gillespie next-reaction sampling that correctly handles time-varying propensities, because the threshold is on the <em>time integral</em> of the total propensity rather than on the instantaneous total. Implemented in <a href="../../api/model-dynamics/#integrate"><code>integrate</code></a> and dispatched in <a href="../../api/simulate-dynamics/#simulate_dynamics"><code>simulate_dynamics</code></a>.</p>
+<p>The check <code>np.diff(sol.y[-1, :]) &gt;= 0.0</code> enforces that the cumulative propensity is monotonic; if it ever decreases (which would indicate a numerical pathology), the simulation aborts.</p>
+<hr />
+<h2 id="11-summary-of-the-dynamic-state">11. Summary of the dynamic state<a class="headerlink" href="#11-summary-of-the-dynamic-state" title="Permanent link">&para;</a></h2>
+<p>Putting it all together, the system of ODEs that is integrated in each window is:</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\dot x_i      &amp;= \text{velocity of RNAP } i \text{ (Section 4)},\\
+\dot\theta_i  &amp;= \text{angular velocity of RNAP } i \text{ (Section 5)},\\
+\dot{Lk}_j    &amp;= \text{linking-number dynamics of segment } j \text{ (Section 6)},\\
+\dot A        &amp;= \sum_\mu r_\mu \text{ (Section 10)}.
+\end{aligned}
+\]</div>
+<p>When <code>A</code> crosses <code>ln(1/p_0)</code>, integration stops and one discrete event from the catalogue in <a href="../../user-guide/events-and-propensities/">Events and propensities</a> fires.</p>
 
 
 

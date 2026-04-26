@@ -16,6 +16,8 @@
         <link rel="prev" href="../simulate-dynamics/">
       
       
+        <link rel="next" href="../../citations/">
+      
       
         
       
@@ -76,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#utilities-io-and-helper-functions" class="md-skip">
+        <a href="#utilities" class="md-skip">
           Skip to content
         </a>
       
@@ -333,6 +335,25 @@
         </a>
       </li>
     
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../citations/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  How to cite
+
+      </a>
+    </li>
   
 
       
@@ -607,6 +628,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../user-guide/binding-proteins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Binding Proteins
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../user-guide/simulation/" class="md-nav__link">
         
   
@@ -643,6 +692,62 @@
     
   
     Supercoiling Relaxation Modes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/events-and-propensities/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events and Propensities
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/not-yet-implemented/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Not Yet Implemented
   
 
     
@@ -1016,15 +1121,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#file-io" class="md-nav__link">
+  <a href="#file-and-setup-helpers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        File I/O
+        File and setup helpers
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="File I/O">
+    <nav class="md-nav" aria-label="File and setup helpers">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1055,15 +1160,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#random-numbers" class="md-nav__link">
+  <a href="#sampling" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Random Numbers
+        Sampling
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Random Numbers">
+    <nav class="md-nav" aria-label="Sampling">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1077,21 +1182,32 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#select_event_based_on_propensities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        select_event_based_on_propensities
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#geometry" class="md-nav__link">
+  <a href="#spatial-lookups" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Geometry
+        Spatial lookups
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Geometry">
+    <nav class="md-nav" aria-label="Spatial lookups">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1105,72 +1221,11 @@
   
 </li>
         
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#steric-hindrance" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Steric Hindrance
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Steric Hindrance">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#get_tss_steric_hindrance_status" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        get_TSS_steric_hindrance_status
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#is_protein_binding_blocked" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        is_protein_binding_blocked
-      
-    </span>
-  </a>
-  
-</li>
-        
           <li class="md-nav__item">
   <a href="#get_nucleosome_occupied_fraction_per_segment" class="md-nav__link">
     <span class="md-ellipsis">
       
         get_nucleosome_occupied_fraction_per_segment
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#check_separation_between_nucleosomes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        check_separation_between_nucleosomes
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#check_separation_between_nucleosomes_and_rnaps" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        check_separation_between_nucleosomes_and_RNAPs
       
     </span>
   </a>
@@ -1199,11 +1254,72 @@
   
 </li>
         
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#steric-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Steric checks
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Steric checks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#get_tss_steric_hindrance_status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_TSS_steric_hindrance_status
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#is_protein_binding_blocked" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        is_protein_binding_blocked
+      
+    </span>
+  </a>
+  
+</li>
+        
           <li class="md-nav__item">
   <a href="#get_steric_hindrance_factor" class="md-nav__link">
     <span class="md-ellipsis">
       
         get_steric_hindrance_factor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check_separation_between_nucleosomes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        check_separation_between_nucleosomes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check_separation_between_nucleosomes_and_rnaps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        check_separation_between_nucleosomes_and_RNAPs
       
     </span>
   </a>
@@ -1216,15 +1332,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#list-manipulation" class="md-nav__link">
+  <a href="#misc" class="md-nav__link">
     <span class="md-ellipsis">
       
-        List Manipulation
+        Misc
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="List Manipulation">
+    <nav class="md-nav" aria-label="Misc">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1237,51 +1353,6 @@
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#event-selection" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Event Selection
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Event Selection">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#select_event_based_on_propensities" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        select_event_based_on_propensities
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#debugging" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Debugging
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Debugging">
-      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#print_list" class="md-nav__link">
@@ -1315,6 +1386,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../citations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How to cite
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1342,15 +1440,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#file-io" class="md-nav__link">
+  <a href="#file-and-setup-helpers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        File I/O
+        File and setup helpers
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="File I/O">
+    <nav class="md-nav" aria-label="File and setup helpers">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1381,15 +1479,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#random-numbers" class="md-nav__link">
+  <a href="#sampling" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Random Numbers
+        Sampling
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Random Numbers">
+    <nav class="md-nav" aria-label="Sampling">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1403,21 +1501,32 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#select_event_based_on_propensities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        select_event_based_on_propensities
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#geometry" class="md-nav__link">
+  <a href="#spatial-lookups" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Geometry
+        Spatial lookups
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Geometry">
+    <nav class="md-nav" aria-label="Spatial lookups">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1431,72 +1540,11 @@
   
 </li>
         
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#steric-hindrance" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Steric Hindrance
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Steric Hindrance">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#get_tss_steric_hindrance_status" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        get_TSS_steric_hindrance_status
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#is_protein_binding_blocked" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        is_protein_binding_blocked
-      
-    </span>
-  </a>
-  
-</li>
-        
           <li class="md-nav__item">
   <a href="#get_nucleosome_occupied_fraction_per_segment" class="md-nav__link">
     <span class="md-ellipsis">
       
         get_nucleosome_occupied_fraction_per_segment
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#check_separation_between_nucleosomes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        check_separation_between_nucleosomes
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#check_separation_between_nucleosomes_and_rnaps" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        check_separation_between_nucleosomes_and_RNAPs
       
     </span>
   </a>
@@ -1525,11 +1573,72 @@
   
 </li>
         
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#steric-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Steric checks
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Steric checks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#get_tss_steric_hindrance_status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_TSS_steric_hindrance_status
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#is_protein_binding_blocked" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        is_protein_binding_blocked
+      
+    </span>
+  </a>
+  
+</li>
+        
           <li class="md-nav__item">
   <a href="#get_steric_hindrance_factor" class="md-nav__link">
     <span class="md-ellipsis">
       
         get_steric_hindrance_factor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check_separation_between_nucleosomes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        check_separation_between_nucleosomes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check_separation_between_nucleosomes_and_rnaps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        check_separation_between_nucleosomes_and_RNAPs
       
     </span>
   </a>
@@ -1542,15 +1651,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#list-manipulation" class="md-nav__link">
+  <a href="#misc" class="md-nav__link">
     <span class="md-ellipsis">
       
-        List Manipulation
+        Misc
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="List Manipulation">
+    <nav class="md-nav" aria-label="Misc">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1563,51 +1672,6 @@
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#event-selection" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Event Selection
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Event Selection">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#select_event_based_on_propensities" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        select_event_based_on_propensities
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#debugging" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Debugging
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Debugging">
-      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#print_list" class="md-nav__link">
@@ -1645,244 +1709,84 @@
   
 
 
-<h1 id="utilities-io-and-helper-functions"><code>utilities</code> — I/O and Helper Functions<a class="headerlink" href="#utilities-io-and-helper-functions" title="Permanent link">&para;</a></h1>
-<p><strong>File:</strong> <code>utilities.py</code>
-<strong>Imports:</strong> <code>model_setup</code></p>
+<h1 id="utilities"><code>utilities</code><a class="headerlink" href="#utilities" title="Permanent link">&para;</a></h1>
+<p>Helper functions used across the package.</p>
 <hr />
-<h2 id="file-io">File I/O<a class="headerlink" href="#file-io" title="Permanent link">&para;</a></h2>
+<h2 id="file-and-setup-helpers">File and setup helpers<a class="headerlink" href="#file-and-setup-helpers" title="Permanent link">&para;</a></h2>
 <h3 id="read_genes_information"><code>read_genes_information</code><a class="headerlink" href="#read_genes_information" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">read_genes_information</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>    <span class="c1"># gene_names</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>  <span class="c1"># TSSes (nm)</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>  <span class="c1"># gene_lengths (nm)</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>    <span class="c1"># gene_directions</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>  <span class="c1"># RNAP_on_rates (s⁻¹)</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="p">]</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">read_genes_information</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span>
 </code></pre></div>
-<p>Reads gene data from a <strong>tab-delimited file</strong> (no header). Each line defines one gene:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>&lt;name&gt;  &lt;TSS_bp&gt;  &lt;length_bp&gt;  &lt;direction&gt;  &lt;RNAP_on_rate&gt;
-</code></pre></div>
-<p>Columns 2 and 3 (TSS and length) are multiplied by <code>0.34</code> to convert bp → nm. Direction must be <code>+1</code> or <code>-1</code>.</p>
-<p><strong>Example file:</strong>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>lacZ    1000    10000   1   0.02
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>lacA    12000   3000    1   0.01
-</code></pre></div></p>
-<p><strong>Example usage:</strong>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">names</span><span class="p">,</span> <span class="n">TSSes</span><span class="p">,</span> <span class="n">lengths</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">rates</span> <span class="o">=</span> <span class="n">read_genes_information</span><span class="p">(</span><span class="s1">&#39;genes.tsv&#39;</span><span class="p">)</span>
-</code></pre></div></p>
-<hr />
+<p>Read a tab-delimited gene file with columns <code>gene_name</code>, <code>TSS_bp</code>, <code>gene_length_bp</code>, <code>direction</code>, <code>RNAP_on_rate</code>. Returns <code>(gene_names, TSSes_nm, gene_lengths_nm, gene_directions, RNAP_on_rates)</code>. Positions and lengths are converted from bp to nm.</p>
 <h3 id="construct_genomic_setup"><code>construct_genomic_setup</code><a class="headerlink" href="#construct_genomic_setup" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">construct_genomic_setup</span><span class="p">(</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="n">chromatin_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="n">promoter_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;constitutive&#39;</span><span class="p">,</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="n">buffer_length</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">3400.0</span><span class="p">,</span>   <span class="c1"># 10,000 bp in nm</span>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>    <span class="o">**</span><span class="n">kwargs</span>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenomicSetup</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">construct_genomic_setup</span><span class="p">(</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="n">chromatin_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="n">promoter_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;constitutive&#39;</span><span class="p">,</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="n">buffer_length</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">10000.0</span> <span class="o">*</span> <span class="mf">0.34</span><span class="p">,</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenomicSetup</span>
 </code></pre></div>
-<p>Factory function that reads a gene file and returns a configured <code>GenomicSetup</code>.</p>
-<p><strong>Keyword arguments:</strong></p>
-<table>
-<thead>
-<tr>
-<th>Keyword</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>explicit_RNAP_on_rates</code></td>
-<td><code>list[float]</code></td>
-<td>Multipliers applied element-wise to the file's RNAP on-rates</td>
-</tr>
-<tr>
-<td><code>TF_on_off_rates</code></td>
-<td><code>list[tuple[float,float]]</code></td>
-<td>Required when <code>promoter_mode='non-constitutive'</code></td>
-</tr>
-</tbody>
-</table>
-<p>All eukaryotic keyword arguments accepted by <code>GenomicSetup</code> can also be passed through this function (see <a href="../../user-guide/genomic-setup/#eukaryotic-keyword-arguments">Eukaryotic Keyword Arguments</a>):</p>
-<table>
-<thead>
-<tr>
-<th>Keyword</th>
-<th>Type</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>per_nucleosome_DNA_length</code></td>
-<td><code>float</code></td>
-<td>147 (bp)</td>
-<td>DNA wrapped per nucleosome (converted to nm internally)</td>
-</tr>
-<tr>
-<td><code>nucleosome_linker_length</code></td>
-<td><code>float</code></td>
-<td>30 (bp)</td>
-<td>Linker DNA between nucleosomes (converted to nm internally)</td>
-</tr>
-<tr>
-<td><code>nucleosomes_are_steric_barriers_to_RNAPs</code></td>
-<td><code>bool</code></td>
-<td><code>True</code></td>
-<td>Whether nucleosomes block RNAP passage</td>
-</tr>
-<tr>
-<td><code>nucleosome_count</code></td>
-<td><code>int</code></td>
-<td>auto</td>
-<td>Explicit nucleosome count; if omitted, computed by tiling</td>
-</tr>
-<tr>
-<td><code>nucleosomes_can_be_displaced_at_TSS_by_RNAP</code></td>
-<td><code>bool</code></td>
-<td><code>False</code></td>
-<td>Whether nucleosomes blocking a TSS can be displaced by an incoming RNAP</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Example:</strong>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">utilities</span><span class="w"> </span><span class="kn">import</span> <span class="n">construct_genomic_setup</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">genomic_setup</span> <span class="o">=</span> <span class="n">construct_genomic_setup</span><span class="p">(</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="s1">&#39;genes.tsv&#39;</span><span class="p">,</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="n">chromatin_type</span><span class="o">=</span><span class="s1">&#39;prokaryotic&#39;</span><span class="p">,</span>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>    <span class="n">promoter_mode</span><span class="o">=</span><span class="s1">&#39;constitutive&#39;</span><span class="p">,</span>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>    <span class="n">buffer_length</span><span class="o">=</span><span class="mf">3400.0</span><span class="p">,</span>
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>    <span class="n">explicit_RNAP_on_rates</span><span class="o">=</span><span class="p">[</span><span class="mf">2.0</span><span class="p">],</span>   <span class="c1"># double the rate from the file</span>
-<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="p">)</span>
-</code></pre></div></p>
+<p>Convenience: read a gene file and construct a <code>GenomicSetup</code> in one call.</p>
 <hr />
-<h2 id="random-numbers">Random Numbers<a class="headerlink" href="#random-numbers" title="Permanent link">&para;</a></h2>
+<h2 id="sampling">Sampling<a class="headerlink" href="#sampling" title="Permanent link">&para;</a></h2>
 <h3 id="uniform_random_in_interval"><code>uniform_random_in_interval</code><a class="headerlink" href="#uniform_random_in_interval" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">uniform_random_in_interval</span><span class="p">(</span><span class="n">start</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">end</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">uniform_random_in_interval</span><span class="p">(</span><span class="n">start</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">end</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span>
 </code></pre></div>
-<p>Returns a uniform random float in the half-open interval <code>[start, end)</code>.</p>
+<p>Returns <code>random.uniform(start, end)</code>. Wrapper kept for testability.</p>
+<h3 id="select_event_based_on_propensities"><code>select_event_based_on_propensities</code><a class="headerlink" href="#select_event_based_on_propensities" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">select_event_based_on_propensities</span><span class="p">(</span><span class="n">rates_vector</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">p</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span>
+</code></pre></div>
+<p>Pick the smallest index <code>k</code> such that <code>cumulative_rates[k] &gt;= p × sum(rates_vector)</code>. Returns <code>None</code> only on a degenerate empty-rates input.</p>
 <hr />
-<h2 id="geometry">Geometry<a class="headerlink" href="#geometry" title="Permanent link">&para;</a></h2>
+<h2 id="spatial-lookups">Spatial lookups<a class="headerlink" href="#spatial-lookups" title="Permanent link">&para;</a></h2>
 <h3 id="get_spot_segment_index"><code>get_spot_segment_index</code><a class="headerlink" href="#get_spot_segment_index" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">get_spot_segment_index</span><span class="p">(</span><span class="n">spot</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">segments_lengths</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">get_spot_segment_index</span><span class="p">(</span><span class="n">spot</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">segments_lengths</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span>
 </code></pre></div>
-<p>Returns the index of the DNA segment containing <code>spot</code> (given as an absolute position measured from the <strong>left</strong> clamp). Segments are ordered right-to-left.</p>
-<p>Returns <code>-1</code> if the spot falls outside all segments (which should not occur in a correctly configured simulation).</p>
-<hr />
-<h2 id="steric-hindrance">Steric Hindrance<a class="headerlink" href="#steric-hindrance" title="Permanent link">&para;</a></h2>
-<h3 id="get_tss_steric_hindrance_status"><code>get_TSS_steric_hindrance_status</code><a class="headerlink" href="#get_tss_steric_hindrance_status" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">get_TSS_steric_hindrance_status</span><span class="p">(</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>    <span class="n">TSS_position</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="n">RNAP_gene_index</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>    <span class="n">state_vector</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
-<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
-</code></pre></div>
-<p>Returns a 3-tuple <code>(status, position, entity_id)</code>:</p>
-<ul>
-<li><code>status</code>: <code>1</code> if the TSS at <code>TSS_position</code> is sterically blocked, <code>0</code> otherwise.</li>
-<li><code>position</code>: the position (nm) of the blocking entity, or <code>0.0</code> if unblocked.</li>
-<li><code>entity_id</code>: identifies the blocking entity type — <code>-1</code> for an RNAP, <code>0</code> to <code>len(model.binding_proteins) - 1</code> for a bound protein (index into <code>model.binding_proteins</code>), or <code>-1</code> when unblocked.</li>
-</ul>
-<p>Blocking is triggered by:</p>
-<ul>
-<li>Any active RNAP within <code>RNAP_diameter</code> nm of the TSS.</li>
-<li>Any bound nucleosome (with <code>is_steric_barrier_to_RNAPs=True</code>) within <code>(RNAP_diameter + per_nucleosome_DNA_length + nucleosome_linker_length) / 2</code> nm of the TSS.</li>
-<li>Any other bound protein (with <code>is_steric_barrier_to_RNAPs=True</code>) within <code>(RNAP_diameter + generic_binding_protein_diameter) / 2</code> nm of the TSS.</li>
-</ul>
-<h3 id="is_protein_binding_blocked"><code>is_protein_binding_blocked</code><a class="headerlink" href="#is_protein_binding_blocked" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">is_protein_binding_blocked</span><span class="p">(</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    <span class="n">RNAP_gene_index</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    <span class="n">state_vector</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>    <span class="n">protein_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>    <span class="n">binding_position</span><span class="p">:</span> <span class="nb">float</span>
-<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span>
-</code></pre></div>
-<p>Returns <code>1</code> if a binding protein of the given type cannot bind at <code>binding_position</code>, <code>0</code> otherwise.</p>
-<p>Blocking is triggered by:</p>
-<ul>
-<li>Any RNAP within <code>(RNAP_diameter + size) / 2</code> nm, where <code>size</code> is <code>per_nucleosome_DNA_length + nucleosome_linker_length</code> for nucleosomes or <code>generic_binding_protein_diameter</code> for other proteins.</li>
-<li>For nucleosomes: any other bound nucleosome within <code>per_nucleosome_DNA_length + nucleosome_linker_length</code> nm.</li>
-<li>For non-nucleosome proteins: any bound protein within <code>generic_binding_protein_diameter</code> nm.</li>
-</ul>
+<p>Returns the right-to-left segment index containing <code>spot</code>.</p>
 <h3 id="get_nucleosome_occupied_fraction_per_segment"><code>get_nucleosome_occupied_fraction_per_segment</code><a class="headerlink" href="#get_nucleosome_occupied_fraction_per_segment" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">get_nucleosome_occupied_fraction_per_segment</span><span class="p">(</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>    <span class="n">segments_lengths</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>    <span class="n">segment_index</span><span class="p">:</span> <span class="nb">int</span>
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">get_nucleosome_occupied_fraction_per_segment</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">segments_lengths</span><span class="p">,</span> <span class="n">segment_index</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span>
 </code></pre></div>
-<p>Returns the fraction of a DNA segment occupied by nucleosomes (0.0 to 1.0). Computes geometric overlap between each bound nucleosome's footprint (<code>per_nucleosome_DNA_length + nucleosome_linker_length</code>) and the segment boundaries, then divides total occupied length by segment length.</p>
+<p>Fraction of segment length covered by bound nucleosomes (range <code>[0, 1]</code>). Used by the eukaryotic torque law.</p>
+<h3 id="get_ordering_of_rnaps_and_proteins"><code>get_ordering_of_RNAPs_and_proteins</code><a class="headerlink" href="#get_ordering_of_rnaps_and_proteins" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">get_ordering_of_RNAPs_and_proteins</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">RNAP_gene_index</span><span class="p">,</span> <span class="n">state_vector</span><span class="p">,</span> <span class="n">topological_barrier_proteins_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
+</code></pre></div>
+<p>Returns <code>(positions, ids)</code> sorted left to right. <code>ids</code> are <code>'RNAP'</code> or the species index as a string.</p>
+<h3 id="get_nearest_steric_obstacles_for_rnap"><code>get_nearest_steric_obstacles_for_RNAP</code><a class="headerlink" href="#get_nearest_steric_obstacles_for_rnap" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">get_nearest_steric_obstacles_for_RNAP</span><span class="p">(</span><span class="n">RNAP_index</span><span class="p">,</span> <span class="n">RNAP_pos</span><span class="p">,</span> <span class="n">sorted_positions</span><span class="p">,</span> <span class="n">sorted_ids</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="o">|</span><span class="kc">None</span><span class="p">,</span> <span class="nb">str</span><span class="o">|</span><span class="kc">None</span><span class="p">,</span> <span class="nb">float</span><span class="o">|</span><span class="kc">None</span><span class="p">,</span> <span class="nb">str</span><span class="o">|</span><span class="kc">None</span><span class="p">]</span>
+</code></pre></div>
+<p>Returns <code>(left_pos, left_id, right_pos, right_id)</code> for the nearest obstacles on either side; <code>None</code> if no obstacle on that side.</p>
+<hr />
+<h2 id="steric-checks">Steric checks<a class="headerlink" href="#steric-checks" title="Permanent link">&para;</a></h2>
+<h3 id="get_tss_steric_hindrance_status"><code>get_TSS_steric_hindrance_status</code><a class="headerlink" href="#get_tss_steric_hindrance_status" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">get_TSS_steric_hindrance_status</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">TSS_position</span><span class="p">,</span> <span class="n">RNAP_gene_index</span><span class="p">,</span> <span class="n">state_vector</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
+</code></pre></div>
+<p>Returns <code>(status, blocking_position, blocking_id)</code>. <code>status</code> is 1 if any RNAP, nucleosome, or generic steric-barrier protein is within the TSS exclusion zone, else 0. <code>blocking_id</code> is <code>-1</code> for an RNAP, otherwise the binding-protein species index. Used by the recruitment handler.</p>
+<h3 id="is_protein_binding_blocked"><code>is_protein_binding_blocked</code><a class="headerlink" href="#is_protein_binding_blocked" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">is_protein_binding_blocked</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">RNAP_gene_index</span><span class="p">,</span> <span class="n">state_vector</span><span class="p">,</span> <span class="n">protein_index</span><span class="p">,</span> <span class="n">binding_position</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span>
+</code></pre></div>
+<p>Returns 1 if a candidate binding event for species <code>protein_index</code> at <code>binding_position</code> would overlap an existing RNAP, nucleosome, or other protein.</p>
+<h3 id="get_steric_hindrance_factor"><code>get_steric_hindrance_factor</code><a class="headerlink" href="#get_steric_hindrance_factor" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">get_steric_hindrance_factor</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">separation</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">steric_hindrance_distance</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span>
+</code></pre></div>
+<p>Soft tanh ramp <code>0.5 (1 + tanh((separation − steric_hindrance_distance) / λ))</code> with <code>λ = steric_hindrance_constraint_parameter</code>.</p>
 <h3 id="check_separation_between_nucleosomes"><code>check_separation_between_nucleosomes</code><a class="headerlink" href="#check_separation_between_nucleosomes" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">check_separation_between_nucleosomes</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </code></pre></div>
-<p>Validation function that raises <code>ValueError</code> if any two bound nucleosomes are closer than <code>per_nucleosome_DNA_length + nucleosome_linker_length</code> nm (centre-to-centre).</p>
+<p>Asserts that bound nucleosomes are pairwise separated by at least <code>per_nucleosome_DNA_length + nucleosome_linker_length</code>.</p>
 <h3 id="check_separation_between_nucleosomes_and_rnaps"><code>check_separation_between_nucleosomes_and_RNAPs</code><a class="headerlink" href="#check_separation_between_nucleosomes_and_rnaps" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">check_separation_between_nucleosomes_and_RNAPs</span><span class="p">(</span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span>
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>    <span class="n">RNAP_gene_index</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
-<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>    <span class="n">state_vector</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
-<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">check_separation_between_nucleosomes_and_RNAPs</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">RNAP_gene_index</span><span class="p">,</span> <span class="n">state_vector</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </code></pre></div>
-<p>Validation function that raises <code>ValueError</code> if any RNAP is closer than <code>(RNAP_diameter + per_nucleosome_DNA_length) / 2</code> nm to a bound nucleosome (centre-to-centre). This uses a deliberately weaker threshold (core footprint only, no linker) compared to the steric enforcement checks.</p>
-<h3 id="get_ordering_of_rnaps_and_proteins"><code>get_ordering_of_RNAPs_and_proteins</code><a class="headerlink" href="#get_ordering_of_rnaps_and_proteins" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">get_ordering_of_RNAPs_and_proteins</span><span class="p">(</span>
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span>
-<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>    <span class="n">RNAP_gene_index</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
-<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>    <span class="n">state_vector</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
-<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
-</code></pre></div>
-<p>Merges all RNAP positions and bound steric-barrier protein positions into a single list sorted by position. Returns <code>(sorted_positions, sorted_ids)</code> where each ID is either <code>'RNAP_&lt;index&gt;'</code> for an RNAP or <code>'&lt;binding_protein_index&gt;'</code> for a bound protein (matching the index into <code>model.binding_proteins</code>).</p>
-<h3 id="get_nearest_steric_obstacles_for_rnap"><code>get_nearest_steric_obstacles_for_RNAP</code><a class="headerlink" href="#get_nearest_steric_obstacles_for_rnap" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">get_nearest_steric_obstacles_for_RNAP</span><span class="p">(</span>
-<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>    <span class="n">RNAP_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>    <span class="n">RNAP_pos</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>    <span class="n">sorted_positions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
-<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>    <span class="n">sorted_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span>
-</code></pre></div>
-<p>Given the sorted ordering from <code>get_ordering_of_RNAPs_and_proteins</code>, finds the nearest obstacle to the left and right of the specified RNAP. Returns <code>(left_position, left_id, right_position, right_id)</code>. Any value is <code>None</code> if no obstacle exists on that side.</p>
-<h3 id="get_steric_hindrance_factor"><code>get_steric_hindrance_factor</code><a class="headerlink" href="#get_steric_hindrance_factor" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">get_steric_hindrance_factor</span><span class="p">(</span>
-<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span>
-<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>    <span class="n">separation</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>    <span class="n">steric_hindrance_distance</span><span class="p">:</span> <span class="nb">float</span>
-<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span>
-</code></pre></div>
-<p>Computes the soft steric velocity reduction factor:</p>
-<div class="arithmatex">\[f(s) = \frac{1}{2}\left(1 + \tanh\!\frac{s - d}{\lambda}\right)\]</div>
-<p>where <span class="arithmatex">\(s\)</span> is <code>separation</code>, <span class="arithmatex">\(d\)</span> is <code>steric_hindrance_distance</code>, and <span class="arithmatex">\(\lambda\)</span> is <code>model.model_setup.steric_hindrance_constraint_parameter</code>. Returns a value in <span class="arithmatex">\((0, 1)\)</span> that approaches 0 near the exclusion distance and 1 far from it.</p>
+<p>Asserts that no RNAP overlaps a bound nucleosome.</p>
 <hr />
-<h2 id="list-manipulation">List Manipulation<a class="headerlink" href="#list-manipulation" title="Permanent link">&para;</a></h2>
+<h2 id="misc">Misc<a class="headerlink" href="#misc" title="Permanent link">&para;</a></h2>
 <h3 id="find_and_remove_from_list"><code>find_and_remove_from_list</code><a class="headerlink" href="#find_and_remove_from_list" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="n">find_and_remove_from_list</span><span class="p">(</span>
-<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>    <span class="n">lst</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
-<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>    <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>    <span class="n">tolerance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-6</span>
-<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">find_and_remove_from_list</span><span class="p">(</span><span class="n">lst</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-6</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </code></pre></div>
-<p>Finds the first element in <code>lst</code> within <code>tolerance</code> of <code>value</code> and removes it in-place. Raises <code>ValueError</code> if no matching element is found.</p>
-<hr />
-<h2 id="event-selection">Event Selection<a class="headerlink" href="#event-selection" title="Permanent link">&para;</a></h2>
-<h3 id="select_event_based_on_propensities"><code>select_event_based_on_propensities</code><a class="headerlink" href="#select_event_based_on_propensities" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="n">select_event_based_on_propensities</span><span class="p">(</span>
-<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>    <span class="n">rates_vector</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
-<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>    <span class="n">p</span><span class="p">:</span> <span class="nb">float</span>
-<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span>
-</code></pre></div>
-<p>Gillespie event-type selection. Returns the index of the selected event in <code>rates_vector</code> given a uniform random number <code>p ∈ [0, 1)</code>.</p>
-<p>Returns <code>None</code> if the total rate is zero (no events possible).</p>
-<p>The i-th event is selected when:</p>
-<div class="arithmatex">\[\sum_{j=0}^{i-1} \frac{r_j}{a_0} \leq p &lt; \sum_{j=0}^{i} \frac{r_j}{a_0}\]</div>
-<hr />
-<h2 id="debugging">Debugging<a class="headerlink" href="#debugging" title="Permanent link">&para;</a></h2>
+<p>Remove the first occurrence of <code>value</code> (within tolerance) from <code>lst</code>. Raises if not found.</p>
 <h3 id="print_list"><code>print_list</code><a class="headerlink" href="#print_list" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="n">print_list</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">lst</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">print_list</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">lst</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </code></pre></div>
-<p>Prints <code>name: val1 val2 val3 ...</code> on a single line. Convenience function for debugging state vectors.</p>
+<p>Tabbed printout for debugging.</p>
 
 
 

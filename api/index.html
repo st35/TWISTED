@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#api-reference-overview" class="md-skip">
+        <a href="#api-reference" class="md-skip">
           Skip to content
         </a>
       
@@ -335,6 +335,25 @@
         </a>
       </li>
     
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../citations/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  How to cite
+
+      </a>
+    </li>
   
 
       
@@ -609,6 +628,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../user-guide/binding-proteins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Binding Proteins
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../user-guide/simulation/" class="md-nav__link">
         
   
@@ -645,6 +692,62 @@
     
   
     Supercoiling Relaxation Modes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user-guide/events-and-propensities/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events and Propensities
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user-guide/not-yet-implemented/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Not Yet Implemented
   
 
     
@@ -878,10 +981,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#dependency-graph" class="md-nav__link">
+  <a href="#module-map" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Dependency Graph
+        Module map
       
     </span>
   </a>
@@ -889,10 +992,32 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#type-conventions" class="md-nav__link">
+  <a href="#dependency-graph" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Type Conventions
+        Dependency graph
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#unit-conventions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Unit conventions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conventions-for-callable-arguments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conventions for callable arguments
       
     </span>
   </a>
@@ -1055,6 +1180,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../citations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How to cite
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1082,10 +1234,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#dependency-graph" class="md-nav__link">
+  <a href="#module-map" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Dependency Graph
+        Module map
       
     </span>
   </a>
@@ -1093,10 +1245,32 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#type-conventions" class="md-nav__link">
+  <a href="#dependency-graph" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Type Conventions
+        Dependency graph
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#unit-conventions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Unit conventions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conventions-for-callable-arguments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conventions for callable arguments
       
     </span>
   </a>
@@ -1123,106 +1297,98 @@
   
 
 
-<h1 id="api-reference-overview">API Reference Overview<a class="headerlink" href="#api-reference-overview" title="Permanent link">&para;</a></h1>
-<p>The TWISTED codebase is organized into five modules. Each module is documented on its own page.</p>
+<h1 id="api-reference">API reference<a class="headerlink" href="#api-reference" title="Permanent link">&para;</a></h1>
+<p>TWISTED is laid out as a small flat package with one file per architectural layer. This page is the entry point to the function-by-function reference.</p>
+<h2 id="module-map">Module map<a class="headerlink" href="#module-map" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
 <th>Module</th>
-<th>File</th>
-<th>Description</th>
+<th>Role</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><a href="model-setup/"><code>model_setup</code></a></td>
-<td><code>model_setup.py</code></td>
-<td>Core data classes</td>
+<td>Data classes the user constructs: <code>GenomicSetup</code>, <code>ModelSetup</code>, <code>BindingProtein</code>, <code>Model</code>, <code>SimulationSetupAndState</code></td>
 </tr>
 <tr>
 <td><a href="biol-methods/"><code>biol_methods</code></a></td>
-<td><code>biol_methods.py</code></td>
-<td>Biophysical equations</td>
+<td>Pure scalar physics/biology functions: torque laws, single-RNAP velocity, Lk dynamics, recruitment rate</td>
 </tr>
 <tr>
 <td><a href="model-dynamics/"><code>model_dynamics</code></a></td>
-<td><code>model_dynamics.py</code></td>
-<td>ODE integration and state management</td>
+<td>Vectorised dynamics over the whole DNA: state vector ↔ dict conversions, segment attributes, ODE right-hand side, integration window</td>
 </tr>
 <tr>
 <td><a href="simulate-dynamics/"><code>simulate_dynamics</code></a></td>
-<td><code>simulate_dynamics.py</code></td>
-<td>Main simulation loop</td>
+<td>Outer Gillespie loop with full event dispatch</td>
 </tr>
 <tr>
 <td><a href="utilities/"><code>utilities</code></a></td>
-<td><code>utilities.py</code></td>
-<td>I/O, stochastic helpers, geometry</td>
+<td>Pure helpers: gene-file IO, segment/spot lookup, steric checks, sampling helpers</td>
 </tr>
 </tbody>
 </table>
-<hr />
-<h2 id="dependency-graph">Dependency Graph<a class="headerlink" href="#dependency-graph" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>utilities.py ←──────────────────────────┐
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    └── model_setup.py                  │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>            ├── biol_methods.py          │
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>            └── model_dynamics.py ───────┤
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>                    └── simulate_dynamics.py
+<h2 id="dependency-graph">Dependency graph<a class="headerlink" href="#dependency-graph" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>utilities  ──►  model_setup ──►  biol_methods ──►  model_dynamics ──►  simulate_dynamics
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>                                                            ▲
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>                                                            └─── utilities
 </code></pre></div>
-<p>All modules use <code>from &lt;module&gt; import *</code>. The primary chain is <code>utilities → model_setup → biol_methods → model_dynamics → simulate_dynamics</code>. In addition, <code>model_dynamics</code> and <code>simulate_dynamics</code> import directly from <code>utilities</code>, and <code>utilities</code> imports from <code>model_setup</code> (circular).</p>
-<hr />
-<h2 id="type-conventions">Type Conventions<a class="headerlink" href="#type-conventions" title="Permanent link">&para;</a></h2>
-<p>All physical quantities use the following units unless otherwise noted:</p>
+<p>Cycles are avoided: <code>biol_methods</code> depends only on <code>model_setup</code>; <code>model_dynamics</code> consumes both; <code>simulate_dynamics</code> orchestrates the whole.</p>
+<h2 id="unit-conventions">Unit conventions<a class="headerlink" href="#unit-conventions" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
 <th>Quantity</th>
 <th>Unit</th>
+<th>Notes</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Position</td>
-<td>nm</td>
-</tr>
-<tr>
 <td>Length</td>
-<td>nm</td>
+<td>nanometres (nm)</td>
+<td><code>1 bp = 0.34 nm</code></td>
 </tr>
 <tr>
 <td>Time</td>
-<td>s</td>
+<td>seconds (s)</td>
+<td></td>
 </tr>
 <tr>
-<td>Rate</td>
+<td>Rates</td>
 <td>s⁻¹</td>
+<td></td>
+</tr>
+<tr>
+<td>Force</td>
+<td>piconewtons (pN)</td>
+<td></td>
+</tr>
+<tr>
+<td>Energy</td>
+<td>pN·nm</td>
+<td><code>kBT ≈ 4.114 pN·nm</code> at 300 K</td>
 </tr>
 <tr>
 <td>Torque</td>
 <td>pN·nm</td>
-</tr>
-<tr>
-<td>Force</td>
-<td>pN</td>
-</tr>
-<tr>
-<td>Velocity</td>
-<td>nm/s</td>
-</tr>
-<tr>
-<td>Angular velocity</td>
-<td>rad/s</td>
+<td></td>
 </tr>
 <tr>
 <td>Linking number</td>
-<td>dimensionless (turns)</td>
-</tr>
-<tr>
-<td>Supercoiling density σ</td>
 <td>dimensionless</td>
+<td><code>h_dna = 2π / w₀ ≈ 10.5 bp/turn → 3.57 nm/turn</code></td>
 </tr>
 </tbody>
 </table>
+<h2 id="conventions-for-callable-arguments">Conventions for callable arguments<a class="headerlink" href="#conventions-for-callable-arguments" title="Permanent link">&para;</a></h2>
+<ul>
+<li>All public dynamics functions take a <code>Model</code> plus arrays it does not own. The arrays live in either the user's calling code or the integrator state vector.</li>
+<li>Segments are always indexed <strong>right to left</strong> along the DNA. RNAPs are stored in the same order.</li>
+<li>The "state vector" handed to the SciPy ODE solver concatenates <code>[x_RNAPs, theta_RNAPs, Lk_segments, A]</code>, where <code>A</code> is the cumulative event propensity.</li>
+</ul>
 
 
 
