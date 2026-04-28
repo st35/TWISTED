@@ -40,6 +40,7 @@ random.seed(42)
 14. [Topological-barrier proteins](#14-topological-barrier-proteins)
 15. [Eukaryotic chromatin with nucleosomes](#15-eukaryotic-chromatin-with-nucleosomes)
 16. [Reproducibility and integrator choice](#16-reproducibility-and-integrator-choice)
+17. [Non-constitutive promoters](#17-non-constitutive-promoters)
 
 ---
 
@@ -535,3 +536,94 @@ sim = SimulationSetupAndState(
 `'RK23'` is the default. Selecting any other method (`'RK45'`, `'DOP853'`, `'Radau'`, `'BDF'`, `'LSODA'`) emits a `UserWarning` because higher-order solvers can take steps that produce non-physical intermediate states (RNAPs overlapping, segments shorter than allowed by steric constraints) and crash the simulation. RK23 should be retained unless there is a specific reason to switch and the result has been validated.
 
 `integration_time_resolution` controls only the spacing of `t_eval` points within an integration window; reducing it does **not** change the dynamics, only the temporal resolution at which the integration callback (Tutorial 11) observes the state. `RNAP_alive_status_check_interval` does affect the dynamics indirectly: it bounds the duration the integrator runs before re-checking which RNAPs have finished and re-computing event rates. Smaller values are safer but slower.
+
+---
+
+## 17. Non-constitutive promoters
+
+With `promoter_mode='non-constitutive'` each gene's promoter switches stochastically between OFF (`promoter_status[i] = 0`) and ON (`promoter_status[i] = 1`) as Gillespie events. RNAP recruitment on gene `i` occurs only while its promoter is ON. All promoters start in the OFF state at the beginning of the simulation.
+
+The switching rates are supplied per gene via `TF_on_off_rates`, a list of `(k_on, k_off)` pairs in s⁻¹:
+
+```python
+import random
+random.seed(7)
+
+genomic_setup = GenomicSetup(
+    chromatin_type='prokaryotic',
+    gene_names=['geneA'],
+    TSSes=[340.0],
+    gene_lengths=[3400.0],
+    gene_directions=[1],
+    RNAP_on_rates=[0.05],
+    promoter_mode='non-constitutive',
+    TF_on_off_rates=[(0.02, 0.01)],   # k_on=0.02 s⁻¹, k_off=0.01 s⁻¹
+    buffer_length=3400.0,
+)
+
+model_setup = ModelSetup(
+    supercoiling_relaxation_dynamics_mode='topoisomerase_approximated',
+    TOP1_effective_relaxation_rate=0.008,
+    TOP2_effective_relaxation_rate=0.008,
+)
+model = Model(genomic_setup, model_setup)
+
+sim = SimulationSetupAndState(
+    simulation_end_mode=0,
+    simulation_end_criterion=600.0,
+)
+
+```
+
+The mean fraction of time the promoter spends ON is `k_on / (k_on + k_off)`. With the values above that is `0.02 / 0.03 ≈ 0.67`, so the effective RNAP recruitment rate is roughly `0.67 × 0.05 ≈ 0.033 s⁻¹`, compared to `0.05 s⁻¹` for a constitutive promoter of the same basal rate.
+
+The `print_at_each_simulation_step` callback is convenient for tracking promoter switching events:
+
+```python
+def log_promoter(model, sim):
+    status = 'ON' if model.promoter_status[0] == 1 else 'OFF'
+    print(f't={sim.curr_simulation_time:7.2f}  promoter={status}  mRNA={model.mRNA_counts[0]}')
+
+simulate_dynamics(model, sim, print_at_each_simulation_step=log_promoter)
+print('mRNA produced:', model.mRNA_counts[0])
+```
+
+For a multi-gene setup, each gene has its own `(k_on, k_off)` pair. Here gene B is rarely active:
+
+```python
+import random
+random.seed(8)
+
+genomic_setup = GenomicSetup(
+    chromatin_type='prokaryotic',
+    gene_names=['geneA', 'geneB'],
+    TSSes=[340.0, 4420.0],
+    gene_lengths=[3400.0, 3400.0],
+    gene_directions=[1, 1],
+    RNAP_on_rates=[0.05, 0.05],
+    promoter_mode='non-constitutive',
+    TF_on_off_rates=[
+        (0.05, 0.01),   # geneA: mostly ON  (~83 % of the time)
+        (0.005, 0.05),  # geneB: mostly OFF (~9 % of the time)
+    ],
+    buffer_length=4420.0,
+)
+
+model_setup = ModelSetup(
+    supercoiling_relaxation_dynamics_mode='topoisomerase_approximated',
+    TOP1_effective_relaxation_rate=0.008,
+    TOP2_effective_relaxation_rate=0.008,
+)
+model = Model(genomic_setup, model_setup)
+
+sim = SimulationSetupAndState(
+    simulation_end_mode=0,
+    simulation_end_criterion=600.0,
+)
+
+simulate_dynamics(model, sim)
+print('geneA mRNA:', model.mRNA_counts[0])
+print('geneB mRNA:', model.mRNA_counts[1])
+```
+
+See [User Guide → Genomic setup](user-guide/genomic-setup.md#non-constitutive) and [User Guide → Events and propensities](user-guide/events-and-propensities.md) for the mathematical details of the switching rates.
