@@ -709,6 +709,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#17-non-constitutive-promoters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17. Non-constitutive promoters
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1560,6 +1571,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#17-non-constitutive-promoters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17. Non-constitutive promoters
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1613,6 +1635,7 @@
 <li><a href="#14-topological-barrier-proteins">Topological-barrier proteins</a></li>
 <li><a href="#15-eukaryotic-chromatin-with-nucleosomes">Eukaryotic chromatin with nucleosomes</a></li>
 <li><a href="#16-reproducibility-and-integrator-choice">Reproducibility and integrator choice</a></li>
+<li><a href="#17-non-constitutive-promoters">Non-constitutive promoters</a></li>
 </ol>
 <hr />
 <h2 id="1-single-gene-minimal-setup">1. Single gene, minimal setup<a class="headerlink" href="#1-single-gene-minimal-setup" title="Permanent link">&para;</a></h2>
@@ -2006,6 +2029,82 @@
 </code></pre></div>
 <p><code>'RK23'</code> is the default. Selecting any other method (<code>'RK45'</code>, <code>'DOP853'</code>, <code>'Radau'</code>, <code>'BDF'</code>, <code>'LSODA'</code>) emits a <code>UserWarning</code> because higher-order solvers can take steps that produce non-physical intermediate states (RNAPs overlapping, segments shorter than allowed by steric constraints) and crash the simulation. RK23 should be retained unless there is a specific reason to switch and the result has been validated.</p>
 <p><code>integration_time_resolution</code> controls only the spacing of <code>t_eval</code> points within an integration window; reducing it does <strong>not</strong> change the dynamics, only the temporal resolution at which the integration callback (Tutorial 11) observes the state. <code>RNAP_alive_status_check_interval</code> does affect the dynamics indirectly: it bounds the duration the integrator runs before re-checking which RNAPs have finished and re-computing event rates. Smaller values are safer but slower.</p>
+<hr />
+<h2 id="17-non-constitutive-promoters">17. Non-constitutive promoters<a class="headerlink" href="#17-non-constitutive-promoters" title="Permanent link">&para;</a></h2>
+<p>With <code>promoter_mode='non-constitutive'</code> each gene's promoter switches stochastically between OFF (<code>promoter_status[i] = 0</code>) and ON (<code>promoter_status[i] = 1</code>) as Gillespie events. RNAP recruitment on gene <code>i</code> occurs only while its promoter is ON. All promoters start in the OFF state at the beginning of the simulation.</p>
+<p>The switching rates are supplied per gene via <code>TF_on_off_rates</code>, a list of <code>(k_on, k_off)</code> pairs in s⁻¹:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+<a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+<a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a>
+<a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a><span class="n">genomic_setup</span> <span class="o">=</span> <span class="n">GenomicSetup</span><span class="p">(</span>
+<a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a>    <span class="n">chromatin_type</span><span class="o">=</span><span class="s1">&#39;prokaryotic&#39;</span><span class="p">,</span>
+<a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a>    <span class="n">gene_names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;geneA&#39;</span><span class="p">],</span>
+<a id="__codelineno-27-7" name="__codelineno-27-7" href="#__codelineno-27-7"></a>    <span class="n">TSSes</span><span class="o">=</span><span class="p">[</span><span class="mf">340.0</span><span class="p">],</span>
+<a id="__codelineno-27-8" name="__codelineno-27-8" href="#__codelineno-27-8"></a>    <span class="n">gene_lengths</span><span class="o">=</span><span class="p">[</span><span class="mf">3400.0</span><span class="p">],</span>
+<a id="__codelineno-27-9" name="__codelineno-27-9" href="#__codelineno-27-9"></a>    <span class="n">gene_directions</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+<a id="__codelineno-27-10" name="__codelineno-27-10" href="#__codelineno-27-10"></a>    <span class="n">RNAP_on_rates</span><span class="o">=</span><span class="p">[</span><span class="mf">0.05</span><span class="p">],</span>
+<a id="__codelineno-27-11" name="__codelineno-27-11" href="#__codelineno-27-11"></a>    <span class="n">promoter_mode</span><span class="o">=</span><span class="s1">&#39;non-constitutive&#39;</span><span class="p">,</span>
+<a id="__codelineno-27-12" name="__codelineno-27-12" href="#__codelineno-27-12"></a>    <span class="n">TF_on_off_rates</span><span class="o">=</span><span class="p">[(</span><span class="mf">0.02</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)],</span>   <span class="c1"># k_on=0.02 s⁻¹, k_off=0.01 s⁻¹</span>
+<a id="__codelineno-27-13" name="__codelineno-27-13" href="#__codelineno-27-13"></a>    <span class="n">buffer_length</span><span class="o">=</span><span class="mf">3400.0</span><span class="p">,</span>
+<a id="__codelineno-27-14" name="__codelineno-27-14" href="#__codelineno-27-14"></a><span class="p">)</span>
+<a id="__codelineno-27-15" name="__codelineno-27-15" href="#__codelineno-27-15"></a>
+<a id="__codelineno-27-16" name="__codelineno-27-16" href="#__codelineno-27-16"></a><span class="n">model_setup</span> <span class="o">=</span> <span class="n">ModelSetup</span><span class="p">(</span>
+<a id="__codelineno-27-17" name="__codelineno-27-17" href="#__codelineno-27-17"></a>    <span class="n">supercoiling_relaxation_dynamics_mode</span><span class="o">=</span><span class="s1">&#39;topoisomerase_approximated&#39;</span><span class="p">,</span>
+<a id="__codelineno-27-18" name="__codelineno-27-18" href="#__codelineno-27-18"></a>    <span class="n">TOP1_effective_relaxation_rate</span><span class="o">=</span><span class="mf">0.008</span><span class="p">,</span>
+<a id="__codelineno-27-19" name="__codelineno-27-19" href="#__codelineno-27-19"></a>    <span class="n">TOP2_effective_relaxation_rate</span><span class="o">=</span><span class="mf">0.008</span><span class="p">,</span>
+<a id="__codelineno-27-20" name="__codelineno-27-20" href="#__codelineno-27-20"></a><span class="p">)</span>
+<a id="__codelineno-27-21" name="__codelineno-27-21" href="#__codelineno-27-21"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">genomic_setup</span><span class="p">,</span> <span class="n">model_setup</span><span class="p">)</span>
+<a id="__codelineno-27-22" name="__codelineno-27-22" href="#__codelineno-27-22"></a>
+<a id="__codelineno-27-23" name="__codelineno-27-23" href="#__codelineno-27-23"></a><span class="n">sim</span> <span class="o">=</span> <span class="n">SimulationSetupAndState</span><span class="p">(</span>
+<a id="__codelineno-27-24" name="__codelineno-27-24" href="#__codelineno-27-24"></a>    <span class="n">simulation_end_mode</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<a id="__codelineno-27-25" name="__codelineno-27-25" href="#__codelineno-27-25"></a>    <span class="n">simulation_end_criterion</span><span class="o">=</span><span class="mf">600.0</span><span class="p">,</span>
+<a id="__codelineno-27-26" name="__codelineno-27-26" href="#__codelineno-27-26"></a><span class="p">)</span>
+</code></pre></div>
+<p>The mean fraction of time the promoter spends ON is <code>k_on / (k_on + k_off)</code>. With the values above that is <code>0.02 / 0.03 ≈ 0.67</code>, so the effective RNAP recruitment rate is roughly <code>0.67 × 0.05 ≈ 0.033 s⁻¹</code>, compared to <code>0.05 s⁻¹</code> for a constitutive promoter of the same basal rate.</p>
+<p>The <code>print_at_each_simulation_step</code> callback is convenient for tracking promoter switching events:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">log_promoter</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">sim</span><span class="p">):</span>
+<a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>    <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;ON&#39;</span> <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">promoter_status</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="s1">&#39;OFF&#39;</span>
+<a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;t=</span><span class="si">{</span><span class="n">sim</span><span class="o">.</span><span class="n">curr_simulation_time</span><span class="si">:</span><span class="s1">7.2f</span><span class="si">}</span><span class="s1">  promoter=</span><span class="si">{</span><span class="n">status</span><span class="si">}</span><span class="s1">  mRNA=</span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">mRNA_counts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a>
+<a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a><span class="n">simulate_dynamics</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">sim</span><span class="p">,</span> <span class="n">print_at_each_simulation_step</span><span class="o">=</span><span class="n">log_promoter</span><span class="p">)</span>
+<a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;mRNA produced:&#39;</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">mRNA_counts</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</code></pre></div>
+<p>For a multi-gene setup, each gene has its own <code>(k_on, k_off)</code> pair. Here gene B is rarely active:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+<a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+<a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a>
+<a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a><span class="n">genomic_setup</span> <span class="o">=</span> <span class="n">GenomicSetup</span><span class="p">(</span>
+<a id="__codelineno-29-5" name="__codelineno-29-5" href="#__codelineno-29-5"></a>    <span class="n">chromatin_type</span><span class="o">=</span><span class="s1">&#39;prokaryotic&#39;</span><span class="p">,</span>
+<a id="__codelineno-29-6" name="__codelineno-29-6" href="#__codelineno-29-6"></a>    <span class="n">gene_names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;geneA&#39;</span><span class="p">,</span> <span class="s1">&#39;geneB&#39;</span><span class="p">],</span>
+<a id="__codelineno-29-7" name="__codelineno-29-7" href="#__codelineno-29-7"></a>    <span class="n">TSSes</span><span class="o">=</span><span class="p">[</span><span class="mf">340.0</span><span class="p">,</span> <span class="mf">4420.0</span><span class="p">],</span>
+<a id="__codelineno-29-8" name="__codelineno-29-8" href="#__codelineno-29-8"></a>    <span class="n">gene_lengths</span><span class="o">=</span><span class="p">[</span><span class="mf">3400.0</span><span class="p">,</span> <span class="mf">3400.0</span><span class="p">],</span>
+<a id="__codelineno-29-9" name="__codelineno-29-9" href="#__codelineno-29-9"></a>    <span class="n">gene_directions</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<a id="__codelineno-29-10" name="__codelineno-29-10" href="#__codelineno-29-10"></a>    <span class="n">RNAP_on_rates</span><span class="o">=</span><span class="p">[</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">],</span>
+<a id="__codelineno-29-11" name="__codelineno-29-11" href="#__codelineno-29-11"></a>    <span class="n">promoter_mode</span><span class="o">=</span><span class="s1">&#39;non-constitutive&#39;</span><span class="p">,</span>
+<a id="__codelineno-29-12" name="__codelineno-29-12" href="#__codelineno-29-12"></a>    <span class="n">TF_on_off_rates</span><span class="o">=</span><span class="p">[</span>
+<a id="__codelineno-29-13" name="__codelineno-29-13" href="#__codelineno-29-13"></a>        <span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">),</span>   <span class="c1"># geneA: mostly ON  (~83 % of the time)</span>
+<a id="__codelineno-29-14" name="__codelineno-29-14" href="#__codelineno-29-14"></a>        <span class="p">(</span><span class="mf">0.005</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">),</span>  <span class="c1"># geneB: mostly OFF (~9 % of the time)</span>
+<a id="__codelineno-29-15" name="__codelineno-29-15" href="#__codelineno-29-15"></a>    <span class="p">],</span>
+<a id="__codelineno-29-16" name="__codelineno-29-16" href="#__codelineno-29-16"></a>    <span class="n">buffer_length</span><span class="o">=</span><span class="mf">4420.0</span><span class="p">,</span>
+<a id="__codelineno-29-17" name="__codelineno-29-17" href="#__codelineno-29-17"></a><span class="p">)</span>
+<a id="__codelineno-29-18" name="__codelineno-29-18" href="#__codelineno-29-18"></a>
+<a id="__codelineno-29-19" name="__codelineno-29-19" href="#__codelineno-29-19"></a><span class="n">model_setup</span> <span class="o">=</span> <span class="n">ModelSetup</span><span class="p">(</span>
+<a id="__codelineno-29-20" name="__codelineno-29-20" href="#__codelineno-29-20"></a>    <span class="n">supercoiling_relaxation_dynamics_mode</span><span class="o">=</span><span class="s1">&#39;topoisomerase_approximated&#39;</span><span class="p">,</span>
+<a id="__codelineno-29-21" name="__codelineno-29-21" href="#__codelineno-29-21"></a>    <span class="n">TOP1_effective_relaxation_rate</span><span class="o">=</span><span class="mf">0.008</span><span class="p">,</span>
+<a id="__codelineno-29-22" name="__codelineno-29-22" href="#__codelineno-29-22"></a>    <span class="n">TOP2_effective_relaxation_rate</span><span class="o">=</span><span class="mf">0.008</span><span class="p">,</span>
+<a id="__codelineno-29-23" name="__codelineno-29-23" href="#__codelineno-29-23"></a><span class="p">)</span>
+<a id="__codelineno-29-24" name="__codelineno-29-24" href="#__codelineno-29-24"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">genomic_setup</span><span class="p">,</span> <span class="n">model_setup</span><span class="p">)</span>
+<a id="__codelineno-29-25" name="__codelineno-29-25" href="#__codelineno-29-25"></a>
+<a id="__codelineno-29-26" name="__codelineno-29-26" href="#__codelineno-29-26"></a><span class="n">sim</span> <span class="o">=</span> <span class="n">SimulationSetupAndState</span><span class="p">(</span>
+<a id="__codelineno-29-27" name="__codelineno-29-27" href="#__codelineno-29-27"></a>    <span class="n">simulation_end_mode</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<a id="__codelineno-29-28" name="__codelineno-29-28" href="#__codelineno-29-28"></a>    <span class="n">simulation_end_criterion</span><span class="o">=</span><span class="mf">600.0</span><span class="p">,</span>
+<a id="__codelineno-29-29" name="__codelineno-29-29" href="#__codelineno-29-29"></a><span class="p">)</span>
+<a id="__codelineno-29-30" name="__codelineno-29-30" href="#__codelineno-29-30"></a>
+<a id="__codelineno-29-31" name="__codelineno-29-31" href="#__codelineno-29-31"></a><span class="n">simulate_dynamics</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">sim</span><span class="p">)</span>
+<a id="__codelineno-29-32" name="__codelineno-29-32" href="#__codelineno-29-32"></a><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;geneA mRNA:&#39;</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">mRNA_counts</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<a id="__codelineno-29-33" name="__codelineno-29-33" href="#__codelineno-29-33"></a><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;geneB mRNA:&#39;</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">mRNA_counts</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+</code></pre></div>
+<p>See <a href="../user-guide/genomic-setup/#non-constitutive">User Guide → Genomic setup</a> and <a href="../user-guide/events-and-propensities/">User Guide → Events and propensities</a> for the mathematical details of the switching rates.</p>
 
 
 
