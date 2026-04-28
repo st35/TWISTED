@@ -6,7 +6,7 @@ This page documents `SimulationSetupAndState`, the object that controls **how** 
 from model_setup import SimulationSetupAndState
 from simulate_dynamics import simulate_dynamics
 
-sim = SimulationSetupAndState(genomic_setup, simulation_end_mode=0, simulation_end_criterion=300.0)
+sim = SimulationSetupAndState(simulation_end_mode=0, simulation_end_criterion=300.0)
 simulate_dynamics(model, sim)
 ```
 
@@ -16,7 +16,6 @@ simulate_dynamics(model, sim)
 
 ```python
 SimulationSetupAndState(
-    genomic_setup: GenomicSetup,
     simulation_end_mode: int,
     simulation_end_criterion: float | list[int],
     integration_method: str = 'RK23',
@@ -28,13 +27,14 @@ SimulationSetupAndState(
 
 | Argument | Meaning |
 |----------|--------|
-| `genomic_setup` | The same `GenomicSetup` passed to `Model`; used to size internal lists |
 | `simulation_end_mode` | `0` for time-based, `1` for event-count based |
 | `simulation_end_criterion` | `float` (seconds) if mode = 0; `list[int]` per gene if mode = 1 |
 | `integration_method` | One of `'RK23'`, `'RK45'`, `'DOP853'`, `'Radau'`, `'BDF'`, `'LSODA'` |
 | `integration_time_resolution` | spacing of `t_eval` points within an integration window (s) |
 | `RNAP_alive_status_check_interval` | how often the integrator pauses to remove finished RNAPs and check for events (s) |
 | `max_RNAPs_to_recruit` | optional list capping recruitment per gene |
+
+The constructor does **not** take a `GenomicSetup`. Per-gene result lists are sized, and length checks against the gene list are performed, by `setup_simulation_state(genomic_setup)`, which `simulate_dynamics` calls automatically before the main loop. You normally do not need to call it yourself.
 
 ---
 
@@ -44,7 +44,6 @@ SimulationSetupAndState(
 
 ```python
 sim = SimulationSetupAndState(
-    genomic_setup,
     simulation_end_mode=0,
     simulation_end_criterion=300.0,   # seconds
 )
@@ -56,7 +55,6 @@ The loop exits as soon as `sim.curr_simulation_time >= simulation_end_criterion`
 
 ```python
 sim = SimulationSetupAndState(
-    genomic_setup,
     simulation_end_mode=1,
     simulation_end_criterion=[100, 50],   # one entry per gene
 )
@@ -64,20 +62,19 @@ sim = SimulationSetupAndState(
 
 The loop exits as soon as **every** gene has produced at least its target number of completed transcripts. `sim.curr_simulation_time` ends at whatever value satisfies that condition.
 
-The list length must equal the number of genes; this is enforced by the constructor.
+The list length must equal the number of genes; this is checked at the start of `simulate_dynamics` (by `setup_simulation_state`).
 
 ### Limiting recruitment
 
 ```python
 sim = SimulationSetupAndState(
-    genomic_setup,
     simulation_end_mode=1,
     simulation_end_criterion=[50],
     max_RNAPs_to_recruit=[50],
 )
 ```
 
-Once `len(sim.RNAP_recruitment_times[i]) >= max_RNAPs_to_recruit[i]`, further recruitment events on gene `i` silently fail (the Gillespie event still fires, but no RNAP is added). When event-count mode is selected, `max_RNAPs_to_recruit[i]` must be `>=` `simulation_end_event_counts[i]`; otherwise the run could never complete, and the constructor refuses to construct.
+Once `len(sim.RNAP_recruitment_times[i]) >= max_RNAPs_to_recruit[i]`, further recruitment events on gene `i` silently fail (the Gillespie event still fires, but no RNAP is added). When event-count mode is selected, `max_RNAPs_to_recruit[i]` must be `>=` `simulation_end_event_counts[i]`; otherwise the run could never complete, and `setup_simulation_state` raises before the main loop starts.
 
 ---
 
@@ -208,7 +205,6 @@ model_setup = ModelSetup(
 )
 model = Model(genomic_setup, model_setup)
 sim = SimulationSetupAndState(
-    genomic_setup,
     simulation_end_mode=1,
     simulation_end_criterion=[100, 100],
     max_RNAPs_to_recruit=[100, 100],

@@ -7,6 +7,8 @@ from random import random
 from math import log
 
 def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupAndState, print_at_each_integration_step: Union[Callable, None] = None, print_at_each_simulation_step: Union[Callable, None] = None, print_at_end_of_simulation: Union[Callable, None] = None) -> None: # Main function to simulate the dynamics of the model until the end condition is met
+	if not simulation_setup_and_state.state_has_been_initialized:
+		simulation_setup_and_state.setup_simulation_state(model.genomic_setup) # Set up initial simulation state based on genomic setup
 	while True:
 		if print_at_each_simulation_step is not None:
 			print_at_each_simulation_step(model, simulation_setup_and_state) # Print current state if a print function is provided

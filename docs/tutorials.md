@@ -69,7 +69,6 @@ model_setup = ModelSetup(
 
 model = Model(genomic_setup, model_setup)
 sim = SimulationSetupAndState(
-    genomic_setup,
     simulation_end_mode=0,
     simulation_end_criterion=300.0,
 )
@@ -88,7 +87,6 @@ Stop the simulation when each gene has produced a target number of completed tra
 
 ```python
 sim = SimulationSetupAndState(
-    genomic_setup,
     simulation_end_mode=1,
     simulation_end_criterion=[50],   # one entry per gene
 )
@@ -98,7 +96,6 @@ In this mode `sim.curr_simulation_time` records the time at which the last gene 
 
 ```python
 sim = SimulationSetupAndState(
-    genomic_setup,
     simulation_end_mode=1,
     simulation_end_criterion=[50],
     max_RNAPs_to_recruit=[50],       # never recruit more than 50 on gene 0
@@ -169,7 +166,7 @@ model_setup = ModelSetup(
 )
 
 model = Model(genomic_setup, model_setup)
-sim = SimulationSetupAndState(genomic_setup, 1, [40, 40])
+sim = SimulationSetupAndState(1, [40, 40])
 simulate_dynamics(model, sim)
 ```
 
@@ -206,7 +203,7 @@ model_setup = ModelSetup(
 )
 
 model = Model(genomic_setup, model_setup)
-sim = SimulationSetupAndState(genomic_setup, 1, [20, 20])
+sim = SimulationSetupAndState(1, [20, 20])
 simulate_dynamics(model, sim)
 ```
 
@@ -241,7 +238,7 @@ model_setup = ModelSetup(
     TOP2_effective_relaxation_rate=0.001,    # TOP2 less important when σ is negative
 )
 model = Model(genomic_setup, model_setup)
-sim = SimulationSetupAndState(genomic_setup, 0, 300.0)
+sim = SimulationSetupAndState(0, 300.0)
 simulate_dynamics(model, sim)
 ```
 
@@ -276,7 +273,7 @@ for mode, kw in configs:
     genomic_setup = construct_genomic_setup('single_gene.config', 'prokaryotic', 'constitutive')
     model_setup = ModelSetup(supercoiling_relaxation_dynamics_mode=mode, **kw)
     model = Model(genomic_setup, model_setup)
-    sim = SimulationSetupAndState(genomic_setup, 1, [30])
+    sim = SimulationSetupAndState(1, [30])
     simulate_dynamics(model, sim)
     rates = sim.calculate_RNAP_transcription_rates(model)[0]
     results[mode] = sum(rates) / len(rates) if rates else 0.0
@@ -527,7 +524,6 @@ The integrator can be selected via `SimulationSetupAndState`:
 
 ```python
 sim = SimulationSetupAndState(
-    genomic_setup,
     simulation_end_mode=0,
     simulation_end_criterion=300.0,
     integration_method='RK23',           # default; recommended

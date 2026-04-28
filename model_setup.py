@@ -211,7 +211,7 @@ class Model: # Class to hold the model, including genomic setup, model setup, an
 		print('=' * 80)
 
 class SimulationSetupAndState: # Class to hold simulation setup parameters
-	def __init__(self, genomic_setup: GenomicSetup, simulation_end_mode: int, simulation_end_criterion: Union[float, list[int]], integration_method: str = 'RK23', integration_time_resolution: float = 1.0e-1, RNAP_alive_status_check_interval: float = 1.0, max_RNAPs_to_recruit: list[int] = None) -> None:
+	def __init__(self, simulation_end_mode: int, simulation_end_criterion: Union[float, list[int]], integration_method: str = 'RK23', integration_time_resolution: float = 1.0e-1, RNAP_alive_status_check_interval: float = 1.0, max_RNAPs_to_recruit: list[int] = None) -> None:
 		self.simulation_end_mode = simulation_end_mode # 0: time-based, 1: event-based
 		assert simulation_end_mode in [0, 1], 'simulation_end_mode must be either 0 (time-based) or 1 (event-based).'
 
@@ -221,8 +221,6 @@ class SimulationSetupAndState: # Class to hold simulation setup parameters
 		else:
 			if not isinstance(simulation_end_criterion, list):
 				raise ValueError('For simulation_end_mode 1 (i.e., event-based), simulation_end_criterion must be a list of integers representing event counts for each gene.')
-			if len(simulation_end_criterion) != len(genomic_setup.gene_names):
-				raise ValueError('Length of simulation_end_criterion list must match the number of genes in genomic_setup.')
 			self.simulation_end_event_counts = list(simulation_end_criterion)
 		
 		self.integration_method = integration_method
@@ -237,20 +235,32 @@ class SimulationSetupAndState: # Class to hold simulation setup parameters
 		assert RNAP_alive_status_check_interval > 0.0, 'RNAP_alive_status_check_interval must be a positive float.'
 
 		if max_RNAPs_to_recruit is not None:
-			assert len(max_RNAPs_to_recruit) == len(genomic_setup.gene_names), 'Length of max_RNAPs_to_recruit list must match the number of genes in genomic_setup.'
+			assert isinstance(max_RNAPs_to_recruit, list), 'max_RNAPs_to_recruit must be a list of integers representing the maximum number of RNAPs to recruit for each gene.'
 		self.max_RNAPs_to_recruit = max_RNAPs_to_recruit # Maximum number of RNAPs to recruit for each gene
-		if self.max_RNAPs_to_recruit is not None and self.simulation_end_mode == 1:
-			for i in range(len(self.simulation_end_event_counts)):
-				if self.simulation_end_event_counts[i] > self.max_RNAPs_to_recruit[i]:
-					raise ValueError(f'For gene index {i}, simulation_end_event_counts ({self.simulation_end_event_counts[i]}) cannot be greater than max_RNAPs_to_recruit ({self.max_RNAPs_to_recruit[i]}).')
-
-		self.RNAPs_finished_transcription = [0 for _ in genomic_setup.gene_names] # List to hold counts of RNAPs that have finished transcription for each gene
-		self.RNAPs_exit_positions = [[] for _ in genomic_setup.gene_names] # List of lists to hold exit positions of RNAPs for each gene
-		self.RNAP_recruitment_times = [[] for _ in genomic_setup.gene_names] # List of lists to hold recruitment times of RNAPs for each gene
-		self.RNAP_exit_times = [[] for _ in genomic_setup.gene_names] # List of lists to hold exit times of RNAPs for each gene
 
 		self.curr_simulation_time = 0.0 # Current simulation time (in s)
 		self.simulation_completed = False # Flag indicating whether the simulation has completed
+
+		self.state_has_been_initialized = False # Flag indicating whether the simulation state has been initialized; used to ensure that setup_simulation_state is called before running the simulation
+	
+	def setup_simulation_state(self, genomic_setup: GenomicSetup) -> None:
+		if self.simulation_end_mode == 1:
+			if len(self.simulation_end_event_counts) != len(genomic_setup.gene_names):
+				raise ValueError('Length of simulation_end_criterion list must match the number of genes in genomic_setup.')
+		if self.max_RNAPs_to_recruit is not None:
+			if len(self.max_RNAPs_to_recruit) != len(genomic_setup.gene_names):
+				raise ValueError('Length of max_RNAPs_to_recruit list must match the number of genes in genomic_setup.')
+			if self.simulation_end_mode == 1:
+				for i in range(len(self.simulation_end_event_counts)):
+					if self.simulation_end_event_counts[i] > self.max_RNAPs_to_recruit[i]:
+						raise ValueError(f'For gene index {i}, number of RNAPs that must finish transcription (simulation_end_event_counts) cannot be greater than max_RNAPs_to_recruit ({self.max_RNAPs_to_recruit[i]}).')
+		
+		self.RNAPs_finished_transcription = [0 for _ in genomic_setup.gene_names]
+		self.RNAPs_exit_positions = [[] for _ in genomic_setup.gene_names]
+		self.RNAP_recruitment_times = [[] for _ in genomic_setup.gene_names]
+		self.RNAP_exit_times = [[] for _ in genomic_setup.gene_names]
+
+		self.state_has_been_initialized = True
 	
 	def calculate_RNAP_transcription_rates(self, model: Model) -> list[list[float]]: # Calculate and return the transcription rates (in bp / s) for each RNAP that has finished transcription for each gene
 		transcription_rates = [[] for _ in model.genomic_setup.gene_names]

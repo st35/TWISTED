@@ -144,7 +144,6 @@ Print the genomic setup followed by the binding-protein table.
 
 ```python
 SimulationSetupAndState(
-    genomic_setup: GenomicSetup,
     simulation_end_mode: int,
     simulation_end_criterion: float | list[int],
     integration_method: str = 'RK23',
@@ -154,7 +153,7 @@ SimulationSetupAndState(
 )
 ```
 
-Termination policy + integrator settings + result accumulators in one object.
+Termination policy + integrator settings + result accumulators in one object. The constructor no longer takes a `GenomicSetup`; per-gene state is allocated later by `setup_simulation_state` (called automatically by `simulate_dynamics`).
 
 State attributes (filled during `simulate_dynamics`):
 
@@ -162,6 +161,10 @@ State attributes (filled during `simulate_dynamics`):
 - `RNAP_recruitment_times[i]`, `RNAP_exit_times[i]`, `RNAPs_exit_positions[i]`: lists
 - `curr_simulation_time`: float
 - `simulation_completed`: bool
+
+### `setup_simulation_state(genomic_setup) -> None`
+
+Allocates the per-gene result lists (`RNAPs_finished_transcription`, `RNAPs_exit_positions`, `RNAP_recruitment_times`, `RNAP_exit_times`) sized to `len(genomic_setup.gene_names)`, and validates that `simulation_end_criterion` and `max_RNAPs_to_recruit` (if provided) have the matching length and that `simulation_end_event_counts[i] <= max_RNAPs_to_recruit[i]` in event-count mode. Called automatically at the start of `simulate_dynamics`; users normally do not call it directly.
 
 ### `calculate_RNAP_transcription_rates(model) -> list[list[float]]`
 

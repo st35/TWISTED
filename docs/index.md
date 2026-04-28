@@ -46,7 +46,6 @@ model_setup = ModelSetup(
 
 model = Model(genomic_setup, model_setup)
 sim = SimulationSetupAndState(
-    genomic_setup,
     simulation_end_mode=0,           # time-based
     simulation_end_criterion=500.0,  # seconds
 )

@@ -140,7 +140,6 @@ model = Model(genomic_setup, model_setup)
 
 ```python
 sim = SimulationSetupAndState(
-    genomic_setup,
     simulation_end_mode=0,             # 0 = time-based; 1 = event-count based
     simulation_end_criterion=500.0,    # 500 seconds
 )
@@ -185,7 +184,6 @@ The full list of attributes available on `sim` and `model` after a run is docume
 
 ```python
 sim = SimulationSetupAndState(
-    genomic_setup,
     simulation_end_mode=1,
     simulation_end_criterion=[50],   # one entry per gene
 )
@@ -195,7 +193,6 @@ sim = SimulationSetupAndState(
 
 ```python
 sim = SimulationSetupAndState(
-    genomic_setup,
     simulation_end_mode=1,
     simulation_end_criterion=[50],
     max_RNAPs_to_recruit=[50],       # never recruit more than 50 on this gene
