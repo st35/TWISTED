@@ -457,8 +457,10 @@ def get_events_rates(model: Model, RNAP_gene_index: list[int], state_vector: lis
 	mRNA_degradation_rates = get_mRNA_degradation_rates(model)
 	binding_proteins_on_rates = [sum(per_protein_on_rates) for per_protein_on_rates in get_binding_proteins_on_rates(model, segments_lengths, segments_sigmas)]
 	binding_proteins_off_rates = [sum(per_protein_off_rates) for per_protein_off_rates in get_binding_proteins_off_rates(model, segments_lengths, segments_sigmas)]
+	promoter_on_rates = [get_promoter_on_rate(model, gene_index, segments_sigmas[get_spot_segment_index(model.genomic_setup.TSSes[gene_index], segments_lengths)]) for gene_index in range(len(model.genomic_setup.gene_names))]
+	promoter_off_rates = [get_promoter_off_rate(model, gene_index, segments_sigmas[get_spot_segment_index(model.genomic_setup.TSSes[gene_index], segments_lengths)]) for gene_index in range(len(model.genomic_setup.gene_names))]
 
-	rates_vector = RNAP_recruitment_rates + model_observation_event_rate + global_supercoiling_relaxation_rate + local_supercoiling_relaxation_rates + TOPO_activity_rates + mRNA_degradation_rates + binding_proteins_on_rates + binding_proteins_off_rates
+	rates_vector = RNAP_recruitment_rates + model_observation_event_rate + global_supercoiling_relaxation_rate + local_supercoiling_relaxation_rates + TOPO_activity_rates + mRNA_degradation_rates + binding_proteins_on_rates + binding_proteins_off_rates + promoter_on_rates + promoter_off_rates
 	assert all(rate >= 0.0 for rate in rates_vector), 'Negative rate encountered in calculating events rates.'
 
 	events_indices = []
@@ -470,6 +472,8 @@ def get_events_rates(model: Model, RNAP_gene_index: list[int], state_vector: lis
 	events_indices.append(events_indices[-1] + len(mRNA_degradation_rates))
 	events_indices.append(events_indices[-1] + len(binding_proteins_on_rates))
 	events_indices.append(events_indices[-1] + len(binding_proteins_off_rates))
+	events_indices.append(events_indices[-1] + len(promoter_on_rates))
+	events_indices.append(events_indices[-1] + len(promoter_off_rates))
 
 	return rates_vector, events_indices
 

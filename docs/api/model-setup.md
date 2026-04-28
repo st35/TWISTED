@@ -22,7 +22,7 @@ GenomicSetup(
 
 Holds the genomic layout: chromatin type, gene table, promoter mode, and DNA extents. The right-hand clamp position is computed automatically as `TSSes[0] + gene_lengths[0] + buffer_length` for a `+1` first gene, or `TSSes[0] + buffer_length` for a `−1` first gene.
 
-`chromatin_type` ∈ `{'prokaryotic', 'eukaryotic'}`. `promoter_mode` ∈ `{'constitutive', 'non-constitutive'}`; the latter raises `NotImplementedError` (see [Not yet implemented](../user-guide/not-yet-implemented.md)).
+`chromatin_type` ∈ `{'prokaryotic', 'eukaryotic'}`. `promoter_mode` ∈ `{'constitutive', 'non-constitutive'}`. For `'non-constitutive'`, the kwarg `TF_on_off_rates: list[tuple[float, float]]` is required — one `(TF_on_rate, TF_off_rate)` pair per gene (s⁻¹). For `'constitutive'`, `TF_on_off_rates` defaults to `[(0.0, 0.0), ...]` and is unused.
 
 Eukaryotic kwargs: `per_nucleosome_DNA_length` (bp, default 147), `nucleosome_linker_length` (bp, default 30), `nucleosomes_are_steric_barriers_to_RNAPs` (bool, default `True`), `nucleosomes_can_be_displaced_at_TSS_by_RNAP` (bool, default `False`), `nucleosome_count` (int, override the auto-computed count), `nucleosome_on_rate_func`, `nucleosome_off_rate_func` (callables `(L, σ) → factor`).
 

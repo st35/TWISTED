@@ -1,6 +1,6 @@
 # Not yet implemented
 
-Two features are accepted by the API surface but **not active in the simulation loop**. They are documented in a single location to avoid duplication elsewhere.
+One feature is accepted by the API surface but **not active in the simulation loop**. It is documented here to avoid duplication elsewhere.
 
 ---
 
@@ -26,25 +26,4 @@ The intended semantics, when implemented, are:
 
 ---
 
-## 2. `'non-constitutive'` promoter mode
-
-```python
-GenomicSetup(..., promoter_mode='non-constitutive', ...)
-```
-
-Both `GenomicSetup.__init__` and the helper `construct_genomic_setup` raise:
-
-```
-NotImplementedError: Promoter mode "non-constitutive" is not yet implemented.
-```
-
-The intended semantics are per-gene transcription-factor on/off kinetics, with the Gillespie loop adding promoter on/off events at user-supplied `TF_on_off_rates`. None of this is wired up at present.
-
-Until promoter switching is implemented, use `promoter_mode='constitutive'` (which initialises every promoter to ON) and emulate transcription-factor regulation by either:
-
-- scaling `RNAP_on_rates` to reflect a steady-state ON probability, or
-- wrapping `simulate_dynamics` in an outer loop that toggles `model.promoter_status[i]` between calls.
-
----
-
-For updates on either feature, see the [GitHub issue tracker](https://github.com/st35/TWISTED/issues).
+For updates on this feature, see the [GitHub issue tracker](https://github.com/st35/TWISTED/issues).

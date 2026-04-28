@@ -85,6 +85,18 @@ def get_TOP2_effect_on_Lk_dynamics(model: Model, segment_length: float, segment_
 def get_mRNA_degradation_rate(model: Model, mRNA_count: int) -> float: # Get the mRNA degradation rates for each gene
     return model.model_setup.mRNA_degradation_rate*mRNA_count
 
+def get_promoter_on_rate(model: Model, gene_index: int, TSS_sigma: float) -> float: # Get the promoter on rate for a given gene based on its promoter status and local supercoiling
+    if model.promoter_status[gene_index] == 1: # Promoter is already ON
+        return 0.0
+    
+    return model.genomic_setup.TF_on_off_rates[gene_index][0]
+
+def get_promoter_off_rate(model: Model, gene_index: int, TSS_sigma: float) -> float: # Get the promoter off rate for a given gene based on its promoter status and local supercoiling
+    if model.promoter_status[gene_index] == 0: # Promoter is already OFF
+        return 0.0
+
+    return model.genomic_setup.TF_on_off_rates[gene_index][1]
+
 def get_prokaryotic_torque(w0: float, force: float, kBT: float, segment_length: float, sigma: float, finite_size_effect_flag: int, finite_size_effect_length: float) -> tuple[float, int, float, float]: # Get the torque, DNA state, writhe fraction, and sigma_s (threshold beyond which plectonemes form) for prokaryotic DNA based on supercoiling density and force
     A = 50.0
     C = 95.0

@@ -18,10 +18,12 @@ rates_vector = [
     mRNA_degradation_rates           per gene,                 # block 5
     binding_proteins_on_rates        per species (summed),     # block 6
     binding_proteins_off_rates       per species (summed),     # block 7
+    promoter_on_rates                per gene,                 # block 8
+    promoter_off_rates               per gene,                 # block 9
 ]
 ```
 
-Inactive modes/features contribute zero-rate entries in the appropriate block (e.g. `local_supercoiling_relaxation_rates = [0.0, 0.0]` if the mode does not use them). The block boundaries are the cumulative lengths returned in `events_indices[0..7]`.
+Inactive modes/features contribute zero-rate entries in the appropriate block (e.g. `local_supercoiling_relaxation_rates = [0.0, 0.0]` if the mode does not use them). The block boundaries are the cumulative lengths returned in `events_indices[0..9]`.
 
 ---
 
@@ -110,13 +112,43 @@ When this event fires for species `k`:
 
 ## Block 7: binding-protein unbinding (one event type per species)
 
-One aggregated propensity per species, equal to the sum over bound molecules of `basal_off_rate × user_off_rate_func(L, σ)` evaluated at each molecule's host segment.
+One aggregated propensity per species, equal to the sum over bound molecules of `basal_off_rate * user_off_rate_func(L, σ)` evaluated at each molecule's host segment.
 
 When this event fires for species `k`:
 
 1. A bound molecule is selected with weights equal to its per-molecule off-rate.
 2. Its position is removed from `model.binding_proteins_positions[k]`.
 3. If the species is a topological barrier, the segments on either side of the unbinding position are merged and their linking numbers are added.
+
+---
+
+## Block 8: promoter ON (one event type per gene)
+
+One propensity per gene, computed by [`get_promoter_on_rate`](../api/biol-methods.md#get_promoter_on_rate). The rate for gene `i` is
+
+```
+TF_on_off_rates[i][0]   if promoter_status[i] == 0
+0                       if promoter_status[i] == 1
+```
+
+When the event fires for gene `i`, `model.promoter_status[i]` is set to 1. Selecting this event for an already-ON promoter raises a `ValueError` (the rate should have been zero).
+
+In `'constitutive'` mode `TF_on_off_rates[i][0]` is `0.0`, so this block contributes nothing.
+
+---
+
+## Block 9: promoter OFF (one event type per gene)
+
+One propensity per gene, computed by [`get_promoter_off_rate`](../api/biol-methods.md#get_promoter_off_rate). The rate for gene `i` is
+
+```
+TF_on_off_rates[i][1]   if promoter_status[i] == 1
+0                       if promoter_status[i] == 0
+```
+
+When the event fires for gene `i`, `model.promoter_status[i]` is set to 0. Selecting this event for an already-OFF promoter raises a `ValueError`.
+
+In `'constitutive'` mode `TF_on_off_rates[i][1]` is `0.0`, so this block contributes nothing.
 
 ---
 
@@ -130,7 +162,8 @@ def report(model, sim):
     rates, idx = get_events_rates(model, RNAP_gene_index, sv)
     block_totals = [sum(rates[start:end]) for start, end in zip([0] + idx[:-1], idx)]
     labels = ['recruitment', 'observation', 'global SC', 'by-type SC',
-              'topoisomerase', 'mRNA degr.', 'protein on', 'protein off']
+              'topoisomerase', 'mRNA degr.', 'protein on', 'protein off',
+              'promoter on', 'promoter off']
     for label, total in zip(labels, block_totals):
         print(f'  {label:>14}: {total:.4g}')
 

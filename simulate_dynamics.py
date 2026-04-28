@@ -113,6 +113,18 @@ def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupA
 				if model.binding_proteins[event].is_topological_barrier:
 					update_Lk_vector_after_protein_unbinding(model, model.binding_proteins_positions[event][chosen_bound_protein_index], RNAP_gene_index, state_vector, segments_lengths, segments_sigmas) # Update linking number vector after unbinding of a topological barrier protein
 				model.binding_proteins_positions[event].pop(chosen_bound_protein_index) # Unbind the chosen binding protein
+		elif event_index < events_indices[8]: # Promoter ON event
+			event = event_index - events_indices[7]
+			if model.promoter_status[event] == 1: # Promoter already ON; cannot turn ON again
+				raise ValueError('Promoter ON event selected for a promoter that is already ON.')
+			else:
+				model.promoter_status[event] = 1 # Turn the promoter ON
+		elif event_index < events_indices[9]: # Promoter OFF event
+			event = event_index - events_indices[8]
+			if model.promoter_status[event] == 0: # Promoter already OFF; cannot turn OFF again
+				raise ValueError('Promoter OFF event selected for a promoter that is already OFF.')
+			else:
+				model.promoter_status[event] = 0 # Turn the promoter OFF
 		else:
 			raise ValueError('Event index out of bounds during simulation.')
 		

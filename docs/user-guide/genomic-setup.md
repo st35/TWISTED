@@ -45,7 +45,7 @@ GenomicSetup(
 | `gene_lengths` | `list[float]` | Distance an RNAP must travel from the TSS in order to count as completed (nm) |
 | `gene_directions` | `list[int]` | `+1` (transcribed left → right) or `−1` (transcribed right → left); other values raise |
 | `RNAP_on_rates` | `list[float]` | Recruitment rate (s⁻¹) used when the promoter is ON |
-| `promoter_mode` | `'constitutive' \| 'non-constitutive'` | See [Promoter modes](#promoter-modes) below. Only `'constitutive'` is currently supported |
+| `promoter_mode` | `'constitutive' \| 'non-constitutive'` | See [Promoter modes](#promoter-modes) below |
 | `buffer_length` | `float` | Extra DNA past the gene on the right end (nm); contributes to `clamp_right` |
 
 All five list arguments must have the same length, equal to the number of genes.
@@ -97,8 +97,19 @@ Every promoter is initialised to ON (`promoter_status[i] = 1`) and stays ON for 
 
 ### Non-constitutive
 
-!!! warning "Not yet implemented"
-    Passing `promoter_mode='non-constitutive'` raises `NotImplementedError` from both `GenomicSetup` and the helper `construct_genomic_setup`. See [Not yet implemented](not-yet-implemented.md).
+Each promoter switches between ON (`promoter_status[i] = 1`) and OFF (`promoter_status[i] = 0`) as Gillespie events. Required kwarg:
+
+```python
+GenomicSetup(
+    ...,
+    promoter_mode='non-constitutive',
+    TF_on_off_rates=[(k_on_0, k_off_0), (k_on_1, k_off_1), ...],   # one pair per gene, in s⁻¹
+)
+```
+
+The pair `(k_on, k_off)` gives the rates at which an OFF promoter turns ON and an ON promoter turns OFF, respectively. RNAP recruitment on gene `i` proceeds at `RNAP_on_rates[i]` only while `promoter_status[i] == 1`.
+
+Promoters are initialised to OFF (`promoter_status[i] = 0`) at the start of each simulation. The promoter on/off events are dispatched as blocks 8 and 9 of the rate vector (see [Events and propensities](events-and-propensities.md)).
 
 ---
 

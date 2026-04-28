@@ -20,7 +20,16 @@ class GenomicSetup: # Class to hold genomic setup information
 		self.promoter_mode = promoter_mode
 		assert promoter_mode in ['constitutive', 'non-constitutive'], 'promoter_mode must be either "constitutive" or "non-constitutive".'
 		if promoter_mode == 'non-constitutive':
-			raise NotImplementedError('Promoter mode "non-constitutive" is not yet implemented.')
+			if 'TF_on_off_rates' not in kwargs:
+				raise ValueError('For promoter_mode "non-constitutive", "TF_on_off_rates" argument must be provided.')
+			if len(kwargs['TF_on_off_rates']) != len(self.gene_names):
+				raise ValueError('Length of TF_on_off_rates must match number of genes.')
+			for rates in kwargs['TF_on_off_rates']:
+				if len(rates) != 2:
+					raise ValueError('Each element in TF_on_off_rates must be a tuple or list of two floats: (TF_on_rate, TF_off_rate).')
+			self.TF_on_off_rates = [tuple(rates) for rates in kwargs['TF_on_off_rates']]
+		else:
+			self.TF_on_off_rates = [(0.0, 0.0) for _ in self.gene_names]
 		
 		if self.chromatin_type == 'eukaryotic':
 			if 'per_nucleosome_DNA_length' not in kwargs:
@@ -188,7 +197,7 @@ class Model: # Class to hold the model, including genomic setup, model setup, an
 		self.x_dict = [[] for _ in genomic_setup.gene_names] # List of lists to hold positions of RNAPs for each gene
 		self.theta_dict = [[] for _ in genomic_setup.gene_names] # List of lists to hold angular positions of RNAPs for each gene
 		self.Lk = [(genomic_setup.clamp_right - genomic_setup.clamp_left) / model_setup.h_dna] # List to hold linking number of each DNA segment; initially, only one segment spanning the entire DNA
-		self.promoter_status = [1 for _ in genomic_setup.gene_names] if genomic_setup.promoter_mode == 'constitutive' else [floor(uniform_random_in_interval(0.0, 2.0)) for _ in genomic_setup.gene_names] # List to hold promoter status (1: ON, 0: OFF) for each gene
+		self.promoter_status = [1 for _ in genomic_setup.gene_names] if genomic_setup.promoter_mode == 'constitutive' else [0 for _ in genomic_setup.gene_names] # List to hold promoter status (1: ON, 0: OFF) for each gene
 		self.mRNA_counts = [0 for _ in genomic_setup.gene_names] # List to hold mRNA counts for each gene
 		
 		if binding_proteins is None:

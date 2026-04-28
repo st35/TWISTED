@@ -31,9 +31,6 @@ def construct_genomic_setup(filename: str, chromatin_type: str, promoter_mode: s
 			raise ValueError('Length of explicit_RNAP_on_rates must match number of genes.')
 		RNAP_on_rates = [RNAP_on_rates[i]*explicit_RNAP_on_rates[i] for i in range(len(gene_names))]
 
-	if promoter_mode == 'non-constitutive':
-		raise NotImplementedError('Promoter mode "non-constitutive" is not yet implemented.')
-
 	return GenomicSetup(chromatin_type, gene_names, TSSes, gene_lengths, gene_directions, RNAP_on_rates, promoter_mode, buffer_length, **kwargs)
 	
 def uniform_random_in_interval(start: float, end: float) -> float: # Generate a uniform random number in [start, end)

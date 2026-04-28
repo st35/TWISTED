@@ -121,6 +121,38 @@ Returns `mRNA_degradation_rate × mRNA_count` if `mRNA_dynamics_mode == 1`, else
 
 ---
 
+## `get_promoter_on_rate`
+
+```python
+get_promoter_on_rate(
+    model: Model,
+    gene_index: int,
+    TSS_sigma: float,
+) -> float
+```
+
+Returns `genomic_setup.TF_on_off_rates[gene_index][0]` if `model.promoter_status[gene_index] == 0`, else `0`. `TSS_sigma` is currently unused (scaffolded for future supercoiling-dependent rates).
+
+In `'constitutive'` mode `TF_on_off_rates[gene_index][0]` is `0.0`, so this rate is always zero.
+
+---
+
+## `get_promoter_off_rate`
+
+```python
+get_promoter_off_rate(
+    model: Model,
+    gene_index: int,
+    TSS_sigma: float,
+) -> float
+```
+
+Returns `genomic_setup.TF_on_off_rates[gene_index][1]` if `model.promoter_status[gene_index] == 1`, else `0`. `TSS_sigma` is currently unused.
+
+In `'constitutive'` mode `TF_on_off_rates[gene_index][1]` is `0.0`, so this rate is always zero.
+
+---
+
 ## `get_prokaryotic_torque`
 
 ```python

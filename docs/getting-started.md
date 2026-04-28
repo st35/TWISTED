@@ -98,7 +98,7 @@ genomic_setup = GenomicSetup(
 | `gene_lengths` | distance an RNAP must travel from its TSS to exit |
 | `gene_directions` | `+1` (left → right) or `-1` (right → left) |
 | `RNAP_on_rates` | recruitment rate when the promoter is ON, in s⁻¹ |
-| `promoter_mode` | `'constitutive'` (always ON) or `'non-constitutive'` (see [User Guide → Not yet implemented](user-guide/not-yet-implemented.md)) |
+| `promoter_mode` | `'constitutive'` (always ON) or `'non-constitutive'` (TF-driven on/off switching, requires `TF_on_off_rates`; see [User Guide → Genomic setup](user-guide/genomic-setup.md#promoter-modes)) |
 | `buffer_length` | extra DNA past the gene, in nm; sets `clamp_right` |
 
 The right end of the DNA is computed automatically as
