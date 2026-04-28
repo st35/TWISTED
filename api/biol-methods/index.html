@@ -1114,6 +1114,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#get_promoter_on_rate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_promoter_on_rate
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#get_promoter_off_rate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_promoter_off_rate
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#get_prokaryotic_torque" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1366,6 +1388,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#get_promoter_on_rate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_promoter_on_rate
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#get_promoter_off_rate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_promoter_off_rate
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#get_prokaryotic_torque" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1486,13 +1530,33 @@
 </code></pre></div>
 <p>Returns <code>mRNA_degradation_rate × mRNA_count</code> if <code>mRNA_dynamics_mode == 1</code>, else 0.</p>
 <hr />
+<h2 id="get_promoter_on_rate"><code>get_promoter_on_rate</code><a class="headerlink" href="#get_promoter_on_rate" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">get_promoter_on_rate</span><span class="p">(</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>    <span class="n">gene_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="n">TSS_sigma</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span>
+</code></pre></div>
+<p>Returns <code>genomic_setup.TF_on_off_rates[gene_index][0]</code> if <code>model.promoter_status[gene_index] == 0</code>, else <code>0</code>. <code>TSS_sigma</code> is currently unused (scaffolded for future supercoiling-dependent rates).</p>
+<p>In <code>'constitutive'</code> mode <code>TF_on_off_rates[gene_index][0]</code> is <code>0.0</code>, so this rate is always zero.</p>
+<hr />
+<h2 id="get_promoter_off_rate"><code>get_promoter_off_rate</code><a class="headerlink" href="#get_promoter_off_rate" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">get_promoter_off_rate</span><span class="p">(</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    <span class="n">gene_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    <span class="n">TSS_sigma</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span>
+</code></pre></div>
+<p>Returns <code>genomic_setup.TF_on_off_rates[gene_index][1]</code> if <code>model.promoter_status[gene_index] == 1</code>, else <code>0</code>. <code>TSS_sigma</code> is currently unused.</p>
+<p>In <code>'constitutive'</code> mode <code>TF_on_off_rates[gene_index][1]</code> is <code>0.0</code>, so this rate is always zero.</p>
+<hr />
 <h2 id="get_prokaryotic_torque"><code>get_prokaryotic_torque</code><a class="headerlink" href="#get_prokaryotic_torque" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">get_prokaryotic_torque</span><span class="p">(</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="n">w0</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">kBT</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>    <span class="n">segment_length</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="n">finite_size_effect_flag</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>    <span class="n">finite_size_effect_length</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">get_prokaryotic_torque</span><span class="p">(</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    <span class="n">w0</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">kBT</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>    <span class="n">segment_length</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>    <span class="n">finite_size_effect_flag</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>    <span class="n">finite_size_effect_length</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
 </code></pre></div>
 <p>Returns <code>(torque, dna_state, writhe_fraction, sigma_s)</code> for a prokaryotic segment.</p>
 <table>
@@ -1524,12 +1588,12 @@
 <p>See <a href="../../theory/dna-mechanics/#2-prokaryotic-torque-law-five-state-model">Theory → Prokaryotic torque law</a>.</p>
 <hr />
 <h2 id="get_eukaryotic_torque"><code>get_eukaryotic_torque</code><a class="headerlink" href="#get_eukaryotic_torque" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">get_eukaryotic_torque</span><span class="p">(</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="n">force</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">segment_length</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    <span class="n">psi</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    <span class="n">finite_size_effect_flag</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>    <span class="n">finite_size_effect_cutoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">get_eukaryotic_torque</span><span class="p">(</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>    <span class="n">force</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">segment_length</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>    <span class="n">psi</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>    <span class="n">finite_size_effect_flag</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>    <span class="n">finite_size_effect_cutoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
 </code></pre></div>
 <p>Returns <code>(torque, dna_state, writhe_fraction, pos_twisted_cutoff)</code> for a eukaryotic segment with nucleosome occupancy fraction <code>psi</code>.</p>
 <table>

@@ -1110,6 +1110,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#setup_simulation_stategenomic_setup-none" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        setup_simulation_state(genomic_setup) -&gt; None
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#calculate_rnap_transcription_ratesmodel-listlistfloat" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1408,6 +1419,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#setup_simulation_stategenomic_setup-none" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        setup_simulation_state(genomic_setup) -&gt; None
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#calculate_rnap_transcription_ratesmodel-listlistfloat" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1460,7 +1482,7 @@
 <a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="p">)</span>
 </code></pre></div>
 <p>Holds the genomic layout: chromatin type, gene table, promoter mode, and DNA extents. The right-hand clamp position is computed automatically as <code>TSSes[0] + gene_lengths[0] + buffer_length</code> for a <code>+1</code> first gene, or <code>TSSes[0] + buffer_length</code> for a <code>−1</code> first gene.</p>
-<p><code>chromatin_type</code> ∈ <code>{'prokaryotic', 'eukaryotic'}</code>. <code>promoter_mode</code> ∈ <code>{'constitutive', 'non-constitutive'}</code>; the latter raises <code>NotImplementedError</code> (see <a href="../../user-guide/not-yet-implemented/">Not yet implemented</a>).</p>
+<p><code>chromatin_type</code> ∈ <code>{'prokaryotic', 'eukaryotic'}</code>. <code>promoter_mode</code> ∈ <code>{'constitutive', 'non-constitutive'}</code>. For <code>'non-constitutive'</code>, the kwarg <code>TF_on_off_rates: list[tuple[float, float]]</code> is required — one <code>(TF_on_rate, TF_off_rate)</code> pair per gene (s⁻¹). For <code>'constitutive'</code>, <code>TF_on_off_rates</code> defaults to <code>[(0.0, 0.0), ...]</code> and is unused.</p>
 <p>Eukaryotic kwargs: <code>per_nucleosome_DNA_length</code> (bp, default 147), <code>nucleosome_linker_length</code> (bp, default 30), <code>nucleosomes_are_steric_barriers_to_RNAPs</code> (bool, default <code>True</code>), <code>nucleosomes_can_be_displaced_at_TSS_by_RNAP</code> (bool, default <code>False</code>), <code>nucleosome_count</code> (int, override the auto-computed count), <code>nucleosome_on_rate_func</code>, <code>nucleosome_off_rate_func</code> (callables <code>(L, σ) → factor</code>).</p>
 <h3 id="get_total_nucleosome_count-int"><code>get_total_nucleosome_count() -&gt; int</code><a class="headerlink" href="#get_total_nucleosome_count-int" title="Permanent link">&para;</a></h3>
 <p>Returns 0 for prokaryotic, otherwise either the user-supplied <code>nucleosome_count</code> or the count obtained by densely tiling <code>clamp_left → clamp_right</code> with <code>per_nucleosome_DNA_length + nucleosome_linker_length</code>.</p>
@@ -1562,16 +1584,15 @@
 <hr />
 <h2 id="class-simulationsetupandstate">class <code>SimulationSetupAndState</code><a class="headerlink" href="#class-simulationsetupandstate" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">SimulationSetupAndState</span><span class="p">(</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    <span class="n">genomic_setup</span><span class="p">:</span> <span class="n">GenomicSetup</span><span class="p">,</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    <span class="n">simulation_end_mode</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    <span class="n">simulation_end_criterion</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>    <span class="n">integration_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;RK23&#39;</span><span class="p">,</span>
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>    <span class="n">integration_time_resolution</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>    <span class="n">RNAP_alive_status_check_interval</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
-<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>    <span class="n">max_RNAPs_to_recruit</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="p">)</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    <span class="n">simulation_end_mode</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    <span class="n">simulation_end_criterion</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    <span class="n">integration_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;RK23&#39;</span><span class="p">,</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>    <span class="n">integration_time_resolution</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>    <span class="n">RNAP_alive_status_check_interval</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>    <span class="n">max_RNAPs_to_recruit</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="p">)</span>
 </code></pre></div>
-<p>Termination policy + integrator settings + result accumulators in one object.</p>
+<p>Termination policy + integrator settings + result accumulators in one object. The constructor no longer takes a <code>GenomicSetup</code>; per-gene state is allocated later by <code>setup_simulation_state</code> (called automatically by <code>simulate_dynamics</code>).</p>
 <p>State attributes (filled during <code>simulate_dynamics</code>):</p>
 <ul>
 <li><code>RNAPs_finished_transcription[i]</code>: int</li>
@@ -1579,6 +1600,8 @@
 <li><code>curr_simulation_time</code>: float</li>
 <li><code>simulation_completed</code>: bool</li>
 </ul>
+<h3 id="setup_simulation_stategenomic_setup-none"><code>setup_simulation_state(genomic_setup) -&gt; None</code><a class="headerlink" href="#setup_simulation_stategenomic_setup-none" title="Permanent link">&para;</a></h3>
+<p>Allocates the per-gene result lists (<code>RNAPs_finished_transcription</code>, <code>RNAPs_exit_positions</code>, <code>RNAP_recruitment_times</code>, <code>RNAP_exit_times</code>) sized to <code>len(genomic_setup.gene_names)</code>, and validates that <code>simulation_end_criterion</code> and <code>max_RNAPs_to_recruit</code> (if provided) have the matching length and that <code>simulation_end_event_counts[i] &lt;= max_RNAPs_to_recruit[i]</code> in event-count mode. Called automatically at the start of <code>simulate_dynamics</code>; users normally do not call it directly.</p>
 <h3 id="calculate_rnap_transcription_ratesmodel-listlistfloat"><code>calculate_RNAP_transcription_rates(model) -&gt; list[list[float]]</code><a class="headerlink" href="#calculate_rnap_transcription_ratesmodel-listlistfloat" title="Permanent link">&para;</a></h3>
 <p>Per-gene per-RNAP transcription rate (bp/s), computed only for RNAPs that completed transcription. Asserts that the distance covered is at least <code>gene_length</code>.</p>
 <p>See also: <a href="../../user-guide/simulation/">User guide → Running simulations</a>.</p>

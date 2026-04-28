@@ -813,17 +813,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#2-non-constitutive-promoter-mode" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2. 'non-constitutive' promoter mode
-      
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -1222,17 +1211,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#2-non-constitutive-promoter-mode" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2. 'non-constitutive' promoter mode
-      
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -1254,7 +1232,7 @@
 
 
 <h1 id="not-yet-implemented">Not yet implemented<a class="headerlink" href="#not-yet-implemented" title="Permanent link">&para;</a></h1>
-<p>Two features are accepted by the API surface but <strong>not active in the simulation loop</strong>. They are documented in a single location to avoid duplication elsewhere.</p>
+<p>One feature is accepted by the API surface but <strong>not active in the simulation loop</strong>. It is documented here to avoid duplication elsewhere.</p>
 <hr />
 <h2 id="1-topoisomerase_based-supercoiling-relaxation-mode">1. <code>'topoisomerase_based'</code> supercoiling-relaxation mode<a class="headerlink" href="#1-topoisomerase_based-supercoiling-relaxation-mode" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">ModelSetup</span><span class="p">(</span><span class="n">supercoiling_relaxation_dynamics_mode</span><span class="o">=</span><span class="s1">&#39;topoisomerase_based&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
@@ -1270,20 +1248,7 @@
 </ul>
 <p><strong>Use <code>'topoisomerase_approximated'</code> as a substitute.</strong> That mode captures the most important biological effect (the TOP1 vs TOP2 distinction, gated by writhe) without the per-enzyme bookkeeping.</p>
 <hr />
-<h2 id="2-non-constitutive-promoter-mode">2. <code>'non-constitutive'</code> promoter mode<a class="headerlink" href="#2-non-constitutive-promoter-mode" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">GenomicSetup</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">promoter_mode</span><span class="o">=</span><span class="s1">&#39;non-constitutive&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
-</code></pre></div>
-<p>Both <code>GenomicSetup.__init__</code> and the helper <code>construct_genomic_setup</code> raise:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>NotImplementedError: Promoter mode &quot;non-constitutive&quot; is not yet implemented.
-</code></pre></div>
-<p>The intended semantics are per-gene transcription-factor on/off kinetics, with the Gillespie loop adding promoter on/off events at user-supplied <code>TF_on_off_rates</code>. None of this is wired up at present.</p>
-<p>Until promoter switching is implemented, use <code>promoter_mode='constitutive'</code> (which initialises every promoter to ON) and emulate transcription-factor regulation by either:</p>
-<ul>
-<li>scaling <code>RNAP_on_rates</code> to reflect a steady-state ON probability, or</li>
-<li>wrapping <code>simulate_dynamics</code> in an outer loop that toggles <code>model.promoter_status[i]</code> between calls.</li>
-</ul>
-<hr />
-<p>For updates on either feature, see the <a href="https://github.com/st35/TWISTED/issues">GitHub issue tracker</a>.</p>
+<p>For updates on this feature, see the <a href="https://github.com/st35/TWISTED/issues">GitHub issue tracker</a>.</p>
 
 
 

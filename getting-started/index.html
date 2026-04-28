@@ -1649,7 +1649,7 @@
 </tr>
 <tr>
 <td><code>promoter_mode</code></td>
-<td><code>'constitutive'</code> (always ON) or <code>'non-constitutive'</code> (see <a href="../user-guide/not-yet-implemented/">User Guide → Not yet implemented</a>)</td>
+<td><code>'constitutive'</code> (always ON) or <code>'non-constitutive'</code> (TF-driven on/off switching, requires <code>TF_on_off_rates</code>; see <a href="../user-guide/genomic-setup/#promoter-modes">User Guide → Genomic setup</a>)</td>
 </tr>
 <tr>
 <td><code>buffer_length</code></td>
@@ -1682,10 +1682,9 @@
 <p><code>Model</code> initialises all dynamic state: empty RNAP lists per gene, a single DNA segment of relaxed <code>Lk</code>, all promoters set to ON (for <code>'constitutive'</code>), zero mRNA counts, and any nucleosomes (for <code>'eukaryotic'</code>).</p>
 <h3 id="step-4-say-how-to-integrate-and-when-to-stop">Step 4 — say how to integrate and when to stop<a class="headerlink" href="#step-4-say-how-to-integrate-and-when-to-stop" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">sim</span> <span class="o">=</span> <span class="n">SimulationSetupAndState</span><span class="p">(</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="n">genomic_setup</span><span class="p">,</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    <span class="n">simulation_end_mode</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>             <span class="c1"># 0 = time-based; 1 = event-count based</span>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    <span class="n">simulation_end_criterion</span><span class="o">=</span><span class="mf">500.0</span><span class="p">,</span>    <span class="c1"># 500 seconds</span>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="p">)</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="n">simulation_end_mode</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>             <span class="c1"># 0 = time-based; 1 = event-count based</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    <span class="n">simulation_end_criterion</span><span class="o">=</span><span class="mf">500.0</span><span class="p">,</span>    <span class="c1"># 500 seconds</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="p">)</span>
 </code></pre></div>
 <p><code>simulation_end_mode=0</code> runs for a fixed number of seconds. <code>simulation_end_mode=1</code> stops when each gene has produced at least N completed transcripts (specified by a list <code>[N1, N2, ...]</code>). See <a href="../tutorials/#2-event-based-termination">Tutorial 2</a>.</p>
 <p>Three optional settings control the integrator:</p>
@@ -1713,18 +1712,16 @@
 <h2 id="4-common-variants">4. Common variants<a class="headerlink" href="#4-common-variants" title="Permanent link">&para;</a></h2>
 <h3 id="stop-after-n-completed-transcripts-instead-of-after-a-time">Stop after N completed transcripts instead of after a time<a class="headerlink" href="#stop-after-n-completed-transcripts-instead-of-after-a-time" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">sim</span> <span class="o">=</span> <span class="n">SimulationSetupAndState</span><span class="p">(</span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>    <span class="n">genomic_setup</span><span class="p">,</span>
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>    <span class="n">simulation_end_mode</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>    <span class="n">simulation_end_criterion</span><span class="o">=</span><span class="p">[</span><span class="mi">50</span><span class="p">],</span>   <span class="c1"># one entry per gene</span>
-<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="p">)</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>    <span class="n">simulation_end_mode</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>    <span class="n">simulation_end_criterion</span><span class="o">=</span><span class="p">[</span><span class="mi">50</span><span class="p">],</span>   <span class="c1"># one entry per gene</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="p">)</span>
 </code></pre></div>
 <h3 id="cap-the-total-number-of-recruitment-events">Cap the total number of recruitment events<a class="headerlink" href="#cap-the-total-number-of-recruitment-events" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">sim</span> <span class="o">=</span> <span class="n">SimulationSetupAndState</span><span class="p">(</span>
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>    <span class="n">genomic_setup</span><span class="p">,</span>
-<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>    <span class="n">simulation_end_mode</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>    <span class="n">simulation_end_criterion</span><span class="o">=</span><span class="p">[</span><span class="mi">50</span><span class="p">],</span>
-<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>    <span class="n">max_RNAPs_to_recruit</span><span class="o">=</span><span class="p">[</span><span class="mi">50</span><span class="p">],</span>       <span class="c1"># never recruit more than 50 on this gene</span>
-<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="p">)</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>    <span class="n">simulation_end_mode</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>    <span class="n">simulation_end_criterion</span><span class="o">=</span><span class="p">[</span><span class="mi">50</span><span class="p">],</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>    <span class="n">max_RNAPs_to_recruit</span><span class="o">=</span><span class="p">[</span><span class="mi">50</span><span class="p">],</span>       <span class="c1"># never recruit more than 50 on this gene</span>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="p">)</span>
 </code></pre></div>
 <p>In event-count mode <code>max_RNAPs_to_recruit[i]</code> must be ≥ <code>simulation_end_criterion[i]</code>.</p>
 <h3 id="two-genes">Two genes<a class="headerlink" href="#two-genes" title="Permanent link">&para;</a></h3>

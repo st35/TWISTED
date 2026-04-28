@@ -1603,7 +1603,7 @@
 <tr>
 <td><code>promoter_mode</code></td>
 <td><code>'constitutive' \| 'non-constitutive'</code></td>
-<td>See <a href="#promoter-modes">Promoter modes</a> below. Only <code>'constitutive'</code> is currently supported</td>
+<td>See <a href="#promoter-modes">Promoter modes</a> below</td>
 </tr>
 <tr>
 <td><code>buffer_length</code></td>
@@ -1693,22 +1693,27 @@
 <h3 id="constitutive">Constitutive<a class="headerlink" href="#constitutive" title="Permanent link">&para;</a></h3>
 <p>Every promoter is initialised to ON (<code>promoter_status[i] = 1</code>) and stays ON for the entire run. RNAP recruitment proceeds at <code>RNAP_on_rates[i]</code> whenever the TSS is unoccupied.</p>
 <h3 id="non-constitutive">Non-constitutive<a class="headerlink" href="#non-constitutive" title="Permanent link">&para;</a></h3>
-<div class="admonition warning">
-<p class="admonition-title">Not yet implemented</p>
-<p>Passing <code>promoter_mode='non-constitutive'</code> raises <code>NotImplementedError</code> from both <code>GenomicSetup</code> and the helper <code>construct_genomic_setup</code>. See <a href="../not-yet-implemented/">Not yet implemented</a>.</p>
-</div>
+<p>Each promoter switches between ON (<code>promoter_status[i] = 1</code>) and OFF (<code>promoter_status[i] = 0</code>) as Gillespie events. Required kwarg:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">GenomicSetup</span><span class="p">(</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="o">...</span><span class="p">,</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="n">promoter_mode</span><span class="o">=</span><span class="s1">&#39;non-constitutive&#39;</span><span class="p">,</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="n">TF_on_off_rates</span><span class="o">=</span><span class="p">[(</span><span class="n">k_on_0</span><span class="p">,</span> <span class="n">k_off_0</span><span class="p">),</span> <span class="p">(</span><span class="n">k_on_1</span><span class="p">,</span> <span class="n">k_off_1</span><span class="p">),</span> <span class="o">...</span><span class="p">],</span>   <span class="c1"># one pair per gene, in s⁻¹</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="p">)</span>
+</code></pre></div>
+<p>The pair <code>(k_on, k_off)</code> gives the rates at which an OFF promoter turns ON and an ON promoter turns OFF, respectively. RNAP recruitment on gene <code>i</code> proceeds at <code>RNAP_on_rates[i]</code> only while <code>promoter_status[i] == 1</code>.</p>
+<p>Promoters are initialised to OFF (<code>promoter_status[i] = 0</code>) at the start of each simulation. The promoter on/off events are dispatched as blocks 8 and 9 of the rate vector (see <a href="../events-and-propensities/">Events and propensities</a>).</p>
 <hr />
 <h2 id="multi-gene-constraints-recap">Multi-gene constraints (recap)<a class="headerlink" href="#multi-gene-constraints-recap" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">genomic_setup</span> <span class="o">=</span> <span class="n">GenomicSetup</span><span class="p">(</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="n">chromatin_type</span><span class="o">=</span><span class="s1">&#39;prokaryotic&#39;</span><span class="p">,</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="n">gene_names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;geneA&#39;</span><span class="p">,</span> <span class="s1">&#39;geneB&#39;</span><span class="p">],</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="n">TSSes</span><span class="o">=</span><span class="p">[</span><span class="mf">340.0</span><span class="p">,</span> <span class="mf">4420.0</span><span class="p">],</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="n">gene_lengths</span><span class="o">=</span><span class="p">[</span><span class="mf">3400.0</span><span class="p">,</span> <span class="mf">3400.0</span><span class="p">],</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="n">gene_directions</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="n">RNAP_on_rates</span><span class="o">=</span><span class="p">[</span><span class="mf">0.02</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">],</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    <span class="n">promoter_mode</span><span class="o">=</span><span class="s1">&#39;constitutive&#39;</span><span class="p">,</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    <span class="n">buffer_length</span><span class="o">=</span><span class="mf">4420.0</span><span class="p">,</span>         <span class="c1"># makes clamp_right cover both genes</span>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">genomic_setup</span> <span class="o">=</span> <span class="n">GenomicSetup</span><span class="p">(</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="n">chromatin_type</span><span class="o">=</span><span class="s1">&#39;prokaryotic&#39;</span><span class="p">,</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="n">gene_names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;geneA&#39;</span><span class="p">,</span> <span class="s1">&#39;geneB&#39;</span><span class="p">],</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">TSSes</span><span class="o">=</span><span class="p">[</span><span class="mf">340.0</span><span class="p">,</span> <span class="mf">4420.0</span><span class="p">],</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="n">gene_lengths</span><span class="o">=</span><span class="p">[</span><span class="mf">3400.0</span><span class="p">,</span> <span class="mf">3400.0</span><span class="p">],</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    <span class="n">gene_directions</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    <span class="n">RNAP_on_rates</span><span class="o">=</span><span class="p">[</span><span class="mf">0.02</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">],</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>    <span class="n">promoter_mode</span><span class="o">=</span><span class="s1">&#39;constitutive&#39;</span><span class="p">,</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>    <span class="n">buffer_length</span><span class="o">=</span><span class="mf">4420.0</span><span class="p">,</span>         <span class="c1"># makes clamp_right cover both genes</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="p">)</span>
 </code></pre></div>
 <table>
 <thead>
@@ -1738,28 +1743,28 @@
 <p>For prokaryotic setups, returns 0. For eukaryotic setups, returns either the explicit <code>nucleosome_count</code> if supplied, or the count obtained by tiling the DNA from <code>clamp_left + linker_length/2</code> rightward in steps of <code>per_nucleosome_DNA_length + nucleosome_linker_length</code> until the next nucleosome would overhang <code>clamp_right</code>.</p>
 <h3 id="print_genomic_setup-none"><code>print_genomic_setup() -&gt; None</code><a class="headerlink" href="#print_genomic_setup-none" title="Permanent link">&para;</a></h3>
 <p>Prints a formatted summary table to stdout. Useful for sanity-checking prior to long runs.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>Chromatin type: Prokaryotic
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>Promoter mode: Constitutive
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>========================================
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>Name    TSS (nm)    Length (nm)    Direction    RNAP on-rate (1 / s)
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>----------------------------------------
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>geneA   340.0       3400.0         1            0.02
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>========================================
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>Chromatin type: Prokaryotic
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>Promoter mode: Constitutive
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>========================================
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>Name    TSS (nm)    Length (nm)    Direction    RNAP on-rate (1 / s)
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>----------------------------------------
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>geneA   340.0       3400.0         1            0.02
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>========================================
 </code></pre></div>
 <hr />
 <h2 id="loading-from-a-tab-delimited-file">Loading from a tab-delimited file<a class="headerlink" href="#loading-from-a-tab-delimited-file" title="Permanent link">&para;</a></h2>
 <p>The companion helper <a href="../../api/utilities/#construct_genomic_setup"><code>construct_genomic_setup</code></a> reads a bp-denominated five-column file and forwards everything else to the <code>GenomicSetup</code> constructor:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a># columns:  name   TSS_bp   length_bp   direction   RNAP_on_rate(1/s)
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>geneA       10000  5300     1           1.0
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a># columns:  name   TSS_bp   length_bp   direction   RNAP_on_rate(1/s)
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>geneA       10000  5300     1           1.0
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">utilities</span><span class="w"> </span><span class="kn">import</span> <span class="n">construct_genomic_setup</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">genomic_setup</span> <span class="o">=</span> <span class="n">construct_genomic_setup</span><span class="p">(</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="s1">&#39;genes.config&#39;</span><span class="p">,</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="n">chromatin_type</span><span class="o">=</span><span class="s1">&#39;prokaryotic&#39;</span><span class="p">,</span>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>    <span class="n">promoter_mode</span><span class="o">=</span><span class="s1">&#39;constitutive&#39;</span><span class="p">,</span>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>    <span class="n">explicit_RNAP_on_rates</span><span class="o">=</span><span class="p">[</span><span class="mf">0.05</span><span class="p">],</span>   <span class="c1"># multiplies file rate, optional</span>
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">utilities</span><span class="w"> </span><span class="kn">import</span> <span class="n">construct_genomic_setup</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="n">genomic_setup</span> <span class="o">=</span> <span class="n">construct_genomic_setup</span><span class="p">(</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    <span class="s1">&#39;genes.config&#39;</span><span class="p">,</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>    <span class="n">chromatin_type</span><span class="o">=</span><span class="s1">&#39;prokaryotic&#39;</span><span class="p">,</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>    <span class="n">promoter_mode</span><span class="o">=</span><span class="s1">&#39;constitutive&#39;</span><span class="p">,</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>    <span class="n">explicit_RNAP_on_rates</span><span class="o">=</span><span class="p">[</span><span class="mf">0.05</span><span class="p">],</span>   <span class="c1"># multiplies file rate, optional</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="p">)</span>
 </code></pre></div>
 <p>Any further keyword arguments (e.g. <code>per_nucleosome_DNA_length</code>, <code>nucleosomes_can_be_displaced_at_TSS_by_RNAP</code>) are forwarded as-is.</p>
 
