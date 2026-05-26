@@ -248,6 +248,7 @@ class SimulationSetupAndState: # Class to hold simulation setup parameters
 		self.max_RNAPs_to_recruit = max_RNAPs_to_recruit # Maximum number of RNAPs to recruit for each gene
 
 		self.curr_simulation_time = 0.0 # Current simulation time (in s)
+		self.last_event_index = -1 # Index of the last event that occurred in the simulation
 		self.simulation_completed = False # Flag indicating whether the simulation has completed
 
 		self.state_has_been_initialized = False # Flag indicating whether the simulation state has been initialized; used to ensure that setup_simulation_state is called before running the simulation

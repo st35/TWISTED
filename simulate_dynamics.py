@@ -25,6 +25,7 @@ def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupA
 		rates_vector, events_indices = get_events_rates(model, RNAP_gene_index, state_vector) # Get event rates and event indices
 		p1 = random() # Generate a random number for event selection
 		event_index = select_event_based_on_propensities(rates_vector, p1) # Select event based on propensities
+		simulation_setup_and_state.last_event_index = event_index # Update the last event index
 
 		if event_index < events_indices[0]: # RNAP recruitment event
 			event = event_index - 0
