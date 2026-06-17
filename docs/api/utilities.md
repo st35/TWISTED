@@ -32,14 +32,6 @@ Convenience: read a gene file and construct a `GenomicSetup` in one call.
 
 ## Sampling
 
-### `uniform_random_in_interval`
-
-```python
-uniform_random_in_interval(start: float, end: float) -> float
-```
-
-Returns `random.uniform(start, end)`. Wrapper kept for testability.
-
 ### `select_event_based_on_propensities`
 
 ```python

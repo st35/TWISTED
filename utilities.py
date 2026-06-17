@@ -1,6 +1,5 @@
 from model_setup import *
 
-from random import random
 from bisect import bisect
 from math import tanh
 
@@ -32,9 +31,6 @@ def construct_genomic_setup(filename: str, chromatin_type: str, promoter_mode: s
 		RNAP_on_rates = [RNAP_on_rates[i]*explicit_RNAP_on_rates[i] for i in range(len(gene_names))]
 
 	return GenomicSetup(chromatin_type, gene_names, TSSes, gene_lengths, gene_directions, RNAP_on_rates, promoter_mode, buffer_length, **kwargs)
-	
-def uniform_random_in_interval(start: float, end: float) -> float: # Generate a uniform random number in [start, end)
-	return start + (end - start)*random()
 
 def get_spot_segment_index(spot: float, segments_lengths: list[float]) -> int: # Get the index of the segment containing the given spot
 	spot_segment_index = -1

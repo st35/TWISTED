@@ -3,10 +3,12 @@ from model_dynamics import *
 from utilities import *
 
 from typing import Callable
-from random import random
+import random
 from math import log
 
 def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupAndState, print_at_each_integration_step: Union[Callable, None] = None, print_at_each_simulation_step: Union[Callable, None] = None, print_at_end_of_simulation: Union[Callable, None] = None) -> None: # Main function to simulate the dynamics of the model until the end condition is met
+	rng_Gillespie = random.Random(simulation_setup_and_state.Gillespie_random_seed)
+	rng_seed_for_everything_else = random.Random(simulation_setup_and_state.everything_else_random_seed)
 	if not simulation_setup_and_state.state_has_been_initialized:
 		simulation_setup_and_state.setup_simulation_state(model.genomic_setup) # Set up initial simulation state based on genomic setup
 	while True:
@@ -15,7 +17,7 @@ def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupA
 
 		RNAP_gene_index, state_vector = get_state_vectors_from_dicts(model) # Get current state vectors from model dictionaries
 
-		p0 = random() # Generate a random number for event time calculation
+		p0 = rng_Gillespie.random() # Generate a random number for event time calculation
 		dt, _ = integrate(model, simulation_setup_and_state, simulation_setup_and_state.curr_simulation_time, state_vector, RNAP_gene_index, p0, print_at_each_integration_step) # Integrate dynamics until next event
 		assert dt is not None, 'Integration failed to return a valid time step.'
 		update_dicts_from_state_vector(model, RNAP_gene_index, state_vector) # Update model dictionaries from updated state vectors
@@ -23,7 +25,7 @@ def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupA
 		segments_lengths, segments_sigmas, segments_torques, segments_dna_states, segments_writhe_fractions, segments_plectoneme_thresholds = calculate_segments_attributes(model, RNAP_gene_index, state_vector) # Recalculate segment attributes after integration
 
 		rates_vector, events_indices = get_events_rates(model, RNAP_gene_index, state_vector) # Get event rates and event indices
-		p1 = random() # Generate a random number for event selection
+		p1 = rng_Gillespie.random() # Generate a random number for event selection
 		event_index = select_event_based_on_propensities(rates_vector, p1) # Select event based on propensities
 		simulation_setup_and_state.last_event_index = event_index # Update the last event index
 
@@ -56,7 +58,7 @@ def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupA
 				simulation_setup_and_state.last_event_type = 'global_supercoiling_relaxation_overall'
 			elif model.model_setup.supercoiling_relaxation_dynamics_mode == 'global_per_segment':
 				per_segment_propensity = [segments_length / (model.genomic_setup.clamp_right - model.genomic_setup.clamp_left) for segments_length in segments_lengths]
-				chosen_segment_index = select_event_based_on_propensities(per_segment_propensity, random())
+				chosen_segment_index = select_event_based_on_propensities(per_segment_propensity, rng_seed_for_everything_else.random())
 				if chosen_segment_index is not None:
 					model.Lk[chosen_segment_index] = segments_Lk0[chosen_segment_index]
 					simulation_setup_and_state.last_event_type = 'global_supercoiling_relaxation_per_segment'
@@ -76,11 +78,11 @@ def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupA
 				chosen_segment_index = None
 				if event == 0: # Relax positive supercoiling only
 					per_segment_propensity = [segments_lengths[i] / (model.genomic_setup.clamp_right - model.genomic_setup.clamp_left) if segments_sigmas[i] > 0.0 else 0.0 for i in range(len(segments_lengths))]
-					chosen_segment_index = select_event_based_on_propensities(per_segment_propensity, random())
+					chosen_segment_index = select_event_based_on_propensities(per_segment_propensity, rng_seed_for_everything_else.random())
 					simulation_setup_and_state.last_event_type = 'per_segment_supercoiling_relaxation_positive_only'
 				elif event == 1: # Relax negative supercoiling only
 					per_segment_propensity = [segments_lengths[i] / (model.genomic_setup.clamp_right - model.genomic_setup.clamp_left) if segments_sigmas[i] < 0.0 else 0.0 for i in range(len(segments_lengths))]
-					chosen_segment_index = select_event_based_on_propensities(per_segment_propensity, random())
+					chosen_segment_index = select_event_based_on_propensities(per_segment_propensity, rng_seed_for_everything_else.random())
 					simulation_setup_and_state.last_event_type = 'per_segment_supercoiling_relaxation_negative_only'
 				if chosen_segment_index is not None:
 					model.Lk[chosen_segment_index] = segments_Lk0[chosen_segment_index]
@@ -88,7 +90,7 @@ def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupA
 			event = event_index - events_indices[3] # event = 0 for TOP1-mediated relaxation, event = 1 for TOP2-mediated relaxation
 			segments_Lk0 = [segments_length / model.model_setup.h_dna for segments_length in segments_lengths]
 			per_segment_propensity = [segments_lengths[i] / (model.genomic_setup.clamp_right - model.genomic_setup.clamp_left) for i in range(len(segments_lengths))]
-			chosen_segment_index = select_event_based_on_propensities(per_segment_propensity, random())
+			chosen_segment_index = select_event_based_on_propensities(per_segment_propensity, rng_seed_for_everything_else.random())
 			if chosen_segment_index is not None:
 				if event == 0: # TOP1 activity: relax supercoiling to a relaxed state if no writhe, otherwise TOP1 cannot act
 					simulation_setup_and_state.last_event_type = 'TOP1_supercoiling_relaxation_approximation'
@@ -111,8 +113,8 @@ def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupA
 			event = event_index - events_indices[5]
 			simulation_setup_and_state.last_event_type = model.binding_proteins[event].protein_name + '_binding'
 			per_segment_on_rates = get_binding_proteins_on_rates(model, segments_lengths, segments_sigmas)[event]
-			chosen_segment_index = select_event_based_on_propensities(per_segment_on_rates, random())
-			binding_position = model.genomic_setup.clamp_left + sum(segments_lengths[chosen_segment_index + 1:]) + (segments_lengths[chosen_segment_index]*uniform_random_in_interval(0.0, 1.0))
+			chosen_segment_index = select_event_based_on_propensities(per_segment_on_rates, rng_seed_for_everything_else.random())
+			binding_position = model.genomic_setup.clamp_left + sum(segments_lengths[chosen_segment_index + 1:]) + (segments_lengths[chosen_segment_index]*rng_seed_for_everything_else.random())
 			if is_protein_binding_blocked(model, RNAP_gene_index, state_vector, event, binding_position) == 0:
 				if model.binding_proteins[event].is_topological_barrier:
 					update_Lk_vector_after_RNAP_or_protein_recruitment(model, binding_position, RNAP_gene_index, state_vector, segments_lengths, segments_sigmas) # Update linking number vector after binding of a topological barrier protein
@@ -122,7 +124,7 @@ def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupA
 			simulation_setup_and_state.last_event_type = model.binding_proteins[event].protein_name + '_unbinding'
 			binding_proteins_off_rates = get_binding_proteins_off_rates(model, segments_lengths, segments_sigmas)[event]
 			assert len(binding_proteins_off_rates) == len(model.binding_proteins_positions[event]), 'Length of binding proteins off rates does not match number of bound proteins for the event.'
-			chosen_bound_protein_index = select_event_based_on_propensities(binding_proteins_off_rates, random())
+			chosen_bound_protein_index = select_event_based_on_propensities(binding_proteins_off_rates, rng_seed_for_everything_else.random())
 			if chosen_bound_protein_index is not None:
 				if model.binding_proteins[event].is_topological_barrier:
 					update_Lk_vector_after_protein_unbinding(model, model.binding_proteins_positions[event][chosen_bound_protein_index], RNAP_gene_index, state_vector, segments_lengths, segments_sigmas) # Update linking number vector after unbinding of a topological barrier protein

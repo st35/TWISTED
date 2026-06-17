@@ -13,11 +13,14 @@ from model_setup import *
 from simulate_dynamics import *
 ```
 
-For reproducibility, seed the RNG before each run:
+For reproducibility, pass explicit seeds to `SimulationSetupAndState`:
 
 ```python
-import random
-random.seed(42)
+sim = SimulationSetupAndState(
+    ...,
+    Gillespie_random_seed=42,
+    everything_else_random_seed=42,
+)
 ```
 
 ---
@@ -49,9 +52,6 @@ random.seed(42)
 A single 10 kb gene transcribed for 300 simulated seconds with the simplest relaxation model.
 
 ```python
-import random
-random.seed(0)
-
 genomic_setup = GenomicSetup(
     chromatin_type='prokaryotic',
     gene_names=['geneA'],
@@ -72,6 +72,8 @@ model = Model(genomic_setup, model_setup)
 sim = SimulationSetupAndState(
     simulation_end_mode=0,
     simulation_end_criterion=300.0,
+    Gillespie_random_seed=0,
+    everything_else_random_seed=0,
 )
 simulate_dynamics(model, sim)
 
@@ -147,9 +149,6 @@ This is useful for parameter sweeps in which the relative ranking between genes 
 Two co-directional genes on the same DNA. Inter-RNAP steric exclusion is enforced automatically by a soft tanh ramp on each RNAP's velocity (see [Theory → RNAP velocity](theory/dna-mechanics.md#4-rnap-velocity)).
 
 ```python
-import random
-random.seed(1)
-
 genomic_setup = GenomicSetup(
     chromatin_type='prokaryotic',
     gene_names=['geneA', 'geneB'],
@@ -167,7 +166,7 @@ model_setup = ModelSetup(
 )
 
 model = Model(genomic_setup, model_setup)
-sim = SimulationSetupAndState(1, [40, 40])
+sim = SimulationSetupAndState(1, [40, 40], Gillespie_random_seed=1, everything_else_random_seed=1)
 simulate_dynamics(model, sim)
 ```
 
@@ -187,9 +186,6 @@ gene_F      10000   5300     1   1.0
 ```
 
 ```python
-import random
-random.seed(42)
-
 genomic_setup = construct_genomic_setup(
     'convergent_pair.config',
     chromatin_type='prokaryotic',
@@ -204,7 +200,7 @@ model_setup = ModelSetup(
 )
 
 model = Model(genomic_setup, model_setup)
-sim = SimulationSetupAndState(1, [20, 20])
+sim = SimulationSetupAndState(1, [20, 20], Gillespie_random_seed=42, everything_else_random_seed=42)
 simulate_dynamics(model, sim)
 ```
 
@@ -223,9 +219,6 @@ gene_F      20000   5300     1   1.0
 ```
 
 ```python
-import random
-random.seed(7)
-
 genomic_setup = construct_genomic_setup(
     'divergent_pair.config',
     chromatin_type='prokaryotic',
@@ -239,7 +232,7 @@ model_setup = ModelSetup(
     TOP2_effective_relaxation_rate=0.001,    # TOP2 less important when σ is negative
 )
 model = Model(genomic_setup, model_setup)
-sim = SimulationSetupAndState(0, 300.0)
+sim = SimulationSetupAndState(0, 300.0, Gillespie_random_seed=7, everything_else_random_seed=7)
 simulate_dynamics(model, sim)
 ```
 
@@ -252,8 +245,6 @@ Compare the steady-state supercoiling profile from this run with the convergent 
 The five implemented modes are summarised in [User Guide → Relaxation modes](user-guide/relaxation-modes.md). The example below sweeps through all of them on the same single-gene setup.
 
 ```python
-import random
-
 results = {}
 configs = [
     ('global_overall',
@@ -270,11 +261,10 @@ configs = [
 ]
 
 for mode, kw in configs:
-    random.seed(0)
     genomic_setup = construct_genomic_setup('single_gene.config', 'prokaryotic', 'constitutive')
     model_setup = ModelSetup(supercoiling_relaxation_dynamics_mode=mode, **kw)
     model = Model(genomic_setup, model_setup)
-    sim = SimulationSetupAndState(1, [30])
+    sim = SimulationSetupAndState(1, [30], Gillespie_random_seed=0, everything_else_random_seed=0)
     simulate_dynamics(model, sim)
     rates = sim.calculate_RNAP_transcription_rates(model)[0]
     results[mode] = sum(rates) / len(rates) if rates else 0.0
@@ -495,9 +485,6 @@ Switching `chromatin_type` to `'eukaryotic'` does two things:
 2. A `BindingProtein` named `'nucleosome'` is **automatically added as `model.binding_proteins[0]`**. Its copy number is computed by tiling the DNA with `per_nucleosome_DNA_length + nucleosome_linker_length` spacing.
 
 ```python
-import random
-random.seed(42)
-
 genomic_setup = construct_genomic_setup(
     'single_gene.config',
     chromatin_type='eukaryotic',
@@ -524,12 +511,18 @@ Any additional `BindingProtein` objects passed to `Model` appear at indices `1, 
 
 ## 16. Reproducibility and integrator choice
 
-TWISTED uses Python's `random` module throughout: for event-time sampling, event selection, segment selection, and binding positions. Seeding it once at the top of a script makes a run fully reproducible (modulo SciPy's deterministic adaptive stepping):
+TWISTED uses two independent seeded `random.Random` instances internally: one (`rng_Gillespie`) for event-time sampling and event selection, and one (`rng_seed_for_everything_else`) for all other stochastic choices (segment selection, binding positions, etc.). Both seeds are passed directly to `SimulationSetupAndState`, making each run fully reproducible (modulo SciPy's deterministic adaptive stepping):
 
 ```python
-import random
-random.seed(2026)
+sim = SimulationSetupAndState(
+    simulation_end_mode=0,
+    simulation_end_criterion=300.0,
+    Gillespie_random_seed=2026,
+    everything_else_random_seed=2026,
+)
 ```
+
+Using separate seeds lets the Gillespie stream and the auxiliary stream be varied independently, which is useful for sensitivity analyses. Both default to `42`. Calling `random.seed()` globally has **no effect** on TWISTED's internal RNGs.
 
 The integrator can be selected via `SimulationSetupAndState`:
 
@@ -540,6 +533,8 @@ sim = SimulationSetupAndState(
     integration_method='RK23',           # default; recommended
     integration_time_resolution=0.05,    # finer t_eval for higher-resolution logging
     RNAP_alive_status_check_interval=0.5,
+    Gillespie_random_seed=2026,
+    everything_else_random_seed=2026,
 )
 ```
 
@@ -556,9 +551,6 @@ With `promoter_mode='non-constitutive'` each gene's promoter switches stochastic
 The switching rates are supplied per gene via `TF_on_off_rates`, a list of `(k_on, k_off)` pairs in s⁻¹:
 
 ```python
-import random
-random.seed(7)
-
 genomic_setup = GenomicSetup(
     chromatin_type='prokaryotic',
     gene_names=['geneA'],
@@ -581,6 +573,8 @@ model = Model(genomic_setup, model_setup)
 sim = SimulationSetupAndState(
     simulation_end_mode=0,
     simulation_end_criterion=600.0,
+    Gillespie_random_seed=7,
+    everything_else_random_seed=7,
 )
 
 ```
@@ -602,9 +596,6 @@ print('mRNA produced:', model.mRNA_counts[0])
 For a multi-gene setup, each gene has its own `(k_on, k_off)` pair. Here gene B is rarely active:
 
 ```python
-import random
-random.seed(8)
-
 genomic_setup = GenomicSetup(
     chromatin_type='prokaryotic',
     gene_names=['geneA', 'geneB'],
@@ -630,6 +621,8 @@ model = Model(genomic_setup, model_setup)
 sim = SimulationSetupAndState(
     simulation_end_mode=0,
     simulation_end_criterion=600.0,
+    Gillespie_random_seed=8,
+    everything_else_random_seed=8,
 )
 
 simulate_dynamics(model, sim)

@@ -150,6 +150,8 @@ SimulationSetupAndState(
     integration_time_resolution: float = 0.1,
     RNAP_alive_status_check_interval: float = 1.0,
     max_RNAPs_to_recruit: list[int] = None,
+    Gillespie_random_seed: int = 42,
+    everything_else_random_seed: int = 42,
 )
 ```
 

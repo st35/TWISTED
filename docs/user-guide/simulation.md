@@ -22,6 +22,8 @@ SimulationSetupAndState(
     integration_time_resolution: float = 0.1,
     RNAP_alive_status_check_interval: float = 1.0,
     max_RNAPs_to_recruit: list[int] | None = None,
+    Gillespie_random_seed: int = 42,
+    everything_else_random_seed: int = 42,
 )
 ```
 
@@ -33,6 +35,8 @@ SimulationSetupAndState(
 | `integration_time_resolution` | spacing of `t_eval` points within an integration window (s) |
 | `RNAP_alive_status_check_interval` | how often the integrator pauses to remove finished RNAPs and check for events (s) |
 | `max_RNAPs_to_recruit` | optional list capping recruitment per gene |
+| `Gillespie_random_seed` | integer seed for the Gillespie event-time and event-selection RNG (default `42`) |
+| `everything_else_random_seed` | integer seed for all other stochastic choices: segment selection, binding positions, etc. (default `42`) |
 
 The constructor does **not** take a `GenomicSetup`. Per-gene result lists are sized, and length checks against the gene list are performed, by `setup_simulation_state(genomic_setup)`, which `simulate_dynamics` calls automatically before the main loop. You normally do not need to call it yourself.
 
