@@ -28,6 +28,7 @@ def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupA
 		simulation_setup_and_state.last_event_index = event_index # Update the last event index
 
 		if event_index < events_indices[0]: # RNAP recruitment event
+			simulation_setup_and_state.last_event_type = 'RNAP_recruitment'
 			event = event_index - 0
 			TSS_steric_hindrance_status, blocking_entity_position, blocking_entity_id = get_TSS_steric_hindrance_status(model, model.genomic_setup.TSSes[event], RNAP_gene_index, state_vector) # Check for steric hindrance at TSS
 			if TSS_steric_hindrance_status == 1 and blocking_entity_id == -1: # Steric hindrance from another RNAP; recruitment fails
@@ -45,17 +46,20 @@ def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupA
 				if TSS_steric_hindrance_status == 1:
 					assert blocking_entity_id >= 0 and blocking_entity_id < len(model.binding_proteins) and model.binding_proteins[blocking_entity_id].can_be_displaced_at_TSS_by_RNAP is True, 'There must be a bound protein that can be displaced if steric hindrance is present but recruitment is successful.'
 					find_and_remove_from_list(model.binding_proteins_positions[blocking_entity_id], blocking_entity_position) # Displace the bound protein causing steric hindrance by removing it from the list of bound positions for that protein
+				simulation_setup_and_state.last_event_type = 'RNAP_recruitment_successful'
 		elif event_index < events_indices[1]: # Model observation event: a dummy event to ensure simulation time progresses even if all biological events rates are zero
-			pass
+			simulation_setup_and_state.last_event_type = 'model_observation'
 		elif event_index < events_indices[2]: # Global supercoiling relaxation event: supercoiling_relaxation_dynamics_mode in ['global_overall', 'global_per_segment']
 			segments_Lk0 = [segments_length / model.model_setup.h_dna for segments_length in segments_lengths]
 			if model.model_setup.supercoiling_relaxation_dynamics_mode == 'global_overall':
 				model.Lk = [Lk0 for Lk0 in segments_Lk0]
+				simulation_setup_and_state.last_event_type = 'global_supercoiling_relaxation_overall'
 			elif model.model_setup.supercoiling_relaxation_dynamics_mode == 'global_per_segment':
 				per_segment_propensity = [segments_length / (model.genomic_setup.clamp_right - model.genomic_setup.clamp_left) for segments_length in segments_lengths]
 				chosen_segment_index = select_event_based_on_propensities(per_segment_propensity, random())
 				if chosen_segment_index is not None:
 					model.Lk[chosen_segment_index] = segments_Lk0[chosen_segment_index]
+					simulation_setup_and_state.last_event_type = 'global_supercoiling_relaxation_per_segment'
 			else:
 				raise ValueError('Invalid type for global supercoiling relaxation.')
 		elif event_index < events_indices[3]: # Type-specific supercoiling relaxation event: supercoiling_relaxation_dynamics_mode in ['global_by_type', 'per_segment_by_type']
@@ -64,16 +68,20 @@ def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupA
 			if model.model_setup.supercoiling_relaxation_dynamics_mode == 'global_by_type':
 				if event == 0: # Relax positive supercoiling only
 					model.Lk = [segments_Lk0[i] if segments_sigmas[i] > 0.0 else model.Lk[i] for i in range(len(segments_lengths))]
+					simulation_setup_and_state.last_event_type = 'global_supercoiling_relaxation_positive_only'
 				elif event == 1: # Relax negative supercoiling only
 					model.Lk = [segments_Lk0[i] if segments_sigmas[i] < 0.0 else model.Lk[i] for i in range(len(segments_lengths))]
+					simulation_setup_and_state.last_event_type = 'global_supercoiling_relaxation_negative_only'
 			else:
 				chosen_segment_index = None
 				if event == 0: # Relax positive supercoiling only
 					per_segment_propensity = [segments_lengths[i] / (model.genomic_setup.clamp_right - model.genomic_setup.clamp_left) if segments_sigmas[i] > 0.0 else 0.0 for i in range(len(segments_lengths))]
 					chosen_segment_index = select_event_based_on_propensities(per_segment_propensity, random())
+					simulation_setup_and_state.last_event_type = 'per_segment_supercoiling_relaxation_positive_only'
 				elif event == 1: # Relax negative supercoiling only
 					per_segment_propensity = [segments_lengths[i] / (model.genomic_setup.clamp_right - model.genomic_setup.clamp_left) if segments_sigmas[i] < 0.0 else 0.0 for i in range(len(segments_lengths))]
 					chosen_segment_index = select_event_based_on_propensities(per_segment_propensity, random())
+					simulation_setup_and_state.last_event_type = 'per_segment_supercoiling_relaxation_negative_only'
 				if chosen_segment_index is not None:
 					model.Lk[chosen_segment_index] = segments_Lk0[chosen_segment_index]
 		elif event_index < events_indices[4]: # Topoisomerase-mediated supercoiling relaxation; approximating TOP1 / TOP2 activity
@@ -83,14 +91,17 @@ def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupA
 			chosen_segment_index = select_event_based_on_propensities(per_segment_propensity, random())
 			if chosen_segment_index is not None:
 				if event == 0: # TOP1 activity: relax supercoiling to a relaxed state if no writhe, otherwise TOP1 cannot act
+					simulation_setup_and_state.last_event_type = 'TOP1_supercoiling_relaxation_approximation'
 					if segments_writhe_fractions[chosen_segment_index] > 0.0: # Non-zero writhe; TOP1 cannot act
 						pass
 					else:
 						model.Lk[chosen_segment_index] = segments_Lk0[chosen_segment_index] # Relax supercoiling to a relaxed state
 				elif event == 1: # TOP2 activity: relax supercoiling if writhe is present, otherwise TOP2 cannot act
+					simulation_setup_and_state.last_event_type = 'TOP2_supercoiling_relaxation_approximation'
 					if segments_writhe_fractions[chosen_segment_index] > 0.0: # Non-zero writhe; TOP2 can act:
 						model.Lk[chosen_segment_index] = segments_Lk0[chosen_segment_index]*(1.0 + segments_plectoneme_thresholds[chosen_segment_index]) # Relax supercoiling to the threshold beyond which plectonemes form, since TOP2 relaxes supercoiling only until writhe is removed
 		elif event_index < events_indices[5]: # mRNA degradation event
+			simulation_setup_and_state.last_event_type = 'mRNA_degradation'
 			event = event_index - events_indices[4]
 			if model.mRNA_counts[event] <= 0: # No mRNA to degrade; cannot degrade
 				raise ValueError('mRNA degradation event selected for gene with zero mRNA count.')
@@ -98,6 +109,7 @@ def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupA
 				model.mRNA_counts[event] -= 1 # Degrade one mRNA molecule for the gene
 		elif event_index < events_indices[6]: # Binding protein binding event
 			event = event_index - events_indices[5]
+			simulation_setup_and_state.last_event_type = model.binding_proteins[event].protein_name + '_binding'
 			per_segment_on_rates = get_binding_proteins_on_rates(model, segments_lengths, segments_sigmas)[event]
 			chosen_segment_index = select_event_based_on_propensities(per_segment_on_rates, random())
 			binding_position = model.genomic_setup.clamp_left + sum(segments_lengths[chosen_segment_index + 1:]) + (segments_lengths[chosen_segment_index]*uniform_random_in_interval(0.0, 1.0))
@@ -107,6 +119,7 @@ def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupA
 				model.binding_proteins_positions[event].append(binding_position) # Bind the binding protein at the chosen position
 		elif event_index < events_indices[7]: # Binding protein unbinding event
 			event = event_index - events_indices[6]
+			simulation_setup_and_state.last_event_type = model.binding_proteins[event].protein_name + '_unbinding'
 			binding_proteins_off_rates = get_binding_proteins_off_rates(model, segments_lengths, segments_sigmas)[event]
 			assert len(binding_proteins_off_rates) == len(model.binding_proteins_positions[event]), 'Length of binding proteins off rates does not match number of bound proteins for the event.'
 			chosen_bound_protein_index = select_event_based_on_propensities(binding_proteins_off_rates, random())
@@ -115,12 +128,14 @@ def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupA
 					update_Lk_vector_after_protein_unbinding(model, model.binding_proteins_positions[event][chosen_bound_protein_index], RNAP_gene_index, state_vector, segments_lengths, segments_sigmas) # Update linking number vector after unbinding of a topological barrier protein
 				model.binding_proteins_positions[event].pop(chosen_bound_protein_index) # Unbind the chosen binding protein
 		elif event_index < events_indices[8]: # Promoter ON event
+			simulation_setup_and_state.last_event_type = 'promoter_ON'
 			event = event_index - events_indices[7]
 			if model.promoter_status[event] == 1: # Promoter already ON; cannot turn ON again
 				raise ValueError('Promoter ON event selected for a promoter that is already ON.')
 			else:
 				model.promoter_status[event] = 1 # Turn the promoter ON
 		elif event_index < events_indices[9]: # Promoter OFF event
+			simulation_setup_and_state.last_event_type = 'promoter_OFF'
 			event = event_index - events_indices[8]
 			if model.promoter_status[event] == 0: # Promoter already OFF; cannot turn OFF again
 				raise ValueError('Promoter OFF event selected for a promoter that is already OFF.')

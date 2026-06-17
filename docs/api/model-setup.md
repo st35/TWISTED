@@ -161,6 +161,7 @@ State attributes (filled during `simulate_dynamics`):
 - `RNAP_recruitment_times[i]`, `RNAP_exit_times[i]`, `RNAPs_exit_positions[i]`: lists
 - `curr_simulation_time`: float
 - `last_event_index`: int — index of the most recently selected Gillespie event; `-1` before any event has occurred
+- `last_event_type`: str | None — human-readable label of the most recently dispatched event type; `None` before any event has occurred (see [dispatch table](simulate-dynamics.md#event-dispatch-table) for possible values)
 - `simulation_completed`: bool
 
 ### `setup_simulation_state(genomic_setup) -> None`

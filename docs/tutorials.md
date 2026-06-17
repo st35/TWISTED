@@ -384,6 +384,16 @@ with open('x.log', 'w') as xf, open('sigma.log', 'w') as sf:
 
 The number of segments changes whenever an RNAP is recruited or finishes. For a fixed-width file suitable for plotting, post-process the log rather than attempting to align columns at write time.
 
+Every Gillespie iteration also sets `sim.last_event_type` to a string identifying what just happened (e.g. `'RNAP_recruitment_successful'`, `'mRNA_degradation'`, `'promoter_ON'`, `'<protein_name>_binding'`). This makes it straightforward to filter `print_at_each_simulation_step` callbacks by event kind without having to inspect `model` state manually:
+
+```python
+def log_on_recruitment(model, sim):
+    if sim.last_event_type == 'RNAP_recruitment_successful':
+        print(f't={sim.curr_simulation_time:.2f}  RNAP recruited  total={sum(sim.RNAPs_finished_transcription)}')
+
+simulate_dynamics(model, sim, print_at_each_simulation_step=log_on_recruitment)
+```
+
 For more detailed per-event introspection (which event fired, propensities, etc.), see [User Guide → Events and propensities](user-guide/events-and-propensities.md).
 
 ---
@@ -577,12 +587,13 @@ sim = SimulationSetupAndState(
 
 The mean fraction of time the promoter spends ON is `k_on / (k_on + k_off)`. With the values above that is `0.02 / 0.03 ≈ 0.67`, so the effective RNAP recruitment rate is roughly `0.67 × 0.05 ≈ 0.033 s⁻¹`, compared to `0.05 s⁻¹` for a constitutive promoter of the same basal rate.
 
-The `print_at_each_simulation_step` callback is convenient for tracking promoter switching events:
+The `print_at_each_simulation_step` callback is convenient for tracking promoter switching events. Use `sim.last_event_type` to fire the callback only on the relevant transitions:
 
 ```python
 def log_promoter(model, sim):
-    status = 'ON' if model.promoter_status[0] == 1 else 'OFF'
-    print(f't={sim.curr_simulation_time:7.2f}  promoter={status}  mRNA={model.mRNA_counts[0]}')
+    if sim.last_event_type in ('promoter_ON', 'promoter_OFF'):
+        status = 'ON' if model.promoter_status[0] == 1 else 'OFF'
+        print(f't={sim.curr_simulation_time:7.2f}  promoter={status}  mRNA={model.mRNA_counts[0]}')
 
 simulate_dynamics(model, sim, print_at_each_simulation_step=log_promoter)
 print('mRNA produced:', model.mRNA_counts[0])

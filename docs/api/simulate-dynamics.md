@@ -44,6 +44,10 @@ The selected `event_index` falls into one of the cumulative blocks defined by `e
 | 5 — mRNA degradation (per gene) | Decrement `mRNA_counts[gene]` |
 | 6 — Protein binding (per species) | Pick segment by per-segment on-rate weights; sample uniform position inside; if not blocked, append to `binding_proteins_positions`; split segment if topological barrier |
 | 7 — Protein unbinding (per species) | Pick a bound molecule by per-molecule off-rate weights; remove from `binding_proteins_positions`; merge segments if topological barrier |
+| 8 — Promoter ON (per gene) | Set `promoter_status[gene] = 1`; raises if promoter is already ON |
+| 9 — Promoter OFF (per gene) | Set `promoter_status[gene] = 0`; raises if promoter is already OFF |
+
+After each dispatch, `simulation_setup_and_state.last_event_type` is set to a descriptive string identifying the event branch (e.g. `'RNAP_recruitment_successful'`, `'mRNA_degradation'`, `'<protein_name>_binding'`, `'promoter_ON'`, etc.). It remains `None` until the first event fires.
 
 Each dispatch path may early-exit silently (e.g. recruitment blocked, TOP1 picked a plectonemic segment) — these still consume a Gillespie event.
 
