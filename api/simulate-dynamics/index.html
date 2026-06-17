@@ -1356,8 +1356,17 @@
 <td>7 — Protein unbinding (per species)</td>
 <td>Pick a bound molecule by per-molecule off-rate weights; remove from <code>binding_proteins_positions</code>; merge segments if topological barrier</td>
 </tr>
+<tr>
+<td>8 — Promoter ON (per gene)</td>
+<td>Set <code>promoter_status[gene] = 1</code>; raises if promoter is already ON</td>
+</tr>
+<tr>
+<td>9 — Promoter OFF (per gene)</td>
+<td>Set <code>promoter_status[gene] = 0</code>; raises if promoter is already OFF</td>
+</tr>
 </tbody>
 </table>
+<p>After each dispatch, <code>simulation_setup_and_state.last_event_type</code> is set to a descriptive string identifying the event branch (e.g. <code>'RNAP_recruitment_successful'</code>, <code>'mRNA_degradation'</code>, <code>'&lt;protein_name&gt;_binding'</code>, <code>'promoter_ON'</code>, etc.). It remains <code>None</code> until the first event fires.</p>
 <p>Each dispatch path may early-exit silently (e.g. recruitment blocked, TOP1 picked a plectonemic segment) — these still consume a Gillespie event.</p>
 <p>See also: <a href="../../user-guide/events-and-propensities/">Events and propensities</a>, <a href="../../user-guide/simulation/">Running simulations</a>.</p>
 

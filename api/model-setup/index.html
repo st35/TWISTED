@@ -1599,6 +1599,7 @@
 <li><code>RNAP_recruitment_times[i]</code>, <code>RNAP_exit_times[i]</code>, <code>RNAPs_exit_positions[i]</code>: lists</li>
 <li><code>curr_simulation_time</code>: float</li>
 <li><code>last_event_index</code>: int — index of the most recently selected Gillespie event; <code>-1</code> before any event has occurred</li>
+<li><code>last_event_type</code>: str | None — human-readable label of the most recently dispatched event type; <code>None</code> before any event has occurred (see <a href="../simulate-dynamics/#event-dispatch-table">dispatch table</a> for possible values)</li>
 <li><code>simulation_completed</code>: bool</li>
 </ul>
 <h3 id="setup_simulation_stategenomic_setup-none"><code>setup_simulation_state(genomic_setup) -&gt; None</code><a class="headerlink" href="#setup_simulation_stategenomic_setup-none" title="Permanent link">&para;</a></h3>
