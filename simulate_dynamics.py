@@ -62,6 +62,10 @@ def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupA
 				if chosen_segment_index is not None:
 					model.Lk[chosen_segment_index] = segments_Lk0[chosen_segment_index]
 					simulation_setup_and_state.last_event_type = 'global_supercoiling_relaxation_per_segment'
+					if chosen_segment_index == 0:
+						simulation_setup_and_state.last_event_type += '_rightmost_segment'
+					elif chosen_segment_index == len(segments_lengths) - 1:
+						simulation_setup_and_state.last_event_type += '_leftmost_segment'
 			else:
 				raise ValueError('Invalid type for global supercoiling relaxation.')
 		elif event_index < events_indices[3]: # Type-specific supercoiling relaxation event: supercoiling_relaxation_dynamics_mode in ['global_by_type', 'per_segment_by_type']
@@ -86,6 +90,10 @@ def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupA
 					simulation_setup_and_state.last_event_type = 'per_segment_supercoiling_relaxation_negative_only'
 				if chosen_segment_index is not None:
 					model.Lk[chosen_segment_index] = segments_Lk0[chosen_segment_index]
+					if chosen_segment_index == 0:
+						simulation_setup_and_state.last_event_type += '_rightmost_segment'
+					elif chosen_segment_index == len(segments_lengths) - 1:
+						simulation_setup_and_state.last_event_type += '_leftmost_segment'
 		elif event_index < events_indices[4]: # Topoisomerase-mediated supercoiling relaxation; approximating TOP1 / TOP2 activity
 			event = event_index - events_indices[3] # event = 0 for TOP1-mediated relaxation, event = 1 for TOP2-mediated relaxation
 			segments_Lk0 = [segments_length / model.model_setup.h_dna for segments_length in segments_lengths]
@@ -102,6 +110,10 @@ def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupA
 					simulation_setup_and_state.last_event_type = 'TOP2_supercoiling_relaxation_approximation'
 					if segments_writhe_fractions[chosen_segment_index] > 0.0: # Non-zero writhe; TOP2 can act:
 						model.Lk[chosen_segment_index] = segments_Lk0[chosen_segment_index]*(1.0 + segments_plectoneme_thresholds[chosen_segment_index]) # Relax supercoiling to the threshold beyond which plectonemes form, since TOP2 relaxes supercoiling only until writhe is removed
+				if chosen_segment_index == 0:
+					simulation_setup_and_state.last_event_type += '_rightmost_segment'
+				elif chosen_segment_index == len(segments_lengths) - 1:
+					simulation_setup_and_state.last_event_type += '_leftmost_segment'
 		elif event_index < events_indices[5]: # mRNA degradation event
 			simulation_setup_and_state.last_event_type = 'mRNA_degradation'
 			event = event_index - events_indices[4]

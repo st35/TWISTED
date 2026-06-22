@@ -56,8 +56,8 @@ A dummy event fired at `model_observation_event_rate` (default 0.5 s⁻¹). It m
 
 Only non-zero when `supercoiling_relaxation_dynamics_mode` is `'global_overall'` or `'global_per_segment'`. Rate = `global_supercoiling_relaxation_rate`.
 
-- `'global_overall'`: every segment's `Lk` is set to its relaxed value `Lk₀ = L / h_dna`.
-- `'global_per_segment'`: one segment is picked with length weighting and its `Lk` is reset.
+- `'global_overall'`: every segment's `Lk` is set to its relaxed value `Lk₀ = L / h_dna`. Sets `last_event_type = 'global_supercoiling_relaxation'`.
+- `'global_per_segment'`: one segment is picked with length weighting and its `Lk` is reset. Sets `last_event_type = 'global_supercoiling_relaxation_per_segment'`, with `'_rightmost_segment'` or `'_leftmost_segment'` appended if the chosen segment is the rightmost (`index 0`) or leftmost (`index -1`) segment.
 
 ---
 
@@ -65,10 +65,12 @@ Only non-zero when `supercoiling_relaxation_dynamics_mode` is `'global_overall'`
 
 Two propensities, `local_supercoiling_relaxation_rates = [rate_pos, rate_neg]`. Non-zero only for modes `'global_by_type'` and `'per_segment_by_type'`.
 
-- `'global_by_type'`, event 0: every segment with `σ > 0` is reset to `Lk₀`.
-- `'global_by_type'`, event 1: every segment with `σ < 0` is reset to `Lk₀`.
-- `'per_segment_by_type'`, event 0: pick a length-weighted segment **of positive sign** and reset its `Lk`.
-- `'per_segment_by_type'`, event 1: pick a length-weighted segment **of negative sign** and reset its `Lk`.
+- `'global_by_type'`, event 0: every segment with `σ > 0` is reset to `Lk₀`. Sets `last_event_type = 'per_segment_supercoiling_relaxation_positive_only'`.
+- `'global_by_type'`, event 1: every segment with `σ < 0` is reset to `Lk₀`. Sets `last_event_type = 'per_segment_supercoiling_relaxation_negative_only'`.
+- `'per_segment_by_type'`, event 0: pick a length-weighted segment **of positive sign** and reset its `Lk`. Sets `last_event_type = 'per_segment_supercoiling_relaxation_positive_only'`.
+- `'per_segment_by_type'`, event 1: pick a length-weighted segment **of negative sign** and reset its `Lk`. Sets `last_event_type = 'per_segment_supercoiling_relaxation_negative_only'`.
+
+For the `'per_segment_by_type'` sub-cases, `'_rightmost_segment'` or `'_leftmost_segment'` is appended to `last_event_type` if the chosen segment is the rightmost (`index 0`) or leftmost (`index -1`) segment.
 
 If no segment of the right sign exists, no state change occurs.
 
@@ -78,8 +80,10 @@ If no segment of the right sign exists, no state change occurs.
 
 Two propensities, `[TOP1_effective_relaxation_rate, TOP2_effective_relaxation_rate]`. Non-zero only when mode is `'topoisomerase_approximated'`.
 
-- **Event 0 (TOP1)**: pick a length-weighted segment. If its writhe fraction is **zero**, set its `Lk` to `Lk₀`. Otherwise no change (TOP1 cannot act on plectonemic DNA).
-- **Event 1 (TOP2)**: pick a length-weighted segment. If its writhe fraction is **positive**, set its `Lk` to `Lk₀ × (1 + σ_s)`, where `σ_s` is the plectoneme-formation threshold of that segment. Otherwise no change.
+- **Event 0 (TOP1)**: pick a length-weighted segment. If its writhe fraction is **zero**, set its `Lk` to `Lk₀`. Otherwise no change (TOP1 cannot act on plectonemic DNA). Sets `last_event_type = 'TOP1_supercoiling_relaxation_approximation'`.
+- **Event 1 (TOP2)**: pick a length-weighted segment. If its writhe fraction is **positive**, set its `Lk` to `Lk₀ × (1 + σ_s)`, where `σ_s` is the plectoneme-formation threshold of that segment. Otherwise no change. Sets `last_event_type = 'TOP2_supercoiling_relaxation_approximation'`.
+
+For both TOP1 and TOP2, `'_rightmost_segment'` or `'_leftmost_segment'` is appended to `last_event_type` if the chosen segment is the rightmost (`index 0`) or leftmost (`index -1`) segment.
 
 The writhe fraction and plectoneme threshold come from [`get_prokaryotic_torque`](../api/biol-methods.md#get_prokaryotic_torque) (or the eukaryotic equivalent).
 
