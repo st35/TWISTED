@@ -1334,15 +1334,15 @@
 </tr>
 <tr>
 <td>2 — Global SC relaxation</td>
-<td>Reset every segment's <code>Lk</code> (<code>'global_overall'</code>) or one length-weighted segment's <code>Lk</code> (<code>'global_per_segment'</code>)</td>
+<td>Reset every segment's <code>Lk</code> (<code>'global_overall'</code>) or one length-weighted segment's <code>Lk</code> (<code>'global_per_segment'</code>); <code>last_event_type</code> = <code>'global_supercoiling_relaxation'</code> or <code>'global_supercoiling_relaxation_per_segment'</code> (with <code>'_rightmost_segment'</code> / <code>'_leftmost_segment'</code> suffix for boundary segments)</td>
 </tr>
 <tr>
 <td>3 — By-type SC relaxation</td>
-<td>Reset every (or one length-weighted) segment of the appropriate sign</td>
+<td>Reset every (or one length-weighted) segment of the appropriate sign; <code>last_event_type</code> = <code>'per_segment_supercoiling_relaxation_positive_only'</code> or <code>'…_negative_only'</code> (with <code>'_rightmost_segment'</code> / <code>'_leftmost_segment'</code> suffix for per-segment modes)</td>
 </tr>
 <tr>
 <td>4 — Topoisomerase-approximated</td>
-<td>TOP1 event resets <code>Lk → Lk₀</code> on a writhe-free length-weighted segment; TOP2 event sets <code>Lk → Lk₀(1+σ_s)</code> on a plectonemic length-weighted segment</td>
+<td>TOP1 event resets <code>Lk → Lk₀</code> on a writhe-free length-weighted segment; TOP2 event sets <code>Lk → Lk₀(1+σ_s)</code> on a plectonemic length-weighted segment; <code>last_event_type</code> = <code>'TOP1_supercoiling_relaxation_approximation'</code> or <code>'TOP2_supercoiling_relaxation_approximation'</code> (with <code>'_rightmost_segment'</code> / <code>'_leftmost_segment'</code> suffix for boundary segments)</td>
 </tr>
 <tr>
 <td>5 — mRNA degradation (per gene)</td>
