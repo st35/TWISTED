@@ -506,7 +506,7 @@ def integrate(model: Model, simulation_setup_and_state: SimulationSetupAndState,
 			t_eval.append(t_first)
 			t_first += simulation_setup_and_state.integration_time_resolution
 		t_eval.append(t + dt)
-		sol = solve_ivp(lambda t, y: model_dynamics(t, y, RNAP_gene_index, model, simulation_setup_and_state), (t, t + dt), state_vector, t_eval = t_eval, method = simulation_setup_and_state.integration_method)
+		sol = solve_ivp(lambda t, y: model_dynamics(t, y, RNAP_gene_index, model, simulation_setup_and_state), (t, t + dt), state_vector, t_eval = t_eval, method = simulation_setup_and_state.integration_method, rtol = simulation_setup_and_state.integration_rtol, atol = simulation_setup_and_state.integration_atol)
 		assert sol.success, 'ODE integration failed during simulation.'
 		assert np.all(np.diff(sol.y[-1, :]) >= 0.0), 'Cumulative propensity decreased during integration.' # Cumulative propensity should never decrease over time
 		for t_index, t_val in enumerate(sol.t): # Check for event occurrence at each time point in the solution

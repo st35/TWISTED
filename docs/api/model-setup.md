@@ -148,6 +148,8 @@ SimulationSetupAndState(
     simulation_end_criterion: float | list[int],
     integration_method: str = 'RK23',
     integration_time_resolution: float = 0.1,
+    integration_rtol: float = 1.0e-8,
+    integration_atol: float = 1.0e-10,
     RNAP_alive_status_check_interval: float = 1.0,
     max_RNAPs_to_recruit: list[int] = None,
     Gillespie_random_seed: int = 42,

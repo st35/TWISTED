@@ -220,7 +220,7 @@ class Model: # Class to hold the model, including genomic setup, model setup, an
 		print('=' * 80)
 
 class SimulationSetupAndState: # Class to hold simulation setup parameters
-	def __init__(self, simulation_end_mode: int, simulation_end_criterion: Union[float, list[int]], integration_method: str = 'RK23', integration_time_resolution: float = 1.0e-1, RNAP_alive_status_check_interval: float = 1.0, max_RNAPs_to_recruit: list[int] = None, Gillespie_random_seed: int = 42, everything_else_random_seed: int = 42) -> None:
+	def __init__(self, simulation_end_mode: int, simulation_end_criterion: Union[float, list[int]], integration_method: str = 'RK23', integration_time_resolution: float = 1.0e-1, integration_rtol: float = 1.0e-8, integration_atol: float = 1.0e-10, RNAP_alive_status_check_interval: float = 1.0, max_RNAPs_to_recruit: list[int] = None, Gillespie_random_seed: int = 42, everything_else_random_seed: int = 42) -> None:
 		self.simulation_end_mode = simulation_end_mode # 0: time-based, 1: event-based
 		assert simulation_end_mode in [0, 1], 'simulation_end_mode must be either 0 (time-based) or 1 (event-based).'
 
@@ -239,6 +239,11 @@ class SimulationSetupAndState: # Class to hold simulation setup parameters
 
 		self.integration_time_resolution = integration_time_resolution # Time resolution for integration (in s)
 		assert integration_time_resolution > 0.0, 'integration_time_resolution must be a positive float.'
+
+		self.integration_rtol = integration_rtol # Relative tolerance for ODE integration
+		assert integration_rtol > 0.0, 'integration_rtol must be a positive float.'
+		self.integration_atol = integration_atol # Absolute tolerance for ODE integration
+		assert integration_atol > 0.0, 'integration_atol must be a positive float.'
 
 		self.RNAP_alive_status_check_interval = RNAP_alive_status_check_interval # Interval for checking RNAP alive status (in s)
 		assert RNAP_alive_status_check_interval > 0.0, 'RNAP_alive_status_check_interval must be a positive float.'

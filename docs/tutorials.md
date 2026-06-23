@@ -532,6 +532,8 @@ sim = SimulationSetupAndState(
     simulation_end_criterion=300.0,
     integration_method='RK23',           # default; recommended
     integration_time_resolution=0.05,    # finer t_eval for higher-resolution logging
+    integration_rtol=1.0e-8,             # relative tolerance passed to solve_ivp
+    integration_atol=1.0e-10,            # absolute tolerance passed to solve_ivp
     RNAP_alive_status_check_interval=0.5,
     Gillespie_random_seed=2026,
     everything_else_random_seed=2026,
@@ -540,7 +542,7 @@ sim = SimulationSetupAndState(
 
 `'RK23'` is the default. Selecting any other method (`'RK45'`, `'DOP853'`, `'Radau'`, `'BDF'`, `'LSODA'`) emits a `UserWarning` because higher-order solvers can take steps that produce non-physical intermediate states (RNAPs overlapping, segments shorter than allowed by steric constraints) and crash the simulation. RK23 should be retained unless there is a specific reason to switch and the result has been validated.
 
-`integration_time_resolution` controls only the spacing of `t_eval` points within an integration window; reducing it does **not** change the dynamics, only the temporal resolution at which the integration callback (Tutorial 11) observes the state. `RNAP_alive_status_check_interval` does affect the dynamics indirectly: it bounds the duration the integrator runs before re-checking which RNAPs have finished and re-computing event rates. Smaller values are safer but slower.
+`integration_time_resolution` controls only the spacing of `t_eval` points within an integration window; reducing it does **not** change the dynamics, only the temporal resolution at which the integration callback (Tutorial 11) observes the state. `integration_rtol` and `integration_atol` set the relative and absolute error tolerances passed to `solve_ivp` (defaults `1e-8` and `1e-10`); tightening them increases accuracy at the cost of more integration steps. `RNAP_alive_status_check_interval` does affect the dynamics indirectly: it bounds the duration the integrator runs before re-checking which RNAPs have finished and re-computing event rates. Smaller values are safer but slower.
 
 ---
 

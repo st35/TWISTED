@@ -20,6 +20,8 @@ SimulationSetupAndState(
     simulation_end_criterion: float | list[int],
     integration_method: str = 'RK23',
     integration_time_resolution: float = 0.1,
+    integration_rtol: float = 1.0e-8,
+    integration_atol: float = 1.0e-10,
     RNAP_alive_status_check_interval: float = 1.0,
     max_RNAPs_to_recruit: list[int] | None = None,
     Gillespie_random_seed: int = 42,
@@ -33,6 +35,8 @@ SimulationSetupAndState(
 | `simulation_end_criterion` | `float` (seconds) if mode = 0; `list[int]` per gene if mode = 1 |
 | `integration_method` | One of `'RK23'`, `'RK45'`, `'DOP853'`, `'Radau'`, `'BDF'`, `'LSODA'` |
 | `integration_time_resolution` | spacing of `t_eval` points within an integration window (s) |
+| `integration_rtol` | relative tolerance passed to `solve_ivp` (default `1e-8`) |
+| `integration_atol` | absolute tolerance passed to `solve_ivp` (default `1e-10`) |
 | `RNAP_alive_status_check_interval` | how often the integrator pauses to remove finished RNAPs and check for events (s) |
 | `max_RNAPs_to_recruit` | optional list capping recruitment per gene |
 | `Gillespie_random_seed` | integer seed for the Gillespie event-time and event-selection RNG (default `42`) |
