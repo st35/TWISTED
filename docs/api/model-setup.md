@@ -148,8 +148,8 @@ SimulationSetupAndState(
     simulation_end_criterion: float | list[int],
     integration_method: str = 'RK23',
     integration_time_resolution: float = 0.1,
-    integration_rtol: float = 1.0e-8,
-    integration_atol: float = 1.0e-10,
+    integration_rtol: float = 1.0e-6,
+    integration_atol: float = 1.0e-8,
     RNAP_alive_status_check_interval: float = 1.0,
     max_RNAPs_to_recruit: list[int] = None,
     Gillespie_random_seed: int = 42,
@@ -172,8 +172,28 @@ State attributes (filled during `simulate_dynamics`):
 
 Allocates the per-gene result lists (`RNAPs_finished_transcription`, `RNAPs_exit_positions`, `RNAP_recruitment_times`, `RNAP_exit_times`) sized to `len(genomic_setup.gene_names)`, and validates that `simulation_end_criterion` and `max_RNAPs_to_recruit` (if provided) have the matching length and that `simulation_end_event_counts[i] <= max_RNAPs_to_recruit[i]` in event-count mode. Called automatically at the start of `simulate_dynamics`; users normally do not call it directly.
 
+### `update_simulation_end_criterion(new_criterion) -> None`
+
+Changes the termination criterion of an existing (typically loaded) state and clears `simulation_completed`, so the next `simulate_dynamics` call resumes rather than returning early. `new_criterion` is a `float` (seconds) in time mode or a per-gene `list[int]` in event-count mode, matching `simulation_end_mode`.
+
+Validation:
+
+- **Time mode:** raises if the new end time is earlier than `curr_simulation_time`; warns (but allows) if it is earlier than the previous end time.
+- **Event mode:** the list length must match the number of genes; each count must not exceed `max_RNAPs_to_recruit[i]` (if set); and at least one gene's new count must exceed its current `RNAPs_finished_transcription[i]` (otherwise the criterion is already satisfied). Reads `RNAPs_finished_transcription`, so the state must already be initialized.
+
 ### `calculate_RNAP_transcription_rates(model) -> list[list[float]]`
 
 Per-gene per-RNAP transcription rate (bp/s), computed only for RNAPs that completed transcription. Asserts that the distance covered is at least `gene_length`.
+
+## `save_simulation_state_to_file(model, simulation_setup_and_state, filename) -> None`
+
+Serializes `{'model': model, 'simulation_setup_and_state': simulation_setup_and_state}` to `filename` with `dill` (opened in binary mode). Use this to checkpoint a simulation so it can be resumed or inspected later.
+
+## `load_simulation_state_from_file(filename) -> tuple[Model, SimulationSetupAndState]`
+
+Deserializes a file written by `save_simulation_state_to_file` and returns `(model, simulation_setup_and_state)`. The restored state includes the two random number generators (`rng_Gillespie`, `rng_everything_else`), so a resumed run continues the same random streams. Raises `ValueError` if the saved state was never initialized (i.e. `simulate_dynamics` had not yet run). Because the state is restored as-is, calling `simulate_dynamics` on a loaded state whose `simulation_completed` flag is already `True` returns immediately; use `update_simulation_end_criterion` to extend and resume it.
+
+!!! warning
+    `load_simulation_state_from_file` uses `dill`, which can execute arbitrary code while deserializing. Only load files you created or otherwise trust.
 
 See also: [User guide → Running simulations](../user-guide/simulation.md).

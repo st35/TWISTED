@@ -1,6 +1,6 @@
 # Tutorials
 
-Sixteen worked examples, ordered roughly by complexity. Each section is self-contained and can be copy-pasted into a Python script. Earlier examples introduce idioms (config files, callbacks) that later ones reuse.
+Eighteen worked examples, ordered roughly by complexity. Each section is self-contained and can be copy-pasted into a Python script. Earlier examples introduce idioms (config files, callbacks) that later ones reuse.
 
 All examples assume the `code/` directory is importable:
 
@@ -44,6 +44,7 @@ sim = SimulationSetupAndState(
 15. [Eukaryotic chromatin with nucleosomes](#15-eukaryotic-chromatin-with-nucleosomes)
 16. [Reproducibility and integrator choice](#16-reproducibility-and-integrator-choice)
 17. [Non-constitutive promoters](#17-non-constitutive-promoters)
+18. [Saving and resuming a simulation](#18-saving-and-resuming-a-simulation)
 
 ---
 
@@ -511,7 +512,7 @@ Any additional `BindingProtein` objects passed to `Model` appear at indices `1, 
 
 ## 16. Reproducibility and integrator choice
 
-TWISTED uses two independent seeded `random.Random` instances internally: one (`rng_Gillespie`) for event-time sampling and event selection, and one (`rng_seed_for_everything_else`) for all other stochastic choices (segment selection, binding positions, etc.). Both seeds are passed directly to `SimulationSetupAndState`, making each run fully reproducible (modulo SciPy's deterministic adaptive stepping):
+TWISTED uses two independent seeded `random.Random` instances internally: one (`rng_Gillespie`) for event-time sampling and event selection, and one (`rng_everything_else`) for all other stochastic choices (segment selection, binding positions, etc.). Both are stored on the `SimulationSetupAndState` object and seeded from the values passed to its constructor, making each run fully reproducible (modulo SciPy's deterministic adaptive stepping):
 
 ```python
 sim = SimulationSetupAndState(
@@ -532,8 +533,8 @@ sim = SimulationSetupAndState(
     simulation_end_criterion=300.0,
     integration_method='RK23',           # default; recommended
     integration_time_resolution=0.05,    # finer t_eval for higher-resolution logging
-    integration_rtol=1.0e-8,             # relative tolerance passed to solve_ivp
-    integration_atol=1.0e-10,            # absolute tolerance passed to solve_ivp
+    integration_rtol=1.0e-6,             # relative tolerance passed to solve_ivp
+    integration_atol=1.0e-8,             # absolute tolerance passed to solve_ivp
     RNAP_alive_status_check_interval=0.5,
     Gillespie_random_seed=2026,
     everything_else_random_seed=2026,
@@ -542,7 +543,10 @@ sim = SimulationSetupAndState(
 
 `'RK23'` is the default. Selecting any other method (`'RK45'`, `'DOP853'`, `'Radau'`, `'BDF'`, `'LSODA'`) emits a `UserWarning` because higher-order solvers can take steps that produce non-physical intermediate states (RNAPs overlapping, segments shorter than allowed by steric constraints) and crash the simulation. RK23 should be retained unless there is a specific reason to switch and the result has been validated.
 
-`integration_time_resolution` controls only the spacing of `t_eval` points within an integration window; reducing it does **not** change the dynamics, only the temporal resolution at which the integration callback (Tutorial 11) observes the state. `integration_rtol` and `integration_atol` set the relative and absolute error tolerances passed to `solve_ivp` (defaults `1e-8` and `1e-10`); tightening them increases accuracy at the cost of more integration steps. `RNAP_alive_status_check_interval` does affect the dynamics indirectly: it bounds the duration the integrator runs before re-checking which RNAPs have finished and re-computing event rates. Smaller values are safer but slower.
+`integration_time_resolution` controls only the spacing of `t_eval` points within an integration window; reducing it does **not** change the dynamics, only the temporal resolution at which the integration callback (Tutorial 11) observes the state. `integration_rtol` and `integration_atol` set the relative and absolute error tolerances passed to `solve_ivp` (defaults `1e-6` and `1e-8`); tightening them increases accuracy at the cost of more integration steps. `RNAP_alive_status_check_interval` does affect the dynamics indirectly: it bounds the duration the integrator runs before re-checking which RNAPs have finished and re-computing event rates. Smaller values are safer but slower.
+
+!!! tip "Unstable dynamics"
+    If a run shows numerical instability — rapid, non-physical fluctuations in RNAP positions or supercoiling densities — lower (tighten) `integration_rtol` and `integration_atol`, for example back to `1e-8` and `1e-10` or smaller. Tighter tolerances force `solve_ivp` to take smaller steps, which suppresses these fluctuations at the cost of longer runtimes.
 
 ---
 
@@ -633,3 +637,74 @@ print('geneB mRNA:', model.mRNA_counts[1])
 ```
 
 See [User Guide → Genomic setup](user-guide/genomic-setup.md#non-constitutive) and [User Guide → Events and propensities](user-guide/events-and-propensities.md) for the mathematical details of the switching rates.
+
+## 18. Saving and resuming a simulation
+
+`model_setup` provides two helpers for checkpointing a run to disk: `save_simulation_state_to_file` serializes the `Model` and the `SimulationSetupAndState` together with `dill`, and `load_simulation_state_from_file` restores them as a `(model, sim)` tuple. This is useful for long runs you want to inspect, share, or continue later.
+
+```python
+from model_setup import (
+    GenomicSetup, ModelSetup, Model, SimulationSetupAndState,
+    save_simulation_state_to_file, load_simulation_state_from_file,
+)
+from simulate_dynamics import simulate_dynamics
+
+genomic_setup = GenomicSetup(
+    chromatin_type='prokaryotic',
+    gene_names=['geneA'],
+    TSSes=[340.0],
+    gene_lengths=[3400.0],
+    gene_directions=[1],
+    RNAP_on_rates=[0.02],
+    promoter_mode='constitutive',
+    buffer_length=3400.0,
+)
+model_setup = ModelSetup(
+    supercoiling_relaxation_dynamics_mode='topoisomerase_approximated',
+    TOP1_effective_relaxation_rate=0.01,
+    TOP2_effective_relaxation_rate=0.005,
+)
+model = Model(genomic_setup, model_setup)
+sim = SimulationSetupAndState(
+    simulation_end_mode=1,
+    simulation_end_criterion=[50],
+    max_RNAPs_to_recruit=[50],
+)
+
+# Run to completion, then checkpoint to disk.
+simulate_dynamics(model, sim)
+save_simulation_state_to_file(model, sim, 'run.pkl')
+```
+
+Later — in another script or session — reload the checkpoint and read the results without re-running anything:
+
+```python
+model, sim = load_simulation_state_from_file('run.pkl')
+
+print('Completed transcripts:', sim.RNAPs_finished_transcription[0])
+print('Total simulated time:', sim.curr_simulation_time)
+rates = sim.calculate_RNAP_transcription_rates(model)[0]
+print('Mean transcription rate:', sum(rates) / len(rates), 'bp/s')
+```
+
+A restored finished run carries `sim.simulation_completed == True`. Calling `simulate_dynamics` on it is a no-op: it prints `This simulation has finished.` and returns immediately, so you cannot accidentally double-count events by re-running a completed checkpoint.
+
+```python
+simulate_dynamics(model, sim)   # prints: This simulation has finished.
+```
+
+To continue a finished run further, extend the termination criterion with `update_simulation_end_criterion`, which clears the `simulation_completed` flag for you:
+
+```python
+model, sim = load_simulation_state_from_file('run.pkl')
+sim.update_simulation_end_criterion([100])   # event mode: new per-gene target; or a float for time mode
+simulate_dynamics(model, sim)                # resumes and runs until the new criterion is met
+```
+
+Because the two random number generators (`rng_Gillespie`, `rng_everything_else`) are stored on `sim`, they are serialized with the checkpoint and restored on load, so a resumed run continues the same random streams rather than restarting them. A run executed in one shot and the same run saved and resumed therefore produce identical trajectories. For time mode, the new end time must not be earlier than `sim.curr_simulation_time`; for event mode, the new counts must require at least one more transcript and stay within `max_RNAPs_to_recruit`.
+
+!!! warning
+    `load_simulation_state_from_file` uses `dill`, which can execute arbitrary code while deserializing. Only load checkpoint files that you created or otherwise trust.
+
+See [User Guide → Running simulations](user-guide/simulation.md) and the [`model_setup` API reference](api/model-setup.md) for the full signatures.
+

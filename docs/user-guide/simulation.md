@@ -35,8 +35,8 @@ SimulationSetupAndState(
 | `simulation_end_criterion` | `float` (seconds) if mode = 0; `list[int]` per gene if mode = 1 |
 | `integration_method` | One of `'RK23'`, `'RK45'`, `'DOP853'`, `'Radau'`, `'BDF'`, `'LSODA'` |
 | `integration_time_resolution` | spacing of `t_eval` points within an integration window (s) |
-| `integration_rtol` | relative tolerance passed to `solve_ivp` (default `1e-8`) |
-| `integration_atol` | absolute tolerance passed to `solve_ivp` (default `1e-10`) |
+| `integration_rtol` | relative tolerance passed to `solve_ivp` (default `1e-6`) |
+| `integration_atol` | absolute tolerance passed to `solve_ivp` (default `1e-8`) |
 | `RNAP_alive_status_check_interval` | how often the integrator pauses to remove finished RNAPs and check for events (s) |
 | `max_RNAPs_to_recruit` | optional list capping recruitment per gene |
 | `Gillespie_random_seed` | integer seed for the Gillespie event-time and event-selection RNG (default `42`) |
@@ -92,7 +92,12 @@ Once `len(sim.RNAP_recruitment_times[i]) >= max_RNAPs_to_recruit[i]`, further re
 |---------|--------|-------|
 | `integration_method` | `'RK23'` | The SciPy `solve_ivp` method to use. Other methods emit a `UserWarning` because higher-order solvers can produce non-physical intermediate states (e.g. RNAPs overlapping) and crash the run. |
 | `integration_time_resolution` | `0.1` s | Spacing of `t_eval` points within each integration window. Affects only the temporal resolution at which `print_at_each_integration_step` observes the state; the dynamics are unchanged. |
+| `integration_rtol` | `1e-6` | Relative error tolerance passed to `solve_ivp`. Tightening (lowering) it forces smaller integration steps and higher accuracy at the cost of runtime. |
+| `integration_atol` | `1e-8` | Absolute error tolerance passed to `solve_ivp`. Tightening (lowering) it forces smaller integration steps and higher accuracy at the cost of runtime. |
 | `RNAP_alive_status_check_interval` | `1.0` s | The integrator advances in chunks of this size, then removes RNAPs that finished and re-evaluates whether the cumulative propensity has crossed the event threshold. Smaller values are safer (fewer mis-detections of fast events) but slower. |
+
+!!! tip "Unstable dynamics"
+    If a simulation becomes numerically unstable — showing rapid, non-physical fluctuations in RNAP positions or supercoiling densities — lower (tighten) `integration_rtol` and `integration_atol`, for example back to `1e-8` and `1e-10` or smaller. Tighter tolerances make `solve_ivp` take smaller steps, which suppresses the fluctuations at the cost of longer runtimes.
 
 ---
 
@@ -132,6 +137,28 @@ import numpy as np
 intervals = np.diff(sim.RNAP_recruitment_times[0])
 mean_interval = float(intervals.mean())
 ```
+
+---
+
+## Saving and resuming
+
+`model_setup` provides two helpers for persisting a run to disk:
+
+```python
+from model_setup import save_simulation_state_to_file, load_simulation_state_from_file
+
+save_simulation_state_to_file(model, sim, 'run.pkl')
+model, sim = load_simulation_state_from_file('run.pkl')
+```
+
+`save_simulation_state_to_file` serializes both the `Model` and the `SimulationSetupAndState` together with `dill`, capturing the full simulation state at the moment of the call. `load_simulation_state_from_file` restores them as a `(model, sim)` tuple.
+
+If a restored `sim` already has `sim.simulation_completed == True`, calling `simulate_dynamics` on it prints `This simulation has finished.` and returns immediately without re-running. To continue such a run, extend the termination criterion with `sim.update_simulation_end_criterion(new_criterion)` (a `float` in time mode or a per-gene `list[int]` in event mode); this updates the criterion and clears the `simulation_completed` flag so the next `simulate_dynamics` call resumes.
+
+The two random number generators (`rng_Gillespie` and `rng_everything_else`) are stored on the `SimulationSetupAndState` object, so they are serialized with the checkpoint and restored on load. A resumed run continues the same random streams rather than restarting them, so saving and resuming yields the same trajectory as running in one shot. A checkpoint can only be loaded if its state has been initialized (i.e. `simulate_dynamics` has run at least once); loading an uninitialized state raises a `ValueError`.
+
+!!! warning
+    Loading uses `dill`, which can execute arbitrary code while deserializing. Only load checkpoint files that you created or otherwise trust.
 
 ---
 

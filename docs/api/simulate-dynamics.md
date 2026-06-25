@@ -12,7 +12,7 @@ simulate_dynamics(
 ) -> None
 ```
 
-The outer Gillespie loop. Repeatedly:
+The outer Gillespie loop. If `simulation_setup_and_state.simulation_completed` is already `True` (e.g. a state restored via [`load_simulation_state_from_file`](model-setup.md#load_simulation_state_from_filefilename---tuplemodel-simulationsetupandstate)), the function prints `This simulation has finished.` and returns without doing any work. Otherwise it repeatedly:
 
 1. Builds the state vector from the current `model` dicts.
 2. Draws a uniform `p0 ~ U(0, 1)` and calls [`integrate`](model-dynamics.md#integrate) to advance the ODE until the cumulative propensity passes `ln(1/p0)`.

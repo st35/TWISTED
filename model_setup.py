@@ -3,6 +3,8 @@ from utilities import *
 from typing import Union
 from math import floor
 import warnings
+import random
+import dill
 
 class GenomicSetup: # Class to hold genomic setup information
 	def __init__(self, chromatin_type: str, gene_names: list[str], TSSes: list[float], gene_lengths: list[float], gene_directions: list[int], RNAP_on_rates: list[float], promoter_mode: str, buffer_length: float, **kwargs) -> None:
@@ -220,7 +222,7 @@ class Model: # Class to hold the model, including genomic setup, model setup, an
 		print('=' * 80)
 
 class SimulationSetupAndState: # Class to hold simulation setup parameters
-	def __init__(self, simulation_end_mode: int, simulation_end_criterion: Union[float, list[int]], integration_method: str = 'RK23', integration_time_resolution: float = 1.0e-1, integration_rtol: float = 1.0e-8, integration_atol: float = 1.0e-10, RNAP_alive_status_check_interval: float = 1.0, max_RNAPs_to_recruit: list[int] = None, Gillespie_random_seed: int = 42, everything_else_random_seed: int = 42) -> None:
+	def __init__(self, simulation_end_mode: int, simulation_end_criterion: Union[float, list[int]], integration_method: str = 'RK23', integration_time_resolution: float = 1.0e-1, integration_rtol: float = 1.0e-6, integration_atol: float = 1.0e-8, RNAP_alive_status_check_interval: float = 1.0, max_RNAPs_to_recruit: list[int] = None, Gillespie_random_seed: int = 42, everything_else_random_seed: int = 42) -> None:
 		self.simulation_end_mode = simulation_end_mode # 0: time-based, 1: event-based
 		assert simulation_end_mode in [0, 1], 'simulation_end_mode must be either 0 (time-based) or 1 (event-based).'
 
@@ -261,6 +263,9 @@ class SimulationSetupAndState: # Class to hold simulation setup parameters
 
 		self.Gillespie_random_seed = Gillespie_random_seed # Random seed for Gillespie events
 		self.everything_else_random_seed = everything_else_random_seed # Random seed for all other stochastic processes in the simulation (e.g., choosing segments for supercoiling relaxation events, choosing which bound protein unbinds in a binding protein unbinding event, etc.)
+
+		self.rng_Gillespie = random.Random(self.Gillespie_random_seed)
+		self.rng_everything_else = random.Random(self.everything_else_random_seed)
 	
 	def setup_simulation_state(self, genomic_setup: GenomicSetup) -> None:
 		if self.simulation_end_mode == 1:
@@ -281,6 +286,35 @@ class SimulationSetupAndState: # Class to hold simulation setup parameters
 
 		self.state_has_been_initialized = True
 	
+	def update_simulation_end_criterion(self, new_criterion: Union[float, list[int]]) -> None:
+		if self.simulation_end_mode == 0:
+			new_simulation_end_time = float(new_criterion)
+			if new_simulation_end_time < self.curr_simulation_time:
+				raise ValueError('New simulation end time cannot be earlier than the current simulation time.')
+			if new_simulation_end_time < self.simulation_end_time:
+				warnings.warn('New simulation end time is earlier than the previous end time. The simulation will now end at the earlier time.')
+			self.simulation_end_time = new_simulation_end_time
+			self.simulation_end_criterion = new_simulation_end_time
+		elif self.simulation_end_mode == 1:
+			if not isinstance(new_criterion, list):
+				raise ValueError('For simulation_end_mode 1 (i.e., event-based), new_criterion must be a list of integers representing event counts for each gene.')
+			if len(new_criterion) != len(self.simulation_end_event_counts):
+				raise ValueError('Length of new_criterion list must match the number of genes in the simulation.')
+			if self.max_RNAPs_to_recruit is not None:
+				for i in range(len(new_criterion)):
+					if new_criterion[i] > self.max_RNAPs_to_recruit[i]:
+						raise ValueError('For any gene, number of RNAPs that must finish transcription (per the new simulation end criterion) cannot be greater than max_RNAPs_to_recruit (specified earlier).')
+			invalid_criterion = True
+			for i in range(len(new_criterion)):
+				if new_criterion[i] > self.RNAPs_finished_transcription[i]:
+					invalid_criterion = False
+					break
+			if invalid_criterion:
+				raise ValueError('New simulation end criterion must require at least one more RNAP to finish transcription for at least one gene.')
+			self.simulation_end_event_counts = [new_criterion[i] for i in range(len(new_criterion))]
+			self.simulation_end_criterion = list(new_criterion)
+		self.simulation_completed = False # Allow the simulation to resume under the updated criterion
+	
 	def calculate_RNAP_transcription_rates(self, model: Model) -> list[list[float]]: # Calculate and return the transcription rates (in bp / s) for each RNAP that has finished transcription for each gene
 		transcription_rates = [[] for _ in model.genomic_setup.gene_names]
 		for gene_index in range(len(model.genomic_setup.gene_names)):
@@ -297,3 +331,18 @@ class SimulationSetupAndState: # Class to hold simulation setup parameters
 				transcription_rates[gene_index].append(distance_covered / time_interval)
 		
 		return transcription_rates
+
+def save_simulation_state_to_file(model: Model, simulation_setup_and_state: SimulationSetupAndState, filename: str) -> None: # Save the current state of the simulation to a file
+	simulation_state = {
+		'model': model,
+		'simulation_setup_and_state': simulation_setup_and_state
+	}
+	with open(filename, 'wb') as f:
+		dill.dump(simulation_state, f)
+
+def load_simulation_state_from_file(filename: str) -> tuple[Model, SimulationSetupAndState]: # Load the simulation state from a file and return the model and simulation setup/state
+	with open(filename, 'rb') as f:
+		simulation_state = dill.load(f)
+	if not simulation_state['simulation_setup_and_state'].state_has_been_initialized:
+		raise ValueError('The loaded simulation state has not been initialized. Cannot resume simulation from this state.')
+	return simulation_state['model'], simulation_state['simulation_setup_and_state']

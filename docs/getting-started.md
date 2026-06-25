@@ -13,12 +13,12 @@ Readers already familiar with the construction pattern may skip directly to [Tut
 
 ## 1. Install
 
-TWISTED is a small pure-Python project with two runtime dependencies. Clone and install them:
+TWISTED is a small pure-Python project with three runtime dependencies. Clone and install them:
 
 ```bash
 git clone https://github.com/st35/TWISTED.git
 cd TWISTED/code
-pip install scipy numpy
+pip install scipy numpy dill
 ```
 
 There is no `setup.py`; the modules reside directly in `code/` and are imported by name. Either run Python from inside `code/`, or add it to `sys.path`:
@@ -39,6 +39,7 @@ mkdocs serve
 |---------|---------|
 | `scipy` | `solve_ivp` (RK23 by default) for the ODE component of the simulation |
 | `numpy` | array bookkeeping inside the integrator wrapper |
+| `dill` | serializing the model and simulation state to disk (save/resume checkpoints) |
 
 ---
 
