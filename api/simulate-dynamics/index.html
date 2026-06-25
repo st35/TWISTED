@@ -1297,7 +1297,7 @@
 <a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n">print_at_end_of_simulation</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </code></pre></div>
-<p>The outer Gillespie loop. Repeatedly:</p>
+<p>The outer Gillespie loop. If <code>simulation_setup_and_state.simulation_completed</code> is already <code>True</code> (e.g. a state restored via <a href="../model-setup/#load_simulation_state_from_filefilename---tuplemodel-simulationsetupandstate"><code>load_simulation_state_from_file</code></a>), the function prints <code>This simulation has finished.</code> and returns without doing any work. Otherwise it repeatedly:</p>
 <ol>
 <li>Builds the state vector from the current <code>model</code> dicts.</li>
 <li>Draws a uniform <code>p0 ~ U(0, 1)</code> and calls <a href="../model-dynamics/#integrate"><code>integrate</code></a> to advance the ODE until the cumulative propensity passes <code>ln(1/p0)</code>.</li>

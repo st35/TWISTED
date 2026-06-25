@@ -720,6 +720,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#18-saving-and-resuming-a-simulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18. Saving and resuming a simulation
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1582,6 +1593,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#18-saving-and-resuming-a-simulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18. Saving and resuming a simulation
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1603,7 +1625,7 @@
 
 
 <h1 id="tutorials">Tutorials<a class="headerlink" href="#tutorials" title="Permanent link">&para;</a></h1>
-<p>Sixteen worked examples, ordered roughly by complexity. Each section is self-contained and can be copy-pasted into a Python script. Earlier examples introduce idioms (config files, callbacks) that later ones reuse.</p>
+<p>Eighteen worked examples, ordered roughly by complexity. Each section is self-contained and can be copy-pasted into a Python script. Earlier examples introduce idioms (config files, callbacks) that later ones reuse.</p>
 <p>All examples assume the <code>code/</code> directory is importable:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;/path/to/TWISTED/code&#39;</span><span class="p">)</span>
@@ -1639,6 +1661,7 @@
 <li><a href="#15-eukaryotic-chromatin-with-nucleosomes">Eukaryotic chromatin with nucleosomes</a></li>
 <li><a href="#16-reproducibility-and-integrator-choice">Reproducibility and integrator choice</a></li>
 <li><a href="#17-non-constitutive-promoters">Non-constitutive promoters</a></li>
+<li><a href="#18-saving-and-resuming-a-simulation">Saving and resuming a simulation</a></li>
 </ol>
 <hr />
 <h2 id="1-single-gene-minimal-setup">1. Single gene, minimal setup<a class="headerlink" href="#1-single-gene-minimal-setup" title="Permanent link">&para;</a></h2>
@@ -2008,7 +2031,7 @@
 <p>Any additional <code>BindingProtein</code> objects passed to <code>Model</code> appear at indices <code>1, 2, …</code> after the auto-created nucleosome entry; index by name rather than by hard-coded position.</p>
 <hr />
 <h2 id="16-reproducibility-and-integrator-choice">16. Reproducibility and integrator choice<a class="headerlink" href="#16-reproducibility-and-integrator-choice" title="Permanent link">&para;</a></h2>
-<p>TWISTED uses two independent seeded <code>random.Random</code> instances internally: one (<code>rng_Gillespie</code>) for event-time sampling and event selection, and one (<code>rng_seed_for_everything_else</code>) for all other stochastic choices (segment selection, binding positions, etc.). Both seeds are passed directly to <code>SimulationSetupAndState</code>, making each run fully reproducible (modulo SciPy's deterministic adaptive stepping):</p>
+<p>TWISTED uses two independent seeded <code>random.Random</code> instances internally: one (<code>rng_Gillespie</code>) for event-time sampling and event selection, and one (<code>rng_everything_else</code>) for all other stochastic choices (segment selection, binding positions, etc.). Both are stored on the <code>SimulationSetupAndState</code> object and seeded from the values passed to its constructor, making each run fully reproducible (modulo SciPy's deterministic adaptive stepping):</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="n">sim</span> <span class="o">=</span> <span class="n">SimulationSetupAndState</span><span class="p">(</span>
 <a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>    <span class="n">simulation_end_mode</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
 <a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a>    <span class="n">simulation_end_criterion</span><span class="o">=</span><span class="mf">300.0</span><span class="p">,</span>
@@ -2023,15 +2046,19 @@
 <a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a>    <span class="n">simulation_end_criterion</span><span class="o">=</span><span class="mf">300.0</span><span class="p">,</span>
 <a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a>    <span class="n">integration_method</span><span class="o">=</span><span class="s1">&#39;RK23&#39;</span><span class="p">,</span>           <span class="c1"># default; recommended</span>
 <a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a>    <span class="n">integration_time_resolution</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>    <span class="c1"># finer t_eval for higher-resolution logging</span>
-<a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a>    <span class="n">integration_rtol</span><span class="o">=</span><span class="mf">1.0e-8</span><span class="p">,</span>             <span class="c1"># relative tolerance passed to solve_ivp</span>
-<a id="__codelineno-27-7" name="__codelineno-27-7" href="#__codelineno-27-7"></a>    <span class="n">integration_atol</span><span class="o">=</span><span class="mf">1.0e-10</span><span class="p">,</span>            <span class="c1"># absolute tolerance passed to solve_ivp</span>
+<a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a>    <span class="n">integration_rtol</span><span class="o">=</span><span class="mf">1.0e-6</span><span class="p">,</span>             <span class="c1"># relative tolerance passed to solve_ivp</span>
+<a id="__codelineno-27-7" name="__codelineno-27-7" href="#__codelineno-27-7"></a>    <span class="n">integration_atol</span><span class="o">=</span><span class="mf">1.0e-8</span><span class="p">,</span>             <span class="c1"># absolute tolerance passed to solve_ivp</span>
 <a id="__codelineno-27-8" name="__codelineno-27-8" href="#__codelineno-27-8"></a>    <span class="n">RNAP_alive_status_check_interval</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
 <a id="__codelineno-27-9" name="__codelineno-27-9" href="#__codelineno-27-9"></a>    <span class="n">Gillespie_random_seed</span><span class="o">=</span><span class="mi">2026</span><span class="p">,</span>
 <a id="__codelineno-27-10" name="__codelineno-27-10" href="#__codelineno-27-10"></a>    <span class="n">everything_else_random_seed</span><span class="o">=</span><span class="mi">2026</span><span class="p">,</span>
 <a id="__codelineno-27-11" name="__codelineno-27-11" href="#__codelineno-27-11"></a><span class="p">)</span>
 </code></pre></div>
 <p><code>'RK23'</code> is the default. Selecting any other method (<code>'RK45'</code>, <code>'DOP853'</code>, <code>'Radau'</code>, <code>'BDF'</code>, <code>'LSODA'</code>) emits a <code>UserWarning</code> because higher-order solvers can take steps that produce non-physical intermediate states (RNAPs overlapping, segments shorter than allowed by steric constraints) and crash the simulation. RK23 should be retained unless there is a specific reason to switch and the result has been validated.</p>
-<p><code>integration_time_resolution</code> controls only the spacing of <code>t_eval</code> points within an integration window; reducing it does <strong>not</strong> change the dynamics, only the temporal resolution at which the integration callback (Tutorial 11) observes the state. <code>integration_rtol</code> and <code>integration_atol</code> set the relative and absolute error tolerances passed to <code>solve_ivp</code> (defaults <code>1e-8</code> and <code>1e-10</code>); tightening them increases accuracy at the cost of more integration steps. <code>RNAP_alive_status_check_interval</code> does affect the dynamics indirectly: it bounds the duration the integrator runs before re-checking which RNAPs have finished and re-computing event rates. Smaller values are safer but slower.</p>
+<p><code>integration_time_resolution</code> controls only the spacing of <code>t_eval</code> points within an integration window; reducing it does <strong>not</strong> change the dynamics, only the temporal resolution at which the integration callback (Tutorial 11) observes the state. <code>integration_rtol</code> and <code>integration_atol</code> set the relative and absolute error tolerances passed to <code>solve_ivp</code> (defaults <code>1e-6</code> and <code>1e-8</code>); tightening them increases accuracy at the cost of more integration steps. <code>RNAP_alive_status_check_interval</code> does affect the dynamics indirectly: it bounds the duration the integrator runs before re-checking which RNAPs have finished and re-computing event rates. Smaller values are safer but slower.</p>
+<div class="admonition tip">
+<p class="admonition-title">Unstable dynamics</p>
+<p>If a run shows numerical instability — rapid, non-physical fluctuations in RNAP positions or supercoiling densities — lower (tighten) <code>integration_rtol</code> and <code>integration_atol</code>, for example back to <code>1e-8</code> and <code>1e-10</code> or smaller. Tighter tolerances force <code>solve_ivp</code> to take smaller steps, which suppresses these fluctuations at the cost of longer runtimes.</p>
+</div>
 <hr />
 <h2 id="17-non-constitutive-promoters">17. Non-constitutive promoters<a class="headerlink" href="#17-non-constitutive-promoters" title="Permanent link">&para;</a></h2>
 <p>With <code>promoter_mode='non-constitutive'</code> each gene's promoter switches stochastically between OFF (<code>promoter_status[i] = 0</code>) and ON (<code>promoter_status[i] = 1</code>) as Gillespie events. RNAP recruitment on gene <code>i</code> occurs only while its promoter is ON. All promoters start in the OFF state at the beginning of the simulation.</p>
@@ -2107,6 +2134,62 @@
 <a id="__codelineno-30-32" name="__codelineno-30-32" href="#__codelineno-30-32"></a><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;geneB mRNA:&#39;</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">mRNA_counts</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 </code></pre></div>
 <p>See <a href="../user-guide/genomic-setup/#non-constitutive">User Guide → Genomic setup</a> and <a href="../user-guide/events-and-propensities/">User Guide → Events and propensities</a> for the mathematical details of the switching rates.</p>
+<h2 id="18-saving-and-resuming-a-simulation">18. Saving and resuming a simulation<a class="headerlink" href="#18-saving-and-resuming-a-simulation" title="Permanent link">&para;</a></h2>
+<p><code>model_setup</code> provides two helpers for checkpointing a run to disk: <code>save_simulation_state_to_file</code> serializes the <code>Model</code> and the <code>SimulationSetupAndState</code> together with <code>dill</code>, and <code>load_simulation_state_from_file</code> restores them as a <code>(model, sim)</code> tuple. This is useful for long runs you want to inspect, share, or continue later.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">model_setup</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+<a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>    <span class="n">GenomicSetup</span><span class="p">,</span> <span class="n">ModelSetup</span><span class="p">,</span> <span class="n">Model</span><span class="p">,</span> <span class="n">SimulationSetupAndState</span><span class="p">,</span>
+<a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a>    <span class="n">save_simulation_state_to_file</span><span class="p">,</span> <span class="n">load_simulation_state_from_file</span><span class="p">,</span>
+<a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a><span class="p">)</span>
+<a id="__codelineno-31-5" name="__codelineno-31-5" href="#__codelineno-31-5"></a><span class="kn">from</span><span class="w"> </span><span class="nn">simulate_dynamics</span><span class="w"> </span><span class="kn">import</span> <span class="n">simulate_dynamics</span>
+<a id="__codelineno-31-6" name="__codelineno-31-6" href="#__codelineno-31-6"></a>
+<a id="__codelineno-31-7" name="__codelineno-31-7" href="#__codelineno-31-7"></a><span class="n">genomic_setup</span> <span class="o">=</span> <span class="n">GenomicSetup</span><span class="p">(</span>
+<a id="__codelineno-31-8" name="__codelineno-31-8" href="#__codelineno-31-8"></a>    <span class="n">chromatin_type</span><span class="o">=</span><span class="s1">&#39;prokaryotic&#39;</span><span class="p">,</span>
+<a id="__codelineno-31-9" name="__codelineno-31-9" href="#__codelineno-31-9"></a>    <span class="n">gene_names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;geneA&#39;</span><span class="p">],</span>
+<a id="__codelineno-31-10" name="__codelineno-31-10" href="#__codelineno-31-10"></a>    <span class="n">TSSes</span><span class="o">=</span><span class="p">[</span><span class="mf">340.0</span><span class="p">],</span>
+<a id="__codelineno-31-11" name="__codelineno-31-11" href="#__codelineno-31-11"></a>    <span class="n">gene_lengths</span><span class="o">=</span><span class="p">[</span><span class="mf">3400.0</span><span class="p">],</span>
+<a id="__codelineno-31-12" name="__codelineno-31-12" href="#__codelineno-31-12"></a>    <span class="n">gene_directions</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+<a id="__codelineno-31-13" name="__codelineno-31-13" href="#__codelineno-31-13"></a>    <span class="n">RNAP_on_rates</span><span class="o">=</span><span class="p">[</span><span class="mf">0.02</span><span class="p">],</span>
+<a id="__codelineno-31-14" name="__codelineno-31-14" href="#__codelineno-31-14"></a>    <span class="n">promoter_mode</span><span class="o">=</span><span class="s1">&#39;constitutive&#39;</span><span class="p">,</span>
+<a id="__codelineno-31-15" name="__codelineno-31-15" href="#__codelineno-31-15"></a>    <span class="n">buffer_length</span><span class="o">=</span><span class="mf">3400.0</span><span class="p">,</span>
+<a id="__codelineno-31-16" name="__codelineno-31-16" href="#__codelineno-31-16"></a><span class="p">)</span>
+<a id="__codelineno-31-17" name="__codelineno-31-17" href="#__codelineno-31-17"></a><span class="n">model_setup</span> <span class="o">=</span> <span class="n">ModelSetup</span><span class="p">(</span>
+<a id="__codelineno-31-18" name="__codelineno-31-18" href="#__codelineno-31-18"></a>    <span class="n">supercoiling_relaxation_dynamics_mode</span><span class="o">=</span><span class="s1">&#39;topoisomerase_approximated&#39;</span><span class="p">,</span>
+<a id="__codelineno-31-19" name="__codelineno-31-19" href="#__codelineno-31-19"></a>    <span class="n">TOP1_effective_relaxation_rate</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+<a id="__codelineno-31-20" name="__codelineno-31-20" href="#__codelineno-31-20"></a>    <span class="n">TOP2_effective_relaxation_rate</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span>
+<a id="__codelineno-31-21" name="__codelineno-31-21" href="#__codelineno-31-21"></a><span class="p">)</span>
+<a id="__codelineno-31-22" name="__codelineno-31-22" href="#__codelineno-31-22"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">genomic_setup</span><span class="p">,</span> <span class="n">model_setup</span><span class="p">)</span>
+<a id="__codelineno-31-23" name="__codelineno-31-23" href="#__codelineno-31-23"></a><span class="n">sim</span> <span class="o">=</span> <span class="n">SimulationSetupAndState</span><span class="p">(</span>
+<a id="__codelineno-31-24" name="__codelineno-31-24" href="#__codelineno-31-24"></a>    <span class="n">simulation_end_mode</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<a id="__codelineno-31-25" name="__codelineno-31-25" href="#__codelineno-31-25"></a>    <span class="n">simulation_end_criterion</span><span class="o">=</span><span class="p">[</span><span class="mi">50</span><span class="p">],</span>
+<a id="__codelineno-31-26" name="__codelineno-31-26" href="#__codelineno-31-26"></a>    <span class="n">max_RNAPs_to_recruit</span><span class="o">=</span><span class="p">[</span><span class="mi">50</span><span class="p">],</span>
+<a id="__codelineno-31-27" name="__codelineno-31-27" href="#__codelineno-31-27"></a><span class="p">)</span>
+<a id="__codelineno-31-28" name="__codelineno-31-28" href="#__codelineno-31-28"></a>
+<a id="__codelineno-31-29" name="__codelineno-31-29" href="#__codelineno-31-29"></a><span class="c1"># Run to completion, then checkpoint to disk.</span>
+<a id="__codelineno-31-30" name="__codelineno-31-30" href="#__codelineno-31-30"></a><span class="n">simulate_dynamics</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">sim</span><span class="p">)</span>
+<a id="__codelineno-31-31" name="__codelineno-31-31" href="#__codelineno-31-31"></a><span class="n">save_simulation_state_to_file</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">sim</span><span class="p">,</span> <span class="s1">&#39;run.pkl&#39;</span><span class="p">)</span>
+</code></pre></div>
+<p>Later — in another script or session — reload the checkpoint and read the results without re-running anything:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a><span class="n">model</span><span class="p">,</span> <span class="n">sim</span> <span class="o">=</span> <span class="n">load_simulation_state_from_file</span><span class="p">(</span><span class="s1">&#39;run.pkl&#39;</span><span class="p">)</span>
+<a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>
+<a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Completed transcripts:&#39;</span><span class="p">,</span> <span class="n">sim</span><span class="o">.</span><span class="n">RNAPs_finished_transcription</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Total simulated time:&#39;</span><span class="p">,</span> <span class="n">sim</span><span class="o">.</span><span class="n">curr_simulation_time</span><span class="p">)</span>
+<a id="__codelineno-32-5" name="__codelineno-32-5" href="#__codelineno-32-5"></a><span class="n">rates</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">calculate_RNAP_transcription_rates</span><span class="p">(</span><span class="n">model</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<a id="__codelineno-32-6" name="__codelineno-32-6" href="#__codelineno-32-6"></a><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Mean transcription rate:&#39;</span><span class="p">,</span> <span class="nb">sum</span><span class="p">(</span><span class="n">rates</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">rates</span><span class="p">),</span> <span class="s1">&#39;bp/s&#39;</span><span class="p">)</span>
+</code></pre></div>
+<p>A restored finished run carries <code>sim.simulation_completed == True</code>. Calling <code>simulate_dynamics</code> on it is a no-op: it prints <code>This simulation has finished.</code> and returns immediately, so you cannot accidentally double-count events by re-running a completed checkpoint.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="n">simulate_dynamics</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">sim</span><span class="p">)</span>   <span class="c1"># prints: This simulation has finished.</span>
+</code></pre></div>
+<p>To continue a finished run further, extend the termination criterion with <code>update_simulation_end_criterion</code>, which clears the <code>simulation_completed</code> flag for you:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a><span class="n">model</span><span class="p">,</span> <span class="n">sim</span> <span class="o">=</span> <span class="n">load_simulation_state_from_file</span><span class="p">(</span><span class="s1">&#39;run.pkl&#39;</span><span class="p">)</span>
+<a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a><span class="n">sim</span><span class="o">.</span><span class="n">update_simulation_end_criterion</span><span class="p">([</span><span class="mi">100</span><span class="p">])</span>   <span class="c1"># event mode: new per-gene target; or a float for time mode</span>
+<a id="__codelineno-34-3" name="__codelineno-34-3" href="#__codelineno-34-3"></a><span class="n">simulate_dynamics</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">sim</span><span class="p">)</span>                <span class="c1"># resumes and runs until the new criterion is met</span>
+</code></pre></div>
+<p>Because the two random number generators (<code>rng_Gillespie</code>, <code>rng_everything_else</code>) are stored on <code>sim</code>, they are serialized with the checkpoint and restored on load, so a resumed run continues the same random streams rather than restarting them. A run executed in one shot and the same run saved and resumed therefore produce identical trajectories. For time mode, the new end time must not be earlier than <code>sim.curr_simulation_time</code>; for event mode, the new counts must require at least one more transcript and stay within <code>max_RNAPs_to_recruit</code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><code>load_simulation_state_from_file</code> uses <code>dill</code>, which can execute arbitrary code while deserializing. Only load checkpoint files that you created or otherwise trust.</p>
+</div>
+<p>See <a href="../user-guide/simulation/">User Guide → Running simulations</a> and the <a href="../api/model-setup/"><code>model_setup</code> API reference</a> for the full signatures.</p>
 
 
 

@@ -1549,10 +1549,10 @@
 <p>Readers already familiar with the construction pattern may skip directly to <a href="../tutorials/">Tutorials</a>.</p>
 <hr />
 <h2 id="1-install">1. Install<a class="headerlink" href="#1-install" title="Permanent link">&para;</a></h2>
-<p>TWISTED is a small pure-Python project with two runtime dependencies. Clone and install them:</p>
+<p>TWISTED is a small pure-Python project with three runtime dependencies. Clone and install them:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/st35/TWISTED.git
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">cd</span><span class="w"> </span>TWISTED/code
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>pip<span class="w"> </span>install<span class="w"> </span>scipy<span class="w"> </span>numpy
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>pip<span class="w"> </span>install<span class="w"> </span>scipy<span class="w"> </span>numpy<span class="w"> </span>dill
 </code></pre></div>
 <p>There is no <code>setup.py</code>; the modules reside directly in <code>code/</code> and are imported by name. Either run Python from inside <code>code/</code>, or add it to <code>sys.path</code>:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
@@ -1577,6 +1577,10 @@
 <tr>
 <td><code>numpy</code></td>
 <td>array bookkeeping inside the integrator wrapper</td>
+</tr>
+<tr>
+<td><code>dill</code></td>
+<td>serializing the model and simulation state to disk (save/resume checkpoints)</td>
 </tr>
 </tbody>
 </table>
