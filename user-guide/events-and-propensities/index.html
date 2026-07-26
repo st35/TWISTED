@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -31,7 +31,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -1531,7 +1531,7 @@
 <h2 id="block-4-topoisomerase-approximated-activity">Block 4: topoisomerase-approximated activity<a class="headerlink" href="#block-4-topoisomerase-approximated-activity" title="Permanent link">&para;</a></h2>
 <p>Two propensities, <code>[TOP1_effective_relaxation_rate, TOP2_effective_relaxation_rate]</code>. Non-zero only when mode is <code>'topoisomerase_approximated'</code>.</p>
 <ul>
-<li><strong>Event 0 (TOP1)</strong>: pick a length-weighted segment. If its writhe fraction is <strong>zero</strong>, set its <code>Lk</code> to <code>Lk₀</code>. Otherwise no change (TOP1 cannot act on plectonemic DNA). Sets <code>last_event_type = 'TOP1_supercoiling_relaxation_approximation'</code>.</li>
+<li><strong>Event 0 (TOP1)</strong>: pick a length-weighted segment. If it is negatively supercoiled (<code>σ &lt; 0</code>), set its <code>Lk</code> to <code>Lk₀</code>. If it is positively supercoiled (<code>σ ≥ 0</code>) with a <strong>positive</strong> writhe fraction, partially relax it by reducing <code>Lk</code> by <code>σ_s × Lk₀</code> (where <code>σ_s</code> is the plectoneme-formation threshold); if it is positively supercoiled with <strong>zero</strong> writhe, set its <code>Lk</code> to <code>Lk₀</code>. Sets <code>last_event_type = 'TOP1_supercoiling_relaxation_approximation'</code>.</li>
 <li><strong>Event 1 (TOP2)</strong>: pick a length-weighted segment. If its writhe fraction is <strong>positive</strong>, set its <code>Lk</code> to <code>Lk₀ × (1 + σ_s)</code>, where <code>σ_s</code> is the plectoneme-formation threshold of that segment. Otherwise no change. Sets <code>last_event_type = 'TOP2_supercoiling_relaxation_approximation'</code>.</li>
 </ul>
 <p>For both TOP1 and TOP2, <code>'_rightmost_segment'</code> or <code>'_leftmost_segment'</code> is appended to <code>last_event_type</code> if the chosen segment is the rightmost (<code>index 0</code>) or leftmost (<code>index -1</code>) segment.</p>
@@ -1650,7 +1650,7 @@
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       

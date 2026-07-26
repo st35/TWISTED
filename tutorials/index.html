@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -31,7 +31,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -1845,10 +1845,10 @@
 <h2 id="8-topoisomerase-approximated-mode-in-depth">8. Topoisomerase-approximated mode in depth<a class="headerlink" href="#8-topoisomerase-approximated-mode-in-depth" title="Permanent link">&para;</a></h2>
 <p>The <code>topoisomerase_approximated</code> mode introduces <em>two</em> independent Poisson event types with rates <code>TOP1_effective_relaxation_rate</code> and <code>TOP2_effective_relaxation_rate</code>:</p>
 <ul>
-<li><strong>TOP1 event</strong> — pick one segment with probability proportional to its length. If the segment has <strong>no writhe</strong> (<code>writhe_fraction == 0</code>), set its <code>Lk</code> to <code>Lk₀</code>. Otherwise the event has no effect (TOP1 cannot act on plectonemic DNA).</li>
-<li><strong>TOP2 event</strong> — pick one segment with probability proportional to its length. If the segment <strong>has writhe</strong> (<code>writhe_fraction &gt; 0</code>), set its <code>Lk</code> to <code>Lk₀ × (1 + σ_s)</code>, where <code>σ_s</code> is the plectoneme-formation threshold (TOP2 reduces writhe but does not over-relax).</li>
+<li><strong>TOP1 event</strong> — pick one segment with probability proportional to its length. If the segment is negatively supercoiled (<code>σ &lt; 0</code>), set its <code>Lk</code> to <code>Lk₀</code>. If it is positively supercoiled (<code>σ ≥ 0</code>) <strong>with writhe</strong> (<code>writhe_fraction &gt; 0</code>), partially relax it by reducing <code>Lk</code> by <code>σ_s × Lk₀</code> (where <code>σ_s</code> is the plectoneme-formation threshold); if it is positively supercoiled <strong>without writhe</strong>, set its <code>Lk</code> to <code>Lk₀</code>.</li>
+<li><strong>TOP2 event</strong> — pick one segment with probability proportional to its length. If the segment <strong>has writhe</strong> (<code>writhe_fraction &gt; 0</code>), set its <code>Lk</code> to <code>Lk₀ × (1 + σ_s)</code>, where <code>σ_s</code> is the plectoneme-formation threshold (TOP2 reduces writhe but does not over-relax). Otherwise the event has no effect.</li>
 </ul>
-<p>TOP1 therefore relieves <em>twist</em>, TOP2 relieves <em>plectonemes</em>, and the writhe state of each segment determines which enzyme can act on it. Reproducing in-vivo behaviour usually requires both rates to be non-zero. A typical exploratory pair is</p>
+<p>TOP1 therefore relieves <em>twist</em> (and only partially relaxes plectonemic positive supercoiling), TOP2 relieves <em>plectonemes</em>, and the supercoiling and writhe state of each segment determines how each enzyme acts on it. Reproducing in-vivo behaviour usually requires both rates to be non-zero. A typical exploratory pair is</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">ModelSetup</span><span class="p">(</span>
 <a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>    <span class="n">supercoiling_relaxation_dynamics_mode</span><span class="o">=</span><span class="s1">&#39;topoisomerase_approximated&#39;</span><span class="p">,</span>
 <a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>    <span class="n">TOP1_effective_relaxation_rate</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
@@ -2248,7 +2248,7 @@
       <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       
