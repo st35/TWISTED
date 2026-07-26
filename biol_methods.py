@@ -145,8 +145,6 @@ def get_prokaryotic_torque(w0: float, force: float, kBT: float, segment_length: 
         writhe_frac = (sigma - sigma_s) / (sigma_p - sigma_s)
     elif sigma > sigma_p:
         torque = (p / w0)*sigma
-        if torque > 40.0:
-            torque = 40.0
         dna_state = 6 # Twisted plectoneme
         writhe_frac = 1.0
 
@@ -196,8 +194,6 @@ def get_eukaryotic_torque(force:float, segment_length: float, psi: float, sigma:
         writhe_frac = (sigma - pos_twisted_cutoff) / (plectoneme_cutoff - pos_twisted_cutoff)
     else:
         torque = plectoneme_torque + (sigma - plectoneme_cutoff)*twisted_plectoneme_slope
-        if torque > 40.0:
-            torque = 40.0
         chromatin_type = 6
         writhe_frac = 1.0
     

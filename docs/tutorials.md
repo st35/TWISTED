@@ -283,10 +283,10 @@ Down the list, the model becomes progressively more spatially resolved and biolo
 
 The `topoisomerase_approximated` mode introduces *two* independent Poisson event types with rates `TOP1_effective_relaxation_rate` and `TOP2_effective_relaxation_rate`:
 
-- **TOP1 event** — pick one segment with probability proportional to its length. If the segment has **no writhe** (`writhe_fraction == 0`), set its `Lk` to `Lk₀`. Otherwise the event has no effect (TOP1 cannot act on plectonemic DNA).
-- **TOP2 event** — pick one segment with probability proportional to its length. If the segment **has writhe** (`writhe_fraction > 0`), set its `Lk` to `Lk₀ × (1 + σ_s)`, where `σ_s` is the plectoneme-formation threshold (TOP2 reduces writhe but does not over-relax).
+- **TOP1 event** — pick one segment with probability proportional to its length. If the segment is negatively supercoiled (`σ < 0`), set its `Lk` to `Lk₀`. If it is positively supercoiled (`σ ≥ 0`) **with writhe** (`writhe_fraction > 0`), partially relax it by reducing `Lk` by `σ_s × Lk₀` (where `σ_s` is the plectoneme-formation threshold); if it is positively supercoiled **without writhe**, set its `Lk` to `Lk₀`.
+- **TOP2 event** — pick one segment with probability proportional to its length. If the segment **has writhe** (`writhe_fraction > 0`), set its `Lk` to `Lk₀ × (1 + σ_s)`, where `σ_s` is the plectoneme-formation threshold (TOP2 reduces writhe but does not over-relax). Otherwise the event has no effect.
 
-TOP1 therefore relieves *twist*, TOP2 relieves *plectonemes*, and the writhe state of each segment determines which enzyme can act on it. Reproducing in-vivo behaviour usually requires both rates to be non-zero. A typical exploratory pair is
+TOP1 therefore relieves *twist* (and only partially relaxes plectonemic positive supercoiling), TOP2 relieves *plectonemes*, and the supercoiling and writhe state of each segment determines how each enzyme acts on it. Reproducing in-vivo behaviour usually requires both rates to be non-zero. A typical exploratory pair is
 
 ```python
 ModelSetup(

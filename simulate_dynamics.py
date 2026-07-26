@@ -103,15 +103,21 @@ def simulate_dynamics(model: Model, simulation_setup_and_state: SimulationSetupA
 			chosen_segment_index = select_event_based_on_propensities(per_segment_propensity, simulation_setup_and_state.rng_everything_else.random())
 			if chosen_segment_index is not None:
 				if event == 0: # TOP1 activity: relax supercoiling to a relaxed state if no writhe, otherwise TOP1 cannot act
-					simulation_setup_and_state.last_event_type = 'TOP1_supercoiling_relaxation_approximation'
-					if segments_writhe_fractions[chosen_segment_index] > 0.0: # Non-zero writhe; TOP1 cannot act
-						pass
+					if segments_sigmas[chosen_segment_index] < 0.0: # Negative supercoiling; TOP1 relaxes negative supercoiling to a relaxed state
+						model.Lk[chosen_segment_index] = segments_Lk0[chosen_segment_index]
 					else:
-						model.Lk[chosen_segment_index] = segments_Lk0[chosen_segment_index] # Relax supercoiling to a relaxed state
+						if segments_writhe_fractions[chosen_segment_index] > 0.0:
+							delta_Lk = segments_plectoneme_thresholds[chosen_segment_index]*segments_Lk0[chosen_segment_index]
+							model.Lk[chosen_segment_index] -= delta_Lk
+						else:
+							model.Lk[chosen_segment_index] = segments_Lk0[chosen_segment_index]
+					simulation_setup_and_state.last_event_type = 'TOP1_supercoiling_relaxation_approximation'
 				elif event == 1: # TOP2 activity: relax supercoiling if writhe is present, otherwise TOP2 cannot act
-					simulation_setup_and_state.last_event_type = 'TOP2_supercoiling_relaxation_approximation'
 					if segments_writhe_fractions[chosen_segment_index] > 0.0: # Non-zero writhe; TOP2 can act:
-						model.Lk[chosen_segment_index] = segments_Lk0[chosen_segment_index]*(1.0 + segments_plectoneme_thresholds[chosen_segment_index]) # Relax supercoiling to the threshold beyond which plectonemes form, since TOP2 relaxes supercoiling only until writhe is removed
+						assert segments_sigmas[chosen_segment_index] > segments_plectoneme_thresholds[chosen_segment_index], 'TOP2-mediated relaxation should only occur if the segment has writhe, which implies that the supercoiling density is above the plectoneme threshold.'
+						delta_Lk = (segments_sigmas[chosen_segment_index] - segments_plectoneme_thresholds[chosen_segment_index])*segments_Lk0[chosen_segment_index]
+						model.Lk[chosen_segment_index] -= delta_Lk
+					simulation_setup_and_state.last_event_type = 'TOP2_supercoiling_relaxation_approximation'
 				if chosen_segment_index == 0:
 					simulation_setup_and_state.last_event_type += '_rightmost_segment'
 				elif chosen_segment_index == len(segments_lengths) - 1:

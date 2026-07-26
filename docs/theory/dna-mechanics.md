@@ -52,7 +52,7 @@ The torque is then piecewise linear/constant in five regimes:
 | Melted | 1 | `σ_m < σ ≤ σ_sm` | `(c_m / w₀)(σ_m − σ₀)` (plateau) |
 | Twisted | 2 | `σ_sm < σ ≤ σ_s` | `(c_s / w₀) · σ` |
 | Positive plectoneme | 5 | `σ_s < σ ≤ σ_p` | `√(2pg / (1 − p/c_s)) / w₀` (plateau) |
-| Twisted plectoneme | 6 | `σ > σ_p` | `(p / w₀) · σ`, hard-capped at 40 pN·nm |
+| Twisted plectoneme | 6 | `σ > σ_p` | `(p / w₀) · σ` |
 
 The function also reports a writhe fraction:
 
@@ -109,7 +109,7 @@ The piecewise torque is:
 | 3 | buffering | `twisted_cutoff ≤ σ < buffering_cutoff` | constant `buffering_torque` | 0 |
 | 4 | pos. twisted | `buffering_cutoff ≤ σ < pos_twisted_cutoff` | linear with slope `pos_twisted_slope` | 0 |
 | 5 | pos. plectoneme | `pos_twisted_cutoff ≤ σ < plectoneme_cutoff` | constant `plectoneme_torque` | linear ramp 0 → 1 |
-| 6 | twisted plectoneme | `σ ≥ plectoneme_cutoff` | linear with slope `twisted_plectoneme_slope`, capped at 40 pN·nm | 1 |
+| 6 | twisted plectoneme | `σ ≥ plectoneme_cutoff` | linear with slope `twisted_plectoneme_slope` | 1 |
 
 The buffering plateau (regime 3) is the physically interesting feature: it absorbs *positive* supercoiling without raising the torque. Its width is `buffering_cutoff − twisted_cutoff = 0.0576 ψ`, so as RNAPs displace nucleosomes (lowering `ψ`) the buffering capacity shrinks and torque begins to build.
 

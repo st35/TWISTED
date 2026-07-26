@@ -8,7 +8,7 @@
 | `'global_per_segment'` | implemented | Reset one randomly chosen segment's `Lk` to `Lk₀` (length-weighted) | `global_supercoiling_relaxation_rate` |
 | `'global_by_type'` | implemented | One event resets all segments with `σ > 0`; another resets all with `σ < 0` | `local_supercoiling_relaxation_rates` (`[rate_pos, rate_neg]`) |
 | `'per_segment_by_type'` | implemented | Pick one segment of the right sign (length-weighted) and reset its `Lk` | `local_supercoiling_relaxation_rates` |
-| `'topoisomerase_approximated'` | implemented | One TOP1 event clears twist on a writhe-free segment; one TOP2 event clears writhe on a plectonemic segment | `TOP1_effective_relaxation_rate`, `TOP2_effective_relaxation_rate` |
+| `'topoisomerase_approximated'` | implemented | One TOP1 event relaxes twist (fully if the segment is negatively supercoiled or writhe-free, partially if positively plectonemic); one TOP2 event clears writhe on a plectonemic segment | `TOP1_effective_relaxation_rate`, `TOP2_effective_relaxation_rate` |
 | `'topoisomerase_based'` | **not implemented** | (planned: explicit TOP1/TOP2 binding/unbinding/catalysis with steric interactions) | `NotImplementedError` raised at `ModelSetup` construction |
 
 Across all modes, the rates are interpreted as **Poisson rates per simulation** (not per segment). No segment-length weighting is applied to the rate itself; length weighting only enters in the selection of *which segment* is affected when an event fires.
@@ -96,8 +96,8 @@ ModelSetup(
 
 Two independent Poisson events that approximate TOP1 and TOP2 activity without tracking individual enzyme molecules:
 
-- **TOP1 event** at rate `TOP1_effective_relaxation_rate`. Picks a length-weighted segment. **If that segment has no writhe**, set its `Lk` to `Lk₀`. Otherwise the event has no effect (TOP1 cannot resolve plectonemes).
-- **TOP2 event** at rate `TOP2_effective_relaxation_rate`. Picks a length-weighted segment. **If that segment has writhe**, set its `Lk` to `Lk₀ × (1 + σ_s)`, where `σ_s` is the plectoneme-formation threshold of that segment (TOP2 reduces writhe but does not over-relax: it stops at the threshold beyond which plectonemes start to form).
+- **TOP1 event** at rate `TOP1_effective_relaxation_rate`. Picks a length-weighted segment. **If that segment is negatively supercoiled (`σ < 0`)**, set its `Lk` to `Lk₀`. **If it is positively supercoiled (`σ ≥ 0`) with writhe**, partially relax it by reducing `Lk` by `σ_s × Lk₀` (where `σ_s` is the plectoneme-formation threshold). **If it is positively supercoiled without writhe**, set its `Lk` to `Lk₀`.
+- **TOP2 event** at rate `TOP2_effective_relaxation_rate`. Picks a length-weighted segment. **If that segment has writhe**, set its `Lk` to `Lk₀ × (1 + σ_s)`, where `σ_s` is the plectoneme-formation threshold of that segment (TOP2 reduces writhe but does not over-relax: it stops at the threshold beyond which plectonemes start to form). Otherwise the event has no effect.
 
 The writhe and plectoneme threshold come from the torque-state classification done by [`get_prokaryotic_torque`](../api/biol-methods.md#get_prokaryotic_torque) or [`get_eukaryotic_torque`](../api/biol-methods.md#get_eukaryotic_torque).
 

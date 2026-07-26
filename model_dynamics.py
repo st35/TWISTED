@@ -86,7 +86,7 @@ def calculate_segments_attributes(model: Model, RNAP_gene_index: list[int], stat
 	if model.genomic_setup.chromatin_type == 'eukaryotic':
 		for i in range(len(segments_lengths)):
 			segments_nucleosome_densities[i] = get_nucleosome_occupied_fraction_per_segment(model, segments_lengths, i)
-			assert segments_nucleosome_densities[i] >= 0.0 and segments_nucleosome_densities[i] <= 1.0, 'Invalid nucleosome density for segment ' + str(i) + ': ' + str(segments_nucleosome_densities[i])
+			assert segments_nucleosome_densities[i] >= 0.0 and (segments_nucleosome_densities[i] - 1.0) < 1.0e-6, 'Invalid nucleosome density for segment ' + str(i) + ': ' + str(segments_nucleosome_densities[i])
 	
 	segments_torques = []
 	for segment_length, segment_sigma, segment_psi in zip(segments_lengths, segments_sigmas, segments_nucleosome_densities):

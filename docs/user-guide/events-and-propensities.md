@@ -80,7 +80,7 @@ If no segment of the right sign exists, no state change occurs.
 
 Two propensities, `[TOP1_effective_relaxation_rate, TOP2_effective_relaxation_rate]`. Non-zero only when mode is `'topoisomerase_approximated'`.
 
-- **Event 0 (TOP1)**: pick a length-weighted segment. If its writhe fraction is **zero**, set its `Lk` to `Lk₀`. Otherwise no change (TOP1 cannot act on plectonemic DNA). Sets `last_event_type = 'TOP1_supercoiling_relaxation_approximation'`.
+- **Event 0 (TOP1)**: pick a length-weighted segment. If it is negatively supercoiled (`σ < 0`), set its `Lk` to `Lk₀`. If it is positively supercoiled (`σ ≥ 0`) with a **positive** writhe fraction, partially relax it by reducing `Lk` by `σ_s × Lk₀` (where `σ_s` is the plectoneme-formation threshold); if it is positively supercoiled with **zero** writhe, set its `Lk` to `Lk₀`. Sets `last_event_type = 'TOP1_supercoiling_relaxation_approximation'`.
 - **Event 1 (TOP2)**: pick a length-weighted segment. If its writhe fraction is **positive**, set its `Lk` to `Lk₀ × (1 + σ_s)`, where `σ_s` is the plectoneme-formation threshold of that segment. Otherwise no change. Sets `last_event_type = 'TOP2_supercoiling_relaxation_approximation'`.
 
 For both TOP1 and TOP2, `'_rightmost_segment'` or `'_leftmost_segment'` is appended to `last_event_type` if the chosen segment is the rightmost (`index 0`) or leftmost (`index -1`) segment.
