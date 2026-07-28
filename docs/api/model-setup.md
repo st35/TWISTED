@@ -24,11 +24,15 @@ Holds the genomic layout: chromatin type, gene table, promoter mode, and DNA ext
 
 `chromatin_type` ∈ `{'prokaryotic', 'eukaryotic'}`. `promoter_mode` ∈ `{'constitutive', 'non-constitutive'}`. For `'non-constitutive'`, the kwarg `TF_on_off_rates: list[tuple[float, float]]` is required — one `(TF_on_rate, TF_off_rate)` pair per gene (s⁻¹). For `'constitutive'`, `TF_on_off_rates` defaults to `[(0.0, 0.0), ...]` and is unused.
 
-Eukaryotic kwargs: `per_nucleosome_DNA_length` (bp, default 147), `nucleosome_linker_length` (bp, default 30), `nucleosomes_are_steric_barriers_to_RNAPs` (bool, default `True`), `nucleosomes_can_be_displaced_at_TSS_by_RNAP` (bool, default `False`), `nucleosome_count` (int, override the auto-computed count), `nucleosome_on_rate_func`, `nucleosome_off_rate_func` (callables `(L, σ) → factor`).
+Eukaryotic kwargs: `per_nucleosome_DNA_length` (bp, default 147), `nucleosome_linker_length` (bp, default 30), `nucleosomes_are_steric_barriers_to_RNAPs` (bool, default `True`), `nucleosomes_can_be_displaced_at_TSS_by_RNAP` (bool, default `False`), `nucleosome_count` (int, override the auto-computed count), `nucleosome_on_rate_func` (callable `(L, σ) → factor`), `nucleosome_off_rate_func` (callable `(L, σ, binding_position) → factor`), `fully_explicit_nucleosome_dynamics` (bool, default `False`). When `fully_explicit_nucleosome_dynamics` is `False`, `nucleosome_off_rate_func` is replaced by a built-in function returning `1.0` inside a gene body and `0.0` outside (see `is_nucleosome_within_gene_body`); any supplied off-rate function is ignored with a warning. Set it `True` to keep a custom off-rate function.
 
 ### `get_total_nucleosome_count() -> int`
 
 Returns 0 for prokaryotic, otherwise either the user-supplied `nucleosome_count` or the count obtained by densely tiling `clamp_left → clamp_right` with `per_nucleosome_DNA_length + nucleosome_linker_length`.
+
+### `is_nucleosome_within_gene_body(nucleosome_position: float) -> bool`
+
+Returns `True` if `nucleosome_position` (nm) falls within any gene's body, where each gene's `[TSS, TSS + gene_length]` window (oriented by `gene_directions`) is padded on both ends by `(per_nucleosome_DNA_length + nucleosome_linker_length) / 2`. Used by the default (non-fully-explicit) nucleosome off-rate function.
 
 ### `print_genomic_setup() -> None`
 
@@ -113,7 +117,7 @@ n_unbound × basal_on_rate × segment_length × on_rate_func(L, σ)
 The aggregated per-molecule off-rate is
 
 ```
-basal_off_rate × off_rate_func(L, σ)
+basal_off_rate × off_rate_func(L, σ, binding_position)
 ```
 
 A `is_topological_barrier=True` species must also be `is_steric_barrier_to_RNAPs=True` (enforced at construction).

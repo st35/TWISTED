@@ -61,8 +61,9 @@ These keywords are accepted only when `chromatin_type == 'eukaryotic'`. All inpu
 | `nucleosomes_are_steric_barriers_to_RNAPs` | `True` | If `True`, nucleosomes block RNAP elongation through the soft tanh ramp |
 | `nucleosome_count` | auto | Override the auto-tiled count returned by `get_total_nucleosome_count()` |
 | `nucleosome_on_rate_func` | `None` | Optional callable `(L, σ) → float` multiplying the basal nucleosome on-rate |
-| `nucleosome_off_rate_func` | `None` | Optional callable `(L, σ) → float` multiplying the basal nucleosome off-rate |
+| `nucleosome_off_rate_func` | `None` | Optional callable `(L, σ, binding_position) → float` multiplying the basal nucleosome off-rate. Ignored unless `fully_explicit_nucleosome_dynamics=True` (see below) |
 | `nucleosomes_can_be_displaced_at_TSS_by_RNAP` | `False` | If `True`, an incoming RNAP can evict a blocking nucleosome at a TSS |
+| `fully_explicit_nucleosome_dynamics` | `False` | If `False`, `nucleosome_off_rate_func` is replaced by a built-in position-dependent function that only allows nucleosome turnover within a gene body (`1.0` inside, `0.0` outside); any user-supplied off-rate function is ignored with a warning. Set `True` to use your own off-rate function |
 
 These values are forwarded to the auto-created nucleosome `BindingProtein` (which lives at `model.binding_proteins[0]` after `Model` is constructed).
 

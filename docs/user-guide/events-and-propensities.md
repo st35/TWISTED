@@ -116,7 +116,7 @@ When this event fires for species `k`:
 
 ## Block 7: binding-protein unbinding (one event type per species)
 
-One aggregated propensity per species, equal to the sum over bound molecules of `basal_off_rate * user_off_rate_func(L, σ)` evaluated at each molecule's host segment.
+One aggregated propensity per species, equal to the sum over bound molecules of `basal_off_rate * user_off_rate_func(L, σ, binding_position)` evaluated at each molecule's host segment and position.
 
 When this event fires for species `k`:
 

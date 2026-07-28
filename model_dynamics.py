@@ -312,8 +312,7 @@ def get_binding_proteins_off_rates(model: Model, segments_lengths: list[float], 
 	for i in range(len(model.binding_proteins)):
 		protein = model.binding_proteins[i]
 		segment_of_bound_proteins = [get_spot_segment_index(model.binding_proteins_positions[i][j], segments_lengths) for j in range(len(model.binding_proteins_positions[i]))]
-		per_segment_off_rates = [protein.off_rate_func(segment_length, segment_sigma) for segment_length, segment_sigma in zip(segments_lengths, segments_sigmas)]
-		binding_proteins_off_rates.append([per_segment_off_rates[segment_index] for segment_index in segment_of_bound_proteins])
+		binding_proteins_off_rates.append([protein.off_rate_func(segments_lengths[segment_index], segments_sigmas[segment_index], model.binding_proteins_positions[i][j]) for j, segment_index in enumerate(segment_of_bound_proteins)])
 	
 	return binding_proteins_off_rates
 

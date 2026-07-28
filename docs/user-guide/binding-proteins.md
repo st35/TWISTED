@@ -43,7 +43,7 @@ BindingProtein(
 | `basal_on_rate` | Per-(s·nm) intrinsic on-rate (see semantics below) |
 | `basal_off_rate` | Per-(s) intrinsic off-rate, per bound molecule |
 | `on_rate_func` | Optional `(segment_length, segment_sigma) → float` multiplier on the basal on-rate |
-| `off_rate_func` | Optional `(segment_length, segment_sigma) → float` multiplier on the basal off-rate |
+| `off_rate_func` | Optional `(segment_length, segment_sigma, binding_position) → float` multiplier on the basal off-rate |
 | `is_a_nucleosome` | Set `True` only by the framework when auto-creating the nucleosome species in eukaryotic mode; nucleosomes use a different exclusion distance in steric checks |
 | `can_be_displaced_at_TSS_by_RNAP` | If `True`, an incoming RNAP can evict a bound molecule of this species at the TSS even though it is otherwise a steric barrier |
 
@@ -67,10 +67,10 @@ n_unbound × basal_on_rate × segment_length × user_on_rate_func(L, σ)
 ### Per-bound-molecule off-propensity
 
 ```
-basal_off_rate × user_off_rate_func(L, σ)
+basal_off_rate × user_off_rate_func(L, σ, binding_position)
 ```
 
-- `L` and `σ` are the length and supercoiling density of the segment in which the molecule is bound.
+- `L` and `σ` are the length and supercoiling density of the segment in which the molecule is bound, and `binding_position` is the molecule's position along the DNA (nm).
 - The constructor wraps any user-supplied `off_rate_func` so that it multiplies `basal_off_rate`. When unset, the off-rate equals `basal_off_rate` per bound molecule.
 
 ### Total propensities reported to the Gillespie loop
@@ -87,7 +87,7 @@ A common use case is biasing binding toward negatively supercoiled regions, or a
 def fast_on_when_negative(segment_length, segment_sigma):
     return 5.0 if segment_sigma < -0.02 else 1.0
 
-def fast_off_when_positive(segment_length, segment_sigma):
+def fast_off_when_positive(segment_length, segment_sigma, binding_position):
     return 10.0 if segment_sigma > 0.02 else 1.0
 
 sc_sensor = BindingProtein(
@@ -102,7 +102,7 @@ sc_sensor = BindingProtein(
 )
 ```
 
-Both user functions receive `(segment_length, segment_sigma)`; the underlying call site does not pass any additional arguments.
+The on-rate function receives `(segment_length, segment_sigma)`, while the off-rate function additionally receives the bound molecule's `binding_position` as a third argument: `(segment_length, segment_sigma, binding_position)`. This lets unbinding depend on where the molecule sits along the DNA (e.g. faster eviction inside a gene body).
 
 ---
 
@@ -145,6 +145,8 @@ When `chromatin_type == 'eukaryotic'`, `Model.__init__` automatically constructs
 - `on_rate_func = genomic_setup.nucleosome_on_rate_func`
 - `off_rate_func = genomic_setup.nucleosome_off_rate_func`
 - `can_be_displaced_at_TSS_by_RNAP = genomic_setup.nucleosomes_can_be_displaced_at_TSS_by_RNAP`
+
+By default (`fully_explicit_nucleosome_dynamics=False`), `GenomicSetup` overrides `nucleosome_off_rate_func` with a position-dependent function that returns `1.0` when the nucleosome lies within a gene body (via `is_nucleosome_within_gene_body`) and `0.0` otherwise, so nucleosomes only turn over inside genes. If a custom `nucleosome_off_rate_func` was supplied while `fully_explicit_nucleosome_dynamics` is `False`, it is ignored and a warning is emitted. Set `fully_explicit_nucleosome_dynamics=True` to keep your own `(L, σ, binding_position) → factor` off-rate function.
 
 This species is inserted at index 0 of `model.binding_proteins`, **before** any user-supplied species. The eukaryotic indexing pattern is therefore:
 

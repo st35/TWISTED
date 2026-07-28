@@ -414,7 +414,7 @@ n_unbound × basal_on_rate × segment_length
 
 and the off propensity for each bound molecule is `basal_off_rate`. After binding, the position within the chosen segment is sampled uniformly.
 
-Either rate may be modulated by a function of `(segment_length, segment_sigma)`:
+The on-rate may be modulated by a function of `(segment_length, segment_sigma)`, and the off-rate by a function of `(segment_length, segment_sigma, binding_position)` (the third argument is the bound molecule's position along the DNA in nm):
 
 ```python
 def enhanced_on(segment_length, segment_sigma):

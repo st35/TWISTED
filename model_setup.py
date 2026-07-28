@@ -66,6 +66,14 @@ class GenomicSetup: # Class to hold genomic setup information
 				self.nucleosomes_can_be_displaced_at_TSS_by_RNAP = False
 			else:
 				self.nucleosomes_can_be_displaced_at_TSS_by_RNAP = bool(kwargs['nucleosomes_can_be_displaced_at_TSS_by_RNAP'])
+			if 'fully_explicit_nucleosome_dynamics' not in kwargs:
+				self.fully_explicit_nucleosome_dynamics = False
+			else:
+				self.fully_explicit_nucleosome_dynamics = bool(kwargs['fully_explicit_nucleosome_dynamics'])
+			if self.fully_explicit_nucleosome_dynamics is False:
+				if self.nucleosome_off_rate_func is not None:
+					warnings.warn('A user-supplied "nucleosome_off_rate_func" was provided but is being ignored because "fully_explicit_nucleosome_dynamics" is False; the default gene-body off-rate function will be used instead. Set "fully_explicit_nucleosome_dynamics = True" to use your custom function.')
+				self.nucleosome_off_rate_func = lambda segment_length, segment_sigma, binding_position: 1.0 if self.is_nucleosome_within_gene_body(binding_position) else 0.0
 		
 		self.clamp_left = 0.0 # Left end of DNA is at position 0 nm
 		self.clamp_right = TSSes[0] + gene_lengths[0] + buffer_length if gene_directions[0] == 1 else TSSes[0] + buffer_length # Right end of DNA is at position beyond the last gene plus buffer length
@@ -83,6 +91,18 @@ class GenomicSetup: # Class to hold genomic setup information
 			nucl_count += 1
 			start_pos += self.per_nucleosome_DNA_length + self.nucleosome_linker_length
 		return nucl_count
+	
+	def is_nucleosome_within_gene_body(self, nucleosome_position: float) -> bool: # Check if a nucleosome is within the gene body of any gene in the genomic setup
+		for gene_index in range(len(self.TSSes)):
+			left_boundary = self.TSSes[gene_index] if self.gene_directions[gene_index] == 1 else self.TSSes[gene_index] - self.gene_lengths[gene_index]
+			right_boundary = self.TSSes[gene_index] + self.gene_lengths[gene_index] if self.gene_directions[gene_index] == 1 else self.TSSes[gene_index]
+			left_boundary -= (self.per_nucleosome_DNA_length + self.nucleosome_linker_length) / 2.0
+			right_boundary += (self.per_nucleosome_DNA_length + self.nucleosome_linker_length) / 2.0
+
+			if nucleosome_position >= left_boundary and nucleosome_position <= right_boundary:
+				return True
+
+		return False
 	
 	def print_genomic_setup(self) -> None: # Utility function to print genomic setup information
 		print('Chromatin type:', self.chromatin_type.capitalize())
@@ -178,17 +198,17 @@ class BindingProtein:
 		self.basal_on_rate = basal_on_rate
 		self.basal_off_rate = basal_off_rate
 		if on_rate_func is None:
-			self.on_rate_func = lambda segment_length, segment_sigma, *args: basal_on_rate*segment_length
+			self.on_rate_func = lambda segment_length, segment_sigma: basal_on_rate*segment_length
 		else:
 			if not callable(on_rate_func):
 				raise ValueError('on_rate_func must be a callable function if provided.')
-			self.on_rate_func = lambda segment_length, segment_sigma, *args: on_rate_func(segment_length, segment_sigma, *args)*basal_on_rate*segment_length
+			self.on_rate_func = lambda segment_length, segment_sigma: on_rate_func(segment_length, segment_sigma)*basal_on_rate*segment_length
 		if off_rate_func is None:
-			self.off_rate_func = lambda segment_length, segment_sigma, *args: basal_off_rate
+			self.off_rate_func = lambda segment_length, segment_sigma, binding_position: basal_off_rate
 		else:
 			if not callable(off_rate_func):
 				raise ValueError('off_rate_func must be a callable function if provided.')
-			self.off_rate_func = lambda segment_length, segment_sigma, *args: off_rate_func(segment_length, segment_sigma, *args)*basal_off_rate
+			self.off_rate_func = lambda segment_length, segment_sigma, binding_position: off_rate_func(segment_length, segment_sigma, binding_position)*basal_off_rate
 		self.is_a_nucleosome = is_a_nucleosome
 		self.can_be_displaced_at_TSS_by_RNAP = can_be_displaced_at_TSS_by_RNAP
 
