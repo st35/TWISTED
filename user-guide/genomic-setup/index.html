@@ -1652,12 +1652,17 @@
 <tr>
 <td><code>nucleosome_off_rate_func</code></td>
 <td><code>None</code></td>
-<td>Optional callable <code>(L, σ) → float</code> multiplying the basal nucleosome off-rate</td>
+<td>Optional callable <code>(L, σ, binding_position) → float</code> multiplying the basal nucleosome off-rate. Ignored unless <code>fully_explicit_nucleosome_dynamics=True</code> (see below)</td>
 </tr>
 <tr>
 <td><code>nucleosomes_can_be_displaced_at_TSS_by_RNAP</code></td>
 <td><code>False</code></td>
 <td>If <code>True</code>, an incoming RNAP can evict a blocking nucleosome at a TSS</td>
+</tr>
+<tr>
+<td><code>fully_explicit_nucleosome_dynamics</code></td>
+<td><code>False</code></td>
+<td>If <code>False</code>, <code>nucleosome_off_rate_func</code> is replaced by a built-in position-dependent function that only allows nucleosome turnover within a gene body (<code>1.0</code> inside, <code>0.0</code> outside); any user-supplied off-rate function is ignored with a warning. Set <code>True</code> to use your own off-rate function</td>
 </tr>
 </tbody>
 </table>

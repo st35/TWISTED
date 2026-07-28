@@ -1958,7 +1958,7 @@
 <div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>n_unbound × basal_on_rate × segment_length
 </code></pre></div>
 <p>and the off propensity for each bound molecule is <code>basal_off_rate</code>. After binding, the position within the chosen segment is sampled uniformly.</p>
-<p>Either rate may be modulated by a function of <code>(segment_length, segment_sigma)</code>:</p>
+<p>The on-rate may be modulated by a function of <code>(segment_length, segment_sigma)</code>, and the off-rate by a function of <code>(segment_length, segment_sigma, binding_position)</code> (the third argument is the bound molecule's position along the DNA in nm):</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">enhanced_on</span><span class="p">(</span><span class="n">segment_length</span><span class="p">,</span> <span class="n">segment_sigma</span><span class="p">):</span>
 <a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>    <span class="k">return</span> <span class="mf">5.0</span> <span class="k">if</span> <span class="n">segment_sigma</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">0.02</span> <span class="k">else</span> <span class="mf">1.0</span>
 <a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>

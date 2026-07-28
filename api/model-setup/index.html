@@ -1032,6 +1032,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#is_nucleosome_within_gene_bodynucleosome_position-float-bool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        is_nucleosome_within_gene_body(nucleosome_position: float) -&gt; bool
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#print_genomic_setup-none" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1374,6 +1385,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#is_nucleosome_within_gene_bodynucleosome_position-float-bool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        is_nucleosome_within_gene_body(nucleosome_position: float) -&gt; bool
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#print_genomic_setup-none" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1549,9 +1571,11 @@
 </code></pre></div>
 <p>Holds the genomic layout: chromatin type, gene table, promoter mode, and DNA extents. The right-hand clamp position is computed automatically as <code>TSSes[0] + gene_lengths[0] + buffer_length</code> for a <code>+1</code> first gene, or <code>TSSes[0] + buffer_length</code> for a <code>−1</code> first gene.</p>
 <p><code>chromatin_type</code> ∈ <code>{'prokaryotic', 'eukaryotic'}</code>. <code>promoter_mode</code> ∈ <code>{'constitutive', 'non-constitutive'}</code>. For <code>'non-constitutive'</code>, the kwarg <code>TF_on_off_rates: list[tuple[float, float]]</code> is required — one <code>(TF_on_rate, TF_off_rate)</code> pair per gene (s⁻¹). For <code>'constitutive'</code>, <code>TF_on_off_rates</code> defaults to <code>[(0.0, 0.0), ...]</code> and is unused.</p>
-<p>Eukaryotic kwargs: <code>per_nucleosome_DNA_length</code> (bp, default 147), <code>nucleosome_linker_length</code> (bp, default 30), <code>nucleosomes_are_steric_barriers_to_RNAPs</code> (bool, default <code>True</code>), <code>nucleosomes_can_be_displaced_at_TSS_by_RNAP</code> (bool, default <code>False</code>), <code>nucleosome_count</code> (int, override the auto-computed count), <code>nucleosome_on_rate_func</code>, <code>nucleosome_off_rate_func</code> (callables <code>(L, σ) → factor</code>).</p>
+<p>Eukaryotic kwargs: <code>per_nucleosome_DNA_length</code> (bp, default 147), <code>nucleosome_linker_length</code> (bp, default 30), <code>nucleosomes_are_steric_barriers_to_RNAPs</code> (bool, default <code>True</code>), <code>nucleosomes_can_be_displaced_at_TSS_by_RNAP</code> (bool, default <code>False</code>), <code>nucleosome_count</code> (int, override the auto-computed count), <code>nucleosome_on_rate_func</code> (callable <code>(L, σ) → factor</code>), <code>nucleosome_off_rate_func</code> (callable <code>(L, σ, binding_position) → factor</code>), <code>fully_explicit_nucleosome_dynamics</code> (bool, default <code>False</code>). When <code>fully_explicit_nucleosome_dynamics</code> is <code>False</code>, <code>nucleosome_off_rate_func</code> is replaced by a built-in function returning <code>1.0</code> inside a gene body and <code>0.0</code> outside (see <code>is_nucleosome_within_gene_body</code>); any supplied off-rate function is ignored with a warning. Set it <code>True</code> to keep a custom off-rate function.</p>
 <h3 id="get_total_nucleosome_count-int"><code>get_total_nucleosome_count() -&gt; int</code><a class="headerlink" href="#get_total_nucleosome_count-int" title="Permanent link">&para;</a></h3>
 <p>Returns 0 for prokaryotic, otherwise either the user-supplied <code>nucleosome_count</code> or the count obtained by densely tiling <code>clamp_left → clamp_right</code> with <code>per_nucleosome_DNA_length + nucleosome_linker_length</code>.</p>
+<h3 id="is_nucleosome_within_gene_bodynucleosome_position-float-bool"><code>is_nucleosome_within_gene_body(nucleosome_position: float) -&gt; bool</code><a class="headerlink" href="#is_nucleosome_within_gene_bodynucleosome_position-float-bool" title="Permanent link">&para;</a></h3>
+<p>Returns <code>True</code> if <code>nucleosome_position</code> (nm) falls within any gene's body, where each gene's <code>[TSS, TSS + gene_length]</code> window (oriented by <code>gene_directions</code>) is padded on both ends by <code>(per_nucleosome_DNA_length + nucleosome_linker_length) / 2</code>. Used by the default (non-fully-explicit) nucleosome off-rate function.</p>
 <h3 id="print_genomic_setup-none"><code>print_genomic_setup() -&gt; None</code><a class="headerlink" href="#print_genomic_setup-none" title="Permanent link">&para;</a></h3>
 <p>Pretty-print the gene table.</p>
 <p>See also: <a href="../../user-guide/genomic-setup/">User guide → Genomic setup</a>.</p>
@@ -1632,7 +1656,7 @@
 </code></pre></div>
 <p>(if <code>on_rate_func</code> is <code>None</code>, it defaults to the constant <code>1</code>, giving the documented <code>basal_on_rate × L</code> form).</p>
 <p>The aggregated per-molecule off-rate is</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>basal_off_rate × off_rate_func(L, σ)
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>basal_off_rate × off_rate_func(L, σ, binding_position)
 </code></pre></div>
 <p>A <code>is_topological_barrier=True</code> species must also be <code>is_steric_barrier_to_RNAPs=True</code> (enforced at construction).</p>
 <p>See also: <a href="../../user-guide/binding-proteins/">User guide → Binding proteins</a>.</p>

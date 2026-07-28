@@ -1507,7 +1507,7 @@
 </tr>
 <tr>
 <td><code>off_rate_func</code></td>
-<td>Optional <code>(segment_length, segment_sigma) → float</code> multiplier on the basal off-rate</td>
+<td>Optional <code>(segment_length, segment_sigma, binding_position) → float</code> multiplier on the basal off-rate</td>
 </tr>
 <tr>
 <td><code>is_a_nucleosome</code></td>
@@ -1532,10 +1532,10 @@
 <li>The chosen segment is sampled with weight equal to its on-propensity. Within the chosen segment, the position is sampled uniformly.</li>
 </ul>
 <h3 id="per-bound-molecule-off-propensity">Per-bound-molecule off-propensity<a class="headerlink" href="#per-bound-molecule-off-propensity" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>basal_off_rate × user_off_rate_func(L, σ)
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>basal_off_rate × user_off_rate_func(L, σ, binding_position)
 </code></pre></div>
 <ul>
-<li><code>L</code> and <code>σ</code> are the length and supercoiling density of the segment in which the molecule is bound.</li>
+<li><code>L</code> and <code>σ</code> are the length and supercoiling density of the segment in which the molecule is bound, and <code>binding_position</code> is the molecule's position along the DNA (nm).</li>
 <li>The constructor wraps any user-supplied <code>off_rate_func</code> so that it multiplies <code>basal_off_rate</code>. When unset, the off-rate equals <code>basal_off_rate</code> per bound molecule.</li>
 </ul>
 <h3 id="total-propensities-reported-to-the-gillespie-loop">Total propensities reported to the Gillespie loop<a class="headerlink" href="#total-propensities-reported-to-the-gillespie-loop" title="Permanent link">&para;</a></h3>
@@ -1546,7 +1546,7 @@
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">fast_on_when_negative</span><span class="p">(</span><span class="n">segment_length</span><span class="p">,</span> <span class="n">segment_sigma</span><span class="p">):</span>
 <a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="k">return</span> <span class="mf">5.0</span> <span class="k">if</span> <span class="n">segment_sigma</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">0.02</span> <span class="k">else</span> <span class="mf">1.0</span>
 <a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="k">def</span><span class="w"> </span><span class="nf">fast_off_when_positive</span><span class="p">(</span><span class="n">segment_length</span><span class="p">,</span> <span class="n">segment_sigma</span><span class="p">):</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="k">def</span><span class="w"> </span><span class="nf">fast_off_when_positive</span><span class="p">(</span><span class="n">segment_length</span><span class="p">,</span> <span class="n">segment_sigma</span><span class="p">,</span> <span class="n">binding_position</span><span class="p">):</span>
 <a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="k">return</span> <span class="mf">10.0</span> <span class="k">if</span> <span class="n">segment_sigma</span> <span class="o">&gt;</span> <span class="mf">0.02</span> <span class="k">else</span> <span class="mf">1.0</span>
 <a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
 <a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="n">sc_sensor</span> <span class="o">=</span> <span class="n">BindingProtein</span><span class="p">(</span>
@@ -1560,7 +1560,7 @@
 <a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>    <span class="n">off_rate_func</span><span class="o">=</span><span class="n">fast_off_when_positive</span><span class="p">,</span>
 <a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="p">)</span>
 </code></pre></div>
-<p>Both user functions receive <code>(segment_length, segment_sigma)</code>; the underlying call site does not pass any additional arguments.</p>
+<p>The on-rate function receives <code>(segment_length, segment_sigma)</code>, while the off-rate function additionally receives the bound molecule's <code>binding_position</code> as a third argument: <code>(segment_length, segment_sigma, binding_position)</code>. This lets unbinding depend on where the molecule sits along the DNA (e.g. faster eviction inside a gene body).</p>
 <hr />
 <h2 id="steric-barrier-behaviour">Steric-barrier behaviour<a class="headerlink" href="#steric-barrier-behaviour" title="Permanent link">&para;</a></h2>
 <p>When <code>is_steric_barrier_to_RNAPs=True</code>, the protein contributes to two distinct steric checks:</p>
@@ -1595,6 +1595,7 @@
 <li><code>off_rate_func = genomic_setup.nucleosome_off_rate_func</code></li>
 <li><code>can_be_displaced_at_TSS_by_RNAP = genomic_setup.nucleosomes_can_be_displaced_at_TSS_by_RNAP</code></li>
 </ul>
+<p>By default (<code>fully_explicit_nucleosome_dynamics=False</code>), <code>GenomicSetup</code> overrides <code>nucleosome_off_rate_func</code> with a position-dependent function that returns <code>1.0</code> when the nucleosome lies within a gene body (via <code>is_nucleosome_within_gene_body</code>) and <code>0.0</code> otherwise, so nucleosomes only turn over inside genes. If a custom <code>nucleosome_off_rate_func</code> was supplied while <code>fully_explicit_nucleosome_dynamics</code> is <code>False</code>, it is ignored and a warning is emitted. Set <code>fully_explicit_nucleosome_dynamics=True</code> to keep your own <code>(L, σ, binding_position) → factor</code> off-rate function.</p>
 <p>This species is inserted at index 0 of <code>model.binding_proteins</code>, <strong>before</strong> any user-supplied species. The eukaryotic indexing pattern is therefore:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">genomic_setup</span><span class="p">,</span> <span class="n">model_setup</span><span class="p">,</span> <span class="n">binding_proteins</span><span class="o">=</span><span class="p">[</span><span class="n">my_protein</span><span class="p">])</span>
 <a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="c1"># model.binding_proteins[0]  -&gt; auto-created nucleosome</span>
