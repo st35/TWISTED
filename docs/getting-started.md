@@ -88,6 +88,7 @@ genomic_setup = GenomicSetup(
     RNAP_on_rates=[0.02],
     promoter_mode='constitutive',
     buffer_length=3400.0,
+    are_multiple_chromosomes_present=False,
 )
 ```
 
@@ -214,6 +215,7 @@ genomic_setup = GenomicSetup(
     RNAP_on_rates=[0.02, 0.02],
     promoter_mode='constitutive',
     buffer_length=4080.0,            # large enough to cover the rightmost gene
+    are_multiple_chromosomes_present=False,
 )
 ```
 

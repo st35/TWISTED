@@ -7,7 +7,7 @@ import random
 import dill
 
 class GenomicSetup: # Class to hold genomic setup information
-	def __init__(self, chromatin_type: str, gene_names: list[str], TSSes: list[float], gene_lengths: list[float], gene_directions: list[int], RNAP_on_rates: list[float], promoter_mode: str, buffer_length: float, **kwargs) -> None:
+	def __init__(self, chromatin_type: str, gene_names: list[str], TSSes: list[float], gene_lengths: list[float], gene_directions: list[int], RNAP_on_rates: list[float], promoter_mode: str, buffer_length: float, are_multiple_chromosomes_present: bool, chromosomes_end_positions: list[float] = [], **kwargs) -> None:
 		self.chromatin_type = chromatin_type
 		assert chromatin_type in ['prokaryotic', 'eukaryotic'], 'chromatin_type must be either "prokaryotic" or "eukaryotic".'
 
@@ -74,6 +74,10 @@ class GenomicSetup: # Class to hold genomic setup information
 				if self.nucleosome_off_rate_func is not None:
 					warnings.warn('A user-supplied "nucleosome_off_rate_func" was provided but is being ignored because "fully_explicit_nucleosome_dynamics" is False; the default gene-body off-rate function will be used instead. Set "fully_explicit_nucleosome_dynamics = True" to use your custom function.')
 				self.nucleosome_off_rate_func = lambda segment_length, segment_sigma, binding_position: 1.0 if self.is_nucleosome_within_gene_body(binding_position) else 0.0
+
+		self.are_multiple_chromosomes_present = are_multiple_chromosomes_present
+		assert chromosomes_end_positions == sorted(chromosomes_end_positions), 'chromosomes_end_positions must be a sorted list of chromosome end positions.'
+		self.chromosome_end_positions = [val for val in chromosomes_end_positions]
 		
 		self.clamp_left = 0.0 # Left end of DNA is at position 0 nm
 		self.clamp_right = TSSes[0] + gene_lengths[0] + buffer_length if gene_directions[0] == 1 else TSSes[0] + buffer_length # Right end of DNA is at position beyond the last gene plus buffer length
@@ -230,6 +234,26 @@ class Model: # Class to hold the model, including genomic setup, model setup, an
 			nucleosomes = BindingProtein(protein_name = 'nucleosome', total_copy_number = nucl_count, is_steric_barrier_to_RNAPs = genomic_setup.nucleosomes_are_steric_barriers_to_RNAPs, is_topological_barrier = False, basal_on_rate = 1.2 / (genomic_setup.clamp_right - genomic_setup.clamp_left), basal_off_rate = 0.4, is_a_nucleosome = True, can_be_displaced_at_TSS_by_RNAP = genomic_setup.nucleosomes_can_be_displaced_at_TSS_by_RNAP, on_rate_func = genomic_setup.nucleosome_on_rate_func, off_rate_func = genomic_setup.nucleosome_off_rate_func)
 			self.binding_proteins = [nucleosomes] + self.binding_proteins
 		self.binding_proteins_positions = [[] for _ in self.binding_proteins] # List of lists to hold positions of each bound protein; each sublist corresponds to a binding protein type and contains the positions of all bound proteins of that type
+		if genomic_setup.are_multiple_chromosomes_present:
+			chromosome_barrier_count = len(genomic_setup.chromosome_end_positions) - 1
+			chromosome_barriers = BindingProtein(protein_name = 'chromosome_barrier', total_copy_number = chromosome_barrier_count, is_steric_barrier_to_RNAPs = True, is_topological_barrier = True, basal_on_rate = 1.0, basal_off_rate = 0.0)
+			self.binding_proteins = self.binding_proteins + [chromosome_barriers]
+			self.binding_proteins_positions.append([])
+			for chrom_end in genomic_setup.chromosome_end_positions[:-1][::-1]:
+				self.binding_proteins_positions[-1].append(chrom_end)
+			self.Lk = []
+			for barrier_index in range(len(self.binding_proteins_positions[-1]) + 1):
+				if barrier_index == 0:
+					right_boundary = genomic_setup.clamp_right
+					left_boundary = self.binding_proteins_positions[-1][barrier_index]
+				elif barrier_index == len(self.binding_proteins_positions[-1]):
+					right_boundary = self.binding_proteins_positions[-1][barrier_index - 1]
+					left_boundary = genomic_setup.clamp_left
+				else:
+					right_boundary = self.binding_proteins_positions[-1][barrier_index - 1]
+					left_boundary = self.binding_proteins_positions[-1][barrier_index]
+				self.Lk.append((right_boundary - left_boundary) / model_setup.h_dna)
+			assert len(self.Lk) == len(genomic_setup.chromosome_end_positions), 'Number of linking number segments at this stage should match the number of chromosome segments defined by chromosome_end_positions.'
 	
 	def print_model_setup(self) -> None: # Utility function to print model setup information
 		self.genomic_setup.print_genomic_setup()

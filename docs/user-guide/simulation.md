@@ -232,6 +232,7 @@ genomic_setup = GenomicSetup(
     RNAP_on_rates=[0.02, 0.02],
     promoter_mode='constitutive',
     buffer_length=4420.0,
+    are_multiple_chromosomes_present=False,
 )
 model_setup = ModelSetup(
     supercoiling_relaxation_dynamics_mode='topoisomerase_approximated',

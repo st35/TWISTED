@@ -14,6 +14,7 @@ genomic_setup = GenomicSetup(
     RNAP_on_rates=[0.02],
     promoter_mode='constitutive',
     buffer_length=3400.0,
+    are_multiple_chromosomes_present=False,
 )
 ```
 
@@ -31,6 +32,8 @@ GenomicSetup(
     RNAP_on_rates: list[float],
     promoter_mode: str,
     buffer_length: float,
+    are_multiple_chromosomes_present: bool,
+    chromosomes_end_positions: list[float] = [],
     **kwargs,
 )
 ```
@@ -47,6 +50,8 @@ GenomicSetup(
 | `RNAP_on_rates` | `list[float]` | Recruitment rate (s⁻¹) used when the promoter is ON |
 | `promoter_mode` | `'constitutive' \| 'non-constitutive'` | See [Promoter modes](#promoter-modes) below |
 | `buffer_length` | `float` | Extra DNA past the gene on the right end (nm); contributes to `clamp_right` |
+| `are_multiple_chromosomes_present` | `bool` | `True` when the gene list spans more than one chromosome; triggers insertion of permanent topological/steric barriers at chromosome boundaries |
+| `chromosomes_end_positions` | `list[float]` | Sorted cumulative end positions (nm), one per chromosome; required when `are_multiple_chromosomes_present` is `True` (default `[]`) |
 
 All five list arguments must have the same length, equal to the number of genes.
 
@@ -126,6 +131,7 @@ genomic_setup = GenomicSetup(
     RNAP_on_rates=[0.02, 0.02],
     promoter_mode='constitutive',
     buffer_length=4420.0,         # makes clamp_right cover both genes
+    are_multiple_chromosomes_present=False,
 )
 ```
 
@@ -161,12 +167,23 @@ geneA   340.0       3400.0         1            0.02
 
 ## Loading from a tab-delimited file
 
-The companion helper [`construct_genomic_setup`](../api/utilities.md#construct_genomic_setup) reads a bp-denominated five-column file and forwards everything else to the `GenomicSetup` constructor:
+The companion helper [`construct_genomic_setup`](../api/utilities.md#construct_genomic_setup) reads a bp-denominated file and forwards everything else to the `GenomicSetup` constructor. Two column layouts are supported:
 
+**Five-column (single chromosome):**
 ```text
 # columns:  name   TSS_bp   length_bp   direction   RNAP_on_rate(1/s)
 geneA       10000  5300     1           1.0
 ```
+
+**Six-column (multi-chromosome) — chromosome name in column 2:**
+```text
+# columns:  name    chromosome   TSS_bp   length_bp   direction   RNAP_on_rate(1/s)
+geneA       chrI    10000        5300     1           1.0
+geneB       chrI    20000        5300     1           1.0
+geneC       chrII   10000        5300    -1           1.0
+```
+
+When the six-column format is used and more than one unique chromosome identifier is present, `construct_genomic_setup` automatically sets `are_multiple_chromosomes_present=True`, computes `chromosomes_end_positions`, and offsets each gene's TSS so that chromosomes are laid out end-to-end on the DNA. See [Tutorial 19](../tutorials.md#19-multi-chromosome-setup) for a worked example.
 
 ```python
 from utilities import construct_genomic_setup

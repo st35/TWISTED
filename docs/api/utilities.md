@@ -10,9 +10,15 @@ Helper functions used across the package.
 
 ```python
 read_genes_information(filename: str) -> tuple[list[str], list[float], list[float], list[int], list[float]]
+                     | tuple[list[str], list[str], list[float], list[float], list[int], list[float]]
 ```
 
-Read a tab-delimited gene file with columns `gene_name`, `TSS_bp`, `gene_length_bp`, `direction`, `RNAP_on_rate`. Returns `(gene_names, TSSes_nm, gene_lengths_nm, gene_directions, RNAP_on_rates)`. Positions and lengths are converted from bp to nm.
+Read a tab-delimited gene file. Two column layouts are accepted:
+
+- **5-column** `gene_name  TSS_bp  length_bp  direction  RNAP_on_rate` — returns `(gene_names, TSSes_nm, gene_lengths_nm, gene_directions, RNAP_on_rates)`.
+- **6-column** `gene_name  chromosome  TSS_bp  length_bp  direction  RNAP_on_rate` — returns `(gene_names, gene_chromosomes, TSSes_nm, gene_lengths_nm, gene_directions, RNAP_on_rates)` where `gene_chromosomes` is the list of chromosome identifiers.
+
+Positions and lengths are converted from bp to nm (`× 0.34`). Any other column count raises `ValueError`.
 
 ### `construct_genomic_setup`
 
@@ -26,7 +32,7 @@ construct_genomic_setup(
 ) -> GenomicSetup
 ```
 
-Convenience: read a gene file and construct a `GenomicSetup` in one call.
+Read a gene file and construct a `GenomicSetup` in one call. Accepts both the five-column single-chromosome format and the six-column multi-chromosome format (see `read_genes_information`). When multiple distinct chromosome identifiers are detected, automatically computes `chromosomes_end_positions` (laying chromosomes end-to-end in reverse order of first appearance), sets `are_multiple_chromosomes_present=True`, and passes both to `GenomicSetup`. Any `**kwargs` are forwarded to the `GenomicSetup` constructor.
 
 ---
 
@@ -94,7 +100,7 @@ Returns `(status, blocking_position, blocking_id)`. `status` is 1 if any RNAP, n
 is_protein_binding_blocked(model, RNAP_gene_index, state_vector, protein_index, binding_position) -> int
 ```
 
-Returns 1 if a candidate binding event for species `protein_index` at `binding_position` would overlap an existing RNAP, nucleosome, or other protein.
+Returns 1 if a candidate binding event for species `protein_index` at `binding_position` would overlap an existing RNAP, nucleosome, or other protein. For nucleosome binding events, two exclusion checks are applied: (1) nucleosome–nucleosome exclusion using `per_nucleosome_DNA_length + nucleosome_linker_length`, and (2) nucleosome–generic-protein exclusion using `(generic_binding_protein_diameter + per_nucleosome_DNA_length + nucleosome_linker_length) / 2`.
 
 ### `get_steric_hindrance_factor`
 

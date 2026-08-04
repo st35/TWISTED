@@ -5,24 +5,60 @@ from math import tanh
 
 def read_genes_information(filename: str) -> tuple[list[str], list[float], list[float], list[int], list[float]]: # Read gene information from a tab-delimited file
 	gene_names = []
+	gene_chromosomes = []
 	TSSes = []
 	gene_lengths = []
 	gene_directions = []
 	RNAP_on_rates = []
 
+	offset = 0
 	with open(filename, 'r') as f:
 		for line in f:
 			l = line.strip().split('\t')
+			if len(l) == 6:
+				offset = 1
+				gene_chromosomes.append(l[1].strip())
+			elif len(l) == 5:
+				offset = 0
+			else:
+				raise ValueError('Gene information file must have either 5 or 6 columns.')
 			gene_names.append(l[0].strip())
-			TSSes.append(float(l[1].strip())*0.34) # Input location in bp; convert to nm
-			gene_lengths.append(float(l[2].strip())*0.34) # Input length in bp; convert to nm
-			gene_directions.append(int(l[3].strip())) # +1 for + strand, -1 for - strand
-			RNAP_on_rates.append(float(l[4].strip())) # in 1 / s
-	
-	return gene_names, TSSes, gene_lengths, gene_directions, RNAP_on_rates
+			TSSes.append(float(l[1 + offset].strip())*0.34) # Input location in bp; convert to nm
+			gene_lengths.append(float(l[2 + offset].strip())*0.34) # Input length in bp; convert to nm
+			gene_directions.append(int(l[3 + offset].strip())) # +1 for + strand, -1 for - strand
+			RNAP_on_rates.append(float(l[4 + offset].strip())) # in 1 / s
+	if offset == 0:
+		return gene_names, TSSes, gene_lengths, gene_directions, RNAP_on_rates
+	return gene_names, gene_chromosomes, TSSes, gene_lengths, gene_directions, RNAP_on_rates
 
 def construct_genomic_setup(filename: str, chromatin_type: str, promoter_mode: str = 'constitutive', buffer_length: float = 10000.0*0.34, **kwargs) -> GenomicSetup: # Return a GenomicSetup object constructed from a gene information file; buffer_length in nm
-	gene_names, TSSes, gene_lengths, gene_directions, RNAP_on_rates = read_genes_information(filename)
+	genes_information = read_genes_information(filename)
+	if len(genes_information) == 5:
+		gene_names, TSSes, gene_lengths, gene_directions, RNAP_on_rates = genes_information
+	else:
+		gene_names, gene_chromosomes, TSSes, gene_lengths, gene_directions, RNAP_on_rates = genes_information
+
+	are_multiple_chromosomes_present = False
+	chromosomes_end_positions = []
+	if len(genes_information) == 6 and len(set(gene_chromosomes)) > 1:
+		are_multiple_chromosomes_present = True
+		chromosomes_order = list(dict.fromkeys(gene_chromosomes))[::-1]
+		last_chromosome_end_position = 0.0
+		for chrom_index, chrom in enumerate(chromosomes_order):
+			gene_index = len(gene_chromosomes) - 1
+			while gene_index >= 0 and gene_chromosomes[gene_index] != chrom:
+				gene_index -= 1
+			chromosome_end = last_chromosome_end_position + TSSes[gene_index - 1] + gene_lengths[gene_index - 1] + buffer_length if gene_directions[gene_index - 1] == 1 else last_chromosome_end_position + TSSes[gene_index - 1] + buffer_length
+			last_chromosome_end_position = chromosome_end
+			chromosomes_end_positions.append(chromosome_end)
+		gene_offset_per_chromosome = {}
+		for chrom_index, chrom in enumerate(chromosomes_order):
+			if chrom_index == 0:
+				gene_offset_per_chromosome[chrom] = 0.0
+			else:
+				gene_offset_per_chromosome[chrom] = chromosomes_end_positions[chrom_index - 1]
+		for gene_index in range(len(TSSes)):
+			TSSes[gene_index] += gene_offset_per_chromosome[gene_chromosomes[gene_index]]
 
 	if 'explicit_RNAP_on_rates' in kwargs: # Modify RNAP_on_rates if explicit rates are provided
 		explicit_RNAP_on_rates = kwargs.pop('explicit_RNAP_on_rates')
@@ -30,7 +66,7 @@ def construct_genomic_setup(filename: str, chromatin_type: str, promoter_mode: s
 			raise ValueError('Length of explicit_RNAP_on_rates must match number of genes.')
 		RNAP_on_rates = [RNAP_on_rates[i]*explicit_RNAP_on_rates[i] for i in range(len(gene_names))]
 
-	return GenomicSetup(chromatin_type, gene_names, TSSes, gene_lengths, gene_directions, RNAP_on_rates, promoter_mode, buffer_length, **kwargs)
+	return GenomicSetup(chromatin_type, gene_names, TSSes, gene_lengths, gene_directions, RNAP_on_rates, promoter_mode, buffer_length, are_multiple_chromosomes_present, chromosomes_end_positions, **kwargs)
 
 def get_spot_segment_index(spot: float, segments_lengths: list[float]) -> int: # Get the index of the segment containing the given spot
 	spot_segment_index = -1
@@ -108,11 +144,17 @@ def is_protein_binding_blocked(model: Model, RNAP_gene_index: list[int], state_v
 	
 	if model.binding_proteins[protein_index].is_a_nucleosome:
 		bound_nucl_positions = []
+		bound_protein_positions = []
 		for i in range(len(model.binding_proteins)):
 			if model.binding_proteins[i].is_a_nucleosome:
 				bound_nucl_positions = bound_nucl_positions + model.binding_proteins_positions[i]
+			else:
+				bound_protein_positions = bound_protein_positions + model.binding_proteins_positions[i]
 		for nucl_pos in bound_nucl_positions:
 			if abs(nucl_pos - binding_position) < (model.genomic_setup.per_nucleosome_DNA_length + model.genomic_setup.nucleosome_linker_length):
+				return 1
+		for protein_pos in bound_protein_positions:
+			if abs(protein_pos - binding_position) < (model.model_setup.generic_binding_protein_diameter + model.genomic_setup.per_nucleosome_DNA_length + model.genomic_setup.nucleosome_linker_length) / 2.0:
 				return 1
 	
 	if model.binding_proteins[protein_index].is_a_nucleosome is False:
