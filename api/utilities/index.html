@@ -600,6 +600,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../user-guide/regulatory-network/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Regulatory Network
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../user-guide/model-setup/" class="md-nav__link">
         
   
@@ -1154,6 +1182,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#read_regulatory_network" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        read_regulatory_network
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1462,6 +1501,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#read_regulatory_network" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        read_regulatory_network
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1710,61 +1760,68 @@
 <a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenomicSetup</span>
 </code></pre></div>
-<p>Read a gene file and construct a <code>GenomicSetup</code> in one call. Accepts both the five-column single-chromosome format and the six-column multi-chromosome format (see <code>read_genes_information</code>). When multiple distinct chromosome identifiers are detected, automatically computes <code>chromosomes_end_positions</code> (laying chromosomes end-to-end in reverse order of first appearance), sets <code>are_multiple_chromosomes_present=True</code>, and passes both to <code>GenomicSetup</code>. Any <code>**kwargs</code> are forwarded to the <code>GenomicSetup</code> constructor.</p>
+<p>Read a gene file and construct a <code>GenomicSetup</code> in one call. Accepts both the five-column single-chromosome format and the six-column multi-chromosome format (see <code>read_genes_information</code>). When multiple distinct chromosome identifiers are detected, automatically computes <code>chromosomes_end_positions</code> (laying chromosomes end-to-end in reverse order of first appearance), sets <code>are_multiple_chromosomes_present=True</code>, and passes both to <code>GenomicSetup</code>. Calls <code>read_regulatory_network</code> using the optional kwarg <code>regulatory_network_file</code>; the key is consumed before the remaining <code>**kwargs</code> are forwarded to the <code>GenomicSetup</code> constructor.</p>
+<h3 id="read_regulatory_network"><code>read_regulatory_network</code><a class="headerlink" href="#read_regulatory_network" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">read_regulatory_network</span><span class="p">(</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="n">gene_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]],</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]],</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]]</span>
+</code></pre></div>
+<p>Read a tab-delimited regulatory network file and return <code>(network, lambda_parameters, Theta_parameters, n_parameters)</code> — all keyed by <code>(source_gene, target_gene)</code>. The file must have a header row followed by one edge per line with columns <code>Source</code>, <code>Target</code>, <code>Type</code>, <code>lambda</code>, <code>Theta</code>, <code>n</code>. Gene names must match entries in <code>gene_names</code>; any other name raises <code>ValueError</code>. Pass <code>filename=None</code> to get an empty (all-zero) network for a no-regulation setup.</p>
 <hr />
 <h2 id="sampling">Sampling<a class="headerlink" href="#sampling" title="Permanent link">&para;</a></h2>
 <h3 id="select_event_based_on_propensities"><code>select_event_based_on_propensities</code><a class="headerlink" href="#select_event_based_on_propensities" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">select_event_based_on_propensities</span><span class="p">(</span><span class="n">rates_vector</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">p</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">select_event_based_on_propensities</span><span class="p">(</span><span class="n">rates_vector</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">p</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span>
 </code></pre></div>
 <p>Pick the smallest index <code>k</code> such that <code>cumulative_rates[k] &gt;= p × sum(rates_vector)</code>. Returns <code>None</code> only on a degenerate empty-rates input.</p>
 <hr />
 <h2 id="spatial-lookups">Spatial lookups<a class="headerlink" href="#spatial-lookups" title="Permanent link">&para;</a></h2>
 <h3 id="get_spot_segment_index"><code>get_spot_segment_index</code><a class="headerlink" href="#get_spot_segment_index" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">get_spot_segment_index</span><span class="p">(</span><span class="n">spot</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">segments_lengths</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">get_spot_segment_index</span><span class="p">(</span><span class="n">spot</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">segments_lengths</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span>
 </code></pre></div>
 <p>Returns the right-to-left segment index containing <code>spot</code>.</p>
 <h3 id="get_nucleosome_occupied_fraction_per_segment"><code>get_nucleosome_occupied_fraction_per_segment</code><a class="headerlink" href="#get_nucleosome_occupied_fraction_per_segment" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">get_nucleosome_occupied_fraction_per_segment</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">segments_lengths</span><span class="p">,</span> <span class="n">segment_index</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">get_nucleosome_occupied_fraction_per_segment</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">segments_lengths</span><span class="p">,</span> <span class="n">segment_index</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span>
 </code></pre></div>
 <p>Fraction of segment length covered by bound nucleosomes (range <code>[0, 1]</code>). Used by the eukaryotic torque law.</p>
 <h3 id="get_ordering_of_rnaps_and_proteins"><code>get_ordering_of_RNAPs_and_proteins</code><a class="headerlink" href="#get_ordering_of_rnaps_and_proteins" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">get_ordering_of_RNAPs_and_proteins</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">RNAP_gene_index</span><span class="p">,</span> <span class="n">state_vector</span><span class="p">,</span> <span class="n">topological_barrier_proteins_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">get_ordering_of_RNAPs_and_proteins</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">RNAP_gene_index</span><span class="p">,</span> <span class="n">state_vector</span><span class="p">,</span> <span class="n">topological_barrier_proteins_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
 </code></pre></div>
 <p>Returns <code>(positions, ids)</code> sorted left to right. <code>ids</code> are <code>'RNAP'</code> or the species index as a string.</p>
 <h3 id="get_nearest_steric_obstacles_for_rnap"><code>get_nearest_steric_obstacles_for_RNAP</code><a class="headerlink" href="#get_nearest_steric_obstacles_for_rnap" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">get_nearest_steric_obstacles_for_RNAP</span><span class="p">(</span><span class="n">RNAP_index</span><span class="p">,</span> <span class="n">RNAP_pos</span><span class="p">,</span> <span class="n">sorted_positions</span><span class="p">,</span> <span class="n">sorted_ids</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="o">|</span><span class="kc">None</span><span class="p">,</span> <span class="nb">str</span><span class="o">|</span><span class="kc">None</span><span class="p">,</span> <span class="nb">float</span><span class="o">|</span><span class="kc">None</span><span class="p">,</span> <span class="nb">str</span><span class="o">|</span><span class="kc">None</span><span class="p">]</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">get_nearest_steric_obstacles_for_RNAP</span><span class="p">(</span><span class="n">RNAP_index</span><span class="p">,</span> <span class="n">RNAP_pos</span><span class="p">,</span> <span class="n">sorted_positions</span><span class="p">,</span> <span class="n">sorted_ids</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="o">|</span><span class="kc">None</span><span class="p">,</span> <span class="nb">str</span><span class="o">|</span><span class="kc">None</span><span class="p">,</span> <span class="nb">float</span><span class="o">|</span><span class="kc">None</span><span class="p">,</span> <span class="nb">str</span><span class="o">|</span><span class="kc">None</span><span class="p">]</span>
 </code></pre></div>
 <p>Returns <code>(left_pos, left_id, right_pos, right_id)</code> for the nearest obstacles on either side; <code>None</code> if no obstacle on that side.</p>
 <hr />
 <h2 id="steric-checks">Steric checks<a class="headerlink" href="#steric-checks" title="Permanent link">&para;</a></h2>
 <h3 id="get_tss_steric_hindrance_status"><code>get_TSS_steric_hindrance_status</code><a class="headerlink" href="#get_tss_steric_hindrance_status" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">get_TSS_steric_hindrance_status</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">TSS_position</span><span class="p">,</span> <span class="n">RNAP_gene_index</span><span class="p">,</span> <span class="n">state_vector</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">get_TSS_steric_hindrance_status</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">TSS_position</span><span class="p">,</span> <span class="n">RNAP_gene_index</span><span class="p">,</span> <span class="n">state_vector</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
 </code></pre></div>
 <p>Returns <code>(status, blocking_position, blocking_id)</code>. <code>status</code> is 1 if any RNAP, nucleosome, or generic steric-barrier protein is within the TSS exclusion zone, else 0. <code>blocking_id</code> is <code>-1</code> for an RNAP, otherwise the binding-protein species index. Used by the recruitment handler.</p>
 <h3 id="is_protein_binding_blocked"><code>is_protein_binding_blocked</code><a class="headerlink" href="#is_protein_binding_blocked" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">is_protein_binding_blocked</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">RNAP_gene_index</span><span class="p">,</span> <span class="n">state_vector</span><span class="p">,</span> <span class="n">protein_index</span><span class="p">,</span> <span class="n">binding_position</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">is_protein_binding_blocked</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">RNAP_gene_index</span><span class="p">,</span> <span class="n">state_vector</span><span class="p">,</span> <span class="n">protein_index</span><span class="p">,</span> <span class="n">binding_position</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span>
 </code></pre></div>
 <p>Returns 1 if a candidate binding event for species <code>protein_index</code> at <code>binding_position</code> would overlap an existing RNAP, nucleosome, or other protein. For nucleosome binding events, two exclusion checks are applied: (1) nucleosome–nucleosome exclusion using <code>per_nucleosome_DNA_length + nucleosome_linker_length</code>, and (2) nucleosome–generic-protein exclusion using <code>(generic_binding_protein_diameter + per_nucleosome_DNA_length + nucleosome_linker_length) / 2</code>.</p>
 <h3 id="get_steric_hindrance_factor"><code>get_steric_hindrance_factor</code><a class="headerlink" href="#get_steric_hindrance_factor" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">get_steric_hindrance_factor</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">separation</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">steric_hindrance_distance</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">get_steric_hindrance_factor</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">separation</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">steric_hindrance_distance</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span>
 </code></pre></div>
 <p>Soft tanh ramp <code>0.5 (1 + tanh((separation − steric_hindrance_distance) / λ))</code> with <code>λ = steric_hindrance_constraint_parameter</code>.</p>
 <h3 id="check_separation_between_nucleosomes"><code>check_separation_between_nucleosomes</code><a class="headerlink" href="#check_separation_between_nucleosomes" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">check_separation_between_nucleosomes</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">check_separation_between_nucleosomes</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </code></pre></div>
 <p>Asserts that bound nucleosomes are pairwise separated by at least <code>per_nucleosome_DNA_length + nucleosome_linker_length</code>.</p>
 <h3 id="check_separation_between_nucleosomes_and_rnaps"><code>check_separation_between_nucleosomes_and_RNAPs</code><a class="headerlink" href="#check_separation_between_nucleosomes_and_rnaps" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">check_separation_between_nucleosomes_and_RNAPs</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">RNAP_gene_index</span><span class="p">,</span> <span class="n">state_vector</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">check_separation_between_nucleosomes_and_RNAPs</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">RNAP_gene_index</span><span class="p">,</span> <span class="n">state_vector</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </code></pre></div>
 <p>Asserts that no RNAP overlaps a bound nucleosome.</p>
 <hr />
 <h2 id="misc">Misc<a class="headerlink" href="#misc" title="Permanent link">&para;</a></h2>
 <h3 id="find_and_remove_from_list"><code>find_and_remove_from_list</code><a class="headerlink" href="#find_and_remove_from_list" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">find_and_remove_from_list</span><span class="p">(</span><span class="n">lst</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-6</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">find_and_remove_from_list</span><span class="p">(</span><span class="n">lst</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-6</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </code></pre></div>
 <p>Remove the first occurrence of <code>value</code> (within tolerance) from <code>lst</code>. Raises if not found.</p>
 <h3 id="print_list"><code>print_list</code><a class="headerlink" href="#print_list" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">print_list</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">lst</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">print_list</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">lst</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </code></pre></div>
 <p>Tabbed printout for debugging.</p>
 

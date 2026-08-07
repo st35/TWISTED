@@ -813,6 +813,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../user-guide/regulatory-network/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Regulatory Network
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../user-guide/model-setup/" class="md-nav__link">
         
   
@@ -1539,14 +1567,14 @@
 
 
 <h1 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h1>
-<p>This page covers the path from a fresh checkout to a first running simulation. The reader will, by the end, understand:</p>
+<p>This page takes you from a fresh checkout to a first running simulation. By the end you will understand:</p>
 <ol>
 <li>how to install TWISTED;</li>
 <li>the <strong>four objects</strong> every simulation requires and their relationships;</li>
 <li>the meaning of each parameter in the minimal example;</li>
 <li>how to retrieve the results.</li>
 </ol>
-<p>Readers already familiar with the construction pattern may skip directly to <a href="../tutorials/">Tutorials</a>.</p>
+<p>If you already know the construction pattern, skip to <a href="../tutorials/">Tutorials</a>.</p>
 <hr />
 <h2 id="1-install">1. Install<a class="headerlink" href="#1-install" title="Permanent link">&para;</a></h2>
 <p>TWISTED is a small pure-Python project with three runtime dependencies. Clone and install them:</p>
@@ -1586,7 +1614,7 @@
 </table>
 <hr />
 <h2 id="2-conceptual-model">2. Conceptual model<a class="headerlink" href="#2-conceptual-model" title="Permanent link">&para;</a></h2>
-<p>Consider a one-dimensional DNA molecule running from <code>clamp_left = 0</code> on the left to <code>clamp_right</code> (in nm) on the right. RNA polymerases reside on it. The molecule is partitioned by the RNAPs (and optionally by <em>topological-barrier</em> proteins) into a sequence of <strong>segments</strong>. Each segment carries its own linking number <code>Lk</code>, from which a supercoiling density <code>σ</code> and torque <code>τ</code> are derived.</p>
+<p>Consider a one-dimensional DNA molecule from <code>clamp_left = 0</code> to <code>clamp_right</code> (in nm). RNA polymerases reside on it. The molecule is partitioned by the RNAPs (and optionally by <em>topological-barrier</em> proteins) into a sequence of <strong>segments</strong>. Each segment carries its own linking number <code>Lk</code>, from which a supercoiling density <code>σ</code> and torque <code>τ</code> are derived.</p>
 <p>The simulation alternates between two regimes:</p>
 <ul>
 <li><strong>Continuous</strong> — an ODE solver advances RNAP positions <code>xᵢ</code>, RNAP angular positions <code>θᵢ</code>, and segment linking numbers <code>Lkⱼ</code> smoothly through time. The torque imbalance across an RNAP slows it and rotates it; rotation injects or removes twist.</li>
@@ -1618,7 +1646,8 @@
 <a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>    <span class="n">promoter_mode</span><span class="o">=</span><span class="s1">&#39;constitutive&#39;</span><span class="p">,</span>
 <a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>    <span class="n">buffer_length</span><span class="o">=</span><span class="mf">3400.0</span><span class="p">,</span>
 <a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>    <span class="n">are_multiple_chromosomes_present</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="p">)</span>
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>    <span class="n">regulatory_network_information</span><span class="o">=</span><span class="n">read_regulatory_network</span><span class="p">([</span><span class="s1">&#39;lacZ&#39;</span><span class="p">],</span> <span class="kc">None</span><span class="p">),</span>
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="p">)</span>
 </code></pre></div>
 <table>
 <thead>
@@ -1740,7 +1769,8 @@
 <a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>    <span class="n">promoter_mode</span><span class="o">=</span><span class="s1">&#39;constitutive&#39;</span><span class="p">,</span>
 <a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>    <span class="n">buffer_length</span><span class="o">=</span><span class="mf">4080.0</span><span class="p">,</span>            <span class="c1"># large enough to cover the rightmost gene</span>
 <a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a>    <span class="n">are_multiple_chromosomes_present</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-<a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a><span class="p">)</span>
+<a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a>    <span class="n">regulatory_network_information</span><span class="o">=</span><span class="n">read_regulatory_network</span><span class="p">([</span><span class="s1">&#39;geneA&#39;</span><span class="p">,</span> <span class="s1">&#39;geneB&#39;</span><span class="p">],</span> <span class="kc">None</span><span class="p">),</span>
+<a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a><span class="p">)</span>
 </code></pre></div>
 <p>When multiple genes share DNA, RNAP–RNAP steric exclusion is enforced automatically through a soft tanh ramp; see <a href="../theory/dna-mechanics/#4-rnap-velocity">Theory</a>.</p>
 <hr />

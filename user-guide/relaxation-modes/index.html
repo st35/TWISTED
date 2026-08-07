@@ -603,6 +603,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../regulatory-network/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Regulatory Network
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../model-setup/" class="md-nav__link">
         
   
@@ -1413,7 +1441,7 @@
 </tr>
 </tbody>
 </table>
-<p>Across all modes, the rates are interpreted as <strong>Poisson rates per simulation</strong> (not per segment). No segment-length weighting is applied to the rate itself; length weighting only enters in the selection of <em>which segment</em> is affected when an event fires.</p>
+<p>Across all modes, the rates are interpreted as <strong>Poisson rates per simulation</strong> (not per segment). The rate itself carries no segment-length weighting; length weighting enters only when selecting <em>which segment</em> an event affects.</p>
 <hr />
 <h2 id="global_overall"><code>'global_overall'</code><a class="headerlink" href="#global_overall" title="Permanent link">&para;</a></h2>
 <p>A single Poisson event at rate <code>global_supercoiling_relaxation_rate</code>. When it fires, <strong>every</strong> segment's linking number is set to its relaxed value:</p>
@@ -1444,7 +1472,7 @@
 <li>Event 0 fires at rate <code>rate_pos</code> and resets every segment with <code>σ &gt; 0</code>.</li>
 <li>Event 1 fires at rate <code>rate_neg</code> and resets every segment with <code>σ &lt; 0</code>.</li>
 </ul>
-<p>This mode is appropriate when positive and negative supercoiling should be assigned different bulk relaxation rates, for instance as a coarse stand-in for gyrase versus TOP1 activity.</p>
+<p>Use this mode when positive and negative supercoiling need different bulk relaxation rates — for instance, as a coarse stand-in for gyrase versus TOP1 activity.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">ModelSetup</span><span class="p">(</span>
 <a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="n">supercoiling_relaxation_dynamics_mode</span><span class="o">=</span><span class="s1">&#39;global_by_type&#39;</span><span class="p">,</span>
 <a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="n">local_supercoiling_relaxation_rates</span><span class="o">=</span><span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">],</span>
@@ -1456,7 +1484,7 @@
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>event 0: pick a length-weighted segment with σ &gt; 0 ; reset it
 <a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>event 1: pick a length-weighted segment with σ &lt; 0 ; reset it
 </code></pre></div>
-<p>This combines length weighting with sign specificity. It is the most physically motivated of the four non-topoisomerase modes.</p>
+<p>This combines length weighting with sign specificity — the most physically motivated of the four non-topoisomerase modes.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">ModelSetup</span><span class="p">(</span>
 <a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    <span class="n">supercoiling_relaxation_dynamics_mode</span><span class="o">=</span><span class="s1">&#39;per_segment_by_type&#39;</span><span class="p">,</span>
 <a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    <span class="n">local_supercoiling_relaxation_rates</span><span class="o">=</span><span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">],</span>
@@ -1476,7 +1504,7 @@
 <a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    <span class="n">TOP2_effective_relaxation_rate</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
 <a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="p">)</span>
 </code></pre></div>
-<p>This is the recommended starting point for biologically motivated runs: the TOP1/TOP2 distinction is preserved without the cost of explicit enzyme tracking.</p>
+<p>Recommended starting point for biologically motivated runs: it preserves the TOP1/TOP2 distinction without the cost of explicit enzyme tracking.</p>
 <hr />
 <h2 id="topoisomerase_based-not-yet-implemented"><code>'topoisomerase_based'</code>: not yet implemented<a class="headerlink" href="#topoisomerase_based-not-yet-implemented" title="Permanent link">&para;</a></h2>
 <p>The <code>ModelSetup</code> constructor raises <code>NotImplementedError</code> when this mode is selected. The intended semantics are:</p>

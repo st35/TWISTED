@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://st35.github.io/TWISTED/user-guide/model-setup/">
       
       
-        <link rel="prev" href="../genomic-setup/">
+        <link rel="prev" href="../regulatory-network/">
       
       
         <link rel="next" href="../binding-proteins/">
@@ -583,6 +583,34 @@
     
   
     Genomic Setup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../regulatory-network/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Regulatory Network
   
 
     
@@ -1639,7 +1667,7 @@
 </table>
 <hr />
 <h2 id="steric-interactions">Steric interactions<a class="headerlink" href="#steric-interactions" title="Permanent link">&para;</a></h2>
-<p>Steric exclusion between RNAPs, nucleosomes and other binding proteins is implemented as a <strong>soft tanh ramp</strong> on RNAP velocity:</p>
+<p>Steric exclusion is implemented as a <strong>soft tanh ramp</strong> on RNAP velocity:</p>
 <div class="arithmatex">\[f(s) = \tfrac{1}{2}\bigl(1 + \tanh\tfrac{s - d}{\lambda}\bigr),\]</div>
 <p>where <code>s</code> is the centre-to-centre separation, <code>d</code> is the half-sum of the two diameters (or <code>(RNAP_diameter + per_nucleosome_DNA_length + nucleosome_linker_length)/2</code> for nucleosomes), and <code>λ = steric_hindrance_constraint_parameter</code>.</p>
 <table>
@@ -1783,9 +1811,21 @@
 <td>float, via <code>**kwargs</code></td>
 <td>per-molecule degradation rate (s⁻¹)</td>
 </tr>
+<tr>
+<td><code>protein_production_rate</code></td>
+<td><code>1e4</code> if mode = 1, else <code>0</code></td>
+<td>float, via <code>**kwargs</code></td>
+<td>translation rate (s⁻¹ per mRNA molecule)</td>
+</tr>
+<tr>
+<td><code>protein_degradation_rate</code></td>
+<td><code>1e2</code> if mode = 1, else <code>0</code></td>
+<td>float, via <code>**kwargs</code></td>
+<td>first-order protein degradation rate (s⁻¹)</td>
+</tr>
 </tbody>
 </table>
-<p>In <code>mRNA_dynamics_mode == 1</code> the Gillespie loop adds a per-gene event with rate <code>mRNA_degradation_rate × mRNA_counts[i]</code>. The same field exists on <code>Model</code> (<code>model.mRNA_counts</code>).</p>
+<p>In <code>mRNA_dynamics_mode == 1</code> the Gillespie loop adds a per-gene degradation event with rate <code>mRNA_degradation_rate × mRNA_counts[i]</code>. Protein concentrations are tracked at quasi-steady state: <span class="arithmatex">\(p^* = k_\text{prod} \cdot \text{mRNA} / k_\text{deg}\)</span>. These are used by the regulatory network to modulate promoter switching rates (see <a href="../regulatory-network/">Regulatory network</a>). The same field exists on <code>Model</code> (<code>model.mRNA_counts</code>).</p>
 <hr />
 <h2 id="observation-event">Observation event<a class="headerlink" href="#observation-event" title="Permanent link">&para;</a></h2>
 <table>

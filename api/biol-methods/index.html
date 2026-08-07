@@ -600,6 +600,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../user-guide/regulatory-network/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Regulatory Network
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../user-guide/model-setup/" class="md-nav__link">
         
   
@@ -1136,6 +1164,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#shifted_hill_function" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        shifted_Hill_function
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#get_prokaryotic_torque" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1410,6 +1449,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#shifted_hill_function" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        shifted_Hill_function
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#get_prokaryotic_torque" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1537,8 +1587,9 @@
 <a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="n">TSS_sigma</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
 <a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span>
 </code></pre></div>
-<p>Returns <code>genomic_setup.TF_on_off_rates[gene_index][0]</code> if <code>model.promoter_status[gene_index] == 0</code>, else <code>0</code>. <code>TSS_sigma</code> is currently unused (scaffolded for future supercoiling-dependent rates).</p>
-<p>In <code>'constitutive'</code> mode <code>TF_on_off_rates[gene_index][0]</code> is <code>0.0</code>, so this rate is always zero.</p>
+<p>Computes the promoter switch-ON rate for gene <code>gene_index</code>. Returns <code>0</code> if the promoter is already ON (<code>model.promoter_status[gene_index] == 1</code>); otherwise the base rate is <code>genomic_setup.TF_on_off_rates[gene_index][0]</code>.</p>
+<p>When <code>mRNA_dynamics_mode == 1</code>, the base rate is multiplied by a regulatory-network modulation factor <span class="arithmatex">\(H = \prod_j \left[\lambda_j + (1-\lambda_j)\frac{1}{1+(p_j^*/\Theta_j)^{n_j}}\right]\)</span> — the product of <code>shifted_Hill_function</code> over every regulator <code>j</code> of this gene, with quasi-steady-state protein concentration <span class="arithmatex">\(p_j^* = k_\text{prod}\cdot\text{mRNA}_j/k_\text{deg}\)</span>. Genes with no regulators contribute a factor of 1, leaving the base rate unchanged.</p>
+<p><code>TSS_sigma</code> is currently unused (scaffolded for future supercoiling-dependent rates). In <code>'constitutive'</code> mode <code>TF_on_off_rates[gene_index][0]</code> is <code>0.0</code>, so this rate is always zero and recruitment is driven by <code>RNAP_on_rates</code> instead.</p>
 <hr />
 <h2 id="get_promoter_off_rate"><code>get_promoter_off_rate</code><a class="headerlink" href="#get_promoter_off_rate" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">get_promoter_off_rate</span><span class="p">(</span>
@@ -1550,13 +1601,23 @@
 <p>Returns <code>genomic_setup.TF_on_off_rates[gene_index][1]</code> if <code>model.promoter_status[gene_index] == 1</code>, else <code>0</code>. <code>TSS_sigma</code> is currently unused.</p>
 <p>In <code>'constitutive'</code> mode <code>TF_on_off_rates[gene_index][1]</code> is <code>0.0</code>, so this rate is always zero.</p>
 <hr />
+<h2 id="shifted_hill_function"><code>shifted_Hill_function</code><a class="headerlink" href="#shifted_hill_function" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">shifted_Hill_function</span><span class="p">(</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    <span class="n">y</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>    <span class="n">lambda_param</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>    <span class="n">Theta</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>    <span class="n">n</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span>
+</code></pre></div>
+<p>Returns <code>lambda_param + (1 - lambda_param) / (1 + (y / Theta) ** n)</code>. This is the per-regulator factor used by <code>get_promoter_on_rate</code> to modulate the promoter switch-ON rate. It decreases from 1 (at <code>y = 0</code>) toward the floor <code>lambda_param</code> as the regulator concentration <code>y</code> rises past the threshold <code>Theta</code>; <code>n</code> controls the steepness. The same form is applied to every regulatory edge regardless of its <code>Type</code> label.</p>
+<hr />
 <h2 id="get_prokaryotic_torque"><code>get_prokaryotic_torque</code><a class="headerlink" href="#get_prokaryotic_torque" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">get_prokaryotic_torque</span><span class="p">(</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    <span class="n">w0</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">kBT</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>    <span class="n">segment_length</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>    <span class="n">finite_size_effect_flag</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>    <span class="n">finite_size_effect_length</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">get_prokaryotic_torque</span><span class="p">(</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>    <span class="n">w0</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">kBT</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>    <span class="n">segment_length</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>    <span class="n">finite_size_effect_flag</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>    <span class="n">finite_size_effect_length</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
 </code></pre></div>
 <p>Returns <code>(torque, dna_state, writhe_fraction, sigma_s)</code> for a prokaryotic segment.</p>
 <table>
@@ -1588,12 +1649,12 @@
 <p>See <a href="../../theory/dna-mechanics/#2-prokaryotic-torque-law-five-state-model">Theory → Prokaryotic torque law</a>.</p>
 <hr />
 <h2 id="get_eukaryotic_torque"><code>get_eukaryotic_torque</code><a class="headerlink" href="#get_eukaryotic_torque" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">get_eukaryotic_torque</span><span class="p">(</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>    <span class="n">force</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">segment_length</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>    <span class="n">psi</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>    <span class="n">finite_size_effect_flag</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>    <span class="n">finite_size_effect_cutoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">get_eukaryotic_torque</span><span class="p">(</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>    <span class="n">force</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">segment_length</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>    <span class="n">psi</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>    <span class="n">finite_size_effect_flag</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>    <span class="n">finite_size_effect_cutoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
 </code></pre></div>
 <p>Returns <code>(torque, dna_state, writhe_fraction, pos_twisted_cutoff)</code> for a eukaryotic segment with nucleosome occupancy fraction <code>psi</code>.</p>
 <table>

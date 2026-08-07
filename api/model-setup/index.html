@@ -600,6 +600,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../user-guide/regulatory-network/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Regulatory Network
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../user-guide/model-setup/" class="md-nav__link">
         
   
@@ -1566,11 +1594,15 @@
 <a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n">RNAP_on_rates</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
 <a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n">promoter_mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 <a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="n">buffer_length</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="p">)</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="n">are_multiple_chromosomes_present</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="n">regulatory_network_information</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">],</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="n">chromosomes_end_positions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="p">)</span>
 </code></pre></div>
-<p>Holds the genomic layout: chromatin type, gene table, promoter mode, and DNA extents. The right-hand clamp position is computed automatically as <code>TSSes[0] + gene_lengths[0] + buffer_length</code> for a <code>+1</code> first gene, or <code>TSSes[0] + buffer_length</code> for a <code>−1</code> first gene.</p>
-<p><code>are_multiple_chromosomes_present</code> signals that the gene list spans more than one chromosome. When <code>True</code>, <code>chromosomes_end_positions</code> must be a sorted list of cumulative end positions (nm) — one per chromosome. <code>Model</code> uses these to insert permanent <code>'chromosome_barrier'</code> <code>BindingProtein</code> molecules at each internal boundary and to partition <code>self.Lk</code> into one segment per chromosome. Both values are set automatically by <code>construct_genomic_setup</code> when a six-column gene file is used; direct construction of <code>GenomicSetup</code> requires them to be supplied explicitly.</p>
+<p>Holds the genomic layout: chromatin type, gene table, promoter mode, and DNA extents. <code>clamp_right</code> is computed automatically from gene 0: <code>TSSes[0] + gene_lengths[0] + buffer_length</code> for a <code>+1</code> first gene, or <code>TSSes[0] + buffer_length</code> for a <code>−1</code> first gene.</p>
+<p><code>regulatory_network_information</code> is a 4-tuple <code>(network, lambda_parameters, Theta_parameters, n_parameters)</code> as returned by <code>read_regulatory_network</code>. Supply <code>read_regulatory_network(gene_names, None)</code> for a no-regulation setup. <code>construct_genomic_setup</code> handles this automatically via the optional <code>regulatory_network_file</code> kwarg.</p>
+<p><code>are_multiple_chromosomes_present</code> signals that the gene list spans more than one chromosome. When <code>True</code>, <code>chromosomes_end_positions</code> must be a sorted list of cumulative end positions (nm) — one per chromosome. <code>Model</code> uses these to insert permanent <code>'chromosome_barrier'</code> <code>BindingProtein</code> molecules at each internal boundary and to partition <code>self.Lk</code> into one segment per chromosome. <code>construct_genomic_setup</code> sets both automatically for six-column gene files; direct construction of <code>GenomicSetup</code> requires them explicitly.</p>
 <p><code>chromatin_type</code> ∈ <code>{'prokaryotic', 'eukaryotic'}</code>. <code>promoter_mode</code> ∈ <code>{'constitutive', 'non-constitutive'}</code>. For <code>'non-constitutive'</code>, the kwarg <code>TF_on_off_rates: list[tuple[float, float]]</code> is required — one <code>(TF_on_rate, TF_off_rate)</code> pair per gene (s⁻¹). For <code>'constitutive'</code>, <code>TF_on_off_rates</code> defaults to <code>[(0.0, 0.0), ...]</code> and is unused.</p>
 <p>Eukaryotic kwargs: <code>per_nucleosome_DNA_length</code> (bp, default 147), <code>nucleosome_linker_length</code> (bp, default 30), <code>nucleosomes_are_steric_barriers_to_RNAPs</code> (bool, default <code>True</code>), <code>nucleosomes_can_be_displaced_at_TSS_by_RNAP</code> (bool, default <code>False</code>), <code>nucleosome_count</code> (int, override the auto-computed count), <code>nucleosome_on_rate_func</code> (callable <code>(L, σ) → factor</code>), <code>nucleosome_off_rate_func</code> (callable <code>(L, σ, binding_position) → factor</code>), <code>fully_explicit_nucleosome_dynamics</code> (bool, default <code>False</code>). When <code>fully_explicit_nucleosome_dynamics</code> is <code>False</code>, <code>nucleosome_off_rate_func</code> is replaced by a built-in function returning <code>1.0</code> inside a gene body and <code>0.0</code> outside (see <code>is_nucleosome_within_gene_body</code>); any supplied off-rate function is ignored with a warning. Set it <code>True</code> to keep a custom off-rate function.</p>
 <h3 id="get_total_nucleosome_count-int"><code>get_total_nucleosome_count() -&gt; int</code><a class="headerlink" href="#get_total_nucleosome_count-int" title="Permanent link">&para;</a></h3>
@@ -1635,7 +1667,7 @@
 </tr>
 </tbody>
 </table>
-<p>If <code>mRNA_dynamics_mode == 1</code>, <code>mRNA_degradation_rate</code> is required. If <code>finite_size_effect_flag == 1</code>, <code>finite_size_effect_length</code> defaults to 340 nm.</p>
+<p>If <code>mRNA_dynamics_mode == 1</code>, <code>mRNA_degradation_rate</code> (required), <code>protein_production_rate</code> (default <code>1e4</code> s⁻¹), and <code>protein_degradation_rate</code> (default <code>1e2</code> s⁻¹) are accepted. The latter two set the quasi-steady-state protein concentrations <span class="arithmatex">\(p^* = k_\text{prod} \cdot \text{mRNA} / k_\text{deg}\)</span> used by the regulatory network. If <code>finite_size_effect_flag == 1</code>, <code>finite_size_effect_length</code> defaults to 340 nm.</p>
 <p>See also: <a href="../../user-guide/model-setup/">User guide → Model parameters</a>.</p>
 <hr />
 <h2 id="class-bindingprotein">class <code>BindingProtein</code><a class="headerlink" href="#class-bindingprotein" title="Permanent link">&para;</a></h2>
@@ -1711,7 +1743,7 @@
 <h2 id="save_simulation_state_to_filemodel-simulation_setup_and_state-filename-none"><code>save_simulation_state_to_file(model, simulation_setup_and_state, filename) -&gt; None</code><a class="headerlink" href="#save_simulation_state_to_filemodel-simulation_setup_and_state-filename-none" title="Permanent link">&para;</a></h2>
 <p>Serializes <code>{'model': model, 'simulation_setup_and_state': simulation_setup_and_state}</code> to <code>filename</code> with <code>dill</code> (opened in binary mode). Use this to checkpoint a simulation so it can be resumed or inspected later.</p>
 <h2 id="load_simulation_state_from_filefilename-tuplemodel-simulationsetupandstate"><code>load_simulation_state_from_file(filename) -&gt; tuple[Model, SimulationSetupAndState]</code><a class="headerlink" href="#load_simulation_state_from_filefilename-tuplemodel-simulationsetupandstate" title="Permanent link">&para;</a></h2>
-<p>Deserializes a file written by <code>save_simulation_state_to_file</code> and returns <code>(model, simulation_setup_and_state)</code>. The restored state includes the two random number generators (<code>rng_Gillespie</code>, <code>rng_everything_else</code>), so a resumed run continues the same random streams. Raises <code>ValueError</code> if the saved state was never initialized (i.e. <code>simulate_dynamics</code> had not yet run). Because the state is restored as-is, calling <code>simulate_dynamics</code> on a loaded state whose <code>simulation_completed</code> flag is already <code>True</code> returns immediately; use <code>update_simulation_end_criterion</code> to extend and resume it.</p>
+<p>Deserializes a file written by <code>save_simulation_state_to_file</code> and returns <code>(model, simulation_setup_and_state)</code>. The restored state includes the two random number generators (<code>rng_Gillespie</code>, <code>rng_everything_else</code>), so a resumed run continues the same random streams. Raises <code>ValueError</code> if the saved state was never initialized (i.e. <code>simulate_dynamics</code> had not yet run). Calling <code>simulate_dynamics</code> on a loaded state whose <code>simulation_completed</code> is already <code>True</code> returns immediately; use <code>update_simulation_end_criterion</code> to extend and resume it.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p><code>load_simulation_state_from_file</code> uses <code>dill</code>, which can execute arbitrary code while deserializing. Only load files you created or otherwise trust.</p>

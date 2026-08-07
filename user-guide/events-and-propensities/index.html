@@ -603,6 +603,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../regulatory-network/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Regulatory Network
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../model-setup/" class="md-nav__link">
         
   
@@ -1568,6 +1596,7 @@
 <a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>0                       if promoter_status[i] == 1
 </code></pre></div>
 <p>When the event fires for gene <code>i</code>, <code>model.promoter_status[i]</code> is set to 1. Selecting this event for an already-ON promoter raises a <code>ValueError</code> (the rate should have been zero).</p>
+<p>When <code>mRNA_dynamics_mode == 1</code> and a <a href="../regulatory-network/">regulatory network</a> is attached, this rate is additionally scaled by the Hill modulation factor <code>H</code> of the gene's regulators (see <a href="../../api/biol-methods/#get_promoter_on_rate"><code>get_promoter_on_rate</code></a>).</p>
 <p>In <code>'constitutive'</code> mode <code>TF_on_off_rates[i][0]</code> is <code>0.0</code>, so this block contributes nothing.</p>
 <hr />
 <h2 id="block-9-promoter-off-one-event-type-per-gene">Block 9: promoter OFF (one event type per gene)<a class="headerlink" href="#block-9-promoter-off-one-event-type-per-gene" title="Permanent link">&para;</a></h2>

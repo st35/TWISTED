@@ -603,6 +603,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../regulatory-network/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Regulatory Network
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../model-setup/" class="md-nav__link">
         
   
@@ -1626,7 +1654,7 @@
 </tr>
 </tbody>
 </table>
-<p>The constructor does <strong>not</strong> take a <code>GenomicSetup</code>. Per-gene result lists are sized, and length checks against the gene list are performed, by <code>setup_simulation_state(genomic_setup)</code>, which <code>simulate_dynamics</code> calls automatically before the main loop. You normally do not need to call it yourself.</p>
+<p>The constructor does <strong>not</strong> take a <code>GenomicSetup</code>. <code>setup_simulation_state(genomic_setup)</code> sizes the per-gene result lists and checks their lengths against the gene list; <code>simulate_dynamics</code> calls it automatically before the main loop, so you normally do not need to call it yourself.</p>
 <hr />
 <h2 id="termination-modes">Termination modes<a class="headerlink" href="#termination-modes" title="Permanent link">&para;</a></h2>
 <h3 id="time-based-simulation_end_mode-0">Time-based (<code>simulation_end_mode = 0</code>)<a class="headerlink" href="#time-based-simulation_end_mode-0" title="Permanent link">&para;</a></h3>
@@ -1761,7 +1789,7 @@
 </code></pre></div>
 <p><code>save_simulation_state_to_file</code> serializes both the <code>Model</code> and the <code>SimulationSetupAndState</code> together with <code>dill</code>, capturing the full simulation state at the moment of the call. <code>load_simulation_state_from_file</code> restores them as a <code>(model, sim)</code> tuple.</p>
 <p>If a restored <code>sim</code> already has <code>sim.simulation_completed == True</code>, calling <code>simulate_dynamics</code> on it prints <code>This simulation has finished.</code> and returns immediately without re-running. To continue such a run, extend the termination criterion with <code>sim.update_simulation_end_criterion(new_criterion)</code> (a <code>float</code> in time mode or a per-gene <code>list[int]</code> in event mode); this updates the criterion and clears the <code>simulation_completed</code> flag so the next <code>simulate_dynamics</code> call resumes.</p>
-<p>The two random number generators (<code>rng_Gillespie</code> and <code>rng_everything_else</code>) are stored on the <code>SimulationSetupAndState</code> object, so they are serialized with the checkpoint and restored on load. A resumed run continues the same random streams rather than restarting them, so saving and resuming yields the same trajectory as running in one shot. A checkpoint can only be loaded if its state has been initialized (i.e. <code>simulate_dynamics</code> has run at least once); loading an uninitialized state raises a <code>ValueError</code>.</p>
+<p>The two random number generators (<code>rng_Gillespie</code> and <code>rng_everything_else</code>) are stored on the <code>SimulationSetupAndState</code> object, so they are serialized with the checkpoint and restored on load. A resumed run continues the same random streams rather than restarting them, so saving and resuming yields the same trajectory as running in one shot. A checkpoint loads only if its state was initialized (i.e. <code>simulate_dynamics</code> has run at least once); loading an uninitialized state raises a <code>ValueError</code>.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Loading uses <code>dill</code>, which can execute arbitrary code while deserializing. Only load checkpoint files that you created or otherwise trust.</p>
@@ -1846,26 +1874,27 @@
 <a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>    <span class="n">promoter_mode</span><span class="o">=</span><span class="s1">&#39;constitutive&#39;</span><span class="p">,</span>
 <a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a>    <span class="n">buffer_length</span><span class="o">=</span><span class="mf">4420.0</span><span class="p">,</span>
 <a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a>    <span class="n">are_multiple_chromosomes_present</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-<a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a><span class="p">)</span>
-<a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a><span class="n">model_setup</span> <span class="o">=</span> <span class="n">ModelSetup</span><span class="p">(</span>
-<a id="__codelineno-11-17" name="__codelineno-11-17" href="#__codelineno-11-17"></a>    <span class="n">supercoiling_relaxation_dynamics_mode</span><span class="o">=</span><span class="s1">&#39;topoisomerase_approximated&#39;</span><span class="p">,</span>
-<a id="__codelineno-11-18" name="__codelineno-11-18" href="#__codelineno-11-18"></a>    <span class="n">TOP1_effective_relaxation_rate</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
-<a id="__codelineno-11-19" name="__codelineno-11-19" href="#__codelineno-11-19"></a>    <span class="n">TOP2_effective_relaxation_rate</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span>
-<a id="__codelineno-11-20" name="__codelineno-11-20" href="#__codelineno-11-20"></a><span class="p">)</span>
-<a id="__codelineno-11-21" name="__codelineno-11-21" href="#__codelineno-11-21"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">genomic_setup</span><span class="p">,</span> <span class="n">model_setup</span><span class="p">)</span>
-<a id="__codelineno-11-22" name="__codelineno-11-22" href="#__codelineno-11-22"></a><span class="n">sim</span> <span class="o">=</span> <span class="n">SimulationSetupAndState</span><span class="p">(</span>
-<a id="__codelineno-11-23" name="__codelineno-11-23" href="#__codelineno-11-23"></a>    <span class="n">simulation_end_mode</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-<a id="__codelineno-11-24" name="__codelineno-11-24" href="#__codelineno-11-24"></a>    <span class="n">simulation_end_criterion</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>
-<a id="__codelineno-11-25" name="__codelineno-11-25" href="#__codelineno-11-25"></a>    <span class="n">max_RNAPs_to_recruit</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>
-<a id="__codelineno-11-26" name="__codelineno-11-26" href="#__codelineno-11-26"></a><span class="p">)</span>
-<a id="__codelineno-11-27" name="__codelineno-11-27" href="#__codelineno-11-27"></a>
-<a id="__codelineno-11-28" name="__codelineno-11-28" href="#__codelineno-11-28"></a><span class="n">simulate_dynamics</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">sim</span><span class="p">)</span>
-<a id="__codelineno-11-29" name="__codelineno-11-29" href="#__codelineno-11-29"></a>
-<a id="__codelineno-11-30" name="__codelineno-11-30" href="#__codelineno-11-30"></a><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">genomic_setup</span><span class="o">.</span><span class="n">gene_names</span><span class="p">):</span>
-<a id="__codelineno-11-31" name="__codelineno-11-31" href="#__codelineno-11-31"></a>    <span class="n">rates</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">calculate_RNAP_transcription_rates</span><span class="p">(</span><span class="n">model</span><span class="p">)[</span><span class="n">i</span><span class="p">]</span>
-<a id="__codelineno-11-32" name="__codelineno-11-32" href="#__codelineno-11-32"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">: mean transcription rate = </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">rates</span><span class="p">)</span><span class="si">:</span><span class="s1">.1f</span><span class="si">}</span><span class="s1"> bp/s &#39;</span>
-<a id="__codelineno-11-33" name="__codelineno-11-33" href="#__codelineno-11-33"></a>          <span class="sa">f</span><span class="s1">&#39;over </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">rates</span><span class="p">)</span><span class="si">}</span><span class="s1"> completed transcripts&#39;</span><span class="p">)</span>
-<a id="__codelineno-11-34" name="__codelineno-11-34" href="#__codelineno-11-34"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Total simulated time: </span><span class="si">{</span><span class="n">sim</span><span class="o">.</span><span class="n">curr_simulation_time</span><span class="si">:</span><span class="s1">.1f</span><span class="si">}</span><span class="s1"> s&#39;</span><span class="p">)</span>
+<a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a>    <span class="n">regulatory_network_information</span><span class="o">=</span><span class="n">read_regulatory_network</span><span class="p">([</span><span class="s1">&#39;geneA&#39;</span><span class="p">,</span> <span class="s1">&#39;geneB&#39;</span><span class="p">],</span> <span class="kc">None</span><span class="p">),</span>
+<a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a><span class="p">)</span>
+<a id="__codelineno-11-17" name="__codelineno-11-17" href="#__codelineno-11-17"></a><span class="n">model_setup</span> <span class="o">=</span> <span class="n">ModelSetup</span><span class="p">(</span>
+<a id="__codelineno-11-18" name="__codelineno-11-18" href="#__codelineno-11-18"></a>    <span class="n">supercoiling_relaxation_dynamics_mode</span><span class="o">=</span><span class="s1">&#39;topoisomerase_approximated&#39;</span><span class="p">,</span>
+<a id="__codelineno-11-19" name="__codelineno-11-19" href="#__codelineno-11-19"></a>    <span class="n">TOP1_effective_relaxation_rate</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+<a id="__codelineno-11-20" name="__codelineno-11-20" href="#__codelineno-11-20"></a>    <span class="n">TOP2_effective_relaxation_rate</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span>
+<a id="__codelineno-11-21" name="__codelineno-11-21" href="#__codelineno-11-21"></a><span class="p">)</span>
+<a id="__codelineno-11-22" name="__codelineno-11-22" href="#__codelineno-11-22"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">genomic_setup</span><span class="p">,</span> <span class="n">model_setup</span><span class="p">)</span>
+<a id="__codelineno-11-23" name="__codelineno-11-23" href="#__codelineno-11-23"></a><span class="n">sim</span> <span class="o">=</span> <span class="n">SimulationSetupAndState</span><span class="p">(</span>
+<a id="__codelineno-11-24" name="__codelineno-11-24" href="#__codelineno-11-24"></a>    <span class="n">simulation_end_mode</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<a id="__codelineno-11-25" name="__codelineno-11-25" href="#__codelineno-11-25"></a>    <span class="n">simulation_end_criterion</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>
+<a id="__codelineno-11-26" name="__codelineno-11-26" href="#__codelineno-11-26"></a>    <span class="n">max_RNAPs_to_recruit</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>
+<a id="__codelineno-11-27" name="__codelineno-11-27" href="#__codelineno-11-27"></a><span class="p">)</span>
+<a id="__codelineno-11-28" name="__codelineno-11-28" href="#__codelineno-11-28"></a>
+<a id="__codelineno-11-29" name="__codelineno-11-29" href="#__codelineno-11-29"></a><span class="n">simulate_dynamics</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">sim</span><span class="p">)</span>
+<a id="__codelineno-11-30" name="__codelineno-11-30" href="#__codelineno-11-30"></a>
+<a id="__codelineno-11-31" name="__codelineno-11-31" href="#__codelineno-11-31"></a><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">genomic_setup</span><span class="o">.</span><span class="n">gene_names</span><span class="p">):</span>
+<a id="__codelineno-11-32" name="__codelineno-11-32" href="#__codelineno-11-32"></a>    <span class="n">rates</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">calculate_RNAP_transcription_rates</span><span class="p">(</span><span class="n">model</span><span class="p">)[</span><span class="n">i</span><span class="p">]</span>
+<a id="__codelineno-11-33" name="__codelineno-11-33" href="#__codelineno-11-33"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">: mean transcription rate = </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">rates</span><span class="p">)</span><span class="si">:</span><span class="s1">.1f</span><span class="si">}</span><span class="s1"> bp/s &#39;</span>
+<a id="__codelineno-11-34" name="__codelineno-11-34" href="#__codelineno-11-34"></a>          <span class="sa">f</span><span class="s1">&#39;over </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">rates</span><span class="p">)</span><span class="si">}</span><span class="s1"> completed transcripts&#39;</span><span class="p">)</span>
+<a id="__codelineno-11-35" name="__codelineno-11-35" href="#__codelineno-11-35"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Total simulated time: </span><span class="si">{</span><span class="n">sim</span><span class="o">.</span><span class="n">curr_simulation_time</span><span class="si">:</span><span class="s1">.1f</span><span class="si">}</span><span class="s1"> s&#39;</span><span class="p">)</span>
 </code></pre></div>
 
 

@@ -600,6 +600,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../user-guide/regulatory-network/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Regulatory Network
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../user-guide/model-setup/" class="md-nav__link">
         
   
@@ -1654,7 +1682,7 @@
 
 
 <h1 id="dna-mechanics">DNA mechanics<a class="headerlink" href="#dna-mechanics" title="Permanent link">&para;</a></h1>
-<p>This page is the theoretical reference for everything happening <strong>inside the ODE</strong> that TWISTED integrates: how <code>Lk</code> translates into torque, how torque slows the polymerase, how the angle dynamics couple translation to twist injection, how the boundary conditions enter, and how the discrete event clock is coupled to the continuous integration.</p>
+<p>This page is the theoretical reference for everything happening <strong>inside the ODE</strong> that TWISTED integrates: how <code>Lk</code> translates into torque, how torque slows the polymerase, how the angle dynamics couple translation to twist injection, how the boundary conditions enter, and how the discrete event clock couples to the continuous integration.</p>
 <p>Equations follow the conventions in <code>biol_methods.py</code> and <code>model_dynamics.py</code>. Symbols match the source variable names where practical.</p>
 <hr />
 <h2 id="1-geometry-and-notation">1. Geometry and notation<a class="headerlink" href="#1-geometry-and-notation" title="Permanent link">&para;</a></h2>
@@ -1720,7 +1748,7 @@
 <div class="arithmatex">\[g = F - \sqrt{k_BT F / A}, \qquad p = k_BT \cdot P \cdot \omega_0^2,\]</div>
 <div class="arithmatex">\[\sigma_s = \frac{1}{c_s}\sqrt{\frac{2 p g}{1 - p/c_s}}, \qquad \sigma_p = \frac{1}{p}\sqrt{\frac{2 p g}{1 - p/c_s}}.\]</div>
 <p>Two melting cutoffs use the melted-DNA constants and <code>g_m = 1.2 (F − √(k_BT F / A_m))</code>, and follow the closed-form expressions in the source.</p>
-<p>The torque is then piecewise linear/constant in five regimes:</p>
+<p>The torque is piecewise linear/constant across five regimes:</p>
 <table>
 <thead>
 <tr>

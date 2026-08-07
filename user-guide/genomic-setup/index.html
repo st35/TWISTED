@@ -16,7 +16,7 @@
         <link rel="prev" href="../overview/">
       
       
-        <link rel="next" href="../model-setup/">
+        <link rel="next" href="../regulatory-network/">
       
       
         
@@ -795,10 +795,49 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#regulatory-network" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Regulatory network
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../regulatory-network/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Regulatory Network
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1511,6 +1550,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#regulatory-network" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Regulatory network
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1545,7 +1595,8 @@
 <a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="n">promoter_mode</span><span class="o">=</span><span class="s1">&#39;constitutive&#39;</span><span class="p">,</span>
 <a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="n">buffer_length</span><span class="o">=</span><span class="mf">3400.0</span><span class="p">,</span>
 <a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="n">are_multiple_chromosomes_present</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="p">)</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="n">regulatory_network_information</span><span class="o">=</span><span class="n">read_regulatory_network</span><span class="p">([</span><span class="s1">&#39;geneA&#39;</span><span class="p">],</span> <span class="kc">None</span><span class="p">),</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="p">)</span>
 </code></pre></div>
 <hr />
 <h2 id="constructor">Constructor<a class="headerlink" href="#constructor" title="Permanent link">&para;</a></h2>
@@ -1559,9 +1610,10 @@
 <a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="n">promoter_mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 <a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    <span class="n">buffer_length</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
 <a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    <span class="n">are_multiple_chromosomes_present</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>    <span class="n">chromosomes_end_positions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="p">)</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>    <span class="n">regulatory_network_information</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">],</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>    <span class="n">chromosomes_end_positions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="p">)</span>
 </code></pre></div>
 <h3 id="required-positionalkeyword-arguments">Required positional/keyword arguments<a class="headerlink" href="#required-positionalkeyword-arguments" title="Permanent link">&para;</a></h3>
 <table>
@@ -1617,6 +1669,11 @@
 <td><code>are_multiple_chromosomes_present</code></td>
 <td><code>bool</code></td>
 <td><code>True</code> when the gene list spans more than one chromosome; triggers insertion of permanent topological/steric barriers at chromosome boundaries</td>
+</tr>
+<tr>
+<td><code>regulatory_network_information</code></td>
+<td><code>tuple[dict, dict, dict, dict]</code></td>
+<td>4-tuple <code>(network, lambda_params, Theta_params, n_params)</code> from <code>read_regulatory_network</code>; pass <code>read_regulatory_network(gene_names, None)</code> for no regulation</td>
 </tr>
 <tr>
 <td><code>chromosomes_end_positions</code></td>
@@ -1685,7 +1742,7 @@
 <p>All spatial quantities passed to <code>GenomicSetup</code> are in <strong>nm</strong>. Conversion is <code>1 bp = 0.34 nm</code>. To work in bp, multiply explicitly or use the <a href="../../api/utilities/#construct_genomic_setup"><code>construct_genomic_setup</code></a> helper, which reads a tab-delimited bp-denominated config file and converts on input.</p>
 <hr />
 <h2 id="dna-boundaries">DNA boundaries<a class="headerlink" href="#dna-boundaries" title="Permanent link">&para;</a></h2>
-<p>The DNA spans from <code>clamp_left = 0.0</code> (always) to <code>clamp_right</code>, which is computed at construction from gene 0 only:</p>
+<p>The DNA spans from <code>clamp_left = 0.0</code> to <code>clamp_right</code>, computed at construction from gene 0:</p>
 <table>
 <thead>
 <tr>
@@ -1732,7 +1789,8 @@
 <a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>    <span class="n">promoter_mode</span><span class="o">=</span><span class="s1">&#39;constitutive&#39;</span><span class="p">,</span>
 <a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>    <span class="n">buffer_length</span><span class="o">=</span><span class="mf">4420.0</span><span class="p">,</span>         <span class="c1"># makes clamp_right cover both genes</span>
 <a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>    <span class="n">are_multiple_chromosomes_present</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="p">)</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>    <span class="n">regulatory_network_information</span><span class="o">=</span><span class="n">read_regulatory_network</span><span class="p">([</span><span class="s1">&#39;geneA&#39;</span><span class="p">,</span> <span class="s1">&#39;geneB&#39;</span><span class="p">],</span> <span class="kc">None</span><span class="p">),</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="p">)</span>
 </code></pre></div>
 <table>
 <thead>
@@ -1783,7 +1841,7 @@
 <a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>geneB       chrI    20000        5300     1           1.0
 <a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>geneC       chrII   10000        5300    -1           1.0
 </code></pre></div></p>
-<p>When the six-column format is used and more than one unique chromosome identifier is present, <code>construct_genomic_setup</code> automatically sets <code>are_multiple_chromosomes_present=True</code>, computes <code>chromosomes_end_positions</code>, and offsets each gene's TSS so that chromosomes are laid out end-to-end on the DNA. See <a href="../../tutorials/#19-multi-chromosome-setup">Tutorial 19</a> for a worked example.</p>
+<p>When the six-column format is used and more than one unique chromosome identifier is present, <code>construct_genomic_setup</code> automatically sets <code>are_multiple_chromosomes_present=True</code>, computes <code>chromosomes_end_positions</code>, and offsets each gene's TSS so that chromosomes are laid out end-to-end on the DNA. See <a href="../../tutorials/#18-multi-chromosome-setup">Tutorial 18</a> for a worked example.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">utilities</span><span class="w"> </span><span class="kn">import</span> <span class="n">construct_genomic_setup</span>
 <a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
 <a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="n">genomic_setup</span> <span class="o">=</span> <span class="n">construct_genomic_setup</span><span class="p">(</span>
@@ -1794,6 +1852,9 @@
 <a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="p">)</span>
 </code></pre></div>
 <p>Any further keyword arguments (e.g. <code>per_nucleosome_DNA_length</code>, <code>nucleosomes_can_be_displaced_at_TSS_by_RNAP</code>) are forwarded as-is.</p>
+<hr />
+<h2 id="regulatory-network">Regulatory network<a class="headerlink" href="#regulatory-network" title="Permanent link">&para;</a></h2>
+<p>A gene regulatory network can be attached to <code>GenomicSetup</code> so that the protein produced by one gene modulates the promoter switching rate of another. The <code>regulatory_network_information</code> argument accepts the 4-tuple returned by <code>read_regulatory_network</code>; pass <code>read_regulatory_network(gene_names, None)</code> for a no-regulation setup, or supply a network file via <code>regulatory_network_file</code> in <code>construct_genomic_setup</code>. See <a href="../regulatory-network/">Regulatory network</a> for the file format, mathematics, and worked examples.</p>
 
 
 

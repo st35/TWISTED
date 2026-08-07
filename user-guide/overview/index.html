@@ -727,6 +727,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../regulatory-network/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Regulatory Network
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../model-setup/" class="md-nav__link">
         
   
@@ -1364,7 +1392,7 @@
 
 
 <h1 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h1>
-<p>This page describes the <strong>architecture</strong> of TWISTED: the contents of the central objects, the structure of the simulation loop, and the layout of the state vector. For scripting alone, the <a href="../../getting-started/">Getting Started</a> guide is sufficient; this page is intended as a reference for extending the simulator, debugging, or writing non-trivial callbacks.</p>
+<p>This page describes the <strong>architecture</strong> of TWISTED: the contents of the central objects, the structure of the simulation loop, and the layout of the state vector. For scripting alone, <a href="../../getting-started/">Getting Started</a> is sufficient; this page is a reference for extending the simulator, debugging, or writing non-trivial callbacks.</p>
 <hr />
 <h2 id="the-four-user-facing-objects">The four user-facing objects<a class="headerlink" href="#the-four-user-facing-objects" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>GenomicSetup    →   gene geometry, recruitment rates, chromatin type
@@ -1421,7 +1449,7 @@
 <a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>   ▼
 <a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>simulate_dynamics.py  (main loop and event dispatch)
 </code></pre></div>
-<p>There is one circular import at the top: <code>utilities.py</code> imports <code>model_setup</code>, and <code>model_setup.py</code> imports <code>utilities</code>. This resolves at runtime because the symbols actually <em>used</em> by <code>utilities</code> are looked up lazily inside function bodies.</p>
+<p>There is one circular import at the top: <code>utilities.py</code> imports <code>model_setup</code>, and <code>model_setup.py</code> imports <code>utilities</code>. This resolves at runtime because the symbols <em>used</em> by <code>utilities</code> are looked up lazily inside function bodies.</p>
 <hr />
 <h2 id="the-simulation-loop">The simulation loop<a class="headerlink" href="#the-simulation-loop" title="Permanent link">&para;</a></h2>
 <p><code>simulate_dynamics</code> is a single <code>while True</code> loop. Each iteration performs:</p>
@@ -1531,7 +1559,7 @@
 </tr>
 </tbody>
 </table>
-<p>The convenience method <code>sim.calculate_RNAP_transcription_rates(model)</code> returns, for each gene, the list of mean transcription rates (bp/s) of all RNAPs that completed transcription on that gene.</p>
+<p><code>sim.calculate_RNAP_transcription_rates(model)</code> returns, per gene, the mean transcription rates (bp/s) of all RNAPs that completed transcription there.</p>
 <hr />
 <h2 id="further-reading">Further reading<a class="headerlink" href="#further-reading" title="Permanent link">&para;</a></h2>
 <ul>

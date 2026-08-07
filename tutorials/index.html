@@ -721,10 +721,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#18-saving-and-resuming-a-simulation" class="md-nav__link">
+  <a href="#18-multi-chromosome-setup" class="md-nav__link">
     <span class="md-ellipsis">
       
-        18. Saving and resuming a simulation
+        18. Multi-chromosome setup
       
     </span>
   </a>
@@ -732,10 +732,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#19-multi-chromosome-setup" class="md-nav__link">
+  <a href="#19-gene-regulatory-network-toggle-switch" class="md-nav__link">
     <span class="md-ellipsis">
       
-        19. Multi-chromosome setup
+        19. Gene regulatory network: toggle switch
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#20-saving-and-resuming-a-simulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        20. Saving and resuming a simulation
       
     </span>
   </a>
@@ -847,6 +858,34 @@
     
   
     Genomic Setup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user-guide/regulatory-network/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Regulatory Network
   
 
     
@@ -1605,10 +1644,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#18-saving-and-resuming-a-simulation" class="md-nav__link">
+  <a href="#18-multi-chromosome-setup" class="md-nav__link">
     <span class="md-ellipsis">
       
-        18. Saving and resuming a simulation
+        18. Multi-chromosome setup
       
     </span>
   </a>
@@ -1616,10 +1655,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#19-multi-chromosome-setup" class="md-nav__link">
+  <a href="#19-gene-regulatory-network-toggle-switch" class="md-nav__link">
     <span class="md-ellipsis">
       
-        19. Multi-chromosome setup
+        19. Gene regulatory network: toggle switch
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#20-saving-and-resuming-a-simulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        20. Saving and resuming a simulation
       
     </span>
   </a>
@@ -1647,7 +1697,7 @@
 
 
 <h1 id="tutorials">Tutorials<a class="headerlink" href="#tutorials" title="Permanent link">&para;</a></h1>
-<p>Eighteen worked examples, ordered roughly by complexity. Each section is self-contained and can be copy-pasted into a Python script. Earlier examples introduce idioms (config files, callbacks) that later ones reuse.</p>
+<p>Twenty worked examples, ordered roughly by complexity. Each section is self-contained and can be copy-pasted into a Python script. Earlier examples introduce idioms (config files, callbacks) that later ones reuse.</p>
 <p>All examples assume the <code>code/</code> directory is importable:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;/path/to/TWISTED/code&#39;</span><span class="p">)</span>
@@ -1683,8 +1733,9 @@
 <li><a href="#15-eukaryotic-chromatin-with-nucleosomes">Eukaryotic chromatin with nucleosomes</a></li>
 <li><a href="#16-reproducibility-and-integrator-choice">Reproducibility and integrator choice</a></li>
 <li><a href="#17-non-constitutive-promoters">Non-constitutive promoters</a></li>
-<li><a href="#18-saving-and-resuming-a-simulation">Saving and resuming a simulation</a></li>
-<li><a href="#19-multi-chromosome-setup">Multi-chromosome setup</a></li>
+<li><a href="#18-multi-chromosome-setup">Multi-chromosome setup</a></li>
+<li><a href="#19-gene-regulatory-network-toggle-switch">Gene regulatory network: toggle switch</a></li>
+<li><a href="#20-saving-and-resuming-a-simulation">Saving and resuming a simulation</a></li>
 </ol>
 <hr />
 <h2 id="1-single-gene-minimal-setup">1. Single gene, minimal setup<a class="headerlink" href="#1-single-gene-minimal-setup" title="Permanent link">&para;</a></h2>
@@ -1699,23 +1750,24 @@
 <a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    <span class="n">promoter_mode</span><span class="o">=</span><span class="s1">&#39;constitutive&#39;</span><span class="p">,</span>
 <a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    <span class="n">buffer_length</span><span class="o">=</span><span class="mf">3400.0</span><span class="p">,</span>
 <a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    <span class="n">are_multiple_chromosomes_present</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="p">)</span>
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="n">model_setup</span> <span class="o">=</span> <span class="n">ModelSetup</span><span class="p">(</span>
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>    <span class="n">supercoiling_relaxation_dynamics_mode</span><span class="o">=</span><span class="s1">&#39;global_overall&#39;</span><span class="p">,</span>
-<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>    <span class="n">global_supercoiling_relaxation_rate</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
-<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="p">)</span>
-<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>
-<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">genomic_setup</span><span class="p">,</span> <span class="n">model_setup</span><span class="p">)</span>
-<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="n">sim</span> <span class="o">=</span> <span class="n">SimulationSetupAndState</span><span class="p">(</span>
-<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>    <span class="n">simulation_end_mode</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>    <span class="n">simulation_end_criterion</span><span class="o">=</span><span class="mf">300.0</span><span class="p">,</span>
-<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>    <span class="n">Gillespie_random_seed</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-<a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>    <span class="n">everything_else_random_seed</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-<a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a><span class="p">)</span>
-<a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a><span class="n">simulate_dynamics</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">sim</span><span class="p">)</span>
-<a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a>
-<a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Completed transcripts:&#39;</span><span class="p">,</span> <span class="n">sim</span><span class="o">.</span><span class="n">RNAPs_finished_transcription</span><span class="p">)</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>    <span class="n">regulatory_network_information</span><span class="o">=</span><span class="n">read_regulatory_network</span><span class="p">([</span><span class="s1">&#39;geneA&#39;</span><span class="p">],</span> <span class="kc">None</span><span class="p">),</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="p">)</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="n">model_setup</span> <span class="o">=</span> <span class="n">ModelSetup</span><span class="p">(</span>
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>    <span class="n">supercoiling_relaxation_dynamics_mode</span><span class="o">=</span><span class="s1">&#39;global_overall&#39;</span><span class="p">,</span>
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>    <span class="n">global_supercoiling_relaxation_rate</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="p">)</span>
+<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>
+<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">genomic_setup</span><span class="p">,</span> <span class="n">model_setup</span><span class="p">)</span>
+<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="n">sim</span> <span class="o">=</span> <span class="n">SimulationSetupAndState</span><span class="p">(</span>
+<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>    <span class="n">simulation_end_mode</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>    <span class="n">simulation_end_criterion</span><span class="o">=</span><span class="mf">300.0</span><span class="p">,</span>
+<a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>    <span class="n">Gillespie_random_seed</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>    <span class="n">everything_else_random_seed</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a><span class="p">)</span>
+<a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a><span class="n">simulate_dynamics</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">sim</span><span class="p">)</span>
+<a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a>
+<a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Completed transcripts:&#39;</span><span class="p">,</span> <span class="n">sim</span><span class="o">.</span><span class="n">RNAPs_finished_transcription</span><span class="p">)</span>
 </code></pre></div>
 <p><code>'global_overall'</code> resets <em>every</em> DNA segment's <code>Lk</code> to its relaxed value <code>Lk₀</code> whenever a single Poisson event fires (rate <code>global_supercoiling_relaxation_rate</code>). It is the simplest mechanism for preventing supercoiling from accumulating without bound.</p>
 <hr />
@@ -1770,16 +1822,17 @@
 <a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>    <span class="n">promoter_mode</span><span class="o">=</span><span class="s1">&#39;constitutive&#39;</span><span class="p">,</span>
 <a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>    <span class="n">buffer_length</span><span class="o">=</span><span class="mf">4420.0</span><span class="p">,</span>           <span class="c1"># extends past the rightmost gene end</span>
 <a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>    <span class="n">are_multiple_chromosomes_present</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="p">)</span>
-<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>
-<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a><span class="n">model_setup</span> <span class="o">=</span> <span class="n">ModelSetup</span><span class="p">(</span>
-<a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a>    <span class="n">supercoiling_relaxation_dynamics_mode</span><span class="o">=</span><span class="s1">&#39;global_overall&#39;</span><span class="p">,</span>
-<a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a>    <span class="n">global_supercoiling_relaxation_rate</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
-<a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a><span class="p">)</span>
-<a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a>
-<a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">genomic_setup</span><span class="p">,</span> <span class="n">model_setup</span><span class="p">)</span>
-<a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a><span class="n">sim</span> <span class="o">=</span> <span class="n">SimulationSetupAndState</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="mi">40</span><span class="p">,</span> <span class="mi">40</span><span class="p">],</span> <span class="n">Gillespie_random_seed</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">everything_else_random_seed</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a><span class="n">simulate_dynamics</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">sim</span><span class="p">)</span>
+<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>    <span class="n">regulatory_network_information</span><span class="o">=</span><span class="n">read_regulatory_network</span><span class="p">([</span><span class="s1">&#39;geneA&#39;</span><span class="p">,</span> <span class="s1">&#39;geneB&#39;</span><span class="p">],</span> <span class="kc">None</span><span class="p">),</span>
+<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="p">)</span>
+<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>
+<a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a><span class="n">model_setup</span> <span class="o">=</span> <span class="n">ModelSetup</span><span class="p">(</span>
+<a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a>    <span class="n">supercoiling_relaxation_dynamics_mode</span><span class="o">=</span><span class="s1">&#39;global_overall&#39;</span><span class="p">,</span>
+<a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a>    <span class="n">global_supercoiling_relaxation_rate</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+<a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a><span class="p">)</span>
+<a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a>
+<a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">genomic_setup</span><span class="p">,</span> <span class="n">model_setup</span><span class="p">)</span>
+<a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a><span class="n">sim</span> <span class="o">=</span> <span class="n">SimulationSetupAndState</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="mi">40</span><span class="p">,</span> <span class="mi">40</span><span class="p">],</span> <span class="n">Gillespie_random_seed</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">everything_else_random_seed</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<a id="__codelineno-8-21" name="__codelineno-8-21" href="#__codelineno-8-21"></a><span class="n">simulate_dynamics</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">sim</span><span class="p">)</span>
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title"><code>clamp_right</code> is computed from gene 0 only</p>
@@ -2099,21 +2152,22 @@
 <a id="__codelineno-28-9" name="__codelineno-28-9" href="#__codelineno-28-9"></a>    <span class="n">TF_on_off_rates</span><span class="o">=</span><span class="p">[(</span><span class="mf">0.02</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)],</span>   <span class="c1"># k_on=0.02 s⁻¹, k_off=0.01 s⁻¹</span>
 <a id="__codelineno-28-10" name="__codelineno-28-10" href="#__codelineno-28-10"></a>    <span class="n">buffer_length</span><span class="o">=</span><span class="mf">3400.0</span><span class="p">,</span>
 <a id="__codelineno-28-11" name="__codelineno-28-11" href="#__codelineno-28-11"></a>    <span class="n">are_multiple_chromosomes_present</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-<a id="__codelineno-28-12" name="__codelineno-28-12" href="#__codelineno-28-12"></a><span class="p">)</span>
-<a id="__codelineno-28-13" name="__codelineno-28-13" href="#__codelineno-28-13"></a>
-<a id="__codelineno-28-14" name="__codelineno-28-14" href="#__codelineno-28-14"></a><span class="n">model_setup</span> <span class="o">=</span> <span class="n">ModelSetup</span><span class="p">(</span>
-<a id="__codelineno-28-15" name="__codelineno-28-15" href="#__codelineno-28-15"></a>    <span class="n">supercoiling_relaxation_dynamics_mode</span><span class="o">=</span><span class="s1">&#39;topoisomerase_approximated&#39;</span><span class="p">,</span>
-<a id="__codelineno-28-16" name="__codelineno-28-16" href="#__codelineno-28-16"></a>    <span class="n">TOP1_effective_relaxation_rate</span><span class="o">=</span><span class="mf">0.008</span><span class="p">,</span>
-<a id="__codelineno-28-17" name="__codelineno-28-17" href="#__codelineno-28-17"></a>    <span class="n">TOP2_effective_relaxation_rate</span><span class="o">=</span><span class="mf">0.008</span><span class="p">,</span>
-<a id="__codelineno-28-18" name="__codelineno-28-18" href="#__codelineno-28-18"></a><span class="p">)</span>
-<a id="__codelineno-28-19" name="__codelineno-28-19" href="#__codelineno-28-19"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">genomic_setup</span><span class="p">,</span> <span class="n">model_setup</span><span class="p">)</span>
-<a id="__codelineno-28-20" name="__codelineno-28-20" href="#__codelineno-28-20"></a>
-<a id="__codelineno-28-21" name="__codelineno-28-21" href="#__codelineno-28-21"></a><span class="n">sim</span> <span class="o">=</span> <span class="n">SimulationSetupAndState</span><span class="p">(</span>
-<a id="__codelineno-28-22" name="__codelineno-28-22" href="#__codelineno-28-22"></a>    <span class="n">simulation_end_mode</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-<a id="__codelineno-28-23" name="__codelineno-28-23" href="#__codelineno-28-23"></a>    <span class="n">simulation_end_criterion</span><span class="o">=</span><span class="mf">600.0</span><span class="p">,</span>
-<a id="__codelineno-28-24" name="__codelineno-28-24" href="#__codelineno-28-24"></a>    <span class="n">Gillespie_random_seed</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span>
-<a id="__codelineno-28-25" name="__codelineno-28-25" href="#__codelineno-28-25"></a>    <span class="n">everything_else_random_seed</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span>
-<a id="__codelineno-28-26" name="__codelineno-28-26" href="#__codelineno-28-26"></a><span class="p">)</span>
+<a id="__codelineno-28-12" name="__codelineno-28-12" href="#__codelineno-28-12"></a>    <span class="n">regulatory_network_information</span><span class="o">=</span><span class="n">read_regulatory_network</span><span class="p">([</span><span class="s1">&#39;geneA&#39;</span><span class="p">],</span> <span class="kc">None</span><span class="p">),</span>
+<a id="__codelineno-28-13" name="__codelineno-28-13" href="#__codelineno-28-13"></a><span class="p">)</span>
+<a id="__codelineno-28-14" name="__codelineno-28-14" href="#__codelineno-28-14"></a>
+<a id="__codelineno-28-15" name="__codelineno-28-15" href="#__codelineno-28-15"></a><span class="n">model_setup</span> <span class="o">=</span> <span class="n">ModelSetup</span><span class="p">(</span>
+<a id="__codelineno-28-16" name="__codelineno-28-16" href="#__codelineno-28-16"></a>    <span class="n">supercoiling_relaxation_dynamics_mode</span><span class="o">=</span><span class="s1">&#39;topoisomerase_approximated&#39;</span><span class="p">,</span>
+<a id="__codelineno-28-17" name="__codelineno-28-17" href="#__codelineno-28-17"></a>    <span class="n">TOP1_effective_relaxation_rate</span><span class="o">=</span><span class="mf">0.008</span><span class="p">,</span>
+<a id="__codelineno-28-18" name="__codelineno-28-18" href="#__codelineno-28-18"></a>    <span class="n">TOP2_effective_relaxation_rate</span><span class="o">=</span><span class="mf">0.008</span><span class="p">,</span>
+<a id="__codelineno-28-19" name="__codelineno-28-19" href="#__codelineno-28-19"></a><span class="p">)</span>
+<a id="__codelineno-28-20" name="__codelineno-28-20" href="#__codelineno-28-20"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">genomic_setup</span><span class="p">,</span> <span class="n">model_setup</span><span class="p">)</span>
+<a id="__codelineno-28-21" name="__codelineno-28-21" href="#__codelineno-28-21"></a>
+<a id="__codelineno-28-22" name="__codelineno-28-22" href="#__codelineno-28-22"></a><span class="n">sim</span> <span class="o">=</span> <span class="n">SimulationSetupAndState</span><span class="p">(</span>
+<a id="__codelineno-28-23" name="__codelineno-28-23" href="#__codelineno-28-23"></a>    <span class="n">simulation_end_mode</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<a id="__codelineno-28-24" name="__codelineno-28-24" href="#__codelineno-28-24"></a>    <span class="n">simulation_end_criterion</span><span class="o">=</span><span class="mf">600.0</span><span class="p">,</span>
+<a id="__codelineno-28-25" name="__codelineno-28-25" href="#__codelineno-28-25"></a>    <span class="n">Gillespie_random_seed</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span>
+<a id="__codelineno-28-26" name="__codelineno-28-26" href="#__codelineno-28-26"></a>    <span class="n">everything_else_random_seed</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span>
+<a id="__codelineno-28-27" name="__codelineno-28-27" href="#__codelineno-28-27"></a><span class="p">)</span>
 </code></pre></div>
 <p>The mean fraction of time the promoter spends ON is <code>k_on / (k_on + k_off)</code>. With the values above that is <code>0.02 / 0.03 ≈ 0.67</code>, so the effective RNAP recruitment rate is roughly <code>0.67 × 0.05 ≈ 0.033 s⁻¹</code>, compared to <code>0.05 s⁻¹</code> for a constitutive promoter of the same basal rate.</p>
 <p>The <code>print_at_each_simulation_step</code> callback is convenient for tracking promoter switching events. Use <code>sim.last_event_type</code> to fire the callback only on the relevant transitions:</p>
@@ -2140,77 +2194,174 @@
 <a id="__codelineno-30-12" name="__codelineno-30-12" href="#__codelineno-30-12"></a>    <span class="p">],</span>
 <a id="__codelineno-30-13" name="__codelineno-30-13" href="#__codelineno-30-13"></a>    <span class="n">buffer_length</span><span class="o">=</span><span class="mf">4420.0</span><span class="p">,</span>
 <a id="__codelineno-30-14" name="__codelineno-30-14" href="#__codelineno-30-14"></a>    <span class="n">are_multiple_chromosomes_present</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-<a id="__codelineno-30-15" name="__codelineno-30-15" href="#__codelineno-30-15"></a><span class="p">)</span>
-<a id="__codelineno-30-16" name="__codelineno-30-16" href="#__codelineno-30-16"></a>
-<a id="__codelineno-30-17" name="__codelineno-30-17" href="#__codelineno-30-17"></a><span class="n">model_setup</span> <span class="o">=</span> <span class="n">ModelSetup</span><span class="p">(</span>
-<a id="__codelineno-30-18" name="__codelineno-30-18" href="#__codelineno-30-18"></a>    <span class="n">supercoiling_relaxation_dynamics_mode</span><span class="o">=</span><span class="s1">&#39;topoisomerase_approximated&#39;</span><span class="p">,</span>
-<a id="__codelineno-30-19" name="__codelineno-30-19" href="#__codelineno-30-19"></a>    <span class="n">TOP1_effective_relaxation_rate</span><span class="o">=</span><span class="mf">0.008</span><span class="p">,</span>
-<a id="__codelineno-30-20" name="__codelineno-30-20" href="#__codelineno-30-20"></a>    <span class="n">TOP2_effective_relaxation_rate</span><span class="o">=</span><span class="mf">0.008</span><span class="p">,</span>
-<a id="__codelineno-30-21" name="__codelineno-30-21" href="#__codelineno-30-21"></a><span class="p">)</span>
-<a id="__codelineno-30-22" name="__codelineno-30-22" href="#__codelineno-30-22"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">genomic_setup</span><span class="p">,</span> <span class="n">model_setup</span><span class="p">)</span>
-<a id="__codelineno-30-23" name="__codelineno-30-23" href="#__codelineno-30-23"></a>
-<a id="__codelineno-30-24" name="__codelineno-30-24" href="#__codelineno-30-24"></a><span class="n">sim</span> <span class="o">=</span> <span class="n">SimulationSetupAndState</span><span class="p">(</span>
-<a id="__codelineno-30-25" name="__codelineno-30-25" href="#__codelineno-30-25"></a>    <span class="n">simulation_end_mode</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-<a id="__codelineno-30-26" name="__codelineno-30-26" href="#__codelineno-30-26"></a>    <span class="n">simulation_end_criterion</span><span class="o">=</span><span class="mf">600.0</span><span class="p">,</span>
-<a id="__codelineno-30-27" name="__codelineno-30-27" href="#__codelineno-30-27"></a>    <span class="n">Gillespie_random_seed</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
-<a id="__codelineno-30-28" name="__codelineno-30-28" href="#__codelineno-30-28"></a>    <span class="n">everything_else_random_seed</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
-<a id="__codelineno-30-29" name="__codelineno-30-29" href="#__codelineno-30-29"></a><span class="p">)</span>
-<a id="__codelineno-30-30" name="__codelineno-30-30" href="#__codelineno-30-30"></a>
-<a id="__codelineno-30-31" name="__codelineno-30-31" href="#__codelineno-30-31"></a><span class="n">simulate_dynamics</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">sim</span><span class="p">)</span>
-<a id="__codelineno-30-32" name="__codelineno-30-32" href="#__codelineno-30-32"></a><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;geneA mRNA:&#39;</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">mRNA_counts</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<a id="__codelineno-30-33" name="__codelineno-30-33" href="#__codelineno-30-33"></a><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;geneB mRNA:&#39;</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">mRNA_counts</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<a id="__codelineno-30-15" name="__codelineno-30-15" href="#__codelineno-30-15"></a>    <span class="n">regulatory_network_information</span><span class="o">=</span><span class="n">read_regulatory_network</span><span class="p">([</span><span class="s1">&#39;geneA&#39;</span><span class="p">,</span> <span class="s1">&#39;geneB&#39;</span><span class="p">],</span> <span class="kc">None</span><span class="p">),</span>
+<a id="__codelineno-30-16" name="__codelineno-30-16" href="#__codelineno-30-16"></a><span class="p">)</span>
+<a id="__codelineno-30-17" name="__codelineno-30-17" href="#__codelineno-30-17"></a>
+<a id="__codelineno-30-18" name="__codelineno-30-18" href="#__codelineno-30-18"></a><span class="n">model_setup</span> <span class="o">=</span> <span class="n">ModelSetup</span><span class="p">(</span>
+<a id="__codelineno-30-19" name="__codelineno-30-19" href="#__codelineno-30-19"></a>    <span class="n">supercoiling_relaxation_dynamics_mode</span><span class="o">=</span><span class="s1">&#39;topoisomerase_approximated&#39;</span><span class="p">,</span>
+<a id="__codelineno-30-20" name="__codelineno-30-20" href="#__codelineno-30-20"></a>    <span class="n">TOP1_effective_relaxation_rate</span><span class="o">=</span><span class="mf">0.008</span><span class="p">,</span>
+<a id="__codelineno-30-21" name="__codelineno-30-21" href="#__codelineno-30-21"></a>    <span class="n">TOP2_effective_relaxation_rate</span><span class="o">=</span><span class="mf">0.008</span><span class="p">,</span>
+<a id="__codelineno-30-22" name="__codelineno-30-22" href="#__codelineno-30-22"></a><span class="p">)</span>
+<a id="__codelineno-30-23" name="__codelineno-30-23" href="#__codelineno-30-23"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">genomic_setup</span><span class="p">,</span> <span class="n">model_setup</span><span class="p">)</span>
+<a id="__codelineno-30-24" name="__codelineno-30-24" href="#__codelineno-30-24"></a>
+<a id="__codelineno-30-25" name="__codelineno-30-25" href="#__codelineno-30-25"></a><span class="n">sim</span> <span class="o">=</span> <span class="n">SimulationSetupAndState</span><span class="p">(</span>
+<a id="__codelineno-30-26" name="__codelineno-30-26" href="#__codelineno-30-26"></a>    <span class="n">simulation_end_mode</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<a id="__codelineno-30-27" name="__codelineno-30-27" href="#__codelineno-30-27"></a>    <span class="n">simulation_end_criterion</span><span class="o">=</span><span class="mf">600.0</span><span class="p">,</span>
+<a id="__codelineno-30-28" name="__codelineno-30-28" href="#__codelineno-30-28"></a>    <span class="n">Gillespie_random_seed</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+<a id="__codelineno-30-29" name="__codelineno-30-29" href="#__codelineno-30-29"></a>    <span class="n">everything_else_random_seed</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+<a id="__codelineno-30-30" name="__codelineno-30-30" href="#__codelineno-30-30"></a><span class="p">)</span>
+<a id="__codelineno-30-31" name="__codelineno-30-31" href="#__codelineno-30-31"></a>
+<a id="__codelineno-30-32" name="__codelineno-30-32" href="#__codelineno-30-32"></a><span class="n">simulate_dynamics</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">sim</span><span class="p">)</span>
+<a id="__codelineno-30-33" name="__codelineno-30-33" href="#__codelineno-30-33"></a><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;geneA mRNA:&#39;</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">mRNA_counts</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<a id="__codelineno-30-34" name="__codelineno-30-34" href="#__codelineno-30-34"></a><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;geneB mRNA:&#39;</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">mRNA_counts</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 </code></pre></div>
 <p>See <a href="../user-guide/genomic-setup/#non-constitutive">User Guide → Genomic setup</a> and <a href="../user-guide/events-and-propensities/">User Guide → Events and propensities</a> for the mathematical details of the switching rates.</p>
-<h2 id="18-saving-and-resuming-a-simulation">18. Saving and resuming a simulation<a class="headerlink" href="#18-saving-and-resuming-a-simulation" title="Permanent link">&para;</a></h2>
+<hr />
+<h2 id="18-multi-chromosome-setup">18. Multi-chromosome setup<a class="headerlink" href="#18-multi-chromosome-setup" title="Permanent link">&para;</a></h2>
+<p>When genes span more than one chromosome, supply a six-column gene file with the chromosome identifier in column 2:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a># columns:  name    chromosome   TSS_bp   length_bp   direction   RNAP_on_rate(1/s)
+<a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>geneA       chrI    10000        5000     1           0.02
+<a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a>geneB       chrI    20000        5000     1           0.02
+<a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a>geneC       chrII   10000        5000    -1           0.02
+</code></pre></div>
+<p><code>construct_genomic_setup</code> detects the extra column, lays the chromosomes end-to-end in reverse order of first appearance (the chromosome appearing last in the file is placed first in the simulation coordinate system), and sets <code>are_multiple_chromosomes_present=True</code> along with the computed <code>chromosomes_end_positions</code>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a><span class="n">genomic_setup</span> <span class="o">=</span> <span class="n">construct_genomic_setup</span><span class="p">(</span>
+<a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>    <span class="s1">&#39;multi_chrom.config&#39;</span><span class="p">,</span>
+<a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a>    <span class="n">chromatin_type</span><span class="o">=</span><span class="s1">&#39;prokaryotic&#39;</span><span class="p">,</span>
+<a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a>    <span class="n">promoter_mode</span><span class="o">=</span><span class="s1">&#39;constitutive&#39;</span><span class="p">,</span>
+<a id="__codelineno-32-5" name="__codelineno-32-5" href="#__codelineno-32-5"></a><span class="p">)</span>
+</code></pre></div>
+<p><code>Model</code> then automatically inserts a permanent <code>'chromosome_barrier'</code> <code>BindingProtein</code> at each internal chromosome boundary. Each barrier has <code>is_steric_barrier_to_RNAPs=True</code> and <code>is_topological_barrier=True</code> (off-rate 0 — it never unbinds), so it acts as both a physical block to RNAPs and a torsional insulator between chromosomes. The <code>Lk</code> list is also re-partitioned: one entry per chromosome rather than one per inter-RNAP segment.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="n">model_setup</span> <span class="o">=</span> <span class="n">ModelSetup</span><span class="p">(</span>
+<a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a>    <span class="n">supercoiling_relaxation_dynamics_mode</span><span class="o">=</span><span class="s1">&#39;topoisomerase_approximated&#39;</span><span class="p">,</span>
+<a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a>    <span class="n">TOP1_effective_relaxation_rate</span><span class="o">=</span><span class="mf">0.008</span><span class="p">,</span>
+<a id="__codelineno-33-4" name="__codelineno-33-4" href="#__codelineno-33-4"></a>    <span class="n">TOP2_effective_relaxation_rate</span><span class="o">=</span><span class="mf">0.008</span><span class="p">,</span>
+<a id="__codelineno-33-5" name="__codelineno-33-5" href="#__codelineno-33-5"></a><span class="p">)</span>
+<a id="__codelineno-33-6" name="__codelineno-33-6" href="#__codelineno-33-6"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">genomic_setup</span><span class="p">,</span> <span class="n">model_setup</span><span class="p">)</span>
+<a id="__codelineno-33-7" name="__codelineno-33-7" href="#__codelineno-33-7"></a>
+<a id="__codelineno-33-8" name="__codelineno-33-8" href="#__codelineno-33-8"></a><span class="c1"># The last binding-protein entry is the chromosome barrier.</span>
+<a id="__codelineno-33-9" name="__codelineno-33-9" href="#__codelineno-33-9"></a><span class="n">barrier</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">binding_proteins</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<a id="__codelineno-33-10" name="__codelineno-33-10" href="#__codelineno-33-10"></a><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Barrier name:&#39;</span><span class="p">,</span> <span class="n">barrier</span><span class="o">.</span><span class="n">protein_name</span><span class="p">)</span>               <span class="c1"># &#39;chromosome_barrier&#39;</span>
+<a id="__codelineno-33-11" name="__codelineno-33-11" href="#__codelineno-33-11"></a><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Barrier positions:&#39;</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">binding_proteins_positions</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<a id="__codelineno-33-12" name="__codelineno-33-12" href="#__codelineno-33-12"></a>
+<a id="__codelineno-33-13" name="__codelineno-33-13" href="#__codelineno-33-13"></a><span class="n">sim</span> <span class="o">=</span> <span class="n">SimulationSetupAndState</span><span class="p">(</span>
+<a id="__codelineno-33-14" name="__codelineno-33-14" href="#__codelineno-33-14"></a>    <span class="n">simulation_end_mode</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<a id="__codelineno-33-15" name="__codelineno-33-15" href="#__codelineno-33-15"></a>    <span class="n">simulation_end_criterion</span><span class="o">=</span><span class="mf">300.0</span><span class="p">,</span>
+<a id="__codelineno-33-16" name="__codelineno-33-16" href="#__codelineno-33-16"></a>    <span class="n">Gillespie_random_seed</span><span class="o">=</span><span class="mi">19</span><span class="p">,</span>
+<a id="__codelineno-33-17" name="__codelineno-33-17" href="#__codelineno-33-17"></a>    <span class="n">everything_else_random_seed</span><span class="o">=</span><span class="mi">19</span><span class="p">,</span>
+<a id="__codelineno-33-18" name="__codelineno-33-18" href="#__codelineno-33-18"></a><span class="p">)</span>
+<a id="__codelineno-33-19" name="__codelineno-33-19" href="#__codelineno-33-19"></a><span class="n">simulate_dynamics</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">sim</span><span class="p">)</span>
+<a id="__codelineno-33-20" name="__codelineno-33-20" href="#__codelineno-33-20"></a><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Completed transcripts:&#39;</span><span class="p">,</span> <span class="n">sim</span><span class="o">.</span><span class="n">RNAPs_finished_transcription</span><span class="p">)</span>
+</code></pre></div>
+<p>Because the barrier never unbinds, the supercoiling states of the two chromosomes evolve independently: twist generated by RNAPs on chrI cannot propagate to chrII, and vice versa. Use the logging callbacks from Tutorial 11 to inspect the per-chromosome supercoiling profiles.</p>
+<hr />
+<h2 id="19-gene-regulatory-network-toggle-switch">19. Gene regulatory network: toggle switch<a class="headerlink" href="#19-gene-regulatory-network-toggle-switch" title="Permanent link">&para;</a></h2>
+<p>This tutorial builds on non-constitutive promoters (Tutorial 17) and on the mRNA/protein dynamics enabled by <code>mRNA_dynamics_mode=1</code> (Tutorial 9). A <strong>gene regulatory network</strong> couples genes together: the quasi-steady-state protein concentration produced by one gene modulates the promoter ON-rate of another, layered on top of the stochastic TF switching from Tutorial 17. Because the modulation depends on protein levels, <code>mRNA_dynamics_mode=1</code> is required so that mRNA and protein concentrations are tracked.</p>
+<p>The classic example is a <strong>toggle switch</strong>: two genes that mutually repress each other. Depending on initial conditions and noise, the system settles into one of two stable states — high-A/low-B or low-A/high-B — and can switch stochastically.</p>
+<p><strong>Config file</strong> (<code>toggle_switch.config</code>): same two-gene format as Tutorial 4.</p>
+<p><strong>Regulatory network file</strong> (<code>toggle_switch.topo</code>): tab-delimited, six columns.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a>Source  Target  Type    lambda  Theta   n
+<a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a>gene_A  gene_B  2   0.01    2000.0  4.0
+<a id="__codelineno-34-3" name="__codelineno-34-3" href="#__codelineno-34-3"></a>gene_B  gene_A  2   0.01    2000.0  4.0
+</code></pre></div>
+<p><code>Type=2</code> (repression). <code>lambda=0.01</code> sets a 1 % activity floor. <code>Theta=2000.0</code> is the threshold concentration in units of <span class="arithmatex">\(k_\text{prod}/k_\text{deg}\)</span>. <code>n=4</code> gives sharp switching (cooperativity).</p>
+<p><code>construct_genomic_setup</code> reads both files and wires the network automatically:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a><span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;/path/to/TWISTED/code&#39;</span><span class="p">)</span>
+<a id="__codelineno-35-3" name="__codelineno-35-3" href="#__codelineno-35-3"></a>
+<a id="__codelineno-35-4" name="__codelineno-35-4" href="#__codelineno-35-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">utilities</span><span class="w"> </span><span class="kn">import</span> <span class="n">construct_genomic_setup</span>
+<a id="__codelineno-35-5" name="__codelineno-35-5" href="#__codelineno-35-5"></a><span class="kn">from</span><span class="w"> </span><span class="nn">model_setup</span><span class="w"> </span><span class="kn">import</span> <span class="n">ModelSetup</span><span class="p">,</span> <span class="n">Model</span>
+<a id="__codelineno-35-6" name="__codelineno-35-6" href="#__codelineno-35-6"></a><span class="kn">from</span><span class="w"> </span><span class="nn">simulate_dynamics</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimulationSetupAndState</span><span class="p">,</span> <span class="n">simulate_dynamics</span>
+<a id="__codelineno-35-7" name="__codelineno-35-7" href="#__codelineno-35-7"></a>
+<a id="__codelineno-35-8" name="__codelineno-35-8" href="#__codelineno-35-8"></a><span class="n">genomic_setup</span> <span class="o">=</span> <span class="n">construct_genomic_setup</span><span class="p">(</span>
+<a id="__codelineno-35-9" name="__codelineno-35-9" href="#__codelineno-35-9"></a>    <span class="s1">&#39;toggle_switch.config&#39;</span><span class="p">,</span>
+<a id="__codelineno-35-10" name="__codelineno-35-10" href="#__codelineno-35-10"></a>    <span class="n">chromatin_type</span><span class="o">=</span><span class="s1">&#39;prokaryotic&#39;</span><span class="p">,</span>
+<a id="__codelineno-35-11" name="__codelineno-35-11" href="#__codelineno-35-11"></a>    <span class="n">promoter_mode</span><span class="o">=</span><span class="s1">&#39;non-constitutive&#39;</span><span class="p">,</span>
+<a id="__codelineno-35-12" name="__codelineno-35-12" href="#__codelineno-35-12"></a>    <span class="n">regulatory_network_file</span><span class="o">=</span><span class="s1">&#39;toggle_switch.topo&#39;</span><span class="p">,</span>
+<a id="__codelineno-35-13" name="__codelineno-35-13" href="#__codelineno-35-13"></a><span class="p">)</span>
+<a id="__codelineno-35-14" name="__codelineno-35-14" href="#__codelineno-35-14"></a>
+<a id="__codelineno-35-15" name="__codelineno-35-15" href="#__codelineno-35-15"></a><span class="n">model_setup</span> <span class="o">=</span> <span class="n">ModelSetup</span><span class="p">(</span>
+<a id="__codelineno-35-16" name="__codelineno-35-16" href="#__codelineno-35-16"></a>    <span class="n">supercoiling_relaxation_dynamics_mode</span><span class="o">=</span><span class="s1">&#39;topoisomerase_approximated&#39;</span><span class="p">,</span>
+<a id="__codelineno-35-17" name="__codelineno-35-17" href="#__codelineno-35-17"></a>    <span class="n">TOP1_effective_relaxation_rate</span><span class="o">=</span><span class="mf">0.008</span><span class="p">,</span>
+<a id="__codelineno-35-18" name="__codelineno-35-18" href="#__codelineno-35-18"></a>    <span class="n">TOP2_effective_relaxation_rate</span><span class="o">=</span><span class="mf">0.008</span><span class="p">,</span>
+<a id="__codelineno-35-19" name="__codelineno-35-19" href="#__codelineno-35-19"></a>    <span class="n">mRNA_dynamics_mode</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<a id="__codelineno-35-20" name="__codelineno-35-20" href="#__codelineno-35-20"></a>    <span class="n">mRNA_degradation_rate</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+<a id="__codelineno-35-21" name="__codelineno-35-21" href="#__codelineno-35-21"></a>    <span class="n">protein_production_rate</span><span class="o">=</span><span class="mf">1e4</span><span class="p">,</span>
+<a id="__codelineno-35-22" name="__codelineno-35-22" href="#__codelineno-35-22"></a>    <span class="n">protein_degradation_rate</span><span class="o">=</span><span class="mf">1e2</span><span class="p">,</span>
+<a id="__codelineno-35-23" name="__codelineno-35-23" href="#__codelineno-35-23"></a><span class="p">)</span>
+<a id="__codelineno-35-24" name="__codelineno-35-24" href="#__codelineno-35-24"></a>
+<a id="__codelineno-35-25" name="__codelineno-35-25" href="#__codelineno-35-25"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">genomic_setup</span><span class="p">,</span> <span class="n">model_setup</span><span class="p">)</span>
+<a id="__codelineno-35-26" name="__codelineno-35-26" href="#__codelineno-35-26"></a>
+<a id="__codelineno-35-27" name="__codelineno-35-27" href="#__codelineno-35-27"></a><span class="n">sim</span> <span class="o">=</span> <span class="n">SimulationSetupAndState</span><span class="p">(</span>
+<a id="__codelineno-35-28" name="__codelineno-35-28" href="#__codelineno-35-28"></a>    <span class="n">simulation_end_mode</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<a id="__codelineno-35-29" name="__codelineno-35-29" href="#__codelineno-35-29"></a>    <span class="n">simulation_end_criterion</span><span class="o">=</span><span class="mf">3000.0</span><span class="p">,</span>   <span class="c1"># 50 minutes</span>
+<a id="__codelineno-35-30" name="__codelineno-35-30" href="#__codelineno-35-30"></a>    <span class="n">Gillespie_random_seed</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+<a id="__codelineno-35-31" name="__codelineno-35-31" href="#__codelineno-35-31"></a>    <span class="n">everything_else_random_seed</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+<a id="__codelineno-35-32" name="__codelineno-35-32" href="#__codelineno-35-32"></a><span class="p">)</span>
+<a id="__codelineno-35-33" name="__codelineno-35-33" href="#__codelineno-35-33"></a><span class="n">simulate_dynamics</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">sim</span><span class="p">)</span>
+<a id="__codelineno-35-34" name="__codelineno-35-34" href="#__codelineno-35-34"></a>
+<a id="__codelineno-35-35" name="__codelineno-35-35" href="#__codelineno-35-35"></a><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;mRNA counts:&#39;</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">mRNA_counts</span><span class="p">)</span>
+<a id="__codelineno-35-36" name="__codelineno-35-36" href="#__codelineno-35-36"></a><span class="n">protein_conc</span> <span class="o">=</span> <span class="p">[</span>
+<a id="__codelineno-35-37" name="__codelineno-35-37" href="#__codelineno-35-37"></a>    <span class="n">model</span><span class="o">.</span><span class="n">mRNA_counts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">model_setup</span><span class="o">.</span><span class="n">protein_production_rate</span> <span class="o">/</span> <span class="n">model_setup</span><span class="o">.</span><span class="n">protein_degradation_rate</span>
+<a id="__codelineno-35-38" name="__codelineno-35-38" href="#__codelineno-35-38"></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">genomic_setup</span><span class="o">.</span><span class="n">gene_names</span><span class="p">))</span>
+<a id="__codelineno-35-39" name="__codelineno-35-39" href="#__codelineno-35-39"></a><span class="p">]</span>
+<a id="__codelineno-35-40" name="__codelineno-35-40" href="#__codelineno-35-40"></a><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Protein conc:&#39;</span><span class="p">,</span> <span class="n">protein_conc</span><span class="p">)</span>
+</code></pre></div>
+<p>The promoter ON-rate for each gene is scaled by the shifted Hill factor:</p>
+<div class="arithmatex">\[H_i = \prod_j \left[\lambda + (1-\lambda) \frac{1}{1+(p_j^*/\Theta)^n}\right]\]</div>
+<p>where <span class="arithmatex">\(p_j^* = k_\text{prod} \cdot \text{mRNA}_j / k_\text{deg}\)</span> is the quasi-steady-state protein concentration of regulator <span class="arithmatex">\(j\)</span>. Run multiple replicates with different seeds and compare <code>model.mRNA_counts</code> between trajectories to observe bimodality.</p>
+<hr />
+<h2 id="20-saving-and-resuming-a-simulation">20. Saving and resuming a simulation<a class="headerlink" href="#20-saving-and-resuming-a-simulation" title="Permanent link">&para;</a></h2>
 <p><code>model_setup</code> provides two helpers for checkpointing a run to disk: <code>save_simulation_state_to_file</code> serializes the <code>Model</code> and the <code>SimulationSetupAndState</code> together with <code>dill</code>, and <code>load_simulation_state_from_file</code> restores them as a <code>(model, sim)</code> tuple. This is useful for long runs you want to inspect, share, or continue later.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">model_setup</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-<a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>    <span class="n">GenomicSetup</span><span class="p">,</span> <span class="n">ModelSetup</span><span class="p">,</span> <span class="n">Model</span><span class="p">,</span> <span class="n">SimulationSetupAndState</span><span class="p">,</span>
-<a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a>    <span class="n">save_simulation_state_to_file</span><span class="p">,</span> <span class="n">load_simulation_state_from_file</span><span class="p">,</span>
-<a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a><span class="p">)</span>
-<a id="__codelineno-31-5" name="__codelineno-31-5" href="#__codelineno-31-5"></a><span class="kn">from</span><span class="w"> </span><span class="nn">simulate_dynamics</span><span class="w"> </span><span class="kn">import</span> <span class="n">simulate_dynamics</span>
-<a id="__codelineno-31-6" name="__codelineno-31-6" href="#__codelineno-31-6"></a>
-<a id="__codelineno-31-7" name="__codelineno-31-7" href="#__codelineno-31-7"></a><span class="n">genomic_setup</span> <span class="o">=</span> <span class="n">GenomicSetup</span><span class="p">(</span>
-<a id="__codelineno-31-8" name="__codelineno-31-8" href="#__codelineno-31-8"></a>    <span class="n">chromatin_type</span><span class="o">=</span><span class="s1">&#39;prokaryotic&#39;</span><span class="p">,</span>
-<a id="__codelineno-31-9" name="__codelineno-31-9" href="#__codelineno-31-9"></a>    <span class="n">gene_names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;geneA&#39;</span><span class="p">],</span>
-<a id="__codelineno-31-10" name="__codelineno-31-10" href="#__codelineno-31-10"></a>    <span class="n">TSSes</span><span class="o">=</span><span class="p">[</span><span class="mf">340.0</span><span class="p">],</span>
-<a id="__codelineno-31-11" name="__codelineno-31-11" href="#__codelineno-31-11"></a>    <span class="n">gene_lengths</span><span class="o">=</span><span class="p">[</span><span class="mf">3400.0</span><span class="p">],</span>
-<a id="__codelineno-31-12" name="__codelineno-31-12" href="#__codelineno-31-12"></a>    <span class="n">gene_directions</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-<a id="__codelineno-31-13" name="__codelineno-31-13" href="#__codelineno-31-13"></a>    <span class="n">RNAP_on_rates</span><span class="o">=</span><span class="p">[</span><span class="mf">0.02</span><span class="p">],</span>
-<a id="__codelineno-31-14" name="__codelineno-31-14" href="#__codelineno-31-14"></a>    <span class="n">promoter_mode</span><span class="o">=</span><span class="s1">&#39;constitutive&#39;</span><span class="p">,</span>
-<a id="__codelineno-31-15" name="__codelineno-31-15" href="#__codelineno-31-15"></a>    <span class="n">buffer_length</span><span class="o">=</span><span class="mf">3400.0</span><span class="p">,</span>
-<a id="__codelineno-31-16" name="__codelineno-31-16" href="#__codelineno-31-16"></a>    <span class="n">are_multiple_chromosomes_present</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-<a id="__codelineno-31-17" name="__codelineno-31-17" href="#__codelineno-31-17"></a><span class="p">)</span>
-<a id="__codelineno-31-18" name="__codelineno-31-18" href="#__codelineno-31-18"></a><span class="n">model_setup</span> <span class="o">=</span> <span class="n">ModelSetup</span><span class="p">(</span>
-<a id="__codelineno-31-19" name="__codelineno-31-19" href="#__codelineno-31-19"></a>    <span class="n">supercoiling_relaxation_dynamics_mode</span><span class="o">=</span><span class="s1">&#39;topoisomerase_approximated&#39;</span><span class="p">,</span>
-<a id="__codelineno-31-20" name="__codelineno-31-20" href="#__codelineno-31-20"></a>    <span class="n">TOP1_effective_relaxation_rate</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
-<a id="__codelineno-31-21" name="__codelineno-31-21" href="#__codelineno-31-21"></a>    <span class="n">TOP2_effective_relaxation_rate</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span>
-<a id="__codelineno-31-22" name="__codelineno-31-22" href="#__codelineno-31-22"></a><span class="p">)</span>
-<a id="__codelineno-31-23" name="__codelineno-31-23" href="#__codelineno-31-23"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">genomic_setup</span><span class="p">,</span> <span class="n">model_setup</span><span class="p">)</span>
-<a id="__codelineno-31-24" name="__codelineno-31-24" href="#__codelineno-31-24"></a><span class="n">sim</span> <span class="o">=</span> <span class="n">SimulationSetupAndState</span><span class="p">(</span>
-<a id="__codelineno-31-25" name="__codelineno-31-25" href="#__codelineno-31-25"></a>    <span class="n">simulation_end_mode</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-<a id="__codelineno-31-26" name="__codelineno-31-26" href="#__codelineno-31-26"></a>    <span class="n">simulation_end_criterion</span><span class="o">=</span><span class="p">[</span><span class="mi">50</span><span class="p">],</span>
-<a id="__codelineno-31-27" name="__codelineno-31-27" href="#__codelineno-31-27"></a>    <span class="n">max_RNAPs_to_recruit</span><span class="o">=</span><span class="p">[</span><span class="mi">50</span><span class="p">],</span>
-<a id="__codelineno-31-28" name="__codelineno-31-28" href="#__codelineno-31-28"></a><span class="p">)</span>
-<a id="__codelineno-31-29" name="__codelineno-31-29" href="#__codelineno-31-29"></a>
-<a id="__codelineno-31-30" name="__codelineno-31-30" href="#__codelineno-31-30"></a><span class="c1"># Run to completion, then checkpoint to disk.</span>
-<a id="__codelineno-31-31" name="__codelineno-31-31" href="#__codelineno-31-31"></a><span class="n">simulate_dynamics</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">sim</span><span class="p">)</span>
-<a id="__codelineno-31-32" name="__codelineno-31-32" href="#__codelineno-31-32"></a><span class="n">save_simulation_state_to_file</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">sim</span><span class="p">,</span> <span class="s1">&#39;run.pkl&#39;</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">model_setup</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+<a id="__codelineno-36-2" name="__codelineno-36-2" href="#__codelineno-36-2"></a>    <span class="n">GenomicSetup</span><span class="p">,</span> <span class="n">ModelSetup</span><span class="p">,</span> <span class="n">Model</span><span class="p">,</span> <span class="n">SimulationSetupAndState</span><span class="p">,</span>
+<a id="__codelineno-36-3" name="__codelineno-36-3" href="#__codelineno-36-3"></a>    <span class="n">save_simulation_state_to_file</span><span class="p">,</span> <span class="n">load_simulation_state_from_file</span><span class="p">,</span>
+<a id="__codelineno-36-4" name="__codelineno-36-4" href="#__codelineno-36-4"></a><span class="p">)</span>
+<a id="__codelineno-36-5" name="__codelineno-36-5" href="#__codelineno-36-5"></a><span class="kn">from</span><span class="w"> </span><span class="nn">simulate_dynamics</span><span class="w"> </span><span class="kn">import</span> <span class="n">simulate_dynamics</span>
+<a id="__codelineno-36-6" name="__codelineno-36-6" href="#__codelineno-36-6"></a>
+<a id="__codelineno-36-7" name="__codelineno-36-7" href="#__codelineno-36-7"></a><span class="n">genomic_setup</span> <span class="o">=</span> <span class="n">GenomicSetup</span><span class="p">(</span>
+<a id="__codelineno-36-8" name="__codelineno-36-8" href="#__codelineno-36-8"></a>    <span class="n">chromatin_type</span><span class="o">=</span><span class="s1">&#39;prokaryotic&#39;</span><span class="p">,</span>
+<a id="__codelineno-36-9" name="__codelineno-36-9" href="#__codelineno-36-9"></a>    <span class="n">gene_names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;geneA&#39;</span><span class="p">],</span>
+<a id="__codelineno-36-10" name="__codelineno-36-10" href="#__codelineno-36-10"></a>    <span class="n">TSSes</span><span class="o">=</span><span class="p">[</span><span class="mf">340.0</span><span class="p">],</span>
+<a id="__codelineno-36-11" name="__codelineno-36-11" href="#__codelineno-36-11"></a>    <span class="n">gene_lengths</span><span class="o">=</span><span class="p">[</span><span class="mf">3400.0</span><span class="p">],</span>
+<a id="__codelineno-36-12" name="__codelineno-36-12" href="#__codelineno-36-12"></a>    <span class="n">gene_directions</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+<a id="__codelineno-36-13" name="__codelineno-36-13" href="#__codelineno-36-13"></a>    <span class="n">RNAP_on_rates</span><span class="o">=</span><span class="p">[</span><span class="mf">0.02</span><span class="p">],</span>
+<a id="__codelineno-36-14" name="__codelineno-36-14" href="#__codelineno-36-14"></a>    <span class="n">promoter_mode</span><span class="o">=</span><span class="s1">&#39;constitutive&#39;</span><span class="p">,</span>
+<a id="__codelineno-36-15" name="__codelineno-36-15" href="#__codelineno-36-15"></a>    <span class="n">buffer_length</span><span class="o">=</span><span class="mf">3400.0</span><span class="p">,</span>
+<a id="__codelineno-36-16" name="__codelineno-36-16" href="#__codelineno-36-16"></a>    <span class="n">are_multiple_chromosomes_present</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<a id="__codelineno-36-17" name="__codelineno-36-17" href="#__codelineno-36-17"></a>    <span class="n">regulatory_network_information</span><span class="o">=</span><span class="n">read_regulatory_network</span><span class="p">([</span><span class="s1">&#39;geneA&#39;</span><span class="p">],</span> <span class="kc">None</span><span class="p">),</span>
+<a id="__codelineno-36-18" name="__codelineno-36-18" href="#__codelineno-36-18"></a><span class="p">)</span>
+<a id="__codelineno-36-19" name="__codelineno-36-19" href="#__codelineno-36-19"></a><span class="n">model_setup</span> <span class="o">=</span> <span class="n">ModelSetup</span><span class="p">(</span>
+<a id="__codelineno-36-20" name="__codelineno-36-20" href="#__codelineno-36-20"></a>    <span class="n">supercoiling_relaxation_dynamics_mode</span><span class="o">=</span><span class="s1">&#39;topoisomerase_approximated&#39;</span><span class="p">,</span>
+<a id="__codelineno-36-21" name="__codelineno-36-21" href="#__codelineno-36-21"></a>    <span class="n">TOP1_effective_relaxation_rate</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+<a id="__codelineno-36-22" name="__codelineno-36-22" href="#__codelineno-36-22"></a>    <span class="n">TOP2_effective_relaxation_rate</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span>
+<a id="__codelineno-36-23" name="__codelineno-36-23" href="#__codelineno-36-23"></a><span class="p">)</span>
+<a id="__codelineno-36-24" name="__codelineno-36-24" href="#__codelineno-36-24"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">genomic_setup</span><span class="p">,</span> <span class="n">model_setup</span><span class="p">)</span>
+<a id="__codelineno-36-25" name="__codelineno-36-25" href="#__codelineno-36-25"></a><span class="n">sim</span> <span class="o">=</span> <span class="n">SimulationSetupAndState</span><span class="p">(</span>
+<a id="__codelineno-36-26" name="__codelineno-36-26" href="#__codelineno-36-26"></a>    <span class="n">simulation_end_mode</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<a id="__codelineno-36-27" name="__codelineno-36-27" href="#__codelineno-36-27"></a>    <span class="n">simulation_end_criterion</span><span class="o">=</span><span class="p">[</span><span class="mi">50</span><span class="p">],</span>
+<a id="__codelineno-36-28" name="__codelineno-36-28" href="#__codelineno-36-28"></a>    <span class="n">max_RNAPs_to_recruit</span><span class="o">=</span><span class="p">[</span><span class="mi">50</span><span class="p">],</span>
+<a id="__codelineno-36-29" name="__codelineno-36-29" href="#__codelineno-36-29"></a><span class="p">)</span>
+<a id="__codelineno-36-30" name="__codelineno-36-30" href="#__codelineno-36-30"></a>
+<a id="__codelineno-36-31" name="__codelineno-36-31" href="#__codelineno-36-31"></a><span class="c1"># Run to completion, then checkpoint to disk.</span>
+<a id="__codelineno-36-32" name="__codelineno-36-32" href="#__codelineno-36-32"></a><span class="n">simulate_dynamics</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">sim</span><span class="p">)</span>
+<a id="__codelineno-36-33" name="__codelineno-36-33" href="#__codelineno-36-33"></a><span class="n">save_simulation_state_to_file</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">sim</span><span class="p">,</span> <span class="s1">&#39;run.pkl&#39;</span><span class="p">)</span>
 </code></pre></div>
 <p>Later — in another script or session — reload the checkpoint and read the results without re-running anything:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a><span class="n">model</span><span class="p">,</span> <span class="n">sim</span> <span class="o">=</span> <span class="n">load_simulation_state_from_file</span><span class="p">(</span><span class="s1">&#39;run.pkl&#39;</span><span class="p">)</span>
-<a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>
-<a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Completed transcripts:&#39;</span><span class="p">,</span> <span class="n">sim</span><span class="o">.</span><span class="n">RNAPs_finished_transcription</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Total simulated time:&#39;</span><span class="p">,</span> <span class="n">sim</span><span class="o">.</span><span class="n">curr_simulation_time</span><span class="p">)</span>
-<a id="__codelineno-32-5" name="__codelineno-32-5" href="#__codelineno-32-5"></a><span class="n">rates</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">calculate_RNAP_transcription_rates</span><span class="p">(</span><span class="n">model</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-<a id="__codelineno-32-6" name="__codelineno-32-6" href="#__codelineno-32-6"></a><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Mean transcription rate:&#39;</span><span class="p">,</span> <span class="nb">sum</span><span class="p">(</span><span class="n">rates</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">rates</span><span class="p">),</span> <span class="s1">&#39;bp/s&#39;</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a><span class="n">model</span><span class="p">,</span> <span class="n">sim</span> <span class="o">=</span> <span class="n">load_simulation_state_from_file</span><span class="p">(</span><span class="s1">&#39;run.pkl&#39;</span><span class="p">)</span>
+<a id="__codelineno-37-2" name="__codelineno-37-2" href="#__codelineno-37-2"></a>
+<a id="__codelineno-37-3" name="__codelineno-37-3" href="#__codelineno-37-3"></a><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Completed transcripts:&#39;</span><span class="p">,</span> <span class="n">sim</span><span class="o">.</span><span class="n">RNAPs_finished_transcription</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<a id="__codelineno-37-4" name="__codelineno-37-4" href="#__codelineno-37-4"></a><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Total simulated time:&#39;</span><span class="p">,</span> <span class="n">sim</span><span class="o">.</span><span class="n">curr_simulation_time</span><span class="p">)</span>
+<a id="__codelineno-37-5" name="__codelineno-37-5" href="#__codelineno-37-5"></a><span class="n">rates</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">calculate_RNAP_transcription_rates</span><span class="p">(</span><span class="n">model</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<a id="__codelineno-37-6" name="__codelineno-37-6" href="#__codelineno-37-6"></a><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Mean transcription rate:&#39;</span><span class="p">,</span> <span class="nb">sum</span><span class="p">(</span><span class="n">rates</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">rates</span><span class="p">),</span> <span class="s1">&#39;bp/s&#39;</span><span class="p">)</span>
 </code></pre></div>
 <p>A restored finished run carries <code>sim.simulation_completed == True</code>. Calling <code>simulate_dynamics</code> on it is a no-op: it prints <code>This simulation has finished.</code> and returns immediately, so you cannot accidentally double-count events by re-running a completed checkpoint.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="n">simulate_dynamics</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">sim</span><span class="p">)</span>   <span class="c1"># prints: This simulation has finished.</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a><span class="n">simulate_dynamics</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">sim</span><span class="p">)</span>   <span class="c1"># prints: This simulation has finished.</span>
 </code></pre></div>
 <p>To continue a finished run further, extend the termination criterion with <code>update_simulation_end_criterion</code>, which clears the <code>simulation_completed</code> flag for you:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a><span class="n">model</span><span class="p">,</span> <span class="n">sim</span> <span class="o">=</span> <span class="n">load_simulation_state_from_file</span><span class="p">(</span><span class="s1">&#39;run.pkl&#39;</span><span class="p">)</span>
-<a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a><span class="n">sim</span><span class="o">.</span><span class="n">update_simulation_end_criterion</span><span class="p">([</span><span class="mi">100</span><span class="p">])</span>   <span class="c1"># event mode: new per-gene target; or a float for time mode</span>
-<a id="__codelineno-34-3" name="__codelineno-34-3" href="#__codelineno-34-3"></a><span class="n">simulate_dynamics</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">sim</span><span class="p">)</span>                <span class="c1"># resumes and runs until the new criterion is met</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a><span class="n">model</span><span class="p">,</span> <span class="n">sim</span> <span class="o">=</span> <span class="n">load_simulation_state_from_file</span><span class="p">(</span><span class="s1">&#39;run.pkl&#39;</span><span class="p">)</span>
+<a id="__codelineno-39-2" name="__codelineno-39-2" href="#__codelineno-39-2"></a><span class="n">sim</span><span class="o">.</span><span class="n">update_simulation_end_criterion</span><span class="p">([</span><span class="mi">100</span><span class="p">])</span>   <span class="c1"># event mode: new per-gene target; or a float for time mode</span>
+<a id="__codelineno-39-3" name="__codelineno-39-3" href="#__codelineno-39-3"></a><span class="n">simulate_dynamics</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">sim</span><span class="p">)</span>                <span class="c1"># resumes and runs until the new criterion is met</span>
 </code></pre></div>
 <p>Because the two random number generators (<code>rng_Gillespie</code>, <code>rng_everything_else</code>) are stored on <code>sim</code>, they are serialized with the checkpoint and restored on load, so a resumed run continues the same random streams rather than restarting them. A run executed in one shot and the same run saved and resumed therefore produce identical trajectories. For time mode, the new end time must not be earlier than <code>sim.curr_simulation_time</code>; for event mode, the new counts must require at least one more transcript and stay within <code>max_RNAPs_to_recruit</code>.</p>
 <div class="admonition warning">
@@ -2218,44 +2369,6 @@
 <p><code>load_simulation_state_from_file</code> uses <code>dill</code>, which can execute arbitrary code while deserializing. Only load checkpoint files that you created or otherwise trust.</p>
 </div>
 <p>See <a href="../user-guide/simulation/">User Guide → Running simulations</a> and the <a href="../api/model-setup/"><code>model_setup</code> API reference</a> for the full signatures.</p>
-<hr />
-<h2 id="19-multi-chromosome-setup">19. Multi-chromosome setup<a class="headerlink" href="#19-multi-chromosome-setup" title="Permanent link">&para;</a></h2>
-<p>When genes span more than one chromosome, supply a six-column gene file with the chromosome identifier in column 2:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a># columns:  name    chromosome   TSS_bp   length_bp   direction   RNAP_on_rate(1/s)
-<a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a>geneA       chrI    10000        5000     1           0.02
-<a id="__codelineno-35-3" name="__codelineno-35-3" href="#__codelineno-35-3"></a>geneB       chrI    20000        5000     1           0.02
-<a id="__codelineno-35-4" name="__codelineno-35-4" href="#__codelineno-35-4"></a>geneC       chrII   10000        5000    -1           0.02
-</code></pre></div>
-<p><code>construct_genomic_setup</code> detects the extra column, lays the chromosomes end-to-end in reverse order of first appearance (the chromosome appearing last in the file is placed first in the simulation coordinate system), and sets <code>are_multiple_chromosomes_present=True</code> along with the computed <code>chromosomes_end_positions</code>.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a><span class="n">genomic_setup</span> <span class="o">=</span> <span class="n">construct_genomic_setup</span><span class="p">(</span>
-<a id="__codelineno-36-2" name="__codelineno-36-2" href="#__codelineno-36-2"></a>    <span class="s1">&#39;multi_chrom.config&#39;</span><span class="p">,</span>
-<a id="__codelineno-36-3" name="__codelineno-36-3" href="#__codelineno-36-3"></a>    <span class="n">chromatin_type</span><span class="o">=</span><span class="s1">&#39;prokaryotic&#39;</span><span class="p">,</span>
-<a id="__codelineno-36-4" name="__codelineno-36-4" href="#__codelineno-36-4"></a>    <span class="n">promoter_mode</span><span class="o">=</span><span class="s1">&#39;constitutive&#39;</span><span class="p">,</span>
-<a id="__codelineno-36-5" name="__codelineno-36-5" href="#__codelineno-36-5"></a><span class="p">)</span>
-</code></pre></div>
-<p><code>Model</code> then automatically inserts a permanent <code>'chromosome_barrier'</code> <code>BindingProtein</code> at each internal chromosome boundary. Each barrier has <code>is_steric_barrier_to_RNAPs=True</code> and <code>is_topological_barrier=True</code> (off-rate 0 — it never unbinds), so it acts as both a physical block to RNAPs and a torsional insulator between chromosomes. The <code>Lk</code> list is also re-partitioned: one entry per chromosome rather than one per inter-RNAP segment.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a><span class="n">model_setup</span> <span class="o">=</span> <span class="n">ModelSetup</span><span class="p">(</span>
-<a id="__codelineno-37-2" name="__codelineno-37-2" href="#__codelineno-37-2"></a>    <span class="n">supercoiling_relaxation_dynamics_mode</span><span class="o">=</span><span class="s1">&#39;topoisomerase_approximated&#39;</span><span class="p">,</span>
-<a id="__codelineno-37-3" name="__codelineno-37-3" href="#__codelineno-37-3"></a>    <span class="n">TOP1_effective_relaxation_rate</span><span class="o">=</span><span class="mf">0.008</span><span class="p">,</span>
-<a id="__codelineno-37-4" name="__codelineno-37-4" href="#__codelineno-37-4"></a>    <span class="n">TOP2_effective_relaxation_rate</span><span class="o">=</span><span class="mf">0.008</span><span class="p">,</span>
-<a id="__codelineno-37-5" name="__codelineno-37-5" href="#__codelineno-37-5"></a><span class="p">)</span>
-<a id="__codelineno-37-6" name="__codelineno-37-6" href="#__codelineno-37-6"></a><span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">genomic_setup</span><span class="p">,</span> <span class="n">model_setup</span><span class="p">)</span>
-<a id="__codelineno-37-7" name="__codelineno-37-7" href="#__codelineno-37-7"></a>
-<a id="__codelineno-37-8" name="__codelineno-37-8" href="#__codelineno-37-8"></a><span class="c1"># The last binding-protein entry is the chromosome barrier.</span>
-<a id="__codelineno-37-9" name="__codelineno-37-9" href="#__codelineno-37-9"></a><span class="n">barrier</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">binding_proteins</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-<a id="__codelineno-37-10" name="__codelineno-37-10" href="#__codelineno-37-10"></a><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Barrier name:&#39;</span><span class="p">,</span> <span class="n">barrier</span><span class="o">.</span><span class="n">protein_name</span><span class="p">)</span>               <span class="c1"># &#39;chromosome_barrier&#39;</span>
-<a id="__codelineno-37-11" name="__codelineno-37-11" href="#__codelineno-37-11"></a><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Barrier positions:&#39;</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">binding_proteins_positions</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-<a id="__codelineno-37-12" name="__codelineno-37-12" href="#__codelineno-37-12"></a>
-<a id="__codelineno-37-13" name="__codelineno-37-13" href="#__codelineno-37-13"></a><span class="n">sim</span> <span class="o">=</span> <span class="n">SimulationSetupAndState</span><span class="p">(</span>
-<a id="__codelineno-37-14" name="__codelineno-37-14" href="#__codelineno-37-14"></a>    <span class="n">simulation_end_mode</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-<a id="__codelineno-37-15" name="__codelineno-37-15" href="#__codelineno-37-15"></a>    <span class="n">simulation_end_criterion</span><span class="o">=</span><span class="mf">300.0</span><span class="p">,</span>
-<a id="__codelineno-37-16" name="__codelineno-37-16" href="#__codelineno-37-16"></a>    <span class="n">Gillespie_random_seed</span><span class="o">=</span><span class="mi">19</span><span class="p">,</span>
-<a id="__codelineno-37-17" name="__codelineno-37-17" href="#__codelineno-37-17"></a>    <span class="n">everything_else_random_seed</span><span class="o">=</span><span class="mi">19</span><span class="p">,</span>
-<a id="__codelineno-37-18" name="__codelineno-37-18" href="#__codelineno-37-18"></a><span class="p">)</span>
-<a id="__codelineno-37-19" name="__codelineno-37-19" href="#__codelineno-37-19"></a><span class="n">simulate_dynamics</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">sim</span><span class="p">)</span>
-<a id="__codelineno-37-20" name="__codelineno-37-20" href="#__codelineno-37-20"></a><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Completed transcripts:&#39;</span><span class="p">,</span> <span class="n">sim</span><span class="o">.</span><span class="n">RNAPs_finished_transcription</span><span class="p">)</span>
-</code></pre></div>
-<p>Because the barrier never unbinds, the supercoiling states of the two chromosomes evolve independently: twist generated by RNAPs on chrI cannot propagate to chrII, and vice versa. Use the logging callbacks from Tutorial 11 to inspect the per-chromosome supercoiling profiles.</p>
 
 
 
