@@ -38,6 +38,7 @@ genomic_setup = GenomicSetup(
     promoter_mode='constitutive',
     buffer_length=3400.0,
     are_multiple_chromosomes_present=False,
+    regulatory_network_information=read_regulatory_network(['geneA'], None),
 )
 
 model_setup = ModelSetup(

@@ -1,6 +1,6 @@
 # Overview
 
-This page describes the **architecture** of TWISTED: the contents of the central objects, the structure of the simulation loop, and the layout of the state vector. For scripting alone, the [Getting Started](../getting-started.md) guide is sufficient; this page is intended as a reference for extending the simulator, debugging, or writing non-trivial callbacks.
+This page describes the **architecture** of TWISTED: the contents of the central objects, the structure of the simulation loop, and the layout of the state vector. For scripting alone, [Getting Started](../getting-started.md) is sufficient; this page is a reference for extending the simulator, debugging, or writing non-trivial callbacks.
 
 ---
 
@@ -44,7 +44,7 @@ model_dynamics.py     (state ↔ dict, ODE RHS, event rates; imports the above)
 simulate_dynamics.py  (main loop and event dispatch)
 ```
 
-There is one circular import at the top: `utilities.py` imports `model_setup`, and `model_setup.py` imports `utilities`. This resolves at runtime because the symbols actually *used* by `utilities` are looked up lazily inside function bodies.
+There is one circular import at the top: `utilities.py` imports `model_setup`, and `model_setup.py` imports `utilities`. This resolves at runtime because the symbols *used* by `utilities` are looked up lazily inside function bodies.
 
 ---
 
@@ -116,7 +116,7 @@ Inside the model, RNAPs are stored per gene in `model.x_dict[gene_index]` and `m
 | `sim.curr_simulation_time` | total simulated seconds |
 | `sim.simulation_completed` | `True` if the loop exited because the criterion was met |
 
-The convenience method `sim.calculate_RNAP_transcription_rates(model)` returns, for each gene, the list of mean transcription rates (bp/s) of all RNAPs that completed transcription on that gene.
+`sim.calculate_RNAP_transcription_rates(model)` returns, per gene, the mean transcription rates (bp/s) of all RNAPs that completed transcription there.
 
 ---
 

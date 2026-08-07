@@ -16,13 +16,18 @@ GenomicSetup(
     RNAP_on_rates: list[float],
     promoter_mode: str,
     buffer_length: float,
+    are_multiple_chromosomes_present: bool,
+    regulatory_network_information: tuple[dict, dict, dict, dict],
+    chromosomes_end_positions: list[float] = [],
     **kwargs,
 )
 ```
 
-Holds the genomic layout: chromatin type, gene table, promoter mode, and DNA extents. The right-hand clamp position is computed automatically as `TSSes[0] + gene_lengths[0] + buffer_length` for a `+1` first gene, or `TSSes[0] + buffer_length` for a `−1` first gene.
+Holds the genomic layout: chromatin type, gene table, promoter mode, and DNA extents. `clamp_right` is computed automatically from gene 0: `TSSes[0] + gene_lengths[0] + buffer_length` for a `+1` first gene, or `TSSes[0] + buffer_length` for a `−1` first gene.
 
-`are_multiple_chromosomes_present` signals that the gene list spans more than one chromosome. When `True`, `chromosomes_end_positions` must be a sorted list of cumulative end positions (nm) — one per chromosome. `Model` uses these to insert permanent `'chromosome_barrier'` `BindingProtein` molecules at each internal boundary and to partition `self.Lk` into one segment per chromosome. Both values are set automatically by `construct_genomic_setup` when a six-column gene file is used; direct construction of `GenomicSetup` requires them to be supplied explicitly.
+`regulatory_network_information` is a 4-tuple `(network, lambda_parameters, Theta_parameters, n_parameters)` as returned by `read_regulatory_network`. Supply `read_regulatory_network(gene_names, None)` for a no-regulation setup. `construct_genomic_setup` handles this automatically via the optional `regulatory_network_file` kwarg.
+
+`are_multiple_chromosomes_present` signals that the gene list spans more than one chromosome. When `True`, `chromosomes_end_positions` must be a sorted list of cumulative end positions (nm) — one per chromosome. `Model` uses these to insert permanent `'chromosome_barrier'` `BindingProtein` molecules at each internal boundary and to partition `self.Lk` into one segment per chromosome. `construct_genomic_setup` sets both automatically for six-column gene files; direct construction of `GenomicSetup` requires them explicitly.
 
 `chromatin_type` ∈ `{'prokaryotic', 'eukaryotic'}`. `promoter_mode` ∈ `{'constitutive', 'non-constitutive'}`. For `'non-constitutive'`, the kwarg `TF_on_off_rates: list[tuple[float, float]]` is required — one `(TF_on_rate, TF_off_rate)` pair per gene (s⁻¹). For `'constitutive'`, `TF_on_off_rates` defaults to `[(0.0, 0.0), ...]` and is unused.
 
@@ -85,7 +90,7 @@ Required kwargs depending on mode:
 | `'topoisomerase_approximated'` | `TOP1_effective_relaxation_rate`, `TOP2_effective_relaxation_rate` |
 | `'topoisomerase_based'` | raises `NotImplementedError` |
 
-If `mRNA_dynamics_mode == 1`, `mRNA_degradation_rate` is required. If `finite_size_effect_flag == 1`, `finite_size_effect_length` defaults to 340 nm.
+If `mRNA_dynamics_mode == 1`, `mRNA_degradation_rate` (required), `protein_production_rate` (default `1e4` s⁻¹), and `protein_degradation_rate` (default `1e2` s⁻¹) are accepted. The latter two set the quasi-steady-state protein concentrations $p^* = k_\text{prod} \cdot \text{mRNA} / k_\text{deg}$ used by the regulatory network. If `finite_size_effect_flag == 1`, `finite_size_effect_length` defaults to 340 nm.
 
 See also: [User guide → Model parameters](../user-guide/model-setup.md).
 
@@ -197,7 +202,7 @@ Serializes `{'model': model, 'simulation_setup_and_state': simulation_setup_and_
 
 ## `load_simulation_state_from_file(filename) -> tuple[Model, SimulationSetupAndState]`
 
-Deserializes a file written by `save_simulation_state_to_file` and returns `(model, simulation_setup_and_state)`. The restored state includes the two random number generators (`rng_Gillespie`, `rng_everything_else`), so a resumed run continues the same random streams. Raises `ValueError` if the saved state was never initialized (i.e. `simulate_dynamics` had not yet run). Because the state is restored as-is, calling `simulate_dynamics` on a loaded state whose `simulation_completed` flag is already `True` returns immediately; use `update_simulation_end_criterion` to extend and resume it.
+Deserializes a file written by `save_simulation_state_to_file` and returns `(model, simulation_setup_and_state)`. The restored state includes the two random number generators (`rng_Gillespie`, `rng_everything_else`), so a resumed run continues the same random streams. Raises `ValueError` if the saved state was never initialized (i.e. `simulate_dynamics` had not yet run). Calling `simulate_dynamics` on a loaded state whose `simulation_completed` is already `True` returns immediately; use `update_simulation_end_criterion` to extend and resume it.
 
 !!! warning
     `load_simulation_state_from_file` uses `dill`, which can execute arbitrary code while deserializing. Only load files you created or otherwise trust.

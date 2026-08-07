@@ -32,7 +32,18 @@ construct_genomic_setup(
 ) -> GenomicSetup
 ```
 
-Read a gene file and construct a `GenomicSetup` in one call. Accepts both the five-column single-chromosome format and the six-column multi-chromosome format (see `read_genes_information`). When multiple distinct chromosome identifiers are detected, automatically computes `chromosomes_end_positions` (laying chromosomes end-to-end in reverse order of first appearance), sets `are_multiple_chromosomes_present=True`, and passes both to `GenomicSetup`. Any `**kwargs` are forwarded to the `GenomicSetup` constructor.
+Read a gene file and construct a `GenomicSetup` in one call. Accepts both the five-column single-chromosome format and the six-column multi-chromosome format (see `read_genes_information`). When multiple distinct chromosome identifiers are detected, automatically computes `chromosomes_end_positions` (laying chromosomes end-to-end in reverse order of first appearance), sets `are_multiple_chromosomes_present=True`, and passes both to `GenomicSetup`. Calls `read_regulatory_network` using the optional kwarg `regulatory_network_file`; the key is consumed before the remaining `**kwargs` are forwarded to the `GenomicSetup` constructor.
+
+### `read_regulatory_network`
+
+```python
+read_regulatory_network(
+    gene_names: list[str],
+    filename: str | None,
+) -> tuple[dict[str, dict[str, int]], dict[str, dict[str, float]], dict[str, dict[str, float]], dict[str, dict[str, float]]]
+```
+
+Read a tab-delimited regulatory network file and return `(network, lambda_parameters, Theta_parameters, n_parameters)` — all keyed by `(source_gene, target_gene)`. The file must have a header row followed by one edge per line with columns `Source`, `Target`, `Type`, `lambda`, `Theta`, `n`. Gene names must match entries in `gene_names`; any other name raises `ValueError`. Pass `filename=None` to get an empty (all-zero) network for a no-regulation setup.
 
 ---
 

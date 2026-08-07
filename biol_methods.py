@@ -86,16 +86,28 @@ def get_mRNA_degradation_rate(model: Model, mRNA_count: int) -> float: # Get the
     return model.model_setup.mRNA_degradation_rate*mRNA_count
 
 def get_promoter_on_rate(model: Model, gene_index: int, TSS_sigma: float) -> float: # Get the promoter on rate for a given gene based on its promoter status and local supercoiling
+    H = 1.0
+    if model.model_setup.mRNA_dynamics_mode == 1:
+        protein_conc = [model.mRNA_counts[index]*model.model_setup.protein_production_rate / model.model_setup.protein_degradation_rate for index in range(len(model.genomic_setup.gene_names))]
+        target_gene = model.genomic_setup.gene_names[gene_index]
+        for source_gene in model.genomic_setup.gene_names:
+            if model.genomic_setup.regulatory_network[source_gene][target_gene] == 0:
+                continue
+            H *= shifted_Hill_function(protein_conc[model.genomic_setup.gene_names.index(source_gene)], model.genomic_setup.lambda_parameters[source_gene][target_gene], model.genomic_setup.Theta_parameters[source_gene][target_gene], model.genomic_setup.n_parameters[source_gene][target_gene])
+
     if model.promoter_status[gene_index] == 1: # Promoter is already ON
-        return 0.0
+            return 0.0
     
-    return model.genomic_setup.TF_on_off_rates[gene_index][0]
+    return model.genomic_setup.TF_on_off_rates[gene_index][0]*H
 
 def get_promoter_off_rate(model: Model, gene_index: int, TSS_sigma: float) -> float: # Get the promoter off rate for a given gene based on its promoter status and local supercoiling
     if model.promoter_status[gene_index] == 0: # Promoter is already OFF
         return 0.0
 
     return model.genomic_setup.TF_on_off_rates[gene_index][1]
+
+def shifted_Hill_function(y: float, lambda_param: float, Theta: float, n: float) -> float: # Calculate the shifted Hill function
+    return lambda_param + (1.0 - lambda_param)*(1.0 / (1.0 + pow((y / Theta), n)))
 
 def get_prokaryotic_torque(w0: float, force: float, kBT: float, segment_length: float, sigma: float, finite_size_effect_flag: int, finite_size_effect_length: float) -> tuple[float, int, float, float]: # Get the torque, DNA state, writhe fraction, and sigma_s (threshold beyond which plectonemes form) for prokaryotic DNA based on supercoiling density and force
     A = 50.0

@@ -66,7 +66,56 @@ def construct_genomic_setup(filename: str, chromatin_type: str, promoter_mode: s
 			raise ValueError('Length of explicit_RNAP_on_rates must match number of genes.')
 		RNAP_on_rates = [RNAP_on_rates[i]*explicit_RNAP_on_rates[i] for i in range(len(gene_names))]
 
-	return GenomicSetup(chromatin_type, gene_names, TSSes, gene_lengths, gene_directions, RNAP_on_rates, promoter_mode, buffer_length, are_multiple_chromosomes_present, chromosomes_end_positions, **kwargs)
+	regulatory_network, lambda_parameters, Theta_parameters, n_parameters = read_regulatory_network(gene_names, kwargs.get('regulatory_network_file', None))
+	if 'regulatory_network_file' in kwargs:
+		kwargs.pop('regulatory_network_file')
+
+	return GenomicSetup(chromatin_type, gene_names, TSSes, gene_lengths, gene_directions, RNAP_on_rates, promoter_mode, buffer_length, are_multiple_chromosomes_present, (regulatory_network, lambda_parameters, Theta_parameters, n_parameters), chromosomes_end_positions, **kwargs)
+
+def read_regulatory_network(gene_names: list[str], filename: str) -> tuple[dict[str, dict[str, int]], dict[str, dict[str, float]], dict[str, dict[str, float]], dict[str, dict[str, float]]]: # Read regulatory network information from a tab-delimited file
+	network = {}
+	lambda_parameters = {}
+	Theta_parameters = {}
+	n_parameters = {}
+
+	for source_gene in gene_names:
+		network[source_gene] = {}
+		lambda_parameters[source_gene] = {}
+		Theta_parameters[source_gene] = {}
+		n_parameters[source_gene] = {}
+		for target_gene in gene_names:
+			network[source_gene][target_gene] = 0
+			lambda_parameters[source_gene][target_gene] = -1.0
+			Theta_parameters[source_gene][target_gene] = -1.0
+			n_parameters[source_gene][target_gene] = -1.0
+
+	if filename is None:
+		return network, lambda_parameters, Theta_parameters, n_parameters
+
+	with open(filename, 'r') as f:
+		count = 0
+		for line in f:
+			if count == 0:
+				count += 1
+				continue
+			l = line.strip().split('\t')
+			if len(l) != 6:
+				raise ValueError('Each line in the regulatory network file must have 6 columns: regulator_gene, target_gene, regulation_type, lambda_parameter, Theta_parameter, n_parameter.')
+			source = l[0].strip()
+			target = l[1].strip()
+			if source not in gene_names or target not in gene_names:
+				raise ValueError('Regulatory network file contains genes not present in the supercoiling dynamics config file.')
+			regulation_type = int(l[2].strip())
+			lambda_param = float(l[3].strip())
+			Theta_param = float(l[4].strip())
+			n_param = float(l[5].strip())
+
+			network[source][target] = regulation_type
+			lambda_parameters[source][target] = lambda_param
+			Theta_parameters[source][target] = Theta_param
+			n_parameters[source][target] = n_param
+
+	return network, lambda_parameters, Theta_parameters, n_parameters
 
 def get_spot_segment_index(spot: float, segments_lengths: list[float]) -> int: # Get the index of the segment containing the given spot
 	spot_segment_index = -1

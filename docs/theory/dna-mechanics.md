@@ -1,6 +1,6 @@
 # DNA mechanics
 
-This page is the theoretical reference for everything happening **inside the ODE** that TWISTED integrates: how `Lk` translates into torque, how torque slows the polymerase, how the angle dynamics couple translation to twist injection, how the boundary conditions enter, and how the discrete event clock is coupled to the continuous integration.
+This page is the theoretical reference for everything happening **inside the ODE** that TWISTED integrates: how `Lk` translates into torque, how torque slows the polymerase, how the angle dynamics couple translation to twist injection, how the boundary conditions enter, and how the discrete event clock couples to the continuous integration.
 
 Equations follow the conventions in `biol_methods.py` and `model_dynamics.py`. Symbols match the source variable names where practical.
 
@@ -44,7 +44,7 @@ $$\sigma_s = \frac{1}{c_s}\sqrt{\frac{2 p g}{1 - p/c_s}}, \qquad \sigma_p = \fra
 
 Two melting cutoffs use the melted-DNA constants and `g_m = 1.2 (F − √(k_BT F / A_m))`, and follow the closed-form expressions in the source.
 
-The torque is then piecewise linear/constant in five regimes:
+The torque is piecewise linear/constant across five regimes:
 
 | Regime | Code | Range of `σ` | Torque |
 |--------|------|--------------|-------|

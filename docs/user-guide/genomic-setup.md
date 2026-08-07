@@ -15,6 +15,7 @@ genomic_setup = GenomicSetup(
     promoter_mode='constitutive',
     buffer_length=3400.0,
     are_multiple_chromosomes_present=False,
+    regulatory_network_information=read_regulatory_network(['geneA'], None),
 )
 ```
 
@@ -33,6 +34,7 @@ GenomicSetup(
     promoter_mode: str,
     buffer_length: float,
     are_multiple_chromosomes_present: bool,
+    regulatory_network_information: tuple[dict, dict, dict, dict],
     chromosomes_end_positions: list[float] = [],
     **kwargs,
 )
@@ -51,6 +53,7 @@ GenomicSetup(
 | `promoter_mode` | `'constitutive' \| 'non-constitutive'` | See [Promoter modes](#promoter-modes) below |
 | `buffer_length` | `float` | Extra DNA past the gene on the right end (nm); contributes to `clamp_right` |
 | `are_multiple_chromosomes_present` | `bool` | `True` when the gene list spans more than one chromosome; triggers insertion of permanent topological/steric barriers at chromosome boundaries |
+| `regulatory_network_information` | `tuple[dict, dict, dict, dict]` | 4-tuple `(network, lambda_params, Theta_params, n_params)` from `read_regulatory_network`; pass `read_regulatory_network(gene_names, None)` for no regulation |
 | `chromosomes_end_positions` | `list[float]` | Sorted cumulative end positions (nm), one per chromosome; required when `are_multiple_chromosomes_present` is `True` (default `[]`) |
 
 All five list arguments must have the same length, equal to the number of genes.
@@ -82,7 +85,7 @@ All spatial quantities passed to `GenomicSetup` are in **nm**. Conversion is `1 
 
 ## DNA boundaries
 
-The DNA spans from `clamp_left = 0.0` (always) to `clamp_right`, which is computed at construction from gene 0 only:
+The DNA spans from `clamp_left = 0.0` to `clamp_right`, computed at construction from gene 0:
 
 | Direction of gene 0 | Formula |
 |---------------------|---------|
@@ -132,6 +135,7 @@ genomic_setup = GenomicSetup(
     promoter_mode='constitutive',
     buffer_length=4420.0,         # makes clamp_right cover both genes
     are_multiple_chromosomes_present=False,
+    regulatory_network_information=read_regulatory_network(['geneA', 'geneB'], None),
 )
 ```
 
@@ -183,7 +187,7 @@ geneB       chrI    20000        5300     1           1.0
 geneC       chrII   10000        5300    -1           1.0
 ```
 
-When the six-column format is used and more than one unique chromosome identifier is present, `construct_genomic_setup` automatically sets `are_multiple_chromosomes_present=True`, computes `chromosomes_end_positions`, and offsets each gene's TSS so that chromosomes are laid out end-to-end on the DNA. See [Tutorial 19](../tutorials.md#19-multi-chromosome-setup) for a worked example.
+When the six-column format is used and more than one unique chromosome identifier is present, `construct_genomic_setup` automatically sets `are_multiple_chromosomes_present=True`, computes `chromosomes_end_positions`, and offsets each gene's TSS so that chromosomes are laid out end-to-end on the DNA. See [Tutorial 18](../tutorials.md#18-multi-chromosome-setup) for a worked example.
 
 ```python
 from utilities import construct_genomic_setup
@@ -197,3 +201,9 @@ genomic_setup = construct_genomic_setup(
 ```
 
 Any further keyword arguments (e.g. `per_nucleosome_DNA_length`, `nucleosomes_can_be_displaced_at_TSS_by_RNAP`) are forwarded as-is.
+
+---
+
+## Regulatory network
+
+A gene regulatory network can be attached to `GenomicSetup` so that the protein produced by one gene modulates the promoter switching rate of another. The `regulatory_network_information` argument accepts the 4-tuple returned by `read_regulatory_network`; pass `read_regulatory_network(gene_names, None)` for a no-regulation setup, or supply a network file via `regulatory_network_file` in `construct_genomic_setup`. See [Regulatory network](regulatory-network.md) for the file format, mathematics, and worked examples.

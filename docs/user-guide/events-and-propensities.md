@@ -137,6 +137,8 @@ TF_on_off_rates[i][0]   if promoter_status[i] == 0
 
 When the event fires for gene `i`, `model.promoter_status[i]` is set to 1. Selecting this event for an already-ON promoter raises a `ValueError` (the rate should have been zero).
 
+When `mRNA_dynamics_mode == 1` and a [regulatory network](regulatory-network.md) is attached, this rate is additionally scaled by the Hill modulation factor `H` of the gene's regulators (see [`get_promoter_on_rate`](../api/biol-methods.md#get_promoter_on_rate)).
+
 In `'constitutive'` mode `TF_on_off_rates[i][0]` is `0.0`, so this block contributes nothing.
 
 ---

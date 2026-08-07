@@ -42,7 +42,7 @@ SimulationSetupAndState(
 | `Gillespie_random_seed` | integer seed for the Gillespie event-time and event-selection RNG (default `42`) |
 | `everything_else_random_seed` | integer seed for all other stochastic choices: segment selection, binding positions, etc. (default `42`) |
 
-The constructor does **not** take a `GenomicSetup`. Per-gene result lists are sized, and length checks against the gene list are performed, by `setup_simulation_state(genomic_setup)`, which `simulate_dynamics` calls automatically before the main loop. You normally do not need to call it yourself.
+The constructor does **not** take a `GenomicSetup`. `setup_simulation_state(genomic_setup)` sizes the per-gene result lists and checks their lengths against the gene list; `simulate_dynamics` calls it automatically before the main loop, so you normally do not need to call it yourself.
 
 ---
 
@@ -155,7 +155,7 @@ model, sim = load_simulation_state_from_file('run.pkl')
 
 If a restored `sim` already has `sim.simulation_completed == True`, calling `simulate_dynamics` on it prints `This simulation has finished.` and returns immediately without re-running. To continue such a run, extend the termination criterion with `sim.update_simulation_end_criterion(new_criterion)` (a `float` in time mode or a per-gene `list[int]` in event mode); this updates the criterion and clears the `simulation_completed` flag so the next `simulate_dynamics` call resumes.
 
-The two random number generators (`rng_Gillespie` and `rng_everything_else`) are stored on the `SimulationSetupAndState` object, so they are serialized with the checkpoint and restored on load. A resumed run continues the same random streams rather than restarting them, so saving and resuming yields the same trajectory as running in one shot. A checkpoint can only be loaded if its state has been initialized (i.e. `simulate_dynamics` has run at least once); loading an uninitialized state raises a `ValueError`.
+The two random number generators (`rng_Gillespie` and `rng_everything_else`) are stored on the `SimulationSetupAndState` object, so they are serialized with the checkpoint and restored on load. A resumed run continues the same random streams rather than restarting them, so saving and resuming yields the same trajectory as running in one shot. A checkpoint loads only if its state was initialized (i.e. `simulate_dynamics` has run at least once); loading an uninitialized state raises a `ValueError`.
 
 !!! warning
     Loading uses `dill`, which can execute arbitrary code while deserializing. Only load checkpoint files that you created or otherwise trust.
@@ -233,6 +233,7 @@ genomic_setup = GenomicSetup(
     promoter_mode='constitutive',
     buffer_length=4420.0,
     are_multiple_chromosomes_present=False,
+    regulatory_network_information=read_regulatory_network(['geneA', 'geneB'], None),
 )
 model_setup = ModelSetup(
     supercoiling_relaxation_dynamics_mode='topoisomerase_approximated',

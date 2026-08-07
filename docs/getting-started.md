@@ -1,13 +1,13 @@
 # Getting Started
 
-This page covers the path from a fresh checkout to a first running simulation. The reader will, by the end, understand:
+This page takes you from a fresh checkout to a first running simulation. By the end you will understand:
 
 1. how to install TWISTED;
 2. the **four objects** every simulation requires and their relationships;
 3. the meaning of each parameter in the minimal example;
 4. how to retrieve the results.
 
-Readers already familiar with the construction pattern may skip directly to [Tutorials](tutorials.md).
+If you already know the construction pattern, skip to [Tutorials](tutorials.md).
 
 ---
 
@@ -45,7 +45,7 @@ mkdocs serve
 
 ## 2. Conceptual model
 
-Consider a one-dimensional DNA molecule running from `clamp_left = 0` on the left to `clamp_right` (in nm) on the right. RNA polymerases reside on it. The molecule is partitioned by the RNAPs (and optionally by *topological-barrier* proteins) into a sequence of **segments**. Each segment carries its own linking number `Lk`, from which a supercoiling density `σ` and torque `τ` are derived.
+Consider a one-dimensional DNA molecule from `clamp_left = 0` to `clamp_right` (in nm). RNA polymerases reside on it. The molecule is partitioned by the RNAPs (and optionally by *topological-barrier* proteins) into a sequence of **segments**. Each segment carries its own linking number `Lk`, from which a supercoiling density `σ` and torque `τ` are derived.
 
 The simulation alternates between two regimes:
 
@@ -89,6 +89,7 @@ genomic_setup = GenomicSetup(
     promoter_mode='constitutive',
     buffer_length=3400.0,
     are_multiple_chromosomes_present=False,
+    regulatory_network_information=read_regulatory_network(['lacZ'], None),
 )
 ```
 
@@ -216,6 +217,7 @@ genomic_setup = GenomicSetup(
     promoter_mode='constitutive',
     buffer_length=4080.0,            # large enough to cover the rightmost gene
     are_multiple_chromosomes_present=False,
+    regulatory_network_information=read_regulatory_network(['geneA', 'geneB'], None),
 )
 ```
 

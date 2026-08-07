@@ -95,7 +95,7 @@ These constants enter the per-molecule TOP1/TOP2 rate equations defined in [`get
 
 ## Steric interactions
 
-Steric exclusion between RNAPs, nucleosomes and other binding proteins is implemented as a **soft tanh ramp** on RNAP velocity:
+Steric exclusion is implemented as a **soft tanh ramp** on RNAP velocity:
 
 $$f(s) = \tfrac{1}{2}\bigl(1 + \tanh\tfrac{s - d}{\lambda}\bigr),$$
 
@@ -163,8 +163,10 @@ See [Relaxation modes](relaxation-modes.md) for full semantics.
 |-----------|--------|--------|------|
 | `mRNA_dynamics_mode` | `0` | `0` or `1` | `0` = mRNA only accumulates; `1` = first-order degradation enabled |
 | `mRNA_degradation_rate` | required if mode = 1 | float, via `**kwargs` | per-molecule degradation rate (s⁻¹) |
+| `protein_production_rate` | `1e4` if mode = 1, else `0` | float, via `**kwargs` | translation rate (s⁻¹ per mRNA molecule) |
+| `protein_degradation_rate` | `1e2` if mode = 1, else `0` | float, via `**kwargs` | first-order protein degradation rate (s⁻¹) |
 
-In `mRNA_dynamics_mode == 1` the Gillespie loop adds a per-gene event with rate `mRNA_degradation_rate × mRNA_counts[i]`. The same field exists on `Model` (`model.mRNA_counts`).
+In `mRNA_dynamics_mode == 1` the Gillespie loop adds a per-gene degradation event with rate `mRNA_degradation_rate × mRNA_counts[i]`. Protein concentrations are tracked at quasi-steady state: $p^* = k_\text{prod} \cdot \text{mRNA} / k_\text{deg}$. These are used by the regulatory network to modulate promoter switching rates (see [Regulatory network](regulatory-network.md)). The same field exists on `Model` (`model.mRNA_counts`).
 
 ---
 

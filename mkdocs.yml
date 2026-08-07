@@ -60,6 +60,7 @@ nav:
   - User Guide:
     - Overview: user-guide/overview.md
     - Genomic Setup: user-guide/genomic-setup.md
+    - Regulatory Network: user-guide/regulatory-network.md
     - Model Parameters: user-guide/model-setup.md
     - Binding Proteins: user-guide/binding-proteins.md
     - Running Simulations: user-guide/simulation.md

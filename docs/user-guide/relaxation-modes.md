@@ -11,7 +11,7 @@
 | `'topoisomerase_approximated'` | implemented | One TOP1 event relaxes twist (fully if the segment is negatively supercoiled or writhe-free, partially if positively plectonemic); one TOP2 event clears writhe on a plectonemic segment | `TOP1_effective_relaxation_rate`, `TOP2_effective_relaxation_rate` |
 | `'topoisomerase_based'` | **not implemented** | (planned: explicit TOP1/TOP2 binding/unbinding/catalysis with steric interactions) | `NotImplementedError` raised at `ModelSetup` construction |
 
-Across all modes, the rates are interpreted as **Poisson rates per simulation** (not per segment). No segment-length weighting is applied to the rate itself; length weighting only enters in the selection of *which segment* is affected when an event fires.
+Across all modes, the rates are interpreted as **Poisson rates per simulation** (not per segment). The rate itself carries no segment-length weighting; length weighting enters only when selecting *which segment* an event affects.
 
 ---
 
@@ -61,7 +61,7 @@ Two independent Poisson events with rates `local_supercoiling_relaxation_rates =
 - Event 0 fires at rate `rate_pos` and resets every segment with `σ > 0`.
 - Event 1 fires at rate `rate_neg` and resets every segment with `σ < 0`.
 
-This mode is appropriate when positive and negative supercoiling should be assigned different bulk relaxation rates, for instance as a coarse stand-in for gyrase versus TOP1 activity.
+Use this mode when positive and negative supercoiling need different bulk relaxation rates — for instance, as a coarse stand-in for gyrase versus TOP1 activity.
 
 ```python
 ModelSetup(
@@ -81,7 +81,7 @@ event 0: pick a length-weighted segment with σ > 0 ; reset it
 event 1: pick a length-weighted segment with σ < 0 ; reset it
 ```
 
-This combines length weighting with sign specificity. It is the most physically motivated of the four non-topoisomerase modes.
+This combines length weighting with sign specificity — the most physically motivated of the four non-topoisomerase modes.
 
 ```python
 ModelSetup(
@@ -109,7 +109,7 @@ ModelSetup(
 )
 ```
 
-This is the recommended starting point for biologically motivated runs: the TOP1/TOP2 distinction is preserved without the cost of explicit enzyme tracking.
+Recommended starting point for biologically motivated runs: it preserves the TOP1/TOP2 distinction without the cost of explicit enzyme tracking.
 
 ---
 

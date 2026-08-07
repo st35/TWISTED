@@ -7,7 +7,7 @@ import random
 import dill
 
 class GenomicSetup: # Class to hold genomic setup information
-	def __init__(self, chromatin_type: str, gene_names: list[str], TSSes: list[float], gene_lengths: list[float], gene_directions: list[int], RNAP_on_rates: list[float], promoter_mode: str, buffer_length: float, are_multiple_chromosomes_present: bool, chromosomes_end_positions: list[float] = [], **kwargs) -> None:
+	def __init__(self, chromatin_type: str, gene_names: list[str], TSSes: list[float], gene_lengths: list[float], gene_directions: list[int], RNAP_on_rates: list[float], promoter_mode: str, buffer_length: float, are_multiple_chromosomes_present: bool, regulatory_network_information: tuple[dict[str, dict[str, int]], dict[str, dict[str, float]], dict[str, dict[str, float]], dict[str, dict[str, float]]], chromosomes_end_positions: list[float] = [], **kwargs) -> None:
 		self.chromatin_type = chromatin_type
 		assert chromatin_type in ['prokaryotic', 'eukaryotic'], 'chromatin_type must be either "prokaryotic" or "eukaryotic".'
 
@@ -78,6 +78,8 @@ class GenomicSetup: # Class to hold genomic setup information
 		self.are_multiple_chromosomes_present = are_multiple_chromosomes_present
 		assert chromosomes_end_positions == sorted(chromosomes_end_positions), 'chromosomes_end_positions must be a sorted list of chromosome end positions.'
 		self.chromosome_end_positions = [val for val in chromosomes_end_positions]
+
+		self.regulatory_network, self.lambda_parameters, self.Theta_parameters, self.n_parameters = regulatory_network_information
 		
 		self.clamp_left = 0.0 # Left end of DNA is at position 0 nm
 		self.clamp_right = TSSes[0] + gene_lengths[0] + buffer_length if gene_directions[0] == 1 else TSSes[0] + buffer_length # Right end of DNA is at position beyond the last gene plus buffer length
@@ -119,6 +121,12 @@ class GenomicSetup: # Class to hold genomic setup information
 			if self.promoter_mode == 'non-constitutive':
 				print(f'\tTF on-rate: {self.TF_on_off_rates[i][0]}, TF off-rate: {self.TF_on_off_rates[i][1]}')
 		print('=' * 40)
+		print('Source\tTarget\tInteraction Type')
+		for source in self.regulatory_network:
+			for target in self.regulatory_network:
+				if self.regulatory_network[source][target] != 0:
+					interaction_type = 'Activation' if self.regulatory_network[source][target] == 1 else 'Repression'
+					print(f'{source}\t{target}\t{interaction_type}')
 
 class ModelSetup: # Class to hold model setup parameters
 	def __init__(self, w0: float = 1.85, chi: float = 0.05, eta: float = 0.0005, alpha: float = 1.5, v0: float = 20.0, tau_c: float = 12.0, force: float = 1.0, kBT: float = 4.1, TOP1_k0: float = 11.0, TOP1_theta: float = 0.25, TOP2_V0: float = 2.6, TOP2_k12: float = 2.0, RNAP_diameter: float = 15.0, generic_binding_protein_diameter: float = 15.0, steric_hindrance_constraint_parameter: float = 2.0, clamps_status: tuple[str, str] = ('clamped', 'clamped'), finite_size_effect_flag: int = 1, supercoiling_relaxation_dynamics_mode: str = 'global_overall', mRNA_dynamics_mode: int = 0, model_observation_event_rate: float = 1.0 / 2.0, **kwargs) -> None:
@@ -185,6 +193,18 @@ class ModelSetup: # Class to hold model setup parameters
 			if 'mRNA_degradation_rate' not in kwargs:
 				raise ValueError('For mRNA_dynamics_mode 1 (i.e., with mRNA degradation), "mRNA_degradation_rate" argument must be provided.')
 			self.mRNA_degradation_rate = float(kwargs['mRNA_degradation_rate'])
+
+		self.protein_production_rate = 0.0 # Rate for protein production from mRNA (in 1 / s); only relevant if mRNA_dynamics_mode = 1
+		self.protein_degradation_rate = 0.0 # Rate for protein degradation (in 1 / s); only relevant if mRNA_dynamics_mode = 1
+		if self.mRNA_dynamics_mode == 1:
+			if 'protein_production_rate' not in kwargs:
+				self.protein_production_rate = 1.0e4
+			else:
+				self.protein_production_rate = float(kwargs['protein_production_rate'])
+			if 'protein_degradation_rate' not in kwargs:
+				self.protein_degradation_rate = 1.0e2
+			else:
+				self.protein_degradation_rate = float(kwargs['protein_degradation_rate'])
 		
 		self.model_observation_event_rate = model_observation_event_rate # Rate for model observation events (in 1 / s)
 		assert model_observation_event_rate > 0.0, 'model_observation_event_rate must be a positive float.'

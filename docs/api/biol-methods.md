@@ -131,9 +131,11 @@ get_promoter_on_rate(
 ) -> float
 ```
 
-Returns `genomic_setup.TF_on_off_rates[gene_index][0]` if `model.promoter_status[gene_index] == 0`, else `0`. `TSS_sigma` is currently unused (scaffolded for future supercoiling-dependent rates).
+Computes the promoter switch-ON rate for gene `gene_index`. Returns `0` if the promoter is already ON (`model.promoter_status[gene_index] == 1`); otherwise the base rate is `genomic_setup.TF_on_off_rates[gene_index][0]`.
 
-In `'constitutive'` mode `TF_on_off_rates[gene_index][0]` is `0.0`, so this rate is always zero.
+When `mRNA_dynamics_mode == 1`, the base rate is multiplied by a regulatory-network modulation factor $H = \prod_j \left[\lambda_j + (1-\lambda_j)\frac{1}{1+(p_j^*/\Theta_j)^{n_j}}\right]$ — the product of `shifted_Hill_function` over every regulator `j` of this gene, with quasi-steady-state protein concentration $p_j^* = k_\text{prod}\cdot\text{mRNA}_j/k_\text{deg}$. Genes with no regulators contribute a factor of 1, leaving the base rate unchanged.
+
+`TSS_sigma` is currently unused (scaffolded for future supercoiling-dependent rates). In `'constitutive'` mode `TF_on_off_rates[gene_index][0]` is `0.0`, so this rate is always zero and recruitment is driven by `RNAP_on_rates` instead.
 
 ---
 
@@ -150,6 +152,21 @@ get_promoter_off_rate(
 Returns `genomic_setup.TF_on_off_rates[gene_index][1]` if `model.promoter_status[gene_index] == 1`, else `0`. `TSS_sigma` is currently unused.
 
 In `'constitutive'` mode `TF_on_off_rates[gene_index][1]` is `0.0`, so this rate is always zero.
+
+---
+
+## `shifted_Hill_function`
+
+```python
+shifted_Hill_function(
+    y: float,
+    lambda_param: float,
+    Theta: float,
+    n: float,
+) -> float
+```
+
+Returns `lambda_param + (1 - lambda_param) / (1 + (y / Theta) ** n)`. This is the per-regulator factor used by `get_promoter_on_rate` to modulate the promoter switch-ON rate. It decreases from 1 (at `y = 0`) toward the floor `lambda_param` as the regulator concentration `y` rises past the threshold `Theta`; `n` controls the steepness. The same form is applied to every regulatory edge regardless of its `Type` label.
 
 ---
 
