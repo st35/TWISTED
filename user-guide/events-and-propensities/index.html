@@ -1542,7 +1542,7 @@
 <p>Only non-zero when <code>supercoiling_relaxation_dynamics_mode</code> is <code>'global_overall'</code> or <code>'global_per_segment'</code>. Rate = <code>global_supercoiling_relaxation_rate</code>.</p>
 <ul>
 <li><code>'global_overall'</code>: every segment's <code>Lk</code> is set to its relaxed value <code>Lk₀ = L / h_dna</code>. Sets <code>last_event_type = 'global_supercoiling_relaxation'</code>.</li>
-<li><code>'global_per_segment'</code>: one segment is picked with length weighting and its <code>Lk</code> is reset. Sets <code>last_event_type = 'global_supercoiling_relaxation_per_segment'</code>, with <code>'_rightmost_segment'</code> or <code>'_leftmost_segment'</code> appended if the chosen segment is the rightmost (<code>index 0</code>) or leftmost (<code>index -1</code>) segment.</li>
+<li><code>'global_per_segment'</code>: one segment is picked with length weighting and its <code>Lk</code> is reset. Sets <code>last_event_type = 'global_supercoiling_relaxation_per_segment'</code>, with <code>'_rightmost_segment'</code> or <code>'_leftmost_segment'</code> appended if the chosen segment is the rightmost (<code>index 0</code>) or leftmost (<code>index -1</code>) segment. This suffix is only added for a single-gene, single-chromosome setup, since with multiple genes or chromosomes the boundary segment is not the only one of interest for event tracking.</li>
 </ul>
 <hr />
 <h2 id="block-3-type-specific-supercoiling-relaxation">Block 3: type-specific supercoiling relaxation<a class="headerlink" href="#block-3-type-specific-supercoiling-relaxation" title="Permanent link">&para;</a></h2>
@@ -1553,7 +1553,7 @@
 <li><code>'per_segment_by_type'</code>, event 0: pick a length-weighted segment <strong>of positive sign</strong> and reset its <code>Lk</code>. Sets <code>last_event_type = 'per_segment_supercoiling_relaxation_positive_only'</code>.</li>
 <li><code>'per_segment_by_type'</code>, event 1: pick a length-weighted segment <strong>of negative sign</strong> and reset its <code>Lk</code>. Sets <code>last_event_type = 'per_segment_supercoiling_relaxation_negative_only'</code>.</li>
 </ul>
-<p>For the <code>'per_segment_by_type'</code> sub-cases, <code>'_rightmost_segment'</code> or <code>'_leftmost_segment'</code> is appended to <code>last_event_type</code> if the chosen segment is the rightmost (<code>index 0</code>) or leftmost (<code>index -1</code>) segment.</p>
+<p>For the <code>'per_segment_by_type'</code> sub-cases, <code>'_rightmost_segment'</code> or <code>'_leftmost_segment'</code> is appended to <code>last_event_type</code> if the chosen segment is the rightmost (<code>index 0</code>) or leftmost (<code>index -1</code>) segment, again only for a single-gene, single-chromosome setup.</p>
 <p>If no segment of the right sign exists, no state change occurs.</p>
 <hr />
 <h2 id="block-4-topoisomerase-approximated-activity">Block 4: topoisomerase-approximated activity<a class="headerlink" href="#block-4-topoisomerase-approximated-activity" title="Permanent link">&para;</a></h2>
@@ -1562,7 +1562,7 @@
 <li><strong>Event 0 (TOP1)</strong>: pick a length-weighted segment. If it is negatively supercoiled (<code>σ &lt; 0</code>), set its <code>Lk</code> to <code>Lk₀</code>. If it is positively supercoiled (<code>σ ≥ 0</code>) with a <strong>positive</strong> writhe fraction, partially relax it by reducing <code>Lk</code> by <code>σ_s × Lk₀</code> (where <code>σ_s</code> is the plectoneme-formation threshold); if it is positively supercoiled with <strong>zero</strong> writhe, set its <code>Lk</code> to <code>Lk₀</code>. Sets <code>last_event_type = 'TOP1_supercoiling_relaxation_approximation'</code>.</li>
 <li><strong>Event 1 (TOP2)</strong>: pick a length-weighted segment. If its writhe fraction is <strong>positive</strong>, set its <code>Lk</code> to <code>Lk₀ × (1 + σ_s)</code>, where <code>σ_s</code> is the plectoneme-formation threshold of that segment. Otherwise no change. Sets <code>last_event_type = 'TOP2_supercoiling_relaxation_approximation'</code>.</li>
 </ul>
-<p>For both TOP1 and TOP2, <code>'_rightmost_segment'</code> or <code>'_leftmost_segment'</code> is appended to <code>last_event_type</code> if the chosen segment is the rightmost (<code>index 0</code>) or leftmost (<code>index -1</code>) segment.</p>
+<p>For both TOP1 and TOP2, <code>'_rightmost_segment'</code> or <code>'_leftmost_segment'</code> is appended to <code>last_event_type</code> if the chosen segment is the rightmost (<code>index 0</code>) or leftmost (<code>index -1</code>) segment, again only for a single-gene, single-chromosome setup.</p>
 <p>The writhe fraction and plectoneme threshold come from <a href="../../api/biol-methods/#get_prokaryotic_torque"><code>get_prokaryotic_torque</code></a> (or the eukaryotic equivalent).</p>
 <hr />
 <h2 id="block-5-mrna-degradation">Block 5: mRNA degradation<a class="headerlink" href="#block-5-mrna-degradation" title="Permanent link">&para;</a></h2>
