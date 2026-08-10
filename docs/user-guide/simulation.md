@@ -20,10 +20,12 @@ SimulationSetupAndState(
     simulation_end_criterion: float | list[int],
     integration_method: str = 'RK23',
     integration_time_resolution: float = 0.1,
-    integration_rtol: float = 1.0e-8,
-    integration_atol: float = 1.0e-10,
+    integration_rtol: float = 1.0e-6,
+    integration_atol: float = 1.0e-8,
     RNAP_alive_status_check_interval: float = 1.0,
     max_RNAPs_to_recruit: list[int] | None = None,
+    min_interval_between_calls_to_print_at_each_integration_step: float = 0.0,
+    max_wall_time: float = 23.0*60.0*60.0,
     Gillespie_random_seed: int = 42,
     everything_else_random_seed: int = 42,
 )
@@ -39,6 +41,8 @@ SimulationSetupAndState(
 | `integration_atol` | absolute tolerance passed to `solve_ivp` (default `1e-8`) |
 | `RNAP_alive_status_check_interval` | how often the integrator pauses to remove finished RNAPs and check for events (s) |
 | `max_RNAPs_to_recruit` | optional list capping recruitment per gene |
+| `min_interval_between_calls_to_print_at_each_integration_step` | minimum simulated seconds between successive `print_at_each_integration_step` calls (default `0.0`, i.e. every integration window) |
+| `max_wall_time` | maximum real (wall-clock) seconds `simulate_dynamics` may run before pausing (default 23 hours) |
 | `Gillespie_random_seed` | integer seed for the Gillespie event-time and event-selection RNG (default `42`) |
 | `everything_else_random_seed` | integer seed for all other stochastic choices: segment selection, binding positions, etc. (default `42`) |
 
@@ -156,6 +160,22 @@ model, sim = load_simulation_state_from_file('run.pkl')
 If a restored `sim` already has `sim.simulation_completed == True`, calling `simulate_dynamics` on it prints `This simulation has finished.` and returns immediately without re-running. To continue such a run, extend the termination criterion with `sim.update_simulation_end_criterion(new_criterion)` (a `float` in time mode or a per-gene `list[int]` in event mode); this updates the criterion and clears the `simulation_completed` flag so the next `simulate_dynamics` call resumes.
 
 The two random number generators (`rng_Gillespie` and `rng_everything_else`) are stored on the `SimulationSetupAndState` object, so they are serialized with the checkpoint and restored on load. A resumed run continues the same random streams rather than restarting them, so saving and resuming yields the same trajectory as running in one shot. A checkpoint loads only if its state was initialized (i.e. `simulate_dynamics` has run at least once); loading an uninitialized state raises a `ValueError`.
+
+### Pausing on a wall-time limit
+
+`simulate_dynamics` also stops on its own if it has been running for more than `max_wall_time` real seconds, even if neither termination criterion has been met. In that case `sim.simulation_completed` stays `False`, so the run is left in exactly the same resumable state as a manually interrupted one — save it and call `simulate_dynamics` again (in the same or a later process) to continue from where it left off. This is useful for splitting long runs across job-scheduler time limits:
+
+```python
+sim = SimulationSetupAndState(
+    simulation_end_mode=1,
+    simulation_end_criterion=[1000],
+    max_wall_time=6.0*60.0*60.0,   # stop after 6 hours of wall-clock time
+)
+simulate_dynamics(model, sim)
+save_simulation_state_to_file(model, sim, 'run.pkl')   # sim.simulation_completed is False if the wall-time limit was hit
+```
+
+Re-running the same script with `load_simulation_state_from_file('run.pkl')` in place of constructing a fresh `sim` picks the run back up for another `max_wall_time` seconds.
 
 !!! warning
     Loading uses `dill`, which can execute arbitrary code while deserializing. Only load checkpoint files that you created or otherwise trust.

@@ -838,6 +838,8 @@ simulate_dynamics(model, sim)                # resumes and runs until the new cr
 
 Because the two random number generators (`rng_Gillespie`, `rng_everything_else`) are stored on `sim`, they are serialized with the checkpoint and restored on load, so a resumed run continues the same random streams rather than restarting them. A run executed in one shot and the same run saved and resumed therefore produce identical trajectories. For time mode, the new end time must not be earlier than `sim.curr_simulation_time`; for event mode, the new counts must require at least one more transcript and stay within `max_RNAPs_to_recruit`.
 
+`SimulationSetupAndState` also accepts `max_wall_time` (default 23 hours), a cap on real (wall-clock) seconds per `simulate_dynamics` call. If this limit is hit before either termination criterion, the loop exits with `sim.simulation_completed` left `False`, leaving the run in the same resumable state as one you interrupted yourself — save it and call `simulate_dynamics` again to pick up where it left off. This is handy for splitting long runs across job-scheduler time limits, independently of the `simulation_end_mode`/`simulation_end_criterion` you are using.
+
 !!! warning
     `load_simulation_state_from_file` uses `dill`, which can execute arbitrary code while deserializing. Only load checkpoint files that you created or otherwise trust.
 
