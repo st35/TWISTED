@@ -57,7 +57,7 @@ A dummy event fired at `model_observation_event_rate` (default 0.5 s⁻¹). It m
 Only non-zero when `supercoiling_relaxation_dynamics_mode` is `'global_overall'` or `'global_per_segment'`. Rate = `global_supercoiling_relaxation_rate`.
 
 - `'global_overall'`: every segment's `Lk` is set to its relaxed value `Lk₀ = L / h_dna`. Sets `last_event_type = 'global_supercoiling_relaxation'`.
-- `'global_per_segment'`: one segment is picked with length weighting and its `Lk` is reset. Sets `last_event_type = 'global_supercoiling_relaxation_per_segment'`, with `'_rightmost_segment'` or `'_leftmost_segment'` appended if the chosen segment is the rightmost (`index 0`) or leftmost (`index -1`) segment.
+- `'global_per_segment'`: one segment is picked with length weighting and its `Lk` is reset. Sets `last_event_type = 'global_supercoiling_relaxation_per_segment'`, with `'_rightmost_segment'` or `'_leftmost_segment'` appended if the chosen segment is the rightmost (`index 0`) or leftmost (`index -1`) segment. This suffix is only added for a single-gene, single-chromosome setup, since with multiple genes or chromosomes the boundary segment is not the only one of interest for event tracking.
 
 ---
 
@@ -70,7 +70,7 @@ Two propensities, `local_supercoiling_relaxation_rates = [rate_pos, rate_neg]`. 
 - `'per_segment_by_type'`, event 0: pick a length-weighted segment **of positive sign** and reset its `Lk`. Sets `last_event_type = 'per_segment_supercoiling_relaxation_positive_only'`.
 - `'per_segment_by_type'`, event 1: pick a length-weighted segment **of negative sign** and reset its `Lk`. Sets `last_event_type = 'per_segment_supercoiling_relaxation_negative_only'`.
 
-For the `'per_segment_by_type'` sub-cases, `'_rightmost_segment'` or `'_leftmost_segment'` is appended to `last_event_type` if the chosen segment is the rightmost (`index 0`) or leftmost (`index -1`) segment.
+For the `'per_segment_by_type'` sub-cases, `'_rightmost_segment'` or `'_leftmost_segment'` is appended to `last_event_type` if the chosen segment is the rightmost (`index 0`) or leftmost (`index -1`) segment, again only for a single-gene, single-chromosome setup.
 
 If no segment of the right sign exists, no state change occurs.
 
@@ -83,7 +83,7 @@ Two propensities, `[TOP1_effective_relaxation_rate, TOP2_effective_relaxation_ra
 - **Event 0 (TOP1)**: pick a length-weighted segment. If it is negatively supercoiled (`σ < 0`), set its `Lk` to `Lk₀`. If it is positively supercoiled (`σ ≥ 0`) with a **positive** writhe fraction, partially relax it by reducing `Lk` by `σ_s × Lk₀` (where `σ_s` is the plectoneme-formation threshold); if it is positively supercoiled with **zero** writhe, set its `Lk` to `Lk₀`. Sets `last_event_type = 'TOP1_supercoiling_relaxation_approximation'`.
 - **Event 1 (TOP2)**: pick a length-weighted segment. If its writhe fraction is **positive**, set its `Lk` to `Lk₀ × (1 + σ_s)`, where `σ_s` is the plectoneme-formation threshold of that segment. Otherwise no change. Sets `last_event_type = 'TOP2_supercoiling_relaxation_approximation'`.
 
-For both TOP1 and TOP2, `'_rightmost_segment'` or `'_leftmost_segment'` is appended to `last_event_type` if the chosen segment is the rightmost (`index 0`) or leftmost (`index -1`) segment.
+For both TOP1 and TOP2, `'_rightmost_segment'` or `'_leftmost_segment'` is appended to `last_event_type` if the chosen segment is the rightmost (`index 0`) or leftmost (`index -1`) segment, again only for a single-gene, single-chromosome setup.
 
 The writhe fraction and plectoneme threshold come from [`get_prokaryotic_torque`](../api/biol-methods.md#get_prokaryotic_torque) (or the eukaryotic equivalent).
 
