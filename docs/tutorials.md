@@ -354,7 +354,7 @@ Transcription rates are typically higher under free boundary conditions because 
 
 | Argument | Signature | Fired when |
 |----------|----------|------------|
-| `print_at_each_integration_step` | `(model, sim, t, state_vector)` | once at the start of every ODE integration window of length `RNAP_alive_status_check_interval` |
+| `print_at_each_integration_step` | `(model, sim, t, state_vector)` | once at the start of every ODE integration window of length `RNAP_alive_status_check_interval`, throttled by `min_interval_between_calls_to_print_at_each_integration_step` |
 | `print_at_each_simulation_step` | `(model, sim)` | once at the top of each iteration of the main Gillespie loop |
 | `print_at_end_of_simulation` | `(model, sim)` | once when the loop exits |
 

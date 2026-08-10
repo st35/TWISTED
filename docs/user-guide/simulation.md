@@ -178,7 +178,7 @@ simulate_dynamics(
 
 | Callback | Signature | Fires |
 |----------|----------|------|
-| `print_at_each_integration_step` | `(model, sim, t, state_vector)` | Once at the start of every integration window of length `RNAP_alive_status_check_interval`. The `state_vector` is the live integrator state (RNAP positions, angles, segment `Lk`, cumulative propensity). |
+| `print_at_each_integration_step` | `(model, sim, t, state_vector)` | Once at the start of every integration window of length `RNAP_alive_status_check_interval`, but only if more than `min_interval_between_calls_to_print_at_each_integration_step` seconds have elapsed since the previous call (default `0.0`, i.e. every window). The `state_vector` is the live integrator state (RNAP positions, angles, segment `Lk`, cumulative propensity). |
 | `print_at_each_simulation_step` | `(model, sim)` | Once at the top of each iteration of the outer Gillespie loop, **before** event selection. |
 | `print_at_end_of_simulation` | `(model, sim)` | Once when the loop exits. |
 

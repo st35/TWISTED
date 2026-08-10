@@ -498,7 +498,9 @@ def integrate(model: Model, simulation_setup_and_state: SimulationSetupAndState,
 
 	while True:
 		if print_at_each_integration_step is not None:
-			print_at_each_integration_step(model, simulation_setup_and_state, t, state_vector)
+			if (t - simulation_setup_and_state.last_time_print_at_each_integration_step_was_called) > simulation_setup_and_state.min_interval_between_calls_to_print_at_each_integration_step:
+				print_at_each_integration_step(model, simulation_setup_and_state, t, state_vector)
+				simulation_setup_and_state.last_time_print_at_each_integration_step_was_called = t
 		t_eval = []
 		t_first = t
 		while t_first < t + dt:

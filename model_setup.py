@@ -286,7 +286,7 @@ class Model: # Class to hold the model, including genomic setup, model setup, an
 		print('=' * 80)
 
 class SimulationSetupAndState: # Class to hold simulation setup parameters
-	def __init__(self, simulation_end_mode: int, simulation_end_criterion: Union[float, list[int]], integration_method: str = 'RK23', integration_time_resolution: float = 1.0e-1, integration_rtol: float = 1.0e-6, integration_atol: float = 1.0e-8, RNAP_alive_status_check_interval: float = 1.0, max_RNAPs_to_recruit: list[int] = None, Gillespie_random_seed: int = 42, everything_else_random_seed: int = 42) -> None:
+	def __init__(self, simulation_end_mode: int, simulation_end_criterion: Union[float, list[int]], integration_method: str = 'RK23', integration_time_resolution: float = 1.0e-1, integration_rtol: float = 1.0e-6, integration_atol: float = 1.0e-8, RNAP_alive_status_check_interval: float = 1.0, max_RNAPs_to_recruit: list[int] = None, min_interval_between_calls_to_print_at_each_integration_step: float = 0.0, Gillespie_random_seed: int = 42, everything_else_random_seed: int = 42) -> None:
 		self.simulation_end_mode = simulation_end_mode # 0: time-based, 1: event-based
 		assert simulation_end_mode in [0, 1], 'simulation_end_mode must be either 0 (time-based) or 1 (event-based).'
 
@@ -318,10 +318,13 @@ class SimulationSetupAndState: # Class to hold simulation setup parameters
 			assert isinstance(max_RNAPs_to_recruit, list), 'max_RNAPs_to_recruit must be a list of integers representing the maximum number of RNAPs to recruit for each gene.'
 		self.max_RNAPs_to_recruit = max_RNAPs_to_recruit # Maximum number of RNAPs to recruit for each gene
 
+		self.min_interval_between_calls_to_print_at_each_integration_step = min_interval_between_calls_to_print_at_each_integration_step # Minimum interval (in s) between calls to print_at_each_integration_step
+
 		self.curr_simulation_time = 0.0 # Current simulation time (in s)
 		self.last_event_index = -1 # Index of the last event that occurred in the simulation
 		self.last_event_type = None # Type of the last event that occurred in the simulation
 		self.simulation_completed = False # Flag indicating whether the simulation has completed
+		self.last_time_print_at_each_integration_step_was_called = -1.0 # Last time (in s) when print_at_each_integration_step was called
 
 		self.state_has_been_initialized = False # Flag indicating whether the simulation state has been initialized; used to ensure that setup_simulation_state is called before running the simulation
 
