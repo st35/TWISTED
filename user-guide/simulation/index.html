@@ -1817,7 +1817,7 @@
 <tr>
 <td><code>print_at_each_integration_step</code></td>
 <td><code>(model, sim, t, state_vector)</code></td>
-<td>Once at the start of every integration window of length <code>RNAP_alive_status_check_interval</code>. The <code>state_vector</code> is the live integrator state (RNAP positions, angles, segment <code>Lk</code>, cumulative propensity).</td>
+<td>Once at the start of every integration window of length <code>RNAP_alive_status_check_interval</code>, but only if more than <code>min_interval_between_calls_to_print_at_each_integration_step</code> seconds have elapsed since the previous call (default <code>0.0</code>, i.e. every window). The <code>state_vector</code> is the live integrator state (RNAP positions, angles, segment <code>Lk</code>, cumulative propensity).</td>
 </tr>
 <tr>
 <td><code>print_at_each_simulation_step</code></td>

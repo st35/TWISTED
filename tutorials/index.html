@@ -1977,7 +1977,7 @@
 <tr>
 <td><code>print_at_each_integration_step</code></td>
 <td><code>(model, sim, t, state_vector)</code></td>
-<td>once at the start of every ODE integration window of length <code>RNAP_alive_status_check_interval</code></td>
+<td>once at the start of every ODE integration window of length <code>RNAP_alive_status_check_interval</code>, throttled by <code>min_interval_between_calls_to_print_at_each_integration_step</code></td>
 </tr>
 <tr>
 <td><code>print_at_each_simulation_step</code></td>
