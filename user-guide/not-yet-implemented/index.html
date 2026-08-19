@@ -1168,6 +1168,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/output-logging-methods/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    output_logging_methods
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1263,10 +1291,10 @@
 <p>One feature is accepted by the API surface but <strong>not active in the simulation loop</strong>. It is documented here to avoid duplication elsewhere.</p>
 <hr />
 <h2 id="1-topoisomerase_based-supercoiling-relaxation-mode">1. <code>'topoisomerase_based'</code> supercoiling-relaxation mode<a class="headerlink" href="#1-topoisomerase_based-supercoiling-relaxation-mode" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">ModelSetup</span><span class="p">(</span><span class="n">supercoiling_relaxation_dynamics_mode</span><span class="o">=</span><span class="s1">&#39;topoisomerase_based&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">ModelSetup</span><span class="p">(</span><span class="n">supercoiling_relaxation_dynamics_mode</span><span class="o">=</span><span class="s1">'topoisomerase_based'</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
 </code></pre></div>
 <p>The <code>ModelSetup</code> constructor recognises this mode value but immediately raises:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>NotImplementedError: supercoiling_relaxation_dynamics_mode &quot;topoisomerase_based&quot; is not yet implemented.
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>NotImplementedError: supercoiling_relaxation_dynamics_mode "topoisomerase_based" is not yet implemented.
 </code></pre></div>
 <p>The intended semantics, when implemented, are:</p>
 <ul>

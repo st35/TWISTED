@@ -1201,6 +1201,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="output-logging-methods/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    output_logging_methods
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1356,10 +1384,14 @@
 <td><a href="utilities/"><code>utilities</code></a></td>
 <td>Pure helpers: gene-file IO, segment/spot lookup, steric checks, sampling helpers</td>
 </tr>
+<tr>
+<td><a href="output-logging-methods/"><code>output_logging_methods</code></a></td>
+<td>Ready-made file-logging callbacks for the three <code>simulate_dynamics</code> hooks</td>
+</tr>
 </tbody>
 </table>
 <h2 id="dependency-graph">Dependency graph<a class="headerlink" href="#dependency-graph" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>utilities  ──►  model_setup ──►  biol_methods ──►  model_dynamics ──►  simulate_dynamics
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>utilities  ──►  model_setup ──►  biol_methods ──►  model_dynamics ──►  simulate_dynamics ──►  output_logging_methods
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>                                                            ▲
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>                                                            └─── utilities
 </code></pre></div>

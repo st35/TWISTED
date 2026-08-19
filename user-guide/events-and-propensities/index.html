@@ -1289,6 +1289,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/output-logging-methods/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    output_logging_methods
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1613,11 +1641,11 @@
 <a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    <span class="n">RNAP_gene_index</span><span class="p">,</span> <span class="n">sv</span> <span class="o">=</span> <span class="n">get_state_vectors_from_dicts</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
 <a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="n">rates</span><span class="p">,</span> <span class="n">idx</span> <span class="o">=</span> <span class="n">get_events_rates</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">RNAP_gene_index</span><span class="p">,</span> <span class="n">sv</span><span class="p">)</span>
 <a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="n">block_totals</span> <span class="o">=</span> <span class="p">[</span><span class="nb">sum</span><span class="p">(</span><span class="n">rates</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">])</span> <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">idx</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">idx</span><span class="p">)]</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;recruitment&#39;</span><span class="p">,</span> <span class="s1">&#39;observation&#39;</span><span class="p">,</span> <span class="s1">&#39;global SC&#39;</span><span class="p">,</span> <span class="s1">&#39;by-type SC&#39;</span><span class="p">,</span>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>              <span class="s1">&#39;topoisomerase&#39;</span><span class="p">,</span> <span class="s1">&#39;mRNA degr.&#39;</span><span class="p">,</span> <span class="s1">&#39;protein on&#39;</span><span class="p">,</span> <span class="s1">&#39;protein off&#39;</span><span class="p">,</span>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>              <span class="s1">&#39;promoter on&#39;</span><span class="p">,</span> <span class="s1">&#39;promoter off&#39;</span><span class="p">]</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'recruitment'</span><span class="p">,</span> <span class="s1">'observation'</span><span class="p">,</span> <span class="s1">'global SC'</span><span class="p">,</span> <span class="s1">'by-type SC'</span><span class="p">,</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>              <span class="s1">'topoisomerase'</span><span class="p">,</span> <span class="s1">'mRNA degr.'</span><span class="p">,</span> <span class="s1">'protein on'</span><span class="p">,</span> <span class="s1">'protein off'</span><span class="p">,</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>              <span class="s1">'promoter on'</span><span class="p">,</span> <span class="s1">'promoter off'</span><span class="p">]</span>
 <a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>    <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">total</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">block_totals</span><span class="p">):</span>
-<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  </span><span class="si">{</span><span class="n">label</span><span class="si">:</span><span class="s1">&gt;14</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">total</span><span class="si">:</span><span class="s1">.4g</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'  </span><span class="si">{</span><span class="n">label</span><span class="si">:</span><span class="s1">&gt;14</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">total</span><span class="si">:</span><span class="s1">.4g</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
 <a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>
 <a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="n">simulate_dynamics</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">sim</span><span class="p">,</span> <span class="n">print_at_each_simulation_step</span><span class="o">=</span><span class="n">report</span><span class="p">)</span>
 </code></pre></div>
