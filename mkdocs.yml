@@ -76,4 +76,5 @@ nav:
     - model_dynamics: api/model-dynamics.md
     - simulate_dynamics: api/simulate-dynamics.md
     - utilities: api/utilities.md
+    - output_logging_methods: api/output-logging-methods.md
   - How to cite: citations.md

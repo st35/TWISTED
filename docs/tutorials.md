@@ -393,6 +393,36 @@ simulate_dynamics(model, sim, print_at_each_simulation_step=log_on_recruitment)
 
 For more detailed per-event introspection (which event fired, propensities, etc.), see [User Guide → Events and propensities](user-guide/events-and-propensities.md).
 
+### Using `output_logging_methods`
+
+Rather than writing custom callbacks from scratch, [`output_logging_methods`](api/output-logging-methods.md) provides ready-made functions for logging RNAP kinematics, supercoiling, promoter/mRNA state, and Gillespie events to files. Wrap each one in a `lambda` matching the hook's signature and pass caller-owned file handles for whichever quantities you want recorded:
+
+```python
+from output_logging_methods import (
+    print_at_each_integration_step, print_at_each_Gillespie_step, print_at_end_of_simulation,
+)
+
+with open('positions.log', 'w') as pos_f, \
+     open('sigma.log', 'w') as sigma_f, \
+     open('events.log', 'w') as events_f, \
+     open('rates.log', 'w') as rates_f:
+    simulate_dynamics(
+        model, sim,
+        print_at_each_integration_step=lambda m, s, t, sv: print_at_each_integration_step(
+            m, s, t, sv, RNAPs_pos_file=pos_f, sigma_file=sigma_f,
+        ),
+        print_at_each_simulation_step=lambda m, s: print_at_each_Gillespie_step(
+            m, s, events_log_file=events_f,
+        ),
+        print_at_end_of_simulation=lambda m, s: print_at_end_of_simulation(
+            m, s, transcription_rates_file=rates_f,
+        ),
+    )
+```
+
+Only the file arguments you supply are written; omit any you don't need. See the [API reference](api/output-logging-methods.md) for the full set of available files per function.
+
+
 ---
 
 ## 12. Generic DNA-binding proteins

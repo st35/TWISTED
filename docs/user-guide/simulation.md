@@ -204,6 +204,8 @@ simulate_dynamics(
 
 The integration callback is suitable for logging time series of RNAP positions and supercoiling densities. The Gillespie callback is suitable for logging per-event quantities (mRNA counts, recruitment-success rates). The end callback is suitable for summary output.
 
+[`output_logging_methods`](../api/output-logging-methods.md) provides ready-made implementations of all three callbacks that write to caller-supplied file handles, so you do not need to write your own logging functions for common cases.
+
 ### Worked logging snippet
 
 ```python

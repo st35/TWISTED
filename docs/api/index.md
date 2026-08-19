@@ -11,11 +11,12 @@ TWISTED is laid out as a small flat package with one file per architectural laye
 | [`model_dynamics`](model-dynamics.md) | Vectorised dynamics over the whole DNA: state vector ↔ dict conversions, segment attributes, ODE right-hand side, integration window |
 | [`simulate_dynamics`](simulate-dynamics.md) | Outer Gillespie loop with full event dispatch |
 | [`utilities`](utilities.md) | Pure helpers: gene-file IO, segment/spot lookup, steric checks, sampling helpers |
+| [`output_logging_methods`](output-logging-methods.md) | Ready-made file-logging callbacks for the three `simulate_dynamics` hooks |
 
 ## Dependency graph
 
 ```
-utilities  ──►  model_setup ──►  biol_methods ──►  model_dynamics ──►  simulate_dynamics
+utilities  ──►  model_setup ──►  biol_methods ──►  model_dynamics ──►  simulate_dynamics ──►  output_logging_methods
                                                             ▲
                                                             └─── utilities
 ```
