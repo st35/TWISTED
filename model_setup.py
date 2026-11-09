@@ -306,7 +306,7 @@ class Model: # Class to hold the model, including genomic setup, model setup, an
 		print('=' * 80)
 
 class SimulationSetupAndState: # Class to hold simulation setup parameters
-	def __init__(self, simulation_end_mode: int, simulation_end_criterion: Union[float, list[int]], integration_method: str = 'RK23', integration_time_resolution: float = 1.0e-1, integration_rtol: float = 1.0e-6, integration_atol: float = 1.0e-8, RNAP_alive_status_check_interval: float = 1.0, max_RNAPs_to_recruit: list[int] = None, min_interval_between_calls_to_print_at_each_integration_step: float = 0.0, max_wall_time: float = 23.0*60.0*60.0, Gillespie_random_seed: int = 42, everything_else_random_seed: int = 42) -> None:
+	def __init__(self, simulation_end_mode: int, simulation_end_criterion: Union[float, list[int]], integration_method: str = 'RK23', integration_time_resolution: float = 1.0e-1, integration_rtol: float = 1.0e-6, integration_atol: float = 1.0e-8, RNAP_alive_status_check_interval: float = 1.0, max_RNAPs_to_recruit: list[int] = None, min_interval_between_calls_to_print_at_each_integration_step: float = 0.0, max_wall_time: float = 23.0*60.0*60.0, Gillespie_random_seed: int = 42, everything_else_random_seed: int = 42, logging_random_seed: int = 42) -> None:
 		self.simulation_end_mode = simulation_end_mode # 0: time-based, 1: event-based
 		assert simulation_end_mode in [0, 1], 'simulation_end_mode must be either 0 (time-based) or 1 (event-based).'
 
@@ -351,9 +351,11 @@ class SimulationSetupAndState: # Class to hold simulation setup parameters
 
 		self.Gillespie_random_seed = Gillespie_random_seed # Random seed for Gillespie events
 		self.everything_else_random_seed = everything_else_random_seed # Random seed for all other stochastic processes in the simulation (e.g., choosing segments for supercoiling relaxation events, choosing which bound protein unbinds in a binding protein unbinding event, etc.)
+		self.logging_random_seed = logging_random_seed # Random seed to be used during logging
 
 		self.rng_Gillespie = random.Random(self.Gillespie_random_seed)
 		self.rng_everything_else = random.Random(self.everything_else_random_seed)
+		self.rng_logging = random.Random(self.logging_random_seed)
 	
 	def setup_simulation_state(self, genomic_setup: GenomicSetup) -> None:
 		if self.simulation_end_mode == 1:

@@ -28,6 +28,7 @@ SimulationSetupAndState(
     max_wall_time: float = 23.0*60.0*60.0,
     Gillespie_random_seed: int = 42,
     everything_else_random_seed: int = 42,
+    logging_random_seed: int = 42,
 )
 ```
 
@@ -45,6 +46,7 @@ SimulationSetupAndState(
 | `max_wall_time` | maximum real (wall-clock) seconds `simulate_dynamics` may run before pausing (default 23 hours) |
 | `Gillespie_random_seed` | integer seed for the Gillespie event-time and event-selection RNG (default `42`) |
 | `everything_else_random_seed` | integer seed for all other stochastic choices: segment selection, binding positions, etc. (default `42`) |
+| `logging_random_seed` | integer seed for the RNG that subsamples `print_at_each_integration_step` calls when `fraction_of_steps_to_log < 1` (default `42`); independent of the simulation RNGs, so it never changes the trajectory |
 
 The constructor does **not** take a `GenomicSetup`. `setup_simulation_state(genomic_setup)` sizes the per-gene result lists and checks their lengths against the gene list; `simulate_dynamics` calls it automatically before the main loop, so you normally do not need to call it yourself.
 

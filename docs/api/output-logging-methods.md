@@ -24,6 +24,7 @@ print_at_each_integration_step(
     barrier_position_file: TextIO = None,
     binding_proteins_file: TextIO = None,
     RNAPs_density_file: TextIO = None,
+    fraction_of_steps_to_log: float = 1.0,
     screen_logging: bool = False,
     **kwargs,
 ) -> None
@@ -56,6 +57,8 @@ Each row is `t` followed by one tab-separated value per RNAP or per segment (seg
 | `RNAPs_density_file` | RNAP counts per bin of the DNA between `clamp_left` and `clamp_right`, ordered left to right. The bin size is 100 bp by default; override it with the `bin_size` keyword argument (in bp). RNAPs outside the range are not counted |
 | `promoter_status_file` | `model.promoter_status[i]` for every gene |
 | `mRNA_count_file` | Per gene: number of RNAPs currently transcribing, `RNAPs_finished_transcription[i]`, then `model.mRNA_counts[i]` |
+
+`fraction_of_steps_to_log` (between 0 and 1, default `1.0`; otherwise `ValueError`) randomly subsamples calls: each call is logged with that probability and is skipped entirely otherwise, including any `screen_logging` output. The draw uses the dedicated `rng_logging` generator seeded by `SimulationSetupAndState(logging_random_seed=...)`, so the selection is reproducible and does not affect the simulation's RNG streams.
 
 If `screen_logging` is `True`, a summary line (`t`, RNAP count, finished-transcription counts, mRNA counts, promoter statuses) is also printed to stdout.
 

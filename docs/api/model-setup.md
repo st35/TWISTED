@@ -170,10 +170,11 @@ SimulationSetupAndState(
     max_wall_time: float = 23.0*60.0*60.0,
     Gillespie_random_seed: int = 42,
     everything_else_random_seed: int = 42,
+    logging_random_seed: int = 42,
 )
 ```
 
-Termination policy + integrator settings + result accumulators in one object. The constructor no longer takes a `GenomicSetup`; per-gene state is allocated later by `setup_simulation_state` (called automatically by `simulate_dynamics`). `min_interval_between_calls_to_print_at_each_integration_step` throttles `print_at_each_integration_step`: the callback fires only once the simulation clock has advanced by more than this many seconds since the previous call, which is useful for reducing logging volume in long runs. The default of `0.0` calls it at every integration step, matching the previous unconditional behavior. `max_wall_time` caps how many real (wall-clock) seconds a single `simulate_dynamics` call may run for (default 23 hours); if the limit is reached, the loop exits with `simulation_completed` left `False`, so the run can be checkpointed and resumed exactly like a manually interrupted one.
+Termination policy + integrator settings + result accumulators in one object. The constructor no longer takes a `GenomicSetup`; per-gene state is allocated later by `setup_simulation_state` (called automatically by `simulate_dynamics`). `min_interval_between_calls_to_print_at_each_integration_step` throttles `print_at_each_integration_step`: the callback fires only once the simulation clock has advanced by more than this many seconds since the previous call, which is useful for reducing logging volume in long runs. The default of `0.0` calls it at every integration step, matching the previous unconditional behavior. `max_wall_time` caps how many real (wall-clock) seconds a single `simulate_dynamics` call may run for (default 23 hours); if the limit is reached, the loop exits with `simulation_completed` left `False`, so the run can be checkpointed and resumed exactly like a manually interrupted one. `logging_random_seed` seeds a separate RNG (`rng_logging`) used only to subsample calls to `print_at_each_integration_step` via its `fraction_of_steps_to_log` argument; it is independent of the Gillespie and everything-else RNGs, so logging never alters the simulated trajectory.
 
 State attributes (filled during `simulate_dynamics`):
 

@@ -4,7 +4,12 @@ from utilities import *
 from model_setup import *
 from simulate_dynamics import *
 
-def print_at_each_integration_step(model: Model, simulation_setup_and_state: SimulationSetupAndState, t: float, state_vector: list[float], RNAPs_pos_file: TextIO = None, RNAPs_dx_dt_file: TextIO = None, RNAPs_dtheta_dt_file: TextIO = None, sigma_file: TextIO = None, torque_file: TextIO = None, dLk_dt_file: TextIO = None, nucleosome_position_file: TextIO = None, promoter_status_file: TextIO = None, mRNA_count_file: TextIO = None, barrier_position_file: TextIO = None, binding_proteins_file: TextIO = None, RNAPs_density_file: TextIO = None, screen_logging = False, **kwargs) -> None:
+def print_at_each_integration_step(model: Model, simulation_setup_and_state: SimulationSetupAndState, t: float, state_vector: list[float], RNAPs_pos_file: TextIO = None, RNAPs_dx_dt_file: TextIO = None, RNAPs_dtheta_dt_file: TextIO = None, sigma_file: TextIO = None, torque_file: TextIO = None, dLk_dt_file: TextIO = None, nucleosome_position_file: TextIO = None, promoter_status_file: TextIO = None, mRNA_count_file: TextIO = None, barrier_position_file: TextIO = None, binding_proteins_file: TextIO = None, RNAPs_density_file: TextIO = None, fraction_of_steps_to_log: float = 1.0, screen_logging = False, **kwargs) -> None:
+	if fraction_of_steps_to_log < 0.0 or fraction_of_steps_to_log > 1.0:
+		raise ValueError('fraction_of_steps_to_log must be between 0.0 and 1.0.')
+	if simulation_setup_and_state.rng_logging.random() > fraction_of_steps_to_log:
+		return
+
 	RNAP_gene_index, state_vector = get_state_vectors_from_dicts(model)
 	RNAP_count = len(RNAP_gene_index)
 	dstate_dt = model_dynamics(t, state_vector, RNAP_gene_index, model, simulation_setup_and_state)

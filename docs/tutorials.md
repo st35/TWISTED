@@ -424,6 +424,28 @@ with open('positions.log', 'w') as pos_f, \
 
 Only the file arguments you supply are written; omit any you don't need. See the [API reference](api/output-logging-methods.md) for the full set of available files per function.
 
+#### Thinning the output and logging RNAP density
+
+Long runs can produce very large logs. Besides throttling the callback with `min_interval_between_calls_to_print_at_each_integration_step`, you can randomly subsample the calls with `fraction_of_steps_to_log`: each call is logged with that probability (`0.1` keeps roughly 10 % of them) and skipped entirely otherwise, including any `screen_logging` output. The draw uses a dedicated RNG seeded by `logging_random_seed`, so the selection is reproducible and never changes the simulated trajectory.
+
+`RNAPs_density_file` writes the number of RNAPs in each 100 bp bin between `clamp_left` and `clamp_right` (pass `bin_size=<bp>` to change the bin size), which is convenient for plotting RNAP occupancy along the DNA:
+
+```python
+sim = SimulationSetupAndState(0, 300.0, logging_random_seed=1)
+
+with open('density.log', 'w') as density_f, open('sigma.log', 'w') as sigma_f:
+    simulate_dynamics(
+        model, sim,
+        print_at_each_integration_step=lambda m, s, t, sv: print_at_each_integration_step(
+            m, s, t, sv,
+            RNAPs_density_file=density_f, sigma_file=sigma_f,
+            fraction_of_steps_to_log=0.1, bin_size=200,
+        ),
+    )
+```
+
+Each row is `t` followed by the per-bin counts. Rows from the same step are written to all supplied files together, so the files stay aligned with each other. Values outside `[0, 1]` for `fraction_of_steps_to_log` raise a `ValueError`.
+
 
 ---
 
