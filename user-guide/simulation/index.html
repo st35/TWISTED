@@ -1666,7 +1666,8 @@
 <a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>    <span class="n">max_wall_time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">23.0</span><span class="o">*</span><span class="mf">60.0</span><span class="o">*</span><span class="mf">60.0</span><span class="p">,</span>
 <a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>    <span class="n">Gillespie_random_seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">42</span><span class="p">,</span>
 <a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>    <span class="n">everything_else_random_seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">42</span><span class="p">,</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="p">)</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>    <span class="n">logging_random_seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">42</span><span class="p">,</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="p">)</span>
 </code></pre></div>
 <table>
 <thead>
@@ -1723,6 +1724,10 @@
 <tr>
 <td><code>everything_else_random_seed</code></td>
 <td>integer seed for all other stochastic choices: segment selection, binding positions, etc. (default <code>42</code>)</td>
+</tr>
+<tr>
+<td><code>logging_random_seed</code></td>
+<td>integer seed for the RNG that subsamples <code>print_at_each_integration_step</code> calls when <code>fraction_of_steps_to_log &lt; 1</code> (default <code>42</code>); independent of the simulation RNGs, so it never changes the trajectory</td>
 </tr>
 </tbody>
 </table>

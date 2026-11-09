@@ -1352,9 +1352,10 @@
 <a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>    <span class="n">barrier_position_file</span><span class="p">:</span> <span class="n">TextIO</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>    <span class="n">binding_proteins_file</span><span class="p">:</span> <span class="n">TextIO</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    <span class="n">RNAPs_density_file</span><span class="p">:</span> <span class="n">TextIO</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    <span class="n">screen_logging</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    <span class="n">fraction_of_steps_to_log</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>    <span class="n">screen_logging</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </code></pre></div>
 <p>Matches the <code>(model, sim, t, state_vector)</code> signature of the <code>print_at_each_integration_step</code> hook. Pass it directly, or wrap it in a <code>lambda</code> to bind the file handles:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">simulate_dynamics</span><span class="p">(</span>
@@ -1423,6 +1424,7 @@
 </tr>
 </tbody>
 </table>
+<p><code>fraction_of_steps_to_log</code> (between 0 and 1, default <code>1.0</code>; otherwise <code>ValueError</code>) randomly subsamples calls: each call is logged with that probability and is skipped entirely otherwise, including any <code>screen_logging</code> output. The draw uses the dedicated <code>rng_logging</code> generator seeded by <code>SimulationSetupAndState(logging_random_seed=...)</code>, so the selection is reproducible and does not affect the simulation's RNG streams.</p>
 <p>If <code>screen_logging</code> is <code>True</code>, a summary line (<code>t</code>, RNAP count, finished-transcription counts, mRNA counts, promoter statuses) is also printed to stdout.</p>
 <div class="admonition warning">
 <p class="admonition-title"><code>dLk_dt_file</code> naming</p>
