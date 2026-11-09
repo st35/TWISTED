@@ -216,9 +216,13 @@ In the implemented `'topoisomerase_approximated'` mode these per-molecule rates 
 
 Implemented in [`get_RNAP_recruitment_rate`](../api/biol-methods.md#get_rnap_recruitment_rate). For TSS `i`:
 
-$$r_i \;=\; \begin{cases} \texttt{RNAP\_on\_rates}[i] & \texttt{promoter\_status}[i] = 1,\\ 0 & \texttt{promoter\_status}[i] = 0. \end{cases}$$
+$$r_i \;=\; \begin{cases} \texttt{RNAP\_on\_rates}[i] \cdot f(\sigma_i) & \texttt{promoter\_status}[i] = 1,\\ 0 & \texttt{promoter\_status}[i] = 0, \end{cases}$$
 
-Note that the function takes the local TSS supercoiling density `TSS_sigma` as an argument **but does not currently use it**. There is no σ-dependent or torque-dependent modulation of recruitment rate at present. Possible workarounds include scaling `RNAP_on_rates[i]` externally according to σ values measured in a pilot run, or modifying `get_RNAP_recruitment_rate` directly.
+where `σ_i` is the local supercoiling density of the segment containing TSS `i`. In `RNAP_recruitment_mode='constant'`, `f = 1`. In `'sigma_dependent'` mode,
+
+$$f(\sigma) \;=\; \tfrac{1}{2}\left[1 - \tanh\!\left(\frac{\sigma - \sigma_{th}}{s}\right)\right],$$
+
+with `σ_th = RNAP_recruitment_sigma_dependence_threshold` (default −0.25) and `s = RNAP_recruitment_sigma_dependence_slope` (default 0.1, must be positive). `f` approaches 1 for strongly negative `σ` and 0 for `σ` well above `σ_th`. There is no torque-dependent modulation.
 
 The TSS steric check that gates whether a recruitment event *succeeds* is separate (and σ-independent); see [Events and propensities](../user-guide/events-and-propensities.md#block-0-rnap-recruitment).
 

@@ -27,12 +27,13 @@ construct_genomic_setup(
     filename: str,
     chromatin_type: str,
     promoter_mode: str = 'constitutive',
+    RNAP_recruitment_mode: str = 'constant',
     buffer_length: float = 10000.0 * 0.34,
     **kwargs,
 ) -> GenomicSetup
 ```
 
-Read a gene file and construct a `GenomicSetup` in one call. Accepts both the five-column single-chromosome format and the six-column multi-chromosome format (see `read_genes_information`). When multiple distinct chromosome identifiers are detected, automatically computes `chromosomes_end_positions` (laying chromosomes end-to-end in reverse order of first appearance), sets `are_multiple_chromosomes_present=True`, and passes both to `GenomicSetup`. Calls `read_regulatory_network` using the optional kwarg `regulatory_network_file`; the key is consumed before the remaining `**kwargs` are forwarded to the `GenomicSetup` constructor.
+Read a gene file and construct a `GenomicSetup` in one call. `RNAP_recruitment_mode` (`'constant'` by default, or `'sigma_dependent'`) is forwarded to `GenomicSetup`, along with any `RNAP_recruitment_sigma_dependence_*` kwargs. Accepts both the five-column single-chromosome format and the six-column multi-chromosome format (see `read_genes_information`). When multiple distinct chromosome identifiers are detected, automatically computes `chromosomes_end_positions` (laying chromosomes end-to-end in reverse order of first appearance), sets `are_multiple_chromosomes_present=True`, and passes both to `GenomicSetup`. Calls `read_regulatory_network` using the optional kwarg `regulatory_network_file`; the key is consumed before the remaining `**kwargs` are forwarded to the `GenomicSetup` constructor.
 
 ### `read_regulatory_network`
 

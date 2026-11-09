@@ -23,7 +23,9 @@ print_at_each_integration_step(
     mRNA_count_file: TextIO = None,
     barrier_position_file: TextIO = None,
     binding_proteins_file: TextIO = None,
+    RNAPs_density_file: TextIO = None,
     screen_logging: bool = False,
+    **kwargs,
 ) -> None
 ```
 
@@ -51,6 +53,7 @@ Each row is `t` followed by one tab-separated value per RNAP or per segment (seg
 | `nucleosome_position_file` | Nucleosome positions (nm); only written for `chromatin_type == 'eukaryotic'` |
 | `barrier_position_file` | Chromosome-barrier positions (nm); only written when `genomic_setup.are_multiple_chromosomes_present` |
 | `binding_proteins_file` | Positions of all bound generic binding proteins, excluding the nucleosome and chromosome-barrier entries (which have their own files) |
+| `RNAPs_density_file` | RNAP counts per bin of the DNA between `clamp_left` and `clamp_right`, ordered left to right. The bin size is 100 bp by default; override it with the `bin_size` keyword argument (in bp). RNAPs outside the range are not counted |
 | `promoter_status_file` | `model.promoter_status[i]` for every gene |
 | `mRNA_count_file` | Per gene: number of RNAPs currently transcribing, `RNAPs_finished_transcription[i]`, then `model.mRNA_counts[i]` |
 

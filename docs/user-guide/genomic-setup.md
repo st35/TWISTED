@@ -13,6 +13,7 @@ genomic_setup = GenomicSetup(
     gene_directions=[1],
     RNAP_on_rates=[0.02],
     promoter_mode='constitutive',
+    RNAP_recruitment_mode='constant',
     buffer_length=3400.0,
     are_multiple_chromosomes_present=False,
     regulatory_network_information=read_regulatory_network(['geneA'], None),
@@ -32,6 +33,7 @@ GenomicSetup(
     gene_directions: list[int],
     RNAP_on_rates: list[float],
     promoter_mode: str,
+    RNAP_recruitment_mode: str,
     buffer_length: float,
     are_multiple_chromosomes_present: bool,
     regulatory_network_information: tuple[dict, dict, dict, dict],
@@ -51,6 +53,7 @@ GenomicSetup(
 | `gene_directions` | `list[int]` | `+1` (transcribed left → right) or `−1` (transcribed right → left); other values raise |
 | `RNAP_on_rates` | `list[float]` | Recruitment rate (s⁻¹) used when the promoter is ON |
 | `promoter_mode` | `'constitutive' \| 'non-constitutive'` | See [Promoter modes](#promoter-modes) below |
+| `RNAP_recruitment_mode` | `'constant' \| 'sigma_dependent'` | Whether the recruitment rate is independent of or modulated by the local supercoiling density at the TSS; see [RNAP recruitment modes](#rnap-recruitment-modes) below |
 | `buffer_length` | `float` | Extra DNA past the gene on the right end (nm); contributes to `clamp_right` |
 | `are_multiple_chromosomes_present` | `bool` | `True` when the gene list spans more than one chromosome; triggers insertion of permanent topological/steric barriers at chromosome boundaries |
 | `regulatory_network_information` | `tuple[dict, dict, dict, dict]` | 4-tuple `(network, lambda_params, Theta_params, n_params)` from `read_regulatory_network`; pass `read_regulatory_network(gene_names, None)` for no regulation |
@@ -122,6 +125,35 @@ Promoters are initialised to OFF (`promoter_status[i] = 0`) at the start of each
 
 ---
 
+## RNAP recruitment modes
+
+`RNAP_recruitment_mode` controls how the recruitment rate of an ON promoter depends on the local supercoiling density `σ_TSS` of the segment containing the TSS.
+
+### Constant
+
+The rate is `RNAP_on_rates[i]` regardless of `σ_TSS`.
+
+### Sigma-dependent
+
+The rate is scaled by a decreasing sigmoid of `σ_TSS`:
+
+$$r_i = \texttt{RNAP\_on\_rates}[i] \cdot \tfrac{1}{2}\left[1 - \tanh\!\left(\frac{\sigma_{TSS} - \sigma_{th}}{s}\right)\right]$$
+
+The factor lies between 0 and 1: it is close to 1 when `σ_TSS` is well below `σ_th` (negative supercoiling) and falls toward 0 as `σ_TSS` rises above it. Optional kwargs:
+
+```python
+GenomicSetup(
+    ...,
+    RNAP_recruitment_mode='sigma_dependent',
+    RNAP_recruitment_sigma_dependence_threshold=-0.25,   # σ_th (default -0.25)
+    RNAP_recruitment_sigma_dependence_slope=0.1,         # s, must be > 0 (default 0.1)
+)
+```
+
+A non-positive slope raises `ValueError`. If either kwarg is passed while `RNAP_recruitment_mode='constant'`, a warning is issued and the value is ignored. Promoters that are OFF always have rate 0 in both modes.
+
+---
+
 ## Multi-gene constraints (recap)
 
 ```python
@@ -133,6 +165,7 @@ genomic_setup = GenomicSetup(
     gene_directions=[1, 1],
     RNAP_on_rates=[0.02, 0.02],
     promoter_mode='constitutive',
+    RNAP_recruitment_mode='constant',
     buffer_length=4420.0,         # makes clamp_right cover both genes
     are_multiple_chromosomes_present=False,
     regulatory_network_information=read_regulatory_network(['geneA', 'geneB'], None),

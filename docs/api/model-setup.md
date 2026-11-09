@@ -15,6 +15,7 @@ GenomicSetup(
     gene_directions: list[int],
     RNAP_on_rates: list[float],
     promoter_mode: str,
+    RNAP_recruitment_mode: str,
     buffer_length: float,
     are_multiple_chromosomes_present: bool,
     regulatory_network_information: tuple[dict, dict, dict, dict],
@@ -30,6 +31,8 @@ Holds the genomic layout: chromatin type, gene table, promoter mode, and DNA ext
 `are_multiple_chromosomes_present` signals that the gene list spans more than one chromosome. When `True`, `chromosomes_end_positions` must be a sorted list of cumulative end positions (nm) — one per chromosome. `Model` uses these to insert permanent `'chromosome_barrier'` `BindingProtein` molecules at each internal boundary and to partition `self.Lk` into one segment per chromosome. `construct_genomic_setup` sets both automatically for six-column gene files; direct construction of `GenomicSetup` requires them explicitly.
 
 `chromatin_type` ∈ `{'prokaryotic', 'eukaryotic'}`. `promoter_mode` ∈ `{'constitutive', 'non-constitutive'}`. For `'non-constitutive'`, the kwarg `TF_on_off_rates: list[tuple[float, float]]` is required — one `(TF_on_rate, TF_off_rate)` pair per gene (s⁻¹). For `'constitutive'`, `TF_on_off_rates` defaults to `[(0.0, 0.0), ...]` and is unused.
+
+`RNAP_recruitment_mode` ∈ `{'constant', 'sigma_dependent'}`. For `'sigma_dependent'`, the recruitment rate of an ON promoter is multiplied by `½[1 − tanh((σ_TSS − σ_th) / s)]`, where `σ_th` is the optional kwarg `RNAP_recruitment_sigma_dependence_threshold` (default `-0.25`) and `s` is the optional kwarg `RNAP_recruitment_sigma_dependence_slope` (default `0.1`, must be positive, otherwise `ValueError`). In `'constant'` mode these kwargs are ignored with a warning. See [User Guide → Genomic setup](../user-guide/genomic-setup.md#rnap-recruitment-modes).
 
 Eukaryotic kwargs: `per_nucleosome_DNA_length` (bp, default 147), `nucleosome_linker_length` (bp, default 30), `nucleosomes_are_steric_barriers_to_RNAPs` (bool, default `True`), `nucleosomes_can_be_displaced_at_TSS_by_RNAP` (bool, default `False`), `nucleosome_count` (int, override the auto-computed count), `nucleosome_on_rate_func` (callable `(L, σ) → factor`), `nucleosome_off_rate_func` (callable `(L, σ, binding_position) → factor`), `fully_explicit_nucleosome_dynamics` (bool, default `False`). When `fully_explicit_nucleosome_dynamics` is `False`, `nucleosome_off_rate_func` is replaced by a built-in function returning `1.0` inside a gene body and `0.0` outside (see `is_nucleosome_within_gene_body`); any supplied off-rate function is ignored with a warning. Set it `True` to keep a custom off-rate function.
 

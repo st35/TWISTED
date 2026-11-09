@@ -7,7 +7,7 @@ import random
 import dill
 
 class GenomicSetup: # Class to hold genomic setup information
-	def __init__(self, chromatin_type: str, gene_names: list[str], TSSes: list[float], gene_lengths: list[float], gene_directions: list[int], RNAP_on_rates: list[float], promoter_mode: str, buffer_length: float, are_multiple_chromosomes_present: bool, regulatory_network_information: tuple[dict[str, dict[str, int]], dict[str, dict[str, float]], dict[str, dict[str, float]], dict[str, dict[str, float]]], chromosomes_end_positions: list[float] = [], **kwargs) -> None:
+	def __init__(self, chromatin_type: str, gene_names: list[str], TSSes: list[float], gene_lengths: list[float], gene_directions: list[int], RNAP_on_rates: list[float], promoter_mode: str, RNAP_recruitment_mode: str, buffer_length: float, are_multiple_chromosomes_present: bool, regulatory_network_information: tuple[dict[str, dict[str, int]], dict[str, dict[str, float]], dict[str, dict[str, float]], dict[str, dict[str, float]]], chromosomes_end_positions: list[float] = [], **kwargs) -> None:
 		self.chromatin_type = chromatin_type
 		assert chromatin_type in ['prokaryotic', 'eukaryotic'], 'chromatin_type must be either "prokaryotic" or "eukaryotic".'
 
@@ -19,6 +19,26 @@ class GenomicSetup: # Class to hold genomic setup information
 		assert all(direction in [1, -1] for direction in self.gene_directions), 'gene_directions must be either +1 (positive strand) or -1 (reverse strand).'
 		assert len(self.gene_names) == len(self.TSSes) == len(self.gene_lengths) == len(self.gene_directions) == len(self.RNAP_on_rates), 'All gene-related lists must have the same length.'
 
+		self.RNAP_recruitment_mode = RNAP_recruitment_mode
+		assert RNAP_recruitment_mode in ['constant', 'sigma_dependent'], 'RNAP_recruitment_mode must be either "constant" or "sigma_dependent".'
+		if self.RNAP_recruitment_mode == 'sigma_dependent':
+			if 'RNAP_recruitment_sigma_dependence_threshold' not in kwargs:
+				self.RNAP_recruitment_sigma_dependence_threshold = -0.25
+			else:
+				self.RNAP_recruitment_sigma_dependence_threshold = float(kwargs['RNAP_recruitment_sigma_dependence_threshold'])
+			if 'RNAP_recruitment_sigma_dependence_slope' not in kwargs:
+				self.RNAP_recruitment_sigma_dependence_slope = 0.1
+			else:
+				self.RNAP_recruitment_sigma_dependence_slope = float(kwargs['RNAP_recruitment_sigma_dependence_slope'])
+				if self.RNAP_recruitment_sigma_dependence_slope > 0.0:
+					pass
+				else:
+					raise ValueError('RNAP_recruitment_sigma_dependence_slope must be positive.')
+		else:
+			if 'RNAP_recruitment_sigma_dependence_threshold' in kwargs:
+				warnings.warn('RNAP_recruitment_sigma_dependence_threshold is provided but RNAP_recruitment_mode is not "sigma_dependent". It will be ignored.')
+			if 'RNAP_recruitment_sigma_dependence_slope' in kwargs:
+				warnings.warn('RNAP_recruitment_sigma_dependence_slope is provided but RNAP_recruitment_mode is not "sigma_dependent". It will be ignored.')
 		self.promoter_mode = promoter_mode
 		assert promoter_mode in ['constitutive', 'non-constitutive'], 'promoter_mode must be either "constitutive" or "non-constitutive".'
 		if promoter_mode == 'non-constitutive':

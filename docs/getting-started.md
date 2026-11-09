@@ -87,6 +87,7 @@ genomic_setup = GenomicSetup(
     gene_directions=[1],
     RNAP_on_rates=[0.02],
     promoter_mode='constitutive',
+    RNAP_recruitment_mode='constant',
     buffer_length=3400.0,
     are_multiple_chromosomes_present=False,
     regulatory_network_information=read_regulatory_network(['lacZ'], None),
@@ -102,6 +103,7 @@ genomic_setup = GenomicSetup(
 | `gene_directions` | `+1` (left → right) or `-1` (right → left) |
 | `RNAP_on_rates` | recruitment rate when the promoter is ON, in s⁻¹ |
 | `promoter_mode` | `'constitutive'` (always ON) or `'non-constitutive'` (TF-driven on/off switching, requires `TF_on_off_rates`; see [User Guide → Genomic setup](user-guide/genomic-setup.md#promoter-modes)) |
+| `RNAP_recruitment_mode` | `'constant'` (rate independent of supercoiling) or `'sigma_dependent'` (rate scaled by the local supercoiling density at the TSS; see [User Guide → Genomic setup](user-guide/genomic-setup.md#rnap-recruitment-modes)) |
 | `buffer_length` | extra DNA past the gene, in nm; sets `clamp_right` |
 
 The right end of the DNA is computed automatically as
@@ -215,6 +217,7 @@ genomic_setup = GenomicSetup(
     gene_directions=[1, 1],
     RNAP_on_rates=[0.02, 0.02],
     promoter_mode='constitutive',
+    RNAP_recruitment_mode='constant',
     buffer_length=4080.0,            # large enough to cover the rightmost gene
     are_multiple_chromosomes_present=False,
     regulatory_network_information=read_regulatory_network(['geneA', 'geneB'], None),

@@ -48,8 +48,14 @@ def get_segment_Lk_dynamics(model: Model, dx_dt_front: float, dx_dt_back: float,
 def get_RNAP_recruitment_rate(model: Model, TSS_index: int, promoter_status: int, TSS_sigma: float) -> float: # Get the RNAP recruitment rate at a given TSS based on promoter status and local supercoiling
     if promoter_status == 0: # Promoter is OFF
         return 0.0
+
+    multiplicative_factor = 1.0
+    if model.genomic_setup.RNAP_recruitment_mode == 'sigma_dependent':
+        sigma_threshold = model.genomic_setup.RNAP_recruitment_sigma_dependence_threshold
+        sigma_slope = model.genomic_setup.RNAP_recruitment_sigma_dependence_slope
+        multiplicative_factor = (1.0 / 2.0)*(1.0 - tanh((TSS_sigma - sigma_threshold) / sigma_slope))
     
-    return model.genomic_setup.RNAP_on_rates[TSS_index]
+    return model.genomic_setup.RNAP_on_rates[TSS_index]*multiplicative_factor
 
 def get_TOP1_effect_on_Lk_dynamics(model: Model, segment_length: float, segment_sigma: float, segment_torque: float, segment_writhe_frac: float, bound_TOP1_count: int) -> float: # Get the effect of bound TOP1 enzymes on the rate of change of linking number for a DNA segment
     if segment_writhe_frac > 0.0: # Non-zero writhe; TOP1 cannot act

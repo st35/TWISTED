@@ -31,7 +31,7 @@ def read_genes_information(filename: str) -> tuple[list[str], list[float], list[
 		return gene_names, TSSes, gene_lengths, gene_directions, RNAP_on_rates
 	return gene_names, gene_chromosomes, TSSes, gene_lengths, gene_directions, RNAP_on_rates
 
-def construct_genomic_setup(filename: str, chromatin_type: str, promoter_mode: str = 'constitutive', buffer_length: float = 10000.0*0.34, **kwargs) -> GenomicSetup: # Return a GenomicSetup object constructed from a gene information file; buffer_length in nm
+def construct_genomic_setup(filename: str, chromatin_type: str, promoter_mode: str = 'constitutive', RNAP_recruitment_mode: str = 'constant', buffer_length: float = 10000.0*0.34, **kwargs) -> GenomicSetup: # Return a GenomicSetup object constructed from a gene information file; buffer_length in nm
 	genes_information = read_genes_information(filename)
 	if len(genes_information) == 5:
 		gene_names, TSSes, gene_lengths, gene_directions, RNAP_on_rates = genes_information
@@ -70,7 +70,7 @@ def construct_genomic_setup(filename: str, chromatin_type: str, promoter_mode: s
 	if 'regulatory_network_file' in kwargs:
 		kwargs.pop('regulatory_network_file')
 
-	return GenomicSetup(chromatin_type, gene_names, TSSes, gene_lengths, gene_directions, RNAP_on_rates, promoter_mode, buffer_length, are_multiple_chromosomes_present, (regulatory_network, lambda_parameters, Theta_parameters, n_parameters), chromosomes_end_positions, **kwargs)
+	return GenomicSetup(chromatin_type, gene_names, TSSes, gene_lengths, gene_directions, RNAP_on_rates, promoter_mode, RNAP_recruitment_mode, buffer_length, are_multiple_chromosomes_present, (regulatory_network, lambda_parameters, Theta_parameters, n_parameters), chromosomes_end_positions, **kwargs)
 
 def read_regulatory_network(gene_names: list[str], filename: str) -> tuple[dict[str, dict[str, int]], dict[str, dict[str, float]], dict[str, dict[str, float]], dict[str, dict[str, float]]]: # Read regulatory network information from a tab-delimited file
 	network = {}

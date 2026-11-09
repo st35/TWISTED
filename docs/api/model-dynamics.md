@@ -70,7 +70,7 @@ Per-segment `dLk/dt`. Iterates over segments right-to-left, dispatches by left/r
 get_RNAP_recruitment_rates(model, RNAP_gene_index, state_vector, segments_lengths, segments_sigmas) -> list[float]
 ```
 
-Per-gene recruitment rate. Currently ignores `TSS_sigma`.
+Per-gene recruitment rate. Ignores `TSS_sigma` in `'constant'` mode; scales the rate by a sigmoid of `TSS_sigma` in `'sigma_dependent'` mode (see [`get_RNAP_recruitment_rate`](biol-methods.md#get_rnap_recruitment_rate)).
 
 ### `get_mRNA_degradation_rates`
 

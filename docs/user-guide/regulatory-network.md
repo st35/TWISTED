@@ -79,6 +79,7 @@ genomic_setup = GenomicSetup(
     gene_directions=[1, 1],
     RNAP_on_rates=[0.05, 0.05],
     promoter_mode='non-constitutive',
+    RNAP_recruitment_mode='constant',
     TF_on_off_rates=[(0.05, 0.01), (0.05, 0.01)],
     buffer_length=4420.0,
     are_multiple_chromosomes_present=False,

@@ -4,7 +4,7 @@ from utilities import *
 from model_setup import *
 from simulate_dynamics import *
 
-def print_at_each_integration_step(model: Model, simulation_setup_and_state: SimulationSetupAndState, t: float, state_vector: list[float], RNAPs_pos_file: TextIO = None, RNAPs_dx_dt_file: TextIO = None, RNAPs_dtheta_dt_file: TextIO = None, sigma_file: TextIO = None, torque_file: TextIO = None, dLk_dt_file: TextIO = None, nucleosome_position_file: TextIO = None, promoter_status_file: TextIO = None, mRNA_count_file: TextIO = None, barrier_position_file: TextIO = None, binding_proteins_file: TextIO = None, screen_logging = False) -> None:
+def print_at_each_integration_step(model: Model, simulation_setup_and_state: SimulationSetupAndState, t: float, state_vector: list[float], RNAPs_pos_file: TextIO = None, RNAPs_dx_dt_file: TextIO = None, RNAPs_dtheta_dt_file: TextIO = None, sigma_file: TextIO = None, torque_file: TextIO = None, dLk_dt_file: TextIO = None, nucleosome_position_file: TextIO = None, promoter_status_file: TextIO = None, mRNA_count_file: TextIO = None, barrier_position_file: TextIO = None, binding_proteins_file: TextIO = None, RNAPs_density_file: TextIO = None, screen_logging = False, **kwargs) -> None:
 	RNAP_gene_index, state_vector = get_state_vectors_from_dicts(model)
 	RNAP_count = len(RNAP_gene_index)
 	dstate_dt = model_dynamics(t, state_vector, RNAP_gene_index, model, simulation_setup_and_state)
@@ -62,6 +62,19 @@ def print_at_each_integration_step(model: Model, simulation_setup_and_state: Sim
 					count += 1
 			currently_transcribing_RNAP_counts.append(count)
 		mRNA_count_file.write(str(t) + '\t' + '\t'.join([str(count) for count in currently_transcribing_RNAP_counts]) + '\t' + '\t'.join([str(simulation_setup_and_state.RNAPs_finished_transcription[i]) for i in range(len(model.genomic_setup.gene_names))]) + '\t' + '\t'.join([str(model.mRNA_counts[i]) for i in range(len(model.genomic_setup.gene_names))]) + '\n')
+
+	if RNAPs_density_file is not None:
+		genome_segment_start = model.genomic_setup.clamp_left / 0.34
+		genome_segment_end = model.genomic_setup.clamp_right / 0.34
+		bin_size = int(kwargs['bin_size']) if 'bin_size' in kwargs else 100 # bin size in base pairs
+		num_bins = int((genome_segment_end - genome_segment_start) / bin_size) + 1
+		RNAPs_density = [0 for _ in range(num_bins)]
+		for RNAP_index in range(RNAP_count):
+			RNAP_position = state_vector[RNAP_index] / 0.34
+			bin_index = int((RNAP_position - genome_segment_start) / bin_size)
+			if 0 <= bin_index < num_bins:
+				RNAPs_density[bin_index] += 1
+		RNAPs_density_file.write(str(t) + '\t' + '\t'.join([str(count) for count in RNAPs_density]) + '\n')
 
 	if screen_logging:
 		print(str(t) + '\t' + str(RNAP_count) + '\t' + '\t'.join([str(simulation_setup_and_state.RNAPs_finished_transcription[i]) for i in range(len(model.genomic_setup.gene_names))]) + '\t' + '\t'.join([str(model.mRNA_counts[i]) for i in range(len(model.genomic_setup.gene_names))]) + '\t' + '\t'.join([str(status) for status in model.promoter_status]))

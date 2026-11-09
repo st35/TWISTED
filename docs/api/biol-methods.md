@@ -75,7 +75,7 @@ get_RNAP_recruitment_rate(
 ) -> float
 ```
 
-Returns `RNAP_on_rates[TSS_index]` if `promoter_status == 1`, else `0`. `TSS_sigma` is currently unused.
+Returns `0` if `promoter_status == 0`. Otherwise returns `RNAP_on_rates[TSS_index]`, multiplied by `½[1 − tanh((TSS_sigma − σ_th) / s)]` when `genomic_setup.RNAP_recruitment_mode == 'sigma_dependent'` (`σ_th` and `s` are `RNAP_recruitment_sigma_dependence_threshold` and `RNAP_recruitment_sigma_dependence_slope`). In `'constant'` mode `TSS_sigma` is unused.
 
 ---
 

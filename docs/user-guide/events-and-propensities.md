@@ -32,9 +32,11 @@ Inactive modes/features contribute zero-rate entries in the appropriate block (e
 One propensity per gene. The rate for gene `i` is
 
 ```
-RNAP_on_rates[i]    if promoter_status[i] == 1
-0                   if promoter_status[i] == 0
+RNAP_on_rates[i] * f(σ_TSS)   if promoter_status[i] == 1
+0                             if promoter_status[i] == 0
 ```
+
+`f = 1` for `RNAP_recruitment_mode='constant'`; for `'sigma_dependent'` it is a decreasing sigmoid of the local supercoiling density at the TSS (see [Genomic setup](genomic-setup.md#rnap-recruitment-modes)).
 
 When this event fires for gene `i`:
 

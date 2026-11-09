@@ -253,6 +253,7 @@ genomic_setup = GenomicSetup(
     gene_directions=[1, 1],
     RNAP_on_rates=[0.02, 0.02],
     promoter_mode='constitutive',
+    RNAP_recruitment_mode='constant',
     buffer_length=4420.0,
     are_multiple_chromosomes_present=False,
     regulatory_network_information=read_regulatory_network(['geneA', 'geneB'], None),
