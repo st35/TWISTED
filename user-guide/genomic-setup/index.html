@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -723,6 +723,45 @@
     <span class="md-ellipsis">
       
         Non-constitutive
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rnap-recruitment-modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RNAP recruitment modes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RNAP recruitment modes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#constant" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Constant
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sigma-dependent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sigma-dependent
       
     </span>
   </a>
@@ -1518,6 +1557,45 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#rnap-recruitment-modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RNAP recruitment modes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RNAP recruitment modes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#constant" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Constant
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sigma-dependent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sigma-dependent
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#multi-gene-constraints-recap" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1621,10 +1699,11 @@
 <a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n">gene_directions</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
 <a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="n">RNAP_on_rates</span><span class="o">=</span><span class="p">[</span><span class="mf">0.02</span><span class="p">],</span>
 <a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="n">promoter_mode</span><span class="o">=</span><span class="s1">'constitutive'</span><span class="p">,</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="n">buffer_length</span><span class="o">=</span><span class="mf">3400.0</span><span class="p">,</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="n">are_multiple_chromosomes_present</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="n">regulatory_network_information</span><span class="o">=</span><span class="n">read_regulatory_network</span><span class="p">([</span><span class="s1">'geneA'</span><span class="p">],</span> <span class="kc">None</span><span class="p">),</span>
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="p">)</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="n">RNAP_recruitment_mode</span><span class="o">=</span><span class="s1">'constant'</span><span class="p">,</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="n">buffer_length</span><span class="o">=</span><span class="mf">3400.0</span><span class="p">,</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="n">are_multiple_chromosomes_present</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    <span class="n">regulatory_network_information</span><span class="o">=</span><span class="n">read_regulatory_network</span><span class="p">([</span><span class="s1">'geneA'</span><span class="p">],</span> <span class="kc">None</span><span class="p">),</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="p">)</span>
 </code></pre></div>
 <hr />
 <h2 id="constructor">Constructor<a class="headerlink" href="#constructor" title="Permanent link">&para;</a></h2>
@@ -1636,12 +1715,13 @@
 <a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="n">gene_directions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
 <a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="n">RNAP_on_rates</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
 <a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="n">promoter_mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    <span class="n">buffer_length</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    <span class="n">are_multiple_chromosomes_present</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>    <span class="n">regulatory_network_information</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">],</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>    <span class="n">chromosomes_end_positions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="p">)</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    <span class="n">RNAP_recruitment_mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    <span class="n">buffer_length</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>    <span class="n">are_multiple_chromosomes_present</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>    <span class="n">regulatory_network_information</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">],</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>    <span class="n">chromosomes_end_positions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="p">)</span>
 </code></pre></div>
 <h3 id="required-positionalkeyword-arguments">Required positional/keyword arguments<a class="headerlink" href="#required-positionalkeyword-arguments" title="Permanent link">&para;</a></h3>
 <table>
@@ -1687,6 +1767,11 @@
 <td><code>promoter_mode</code></td>
 <td><code>'constitutive' \| 'non-constitutive'</code></td>
 <td>See <a href="#promoter-modes">Promoter modes</a> below</td>
+</tr>
+<tr>
+<td><code>RNAP_recruitment_mode</code></td>
+<td><code>'constant' \| 'sigma_dependent'</code></td>
+<td>Whether the recruitment rate is independent of or modulated by the local supercoiling density at the TSS; see <a href="#rnap-recruitment-modes">RNAP recruitment modes</a> below</td>
 </tr>
 <tr>
 <td><code>buffer_length</code></td>
@@ -1806,19 +1891,37 @@
 <p>The pair <code>(k_on, k_off)</code> gives the rates at which an OFF promoter turns ON and an ON promoter turns OFF, respectively. RNAP recruitment on gene <code>i</code> proceeds at <code>RNAP_on_rates[i]</code> only while <code>promoter_status[i] == 1</code>.</p>
 <p>Promoters are initialised to OFF (<code>promoter_status[i] = 0</code>) at the start of each simulation. The promoter on/off events are dispatched as blocks 8 and 9 of the rate vector (see <a href="../events-and-propensities/">Events and propensities</a>).</p>
 <hr />
+<h2 id="rnap-recruitment-modes">RNAP recruitment modes<a class="headerlink" href="#rnap-recruitment-modes" title="Permanent link">&para;</a></h2>
+<p><code>RNAP_recruitment_mode</code> controls how the recruitment rate of an ON promoter depends on the local supercoiling density <code>σ_TSS</code> of the segment containing the TSS.</p>
+<h3 id="constant">Constant<a class="headerlink" href="#constant" title="Permanent link">&para;</a></h3>
+<p>The rate is <code>RNAP_on_rates[i]</code> regardless of <code>σ_TSS</code>.</p>
+<h3 id="sigma-dependent">Sigma-dependent<a class="headerlink" href="#sigma-dependent" title="Permanent link">&para;</a></h3>
+<p>The rate is scaled by a decreasing sigmoid of <code>σ_TSS</code>:</p>
+<div class="arithmatex">\[r_i = \texttt{RNAP\_on\_rates}[i] \cdot \tfrac{1}{2}\left[1 - \tanh\!\left(\frac{\sigma_{TSS} - \sigma_{th}}{s}\right)\right]\]</div>
+<p>The factor lies between 0 and 1: it is close to 1 when <code>σ_TSS</code> is well below <code>σ_th</code> (negative supercoiling) and falls toward 0 as <code>σ_TSS</code> rises above it. Optional kwargs:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">GenomicSetup</span><span class="p">(</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="o">...</span><span class="p">,</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="n">RNAP_recruitment_mode</span><span class="o">=</span><span class="s1">'sigma_dependent'</span><span class="p">,</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">RNAP_recruitment_sigma_dependence_threshold</span><span class="o">=-</span><span class="mf">0.25</span><span class="p">,</span>   <span class="c1"># σ_th (default -0.25)</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="n">RNAP_recruitment_sigma_dependence_slope</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>         <span class="c1"># s, must be &gt; 0 (default 0.1)</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="p">)</span>
+</code></pre></div>
+<p>A non-positive slope raises <code>ValueError</code>. If either kwarg is passed while <code>RNAP_recruitment_mode='constant'</code>, a warning is issued and the value is ignored. Promoters that are OFF always have rate 0 in both modes.</p>
+<hr />
 <h2 id="multi-gene-constraints-recap">Multi-gene constraints (recap)<a class="headerlink" href="#multi-gene-constraints-recap" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">genomic_setup</span> <span class="o">=</span> <span class="n">GenomicSetup</span><span class="p">(</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="n">chromatin_type</span><span class="o">=</span><span class="s1">'prokaryotic'</span><span class="p">,</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="n">gene_names</span><span class="o">=</span><span class="p">[</span><span class="s1">'geneA'</span><span class="p">,</span> <span class="s1">'geneB'</span><span class="p">],</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">TSSes</span><span class="o">=</span><span class="p">[</span><span class="mf">340.0</span><span class="p">,</span> <span class="mf">4420.0</span><span class="p">],</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="n">gene_lengths</span><span class="o">=</span><span class="p">[</span><span class="mf">3400.0</span><span class="p">,</span> <span class="mf">3400.0</span><span class="p">],</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    <span class="n">gene_directions</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    <span class="n">RNAP_on_rates</span><span class="o">=</span><span class="p">[</span><span class="mf">0.02</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">],</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>    <span class="n">promoter_mode</span><span class="o">=</span><span class="s1">'constitutive'</span><span class="p">,</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>    <span class="n">buffer_length</span><span class="o">=</span><span class="mf">4420.0</span><span class="p">,</span>         <span class="c1"># makes clamp_right cover both genes</span>
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>    <span class="n">are_multiple_chromosomes_present</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>    <span class="n">regulatory_network_information</span><span class="o">=</span><span class="n">read_regulatory_network</span><span class="p">([</span><span class="s1">'geneA'</span><span class="p">,</span> <span class="s1">'geneB'</span><span class="p">],</span> <span class="kc">None</span><span class="p">),</span>
-<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">genomic_setup</span> <span class="o">=</span> <span class="n">GenomicSetup</span><span class="p">(</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="n">chromatin_type</span><span class="o">=</span><span class="s1">'prokaryotic'</span><span class="p">,</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="n">gene_names</span><span class="o">=</span><span class="p">[</span><span class="s1">'geneA'</span><span class="p">,</span> <span class="s1">'geneB'</span><span class="p">],</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="n">TSSes</span><span class="o">=</span><span class="p">[</span><span class="mf">340.0</span><span class="p">,</span> <span class="mf">4420.0</span><span class="p">],</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="n">gene_lengths</span><span class="o">=</span><span class="p">[</span><span class="mf">3400.0</span><span class="p">,</span> <span class="mf">3400.0</span><span class="p">],</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>    <span class="n">gene_directions</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>    <span class="n">RNAP_on_rates</span><span class="o">=</span><span class="p">[</span><span class="mf">0.02</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">],</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>    <span class="n">promoter_mode</span><span class="o">=</span><span class="s1">'constitutive'</span><span class="p">,</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>    <span class="n">RNAP_recruitment_mode</span><span class="o">=</span><span class="s1">'constant'</span><span class="p">,</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>    <span class="n">buffer_length</span><span class="o">=</span><span class="mf">4420.0</span><span class="p">,</span>         <span class="c1"># makes clamp_right cover both genes</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>    <span class="n">are_multiple_chromosomes_present</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>    <span class="n">regulatory_network_information</span><span class="o">=</span><span class="n">read_regulatory_network</span><span class="p">([</span><span class="s1">'geneA'</span><span class="p">,</span> <span class="s1">'geneB'</span><span class="p">],</span> <span class="kc">None</span><span class="p">),</span>
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="p">)</span>
 </code></pre></div>
 <table>
 <thead>
@@ -1848,36 +1951,36 @@
 <p>For prokaryotic setups, returns 0. For eukaryotic setups, returns either the explicit <code>nucleosome_count</code> if supplied, or the count obtained by tiling the DNA from <code>clamp_left + linker_length/2</code> rightward in steps of <code>per_nucleosome_DNA_length + nucleosome_linker_length</code> until the next nucleosome would overhang <code>clamp_right</code>.</p>
 <h3 id="print_genomic_setup-none"><code>print_genomic_setup() -&gt; None</code><a class="headerlink" href="#print_genomic_setup-none" title="Permanent link">&para;</a></h3>
 <p>Prints a formatted summary table to stdout. Useful for sanity-checking prior to long runs.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>Chromatin type: Prokaryotic
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>Promoter mode: Constitutive
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>========================================
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>Name    TSS (nm)    Length (nm)    Direction    RNAP on-rate (1 / s)
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>----------------------------------------
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>geneA   340.0       3400.0         1            0.02
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>========================================
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>Chromatin type: Prokaryotic
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>Promoter mode: Constitutive
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>========================================
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>Name    TSS (nm)    Length (nm)    Direction    RNAP on-rate (1 / s)
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>----------------------------------------
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>geneA   340.0       3400.0         1            0.02
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>========================================
 </code></pre></div>
 <hr />
 <h2 id="loading-from-a-tab-delimited-file">Loading from a tab-delimited file<a class="headerlink" href="#loading-from-a-tab-delimited-file" title="Permanent link">&para;</a></h2>
 <p>The companion helper <a href="../../api/utilities/#construct_genomic_setup"><code>construct_genomic_setup</code></a> reads a bp-denominated file and forwards everything else to the <code>GenomicSetup</code> constructor. Two column layouts are supported:</p>
 <p><strong>Five-column (single chromosome):</strong>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a># columns:  name   TSS_bp   length_bp   direction   RNAP_on_rate(1/s)
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>geneA       10000  5300     1           1.0
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a># columns:  name   TSS_bp   length_bp   direction   RNAP_on_rate(1/s)
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>geneA       10000  5300     1           1.0
 </code></pre></div></p>
 <p><strong>Six-column (multi-chromosome) — chromosome name in column 2:</strong>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a># columns:  name    chromosome   TSS_bp   length_bp   direction   RNAP_on_rate(1/s)
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>geneA       chrI    10000        5300     1           1.0
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>geneB       chrI    20000        5300     1           1.0
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>geneC       chrII   10000        5300    -1           1.0
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a># columns:  name    chromosome   TSS_bp   length_bp   direction   RNAP_on_rate(1/s)
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>geneA       chrI    10000        5300     1           1.0
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>geneB       chrI    20000        5300     1           1.0
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>geneC       chrII   10000        5300    -1           1.0
 </code></pre></div></p>
 <p>When the six-column format is used and more than one unique chromosome identifier is present, <code>construct_genomic_setup</code> automatically sets <code>are_multiple_chromosomes_present=True</code>, computes <code>chromosomes_end_positions</code>, and offsets each gene's TSS so that chromosomes are laid out end-to-end on the DNA. See <a href="../../tutorials/#18-multi-chromosome-setup">Tutorial 18</a> for a worked example.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">utilities</span><span class="w"> </span><span class="kn">import</span> <span class="n">construct_genomic_setup</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="n">genomic_setup</span> <span class="o">=</span> <span class="n">construct_genomic_setup</span><span class="p">(</span>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    <span class="s1">'genes.config'</span><span class="p">,</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>    <span class="n">chromatin_type</span><span class="o">=</span><span class="s1">'prokaryotic'</span><span class="p">,</span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>    <span class="n">promoter_mode</span><span class="o">=</span><span class="s1">'constitutive'</span><span class="p">,</span>
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>    <span class="n">explicit_RNAP_on_rates</span><span class="o">=</span><span class="p">[</span><span class="mf">0.05</span><span class="p">],</span>   <span class="c1"># multiplies file rate, optional</span>
-<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">utilities</span><span class="w"> </span><span class="kn">import</span> <span class="n">construct_genomic_setup</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="n">genomic_setup</span> <span class="o">=</span> <span class="n">construct_genomic_setup</span><span class="p">(</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="s1">'genes.config'</span><span class="p">,</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>    <span class="n">chromatin_type</span><span class="o">=</span><span class="s1">'prokaryotic'</span><span class="p">,</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>    <span class="n">promoter_mode</span><span class="o">=</span><span class="s1">'constitutive'</span><span class="p">,</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>    <span class="n">explicit_RNAP_on_rates</span><span class="o">=</span><span class="p">[</span><span class="mf">0.05</span><span class="p">],</span>   <span class="c1"># multiplies file rate, optional</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="p">)</span>
 </code></pre></div>
 <p>Any further keyword arguments (e.g. <code>per_nucleosome_DNA_length</code>, <code>nucleosomes_can_be_displaced_at_TSS_by_RNAP</code>) are forwarded as-is.</p>
 <hr />
@@ -1938,10 +2041,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.a5f9d56c.min.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       

@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -1784,11 +1784,12 @@
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="n">chromatin_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 <a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="n">promoter_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'constitutive'</span><span class="p">,</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="n">buffer_length</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">10000.0</span> <span class="o">*</span> <span class="mf">0.34</span><span class="p">,</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenomicSetup</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="n">RNAP_recruitment_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'constant'</span><span class="p">,</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="n">buffer_length</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">10000.0</span> <span class="o">*</span> <span class="mf">0.34</span><span class="p">,</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenomicSetup</span>
 </code></pre></div>
-<p>Read a gene file and construct a <code>GenomicSetup</code> in one call. Accepts both the five-column single-chromosome format and the six-column multi-chromosome format (see <code>read_genes_information</code>). When multiple distinct chromosome identifiers are detected, automatically computes <code>chromosomes_end_positions</code> (laying chromosomes end-to-end in reverse order of first appearance), sets <code>are_multiple_chromosomes_present=True</code>, and passes both to <code>GenomicSetup</code>. Calls <code>read_regulatory_network</code> using the optional kwarg <code>regulatory_network_file</code>; the key is consumed before the remaining <code>**kwargs</code> are forwarded to the <code>GenomicSetup</code> constructor.</p>
+<p>Read a gene file and construct a <code>GenomicSetup</code> in one call. <code>RNAP_recruitment_mode</code> (<code>'constant'</code> by default, or <code>'sigma_dependent'</code>) is forwarded to <code>GenomicSetup</code>, along with any <code>RNAP_recruitment_sigma_dependence_*</code> kwargs. Accepts both the five-column single-chromosome format and the six-column multi-chromosome format (see <code>read_genes_information</code>). When multiple distinct chromosome identifiers are detected, automatically computes <code>chromosomes_end_positions</code> (laying chromosomes end-to-end in reverse order of first appearance), sets <code>are_multiple_chromosomes_present=True</code>, and passes both to <code>GenomicSetup</code>. Calls <code>read_regulatory_network</code> using the optional kwarg <code>regulatory_network_file</code>; the key is consumed before the remaining <code>**kwargs</code> are forwarded to the <code>GenomicSetup</code> constructor.</p>
 <h3 id="read_regulatory_network"><code>read_regulatory_network</code><a class="headerlink" href="#read_regulatory_network" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">read_regulatory_network</span><span class="p">(</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="n">gene_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
@@ -1907,10 +1908,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.a5f9d56c.min.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       
